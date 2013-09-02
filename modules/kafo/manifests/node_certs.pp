@@ -16,7 +16,7 @@ class kafo::node_certs (
   ) inherits kafo::params {
 
   class {'::certs':
-    node_fqdn => 'ibm-x3650-01.ovirt.rhts.eng.bos.redhat.com',
+    node_fqdn => $child_fqdn,
     generate => true,
     deploy   => false
   }
