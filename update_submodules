@@ -30,3 +30,4 @@ update_submodule () {
 
 update_submodule mongodb https://github.com/puppetlabs/puppetlabs-mongodb
 update_submodule apache https://github.com/theforeman/puppet-apache
+update_submodule create_resources https://github.com/puppetlabs/puppetlabs-create_resources.git
