@@ -9,10 +9,13 @@
 # $pulp::        should Pulp be configured on the node
 #                type:boolean
 #
+# $certs_tar::   path to tar file with certs to generate
+#
 class kafo::node_certs (
   $parent_fqdn = $fqdn,
   $child_fqdn  = $kafo::params::child_fqdn,
-  $pulp        = $kafo::params::pulp
+  $pulp        = $kafo::params::pulp,
+  $certs_tar   = $kafo::params::child_fqdn
   ) inherits kafo::params {
 
   class {'::certs':
@@ -21,12 +24,16 @@ class kafo::node_certs (
     deploy   => false
   }
 
+
   if $pulp {
-    class { 'apache::ssl': }
-    class { 'pulp::child::certs': }
+    class { 'apache::ssl': notify => Certs::Tar_create[$certs_tar] }
+    class { 'pulp::child::certs': notify => Certs::Tar_create[$certs_tar] }
     class { 'pulp::parent::certs':
       hostname => $parent_fqdn,
       deploy => true,
     }
   }
+
+  certs::tar_create { $certs_tar: }
+  
 }
