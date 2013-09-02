@@ -2,4 +2,34 @@
 
 require 'rubygems'
 require 'kafo'
-KafoConfigure.run
+
+KafoConfigure.instance_eval do
+  option(['-t', '--tar-file'], 'TAR_FILE', 'Tar file to store the certificates')
+
+  define_method :default_tar_file do
+    "#{child_fqdn}-certs.tar.gz"
+  end
+end
+
+configuration = KafoConfigure.run
+
+success = configuration.exit_code < 10
+
+if success
+  Dir.chdir('/root') do
+    files = []
+    files << 'ssl-build/*.noarch.rpm'
+    files << "ssl-build/#{configuration.child_fqdn}/*.noarch.rpm"
+    `tar -czf #{configuration.tar_file} #{files.join(' ')}`
+  end
+  if $? == 0
+    puts <<MESSAGE
+Copy the #{configuration.tar_file} to the node and run on it:
+
+node-install -t #{configuration.tar_file} {node-install-options}
+MESSAGE
+  end
+  exit $?
+else
+  exit configuration.exit_code
+end
