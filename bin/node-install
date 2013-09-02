@@ -19,6 +19,8 @@ end
 
 configuration = KafoConfigure.run
 
+exit KafoConfigure.exit_code unless configuration
+
 success = configuration.exit_code < 10
 
 if success
