@@ -1,0 +1,32 @@
+#!/bin/bash
+#
+# Simple script which updates all git submodules
+#
+# Frustrated form `git submodule` and following the hints from
+#
+#   http://blogs.atlassian.com/2013/05/alternatives-to-git-submodule-git-subtree/
+#
+# This script keeps the list of external modules we have and updates them.
+# If argument specified, only this module is updated.
+#
+# To add a new module, add it to this file and run `update_sumodules your-new-module`
+
+NAME=$1
+
+update_submodule () {
+    name=$1
+    url=$2
+    branch=${3:-master}
+    path=modules/$name
+    if [ -z "$NAME" -o "$NAME" = "$name" ]; then
+        if [ -e $path ]; then
+           command=pull
+        else
+           command=add
+        fi
+        git subtree $command --prefix $path $url $branch --squash
+    fi
+}
+
+update_submodule mongodb https://github.com/puppetlabs/puppetlabs-mongodb
+update_submodule apache https://github.com/theforeman/puppet-apache

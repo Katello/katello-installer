@@ -1,0 +1,42 @@
+#!/bin/bash
+set -eo pipefail
+
+COMMAND=$1
+
+usage () {
+  cat <<USAGE
+katello-certs-bundle pack node.example.com [tar] # create a tar with certificates
+katello-certs-bundle unpack tar # unpack the tar bundle on the node
+USAGE
+  exit 1
+}
+
+if [ -z "$COMMAND" ]; then
+  usage
+fi
+
+
+pack () {
+    HOSTNAME=$2
+    if [ -z "$HOSTNAME" ]; then
+       usage
+    fi
+    TAR=${3:-~/$HOSTNAME-certs-bundle.tar.gz}
+    pushd /root > /dev/null
+    tar -czf $TAR ssl-build/katello-candlepin-cert-key-pair-*.noarch.rpm ssl-build/${HOSTNAME}/*.noarch.rpm
+    popd > /dev/null
+    echo "Copy $TAR to the remote host and run \`katello-certs-bundle unpack\` on it."
+}
+
+
+unpack () {
+    TAR=$2
+    if [ -z "$TAR" ]; then
+       usage
+    fi
+    pushd /root > /dev/null
+    tar -xzf $TAR
+    popd > /dev/null
+}
+
+$COMMAND "$@"
