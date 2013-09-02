@@ -6,7 +6,7 @@ module Puppet::Provider::KatelloSslTool
     initvars
 
     commands :rpm => 'rpm'
-    commands :katello_ssl_tool => 'katello-ssl-tool'
+    commands :katello_ssl_tool_command => 'katello-ssl-tool'
 
     def exists?
       ! generate? && ! deploy?
@@ -57,6 +57,12 @@ module Puppet::Provider::KatelloSslTool
     end
 
     protected
+
+    def katello_ssl_tool(*args)
+      Dir.chdir('/root') do
+        katello_ssl_tool_command(*args)
+      end
+    end
 
     def generate?
       return false unless resource[:generate]
