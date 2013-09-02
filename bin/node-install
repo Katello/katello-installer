@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'kafo'
+
+KafoConfigure.instance_eval do
+  option(['-t', '--tar-file'], 'TAR_FILE', 'Tar file storing the certificates') do |tar_file|
+    unless File.exists?(tar_file)
+      raise ArgumentError, "The file #{tar_file} does not exis"
+    end
+    Dir.chdir('/root') do
+      `tar -xzf #{tar_file}`
+    end
+    unless $? == 0
+      raise "Tar file extraction failed"
+    end
+  end
+end
+
+configuration = KafoConfigure.run
+
+success = configuration.exit_code < 10
+
+if success
+  exit 0
+else
+  exit configuration.exit_code
+end
