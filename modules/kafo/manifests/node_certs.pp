@@ -23,9 +23,6 @@ class kafo::node_certs (
 
   if $pulp {
     class { 'apache::ssl': }
-  }
-
-  if $pulp {
     class { 'pulp::child::certs': }
     class { 'pulp::parent::certs':
       hostname => $parent_fqdn,

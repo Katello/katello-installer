@@ -1,18 +1,24 @@
+# Configure the node
+#
+# === Parameters:
+#
+# $parent_fqdn:: fqdn of the parent node. REQUIRED
+#
+# $pulp::        should Pulp be configured on the node
+#                type:boolean
+#
 class kafo (
-  $master_fqdn = undef,
-  $pulp = true
-  ) {
+  $parent_fqdn = $kafo::params::parent_fqdn,
+  $pulp        = $kafo::params::pulp
+  ) inherits kafo::params {
 
   class { 'certs': generate => false, deploy   => true }
 
   if $pulp {
     class { 'apache::ssl': }
-  }
-
-  if $pulp {
     class { 'pulp': }
     class { 'pulp::child':
-      parent_fqdn => $master_fqdn,
+      parent_fqdn => $parent_fqdn,
     }
   }
 }
