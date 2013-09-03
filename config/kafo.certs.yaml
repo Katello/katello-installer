@@ -1,0 +1,12 @@
+--- 
+  !ruby/sym default_values_dir: /tmp
+  !ruby/sym log_dir: /var/log/kafo
+  !ruby/sym password: WbtjGoblcFs65Y5DpWEFOXA2n9RURgGN_ggxTpPwXuw
+  !ruby/sym log_level: !ruby/sym info
+  !ruby/sym no_prefix: false
+  !ruby/sym mapping: 
+    :node_certs:
+      :dir_name: 'kafo'
+      :manifest_name: 'node_certs'
+  !ruby/sym answer_file: /root/node-installer/config/answers.certs.yaml
+  !ruby/sym puppet_modules_dir: /root/node-installer/modules
