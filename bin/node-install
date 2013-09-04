@@ -12,4 +12,4 @@ end
 
 KafoConfigure.run
 
-KafoConfigure.exit_code < 10 ? exit(0) : exit(KafoConfigure.exit_code)
+KafoConfigure.exit_code <= 2 ? exit(0) : exit(KafoConfigure.exit_code)
