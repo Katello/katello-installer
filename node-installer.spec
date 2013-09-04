@@ -3,8 +3,8 @@
 %global scl_ruby /usr/bin/ruby
 
 Name: node-installer
-Version: 0.0.0
-Release: 0%{?dist}
+Version: 0.0.1
+Release: 1%{?dist}
 Summary: Puppet-based installer for the katello nodes
 Group: Applications/System
 License: GPLv3+ and ASL 2.0
@@ -47,3 +47,6 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %{_sbindir}/node-certs-generate
 
 %changelog
+* Wed Sep 04 2013 Ivan Necas <inecas@redhat.com> 0.0.1-1
+- new package built with tito
+
