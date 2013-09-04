@@ -16,8 +16,9 @@ class kafo (
   ) inherits kafo::params {
 
   if $certs_tar {
-    Certs::Tar_extract { $certs_tar:
+    certs::tar_extract { $certs_tar:
       before => Class['certs']
+    }
   }
 
   class { 'certs': generate => false, deploy   => true }
