@@ -35,5 +35,5 @@ class kafo::node_certs (
   }
 
   certs::tar_create { $certs_tar: }
-  
+
 }
