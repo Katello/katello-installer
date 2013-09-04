@@ -15,11 +15,6 @@
 # :log_owner: root
 # :log_group: root
 
-:mapping:
-  :node_certs:
-    :dir_name: 'kafo'
-    :manifest_name: 'node_certs'
-
 :no_prefix: true
-:answer_file: config/answers.certs.yaml
+:answer_file: config/answers.child.yaml
 :puppet_modules_dir: modules

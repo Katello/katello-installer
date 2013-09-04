@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'kafo'
 
+CONFIG_FILE = "config/kafo.child.yaml"
 
 unless system("subscription-manager identity | grep identity")
   puts "The system has to be registered to a Katello instance before installing the node"
