@@ -21,5 +21,5 @@
     :manifest_name: 'node_certs'
 
 :no_prefix: true
-:answer_file: /root/node-installer/config/answers.certs.yaml
-:puppet_modules_dir: /root/node-installer/modules
+:answer_file: config/answers.certs.yaml
+:puppet_modules_dir: modules
