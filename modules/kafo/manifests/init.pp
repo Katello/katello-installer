@@ -30,4 +30,8 @@ class kafo (
       parent_fqdn => $parent_fqdn,
     }
   }
+
+  katello_node { "https://${parent_fqdn}/katello":
+    content => $pulp
+  }
 }
