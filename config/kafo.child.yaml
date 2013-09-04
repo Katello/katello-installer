@@ -17,4 +17,5 @@
 
 :no_prefix: true
 :answer_file: config/answers.child.yaml
-:puppet_modules_dir: modules
+:installer_dir: .
+:default_values_dir: config
