@@ -3,7 +3,7 @@
 require 'rubygems'
 require 'kafo'
 
-CONFIG_FILE = "/root/node-installer/config/kafo.certs.yaml"
+CONFIG_FILE = "config/kafo.certs.yaml"
 
 KafoConfigure.run
 
