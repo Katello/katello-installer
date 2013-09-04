@@ -3,3 +3,15 @@ default_builder = tito.builder.Builder
 default_tagger = tito.tagger.VersionTagger
 changelog_do_not_remove_cherrypick = 0
 changelog_format = %s (%ae)
+
+[katello-nightly-rhel6]
+disttag = .el6
+blacklist =
+
+[katello-nightly-fedora18]
+disttag = .fc18
+blacklist =
+
+[katello-nightly-fedora19]
+disttag = .fc19
+blacklist =
