@@ -16,6 +16,6 @@
 # :log_group: root
 
 :no_prefix: true
-:answer_file: config/answers.child.yaml
+:answer_file: ./config/answers.child.yaml
 :installer_dir: .
-:default_values_dir: config
+:default_values_dir: ./config
