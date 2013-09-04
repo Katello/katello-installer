@@ -24,7 +24,7 @@ Puppet::Type.type(:katello_node).provide(:net_http) do
     data = { :node =>
              { :system_uuid => uuid,
                :capabilities => capabilities } }
-    response = http_request(:post, "/api/nodes")
+    response = http_request(:post, "/api/nodes", data)
     unless response.code == "200"
       raise "Failed to register the node: #{response.body}"
     end
