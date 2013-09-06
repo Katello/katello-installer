@@ -7,12 +7,16 @@
 # $pulp::        should Pulp be configured on the node
 #                type:boolean
 #
+# $pulp_admin_password:: passowrd for the Pulp admin user.It should be left blank so that random password is generated
+#                        type:password
+#
 # $certs_tar::   path to a tar with certs for the node
 #
 class kafo (
-  $parent_fqdn = $kafo::params::parent_fqdn,
-  $pulp        = $kafo::params::pulp,
-  $certs_tar   = $kafo::params::child_fqdn
+  $parent_fqdn         = $kafo::params::parent_fqdn,
+  $pulp                = $kafo::params::pulp,
+  $pulp_admin_password = $kafo::params::pulp_admin_password,
+  $certs_tar           = $kafo::params::child_fqdn
   ) inherits kafo::params {
 
   if $certs_tar {
@@ -25,9 +29,11 @@ class kafo (
 
   if $pulp {
     class { 'apache::ssl': }
-    class { 'pulp': }
+    class { 'pulp':
+      default_password => $pulp_admin_password
+    }
     class { 'pulp::child':
-      parent_fqdn => $parent_fqdn,
+      parent_fqdn => $parent_fqdn
     }
   }
 

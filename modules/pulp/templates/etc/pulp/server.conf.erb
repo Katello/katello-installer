@@ -243,7 +243,7 @@ relative_url: /pulp/repos
 key_url: /pulp/gpg
 ks_url: /pulp/ks
 default_login: <%= @default_login %>
-default_password: <%= @default_password %>
+default_password: <%= scope.function_decrypt([@default_password]) %>
 debugging_mode: false
 
 
