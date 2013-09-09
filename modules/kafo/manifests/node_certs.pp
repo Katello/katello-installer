@@ -20,7 +20,6 @@ class kafo::node_certs (
 
   validate_present($child_fqdn)
   validate_present($certs_tar)
-  validate_pulp($pulp)
 
   class {'::certs':
     node_fqdn => $child_fqdn,
