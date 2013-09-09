@@ -15,6 +15,10 @@ class kafo (
   $certs_tar   = $kafo::params::child_fqdn
   ) inherits kafo::params {
 
+  validate_present($parent_fqdn)
+  validate_file_exists($certs_tar)
+  validate_pulp($pulp)
+
   if $certs_tar {
     certs::tar_extract { $certs_tar:
       before => Class['certs']

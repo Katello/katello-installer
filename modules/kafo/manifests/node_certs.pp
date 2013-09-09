@@ -18,6 +18,10 @@ class kafo::node_certs (
   $certs_tar   = $kafo::params::child_fqdn
   ) inherits kafo::params {
 
+  validate_present($child_fqdn)
+  validate_present($certs_tar)
+  validate_pulp($pulp)
+
   class {'::certs':
     node_fqdn => $child_fqdn,
     generate => true,
