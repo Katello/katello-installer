@@ -3,7 +3,7 @@
 %global scl_ruby /usr/bin/ruby
 
 Name: node-installer
-Version: 0.0.2
+Version: 0.0.3
 Release: 1%{?dist}
 Summary: Puppet-based installer for the katello nodes
 Group: Applications/System
@@ -47,6 +47,9 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %{_sbindir}/node-certs-generate
 
 %changelog
+* Mon Sep 09 2013 Ivan Necas <inecas@redhat.com> 0.0.3-1
+- Fix generating certs on master (inecas@redhat.com)
+
 * Mon Sep 09 2013 Ivan Necas <inecas@redhat.com> 0.0.2-1
 - Random password for the pulp admin (inecas@redhat.com)
 - Validate params (inecas@redhat.com)
