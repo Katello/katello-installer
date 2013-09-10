@@ -1,0 +1,28 @@
+### Next part of the file is managed by a different template ###
+## Module:           '<%= scope.to_hash['module_name'] %>'
+<% module_paths =  Puppet::Node::Environment.current[:modulepath].split(':').map{|i| File.expand_path(i) }.join("|") -%>
+## Template source:  'MODULES<%= template_source.gsub(Regexp.new("^#{module_paths}"),"") %>'
+
+[master]
+    autosign       = $confdir/autosign.conf { mode = 664 }
+    reports        = <%= scope.lookupvar("puppet::server_reports") %>
+    external_nodes = <%= @server_external_nodes %>
+    node_terminus  = <%= @server_node_terminus %>
+    ca             = <%= scope.lookupvar("puppet::server_ca") %>
+    ssldir         = <%= scope.lookupvar("puppet::server_ssl_dir") %>
+<% if @server_storeconfigs_backend -%>
+    storeconfigs   = true
+    storeconfigs_backend = <%= @server_storeconfigs_backend %>
+<% end -%>
+
+<% if scope.lookupvar("puppet::server_git_repo") -%>
+    manifest       = <%= scope.lookupvar("puppet::server_envs_dir") %>/$environment/manifests/site.pp
+    modulepath     = <%= scope.lookupvar("puppet::server_envs_dir") %>/$environment/modules
+    config_version = <%= scope.lookupvar("puppet::server::config_version_cmd") %>
+<% else -%>
+<% scope.lookupvar("puppet::server_environments").each do |env| -%>
+[<%= env %>]
+    modulepath     = <%= scope.lookupvar("puppet::server_envs_dir") %>/<%= env %>/modules:<%= [scope.lookupvar("puppet::server_common_modules_path")].flatten.join(":") %>
+    config_version = <%= scope.lookupvar("puppet::server::config_version_cmd") %>
+<% end -%>
+<% end -%>
