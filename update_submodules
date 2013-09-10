@@ -28,6 +28,24 @@ update_submodule () {
     fi
 }
 
+
+update_foreman_submodule () {
+    FOREMAN_INSTALLER_DIR=foreman-installer
+    FOREMAN_INSTALLER_URL=git@github.com:theforeman/foreman-installer.git
+    name=$1
+    if ! [ -e $FOREMAN_INSTALLER_DIR ]; then
+      git clone $FOREMAN_INSTALLER_URL $FOREMAN_INSTALLER_DIR
+    fi
+    pushd $FOREMAN_INSTALLER_DIR > /dev/null;
+      git pull
+      git submodule update --init
+      sha=$(git submodule status modules/$name | cut -f2 -d' ')
+    popd > /dev/null;
+    update_submodule $name $FOREMAN_INSTALLER_DIR/modules/$name $sha
+}
+
+
 update_submodule mongodb https://github.com/puppetlabs/puppetlabs-mongodb
 update_submodule apache https://github.com/theforeman/puppet-apache
 update_submodule create_resources https://github.com/puppetlabs/puppetlabs-create_resources.git
+update_foreman_submodule concat
