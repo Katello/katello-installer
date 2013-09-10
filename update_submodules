@@ -13,6 +13,18 @@
 
 NAME=$1
 
+FOREMAN_INSTALLER_DIR=foreman-installer
+FOREMAN_INSTALLER_URL=git@github.com:theforeman/foreman-installer.git
+# we need to create a ref to be able to subtree from the submodule
+REF=node-installer
+if ! [ -e $FOREMAN_INSTALLER_DIR ]; then
+  git clone $FOREMAN_INSTALLER_URL $FOREMAN_INSTALLER_DIR
+fi
+pushd $FOREMAN_INSTALLER_DIR > /dev/null;
+   git pull
+   git submodule update --init
+popd > /dev/null
+
 update_submodule () {
     name=$1
     url=$2
@@ -30,26 +42,15 @@ update_submodule () {
 
 
 update_foreman_submodule () {
-    FOREMAN_INSTALLER_DIR=foreman-installer
-    FOREMAN_INSTALLER_URL=git@github.com:theforeman/foreman-installer.git
-    # we need to create a ref to be able to subtree from the submodule
-    REF=node-installer
     name=$1
-    if ! [ -e $FOREMAN_INSTALLER_DIR ]; then
-      git clone $FOREMAN_INSTALLER_URL $FOREMAN_INSTALLER_DIR
-    fi
-    pushd $FOREMAN_INSTALLER_DIR > /dev/null;
-      git pull
-      git submodule update --init
-      pushd modules/$name > /dev/null
-          if [ $(git rev-parse --abbrev-ref HEAD) != $REF ]; then
-              if git branch | grep $REF; then
-                  git branch -D $REF
-              fi
-              git checkout -b $REF
-          fi
-      popd> /dev/null
-    popd > /dev/null;
+    pushd $FOREMAN_INSTALLER_DIR/modules/$name > /dev/null
+        if [ $(git rev-parse --abbrev-ref HEAD) != $REF ]; then
+            if git branch | grep $REF; then
+                git branch -D $REF
+            fi
+            git checkout -b $REF
+        fi
+    popd> /dev/null
     update_submodule $name $FOREMAN_INSTALLER_DIR/modules/$name $REF
 }
 
