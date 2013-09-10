@@ -44,7 +44,7 @@ update_foreman_submodule () {
       pushd modules/$name > /dev/null
           if [ $(git rev-parse --abbrev-ref HEAD) != $REF ]; then
               if git branch | grep $REF; then
-                  git branch -d $REF
+                  git branch -D $REF
               fi
               git checkout -b $REF
           fi
