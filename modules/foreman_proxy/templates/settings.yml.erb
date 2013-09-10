@@ -1,0 +1,101 @@
+---
+### File managed with puppet ###
+## Module:           '<%= scope.to_hash['module_name'] %>'
+## Template source:  'MODULES<%= template_source.gsub(Regexp.new("^#{Puppet::Node::Environment.current[:modulepath].gsub(':','|')}"),"") %>'
+
+# SSL Setup
+
+# if enabled, all communication would be verfied via SSL
+# NOTE that both certificates need to be signed by the same CA in order for this to work
+# see http://theforeman.org/projects/smart-proxy/wiki/SSL for more information
+<% if scope.lookupvar("foreman_proxy::ssl_ca") -%>
+:ssl_ca_file: <%= scope.lookupvar("foreman_proxy::ssl_ca") %>
+<% else -%>
+#:ssl_ca_file: ssl/certs/ca.pem
+<% end -%>
+<% if scope.lookupvar("foreman_proxy::ssl_cert") -%>
+:ssl_certificate: <%= scope.lookupvar("foreman_proxy::ssl_cert") %>
+<% else -%>
+#:ssl_certificate: ssl/certs/fqdn.pem
+<% end -%>
+<% if scope.lookupvar("foreman_proxy::ssl_key") -%>
+:ssl_private_key: <%= scope.lookupvar("foreman_proxy::ssl_key") %>
+<% else -%>
+#:ssl_private_key: ssl/private_keys/fqdn.key
+<% end -%>
+
+# the hosts which the proxy accepts connections from
+# commenting the following lines would mean every verified SSL connection allowed
+<% if thosts = scope.lookupvar("foreman_proxy::trusted_hosts") and thosts.any? -%>
+:trusted_hosts:
+<% thosts.each do |h| -%>
+<%= "  - #{h}" %>
+<% end -%>
+<% else -%>
+#:trusted_hosts:
+#- foreman.prod.domain
+#- foreman.dev.domain
+<% end -%>
+
+# enable the daemon to run in the background
+:daemon: true
+:daemon_pid: /var/run/foreman-proxy/foreman-proxy.pid
+
+# port used by the proxy
+:port: <%= scope.lookupvar("foreman_proxy::port") %>
+
+# Enable TFTP management
+:tftp: <%= scope.lookupvar("foreman_proxy::tftp") %>
+:tftproot: <%= scope.lookupvar("foreman_proxy::tftp_root") %>
+:tftp_servername: <%= scope.lookupvar("foreman_proxy::tftp_servername") %>
+# Defines the TFTP Servername to use, overrides the name in the subnet declaration
+#:tftp_servername: tftp.domain.com
+
+# Enable DNS management
+:dns: <%= scope.lookupvar("foreman_proxy::dns") %>
+:dns_key: <%= scope.lookupvar("foreman_proxy::keyfile") %>
+# use this setting if you are managing a dns server which is not localhost though this proxy
+:dns_server: <%= scope.lookupvar("foreman_proxy::dns_server") %>
+
+# Enable DHCP management
+:dhcp: <%= scope.lookupvar("foreman_proxy::dhcp") %>
+<% if scope.lookupvar("foreman_proxy::dhcp") == true -%>
+:dhcp_vendor: <%= scope.lookupvar("foreman_proxy::dhcp_vendor") %>
+:dhcp_config: <%= scope.lookupvar("foreman_proxy::dhcp_config") %>
+:dhcp_leases: <%= scope.lookupvar("foreman_proxy::dhcp_leases") %>
+<% if !scope.lookupvar("foreman_proxy::dhcp_key_name").empty? && !scope.lookupvar("foreman_proxy::dhcp_key_secret").empty? -%>
+:dhcp_key_name: <%= scope.lookupvar("foreman_proxy::dhcp_key_name") %>
+:dhcp_key_secret: <%= scope.lookupvar("foreman_proxy::dhcp_key_secret") %>
+<% else -%>
+#:dhcp_key_name: secret_key_name
+#:dhcp_key_secret: secret_key
+<% end -%>
+<% else -%>
+# The vendor can be either isc or native_ms
+:dhcp_vendor: isc
+# dhcp_subnets is a Native MS implementation setting. It restricts the subnets queried to a
+# subset, so as to reduce the query time.
+#:dhcp_subnets: [192.168.205.0/255.255.255.128, 192.168.205.128/255.255.255.128]
+# Settings for Ubuntu ISC
+#:dhcp_config: /etc/dhcp3/dhcpd.conf
+#:dhcp_leases: /var/lib/dhcp3/dhcpd.leases
+# Settings for Redhat ISC
+#:dhcp_config: /etc/dhcpd.conf
+#:dhcp_leases: /var/lib/dhcpd/dhcpd.leases
+<% end -%>
+
+# enable PuppetCA management
+:puppetca: <%= scope.lookupvar("foreman_proxy::puppetca") %>
+:ssldir: <%= scope.lookupvar("foreman_proxy::ssldir") %>
+:puppetdir: <%= scope.lookupvar("foreman_proxy::puppetdir") %>
+
+# enable Puppet management
+:puppet: <%= scope.lookupvar("foreman_proxy::puppetrun") %>
+:puppet_conf: <%= scope.lookupvar("foreman_proxy::puppetdir") %>/puppet.conf
+
+# Where our proxy log files are stored
+# filename or STDOUT
+:log_file: <%= scope.lookupvar("foreman_proxy::log") %>
+# valid options are
+# WARN, DEBUG, Error, Fatal, INFO, UNKNOWN
+#:log_level: DEBUG
