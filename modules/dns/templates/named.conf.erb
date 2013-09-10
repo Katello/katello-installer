@@ -1,0 +1,16 @@
+// named.conf
+
+include "<%= @rndckeypath %>";
+
+controls  {
+	inet 127.0.0.1 port 953 allow { 127.0.0.1; } keys { "rndc-key"; };
+};
+
+options  {
+	include "<%= @optionspath %>";
+};
+
+include "<%= @localzonepath %>";
+
+// Public view read by Server Admin
+include "<%= @publicviewpath %>";
