@@ -56,5 +56,12 @@ update_foreman_submodule () {
 
 update_submodule mongodb https://github.com/puppetlabs/puppetlabs-mongodb
 update_submodule apache https://github.com/theforeman/puppet-apache
-update_submodule create_resources https://github.com/puppetlabs/puppetlabs-create_resources.git
-update_foreman_submodule concat
+update_foreman_submodule create_resource
+update_foreman_submodule concat_native
+update_foreman_submodule stdlib
+update_foreman_submodule dhcp
+update_foreman_submodule dns
+update_foreman_submodule tftp
+update_foreman_submodule xinetd
+update_foreman_submodule puppet
+update_foreman_submodule foreman_proxy
