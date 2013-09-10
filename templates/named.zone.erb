@@ -1,0 +1,7 @@
+zone "<%= @zone %>" {
+    type <%= @zonetype %>;
+    file "<%= @zonefilename %>";
+    update-policy {
+            grant rndc-key zonesub ANY;
+    };
+};

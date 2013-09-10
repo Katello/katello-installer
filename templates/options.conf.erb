@@ -1,0 +1,5 @@
+directory "<%= @vardir %>";
+<% unless @forwarders.empty? -%>
+forwarders { <%= @forwarders.join("; ") %>; };
+<% end -%>
+

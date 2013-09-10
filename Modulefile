@@ -1,0 +1,10 @@
+name    'theforeman-dns'
+version '1.2.0'
+source 'git://github.com/theforeman/puppet-dns'
+author 'ZLeslie, theforeman'
+license 'Apache License Version 2.0'
+summary 'Manage the ISC BIND daemon'
+description 'Module for configuring the ISC BIND server for Foreman'
+project_page 'http://github.com/theforeman/foreman-installer'
+
+dependency 'theforeman/concat_native', '>= 1.2.0'
