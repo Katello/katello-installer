@@ -38,6 +38,7 @@ class foreman::params {
   $group       = 'foreman'
   $environment = 'production'
   $gpgcheck    = true
+  $version     = 'present'
 
   # when undef, foreman-selinux will be installed if SELinux is enabled
   # setting to false/true will override this check (e.g. set to false on 1.1)
@@ -95,4 +96,10 @@ class foreman::params {
   # Used to authenticate to Foreman, required if require_ssl_puppetmasters is enabled
   $client_ssl_cert = "${puppet_home}/ssl/certs/${::fqdn}.pem"
   $client_ssl_key  = "${puppet_home}/ssl/private_keys/${::fqdn}.pem"
+
+  # We need the REST API interface with OAuth for some REST Puppet providers
+  $oauth_active = true
+  $oauth_map_users = true
+  $oauth_consumer_key = cache_data('oauth_consumer_key', random_password(32))
+  $oauth_consumer_secret = cache_data('oauth_consumer_secret', random_password(32))
 }
