@@ -65,3 +65,4 @@ update_foreman_submodule tftp
 update_foreman_submodule xinetd
 update_foreman_submodule puppet
 update_foreman_submodule foreman_proxy
+update_foreman_submodule foreman
