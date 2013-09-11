@@ -20,5 +20,5 @@ class kafo::params {
   $register_in_foreman   = $foreman_proxy::params::register_in_foreman
   $oauth_effective_user  = $foreman_proxy::params::oauth_effective_user
   $oauth_consumer_key    = "foreman"
-  $oauth_consumer_secret = undef,
+  $oauth_consumer_secret = undef
 }
