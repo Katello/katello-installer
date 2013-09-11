@@ -86,6 +86,10 @@ class kafo (
     }
   }
 
+  if $register_in_foreman {
+    validate_present($oauth_consumer_secret)
+  }
+
   class { 'certs': generate => false, deploy   => true }
 
   if $pulp {
