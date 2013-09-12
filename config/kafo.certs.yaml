@@ -20,6 +20,7 @@
 :answer_file: ./config/answers.certs.yaml
 :installer_dir: .
 :default_values_dir: ./config
+:dont_save_answers: true
 :mapping:
   :node_certs:
     :manifest_name: node_certs
