@@ -3,7 +3,7 @@
 %global scl_ruby /usr/bin/ruby
 
 Name: node-installer
-Version: 0.0.3
+Version: 0.0.4
 Release: 1%{?dist}
 Summary: Puppet-based installer for the katello nodes
 Group: Applications/System
@@ -47,6 +47,15 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %{_sbindir}/node-certs-generate
 
 %changelog
+* Thu Sep 12 2013 Ivan Necas <inecas@redhat.com> 0.0.4-1
+- Don't save answers for node-certs-generate (inecas@redhat.com)
+- Make sure oauth secret is set when registering foreman proxy
+  (inecas@redhat.com)
+- Make sure the system is registered to katello only when installing pulp node
+  (inecas@redhat.com)
+- first cut on foreman-proxy installation (inecas@redhat.com)
+- Get submodules from foreman-installer (inecas@redhat.com)
+
 * Mon Sep 09 2013 Ivan Necas <inecas@redhat.com> 0.0.3-1
 - Fix generating certs on master (inecas@redhat.com)
 
