@@ -6,16 +6,28 @@
 #
 # $child_fqdn::  fqdn of the child node. REQUIRED
 #
+# $certs_tar::   path to tar file with certs to generate
+#
 # $pulp::        should Pulp be configured on the node
 #                type:boolean
 #
-# $certs_tar::   path to tar file with certs to generate
+# $dns::         should DNS be configured on the node
+#                type:boolean
+#
+# $dhcp::        should DHCP be configured on the node
+#                type:boolean
+#
+# $tftp::        should TFTP be configured on the node
+#                type:boolean
 #
 class kafo::node_certs (
   $parent_fqdn = $fqdn,
   $child_fqdn  = $kafo::params::child_fqdn,
+  $certs_tar   = $kafo::params::child_fqdn,
   $pulp        = $kafo::params::pulp,
-  $certs_tar   = $kafo::params::child_fqdn
+  $dns        = $kafo::params::dns,
+  $dhcp        = $kafo::params::dhcp,
+  $tftp        = $kafo::params::tftp
   ) inherits kafo::params {
 
   validate_present($child_fqdn)
