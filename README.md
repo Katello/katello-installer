@@ -46,3 +46,49 @@ node-install \
 Both `node-certs-generate` and `node-installer` take parameters to
 determine what features should be set for the node. See `--help` for
 more details.
+
+The values for `--pulp`, `--dns`, `--dhcp`, `--tftp` options should
+be the same for both `node-certs-generate` and `node-installer`
+commands for the installation to work properly.
+
+Examples
+--------
+
+```
+# Install all the node services (Pulp node, Foreman proxy, DNS, DHCP, FTP)
+
+node-install  --parent-fqdn katello.example.com\
+              --pulp true\
+              --certs-tar ~/certs.tar.gz\
+              --dns true\
+              --dns-forwarders 8.8.8.8 --dns-forwarders  8.8.4.4\
+              --dns-interface virbr1\
+              --dhcp true\
+              --dhcp-interface virbr1\
+              --tftp true\
+              --register-in-foreman true\
+              --oauth-consumer-secret "foreman"\
+              --oauth-consumer-secret "mysecretoauthkey"\
+              --verbose
+
+# Install only pulp node (no Foreman proxy or the network services)
+
+node-install  --parent-fqdn katello.example.com\
+              --pulp true\
+              --certs-tar ~/certs.tar.gz\
+              --dns false --dhcp false --tftp false\
+              --verbose
+
+# Install only DNS with smart proxy
+
+node-install  --parent-fqdn katello.example.com\
+              --dns true\
+              --dns-forwarders 8.8.8.8 --dns-forwarders  8.8.4.4\
+              --dns-interface virbr1\
+              --pulp false --dns false --dhcp false --tftp false\
+              --register-in-foreman true\
+              --oauth-consumer-secret "foreman"\
+              --oauth-consumer-secret "mysecretoauthkey"\
+              --verbose
+
+```
