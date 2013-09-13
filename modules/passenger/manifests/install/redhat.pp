@@ -12,7 +12,9 @@ class passenger::install::redhat {
     }
   }
 
-  package{'passenger':
+  package { 'foreman-selinux': ensure => installed } ->
+
+  package { 'passenger':
     ensure  => installed,
     name    => 'mod_passenger',
     require => Class['apache::install'],
