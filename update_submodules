@@ -11,6 +11,8 @@
 #
 # To add a new module, add it to this file and run `update_sumodules your-new-module`
 
+set -exo pipefail
+
 if [ "$1" = "foreman_modules" ]; then
     ONLY_FOREMAN=1
 else
