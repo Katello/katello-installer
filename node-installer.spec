@@ -14,6 +14,7 @@ Source0: %{name}-%{version}.tar.gz
 BuildArch: noarch
 
 Requires: %{?scl_prefix}rubygem-kafo
+Requires:   %{?scl_prefix}rubygem-foreman_api >= 0.1.4
 
 %description
 Installer for Katello nodes.
