@@ -3,7 +3,7 @@
 %global scl_ruby /usr/bin/ruby
 
 Name: node-installer
-Version: 0.0.4
+Version: 0.0.5
 Release: 1%{?dist}
 Summary: Puppet-based installer for the katello nodes
 Group: Applications/System
@@ -48,6 +48,8 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %{_sbindir}/node-certs-generate
 
 %changelog
+* Fri Sep 13 2013 Ivan Necas <inecas@redhat.com> 0.0.5-1
+- Support for installing puppet server and CA (inecas@redhat.com)
 * Thu Sep 12 2013 Ivan Necas <inecas@redhat.com> 0.0.4-1
 - Don't save answers for node-certs-generate (inecas@redhat.com)
 - Make sure oauth secret is set when registering foreman proxy
