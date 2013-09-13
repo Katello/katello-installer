@@ -8,6 +8,9 @@ class kafo::params {
   $pulp                  = true
   $pulp_admin_password   = undef
 
+  $puppet                = true
+  $puppetca              = true
+
   $foreman_proxy_port    = "9090"
   $dhcp                  = $foreman_proxy::params::dhcp
   $dhcp_interface        = $foreman_proxy::params::dhcp_interface

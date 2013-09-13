@@ -15,6 +15,12 @@
 # $foreman_proxy_port::     Port on which will foreman proxy listen
 #                           type:integer
 #
+# $puppet::                 Use puppet
+#                           type:boolean
+#
+# $puppetca::               Use puppet ca
+#                           type:boolean
+#
 # $tftp::                   Use TFTP
 #                           type:boolean
 #
@@ -55,6 +61,9 @@ class kafo (
 
   $foreman_proxy_port    = $kafo::params::foreman_proxy_port,
 
+  $puppet                = $kafo::params::puppet,
+  $puppetca              = $kafo::params::puppetca,
+
   $tftp                  = $kafo::params::tftp,
 
   $dhcp                  = $kafo::params::dhcp,
@@ -79,6 +88,8 @@ class kafo (
     validate_pulp($pulp)
     validate_file_exists($certs_tar)
   }
+
+  $foreman_url = "https://$parent_fqdn/foreman"
 
   if $certs_tar {
     certs::tar_extract { $certs_tar:
@@ -105,11 +116,25 @@ class kafo (
     }
   }
 
-  if $tftp or $dhcp or $dns {
+  if $puppet {
+    class { puppet:
+      server => true,
+      server_foreman_url => $foreman_url,
+      server_foreman_ssl_ca => '',
+      server_foreman_ssl_cert => '',
+      server_foreman_ssl_key => '',
+      server_storeconfigs_backend => false,
+      server_git_repo => true, # for seeting up the /modules/$envifronment modulepath
+      server_config_version => ''
+    }
+  }
+
+
+  if $tftp or $dhcp or $dns or $puppet or $puppetca {
     class { foreman_proxy:
      custom_repo           => true,
      port                  => $foreman_proxy_port,
-     puppetca              => false,
+     puppetca              => $puppetca,
      ssl_ca                => false,
      ssl_cert              => false,
      ssl_key               => false,
@@ -123,7 +148,7 @@ class kafo (
      dns_interface         => $dns_interface,
      dns_forwarders        => $dns_forwarders,
      register_in_foreman   => $register_in_foreman,
-     foreman_base_url      => "https://$parent_fqdn/foreman",
+     foreman_base_url      => $foreman_url,
      registered_proxy_url  => "http://${fqdn}:${foreman_proxy_port}",
      oauth_effective_user  => $oauth_effective_user,
      oauth_consumer_key    => $oauth_consumer_key,
