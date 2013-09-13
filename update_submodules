@@ -17,10 +17,12 @@ FOREMAN_INSTALLER_DIR=foreman-installer
 FOREMAN_INSTALLER_URL=git@github.com:theforeman/foreman-installer.git
 # we need to create a ref to be able to subtree from the submodule
 REF=node-installer
+FOREMAN_BRANCH=1.3-stable
 if ! [ -e $FOREMAN_INSTALLER_DIR ]; then
   git clone $FOREMAN_INSTALLER_URL $FOREMAN_INSTALLER_DIR
 fi
 pushd $FOREMAN_INSTALLER_DIR > /dev/null;
+   git checkout $FOREMAN_BRANCH
    git pull
    git submodule update --init
 popd > /dev/null
