@@ -141,6 +141,12 @@
 #
 # $server_reports::         List of report types to include on the puppetmaster
 #
+# $server_enc_api::         What version of enc script to deploy. Valid values are
+#                           'v2' for latest, and 'v1' for Foreman =< 1.2
+#
+# $server_report_api::      What version of report processor to deploy. Valid values
+#                           are 'v2' for latest, and 'v1' for Foreman =< 1.2
+#
 # === Usage:
 #
 # * Simple usage:
@@ -205,6 +211,8 @@ class puppet (
   $server_app_root             = $puppet::params::server_app_root,
   $server_ssl_dir              = $puppet::params::server_ssl_dir,
   $server_package              = $puppet::params::server_package,
+  $server_enc_api              = $puppet::params::server_enc_api,
+  $server_report_api           = $puppet::params::server_report_api,
   $server_foreman_url          = $foreman::params::foreman_url,
   $server_facts                = $foreman::params::facts,
   $server_puppet_home          = $foreman::params::puppet_home,
