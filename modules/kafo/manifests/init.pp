@@ -93,7 +93,7 @@ class kafo (
   class { 'certs': generate => false, deploy   => true }
 
   if $pulp {
-    class { 'apache::ssl': }
+    class { 'apache::certs': }
     class { 'pulp':
       default_password => $pulp_admin_password
     }
