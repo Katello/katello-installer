@@ -1,6 +1,6 @@
 class dns::params {
-    case $::operatingsystem {
-      'debian', 'ubuntu': {
+    case $::osfamily {
+      'Debian': {
         $dnsdir             = '/etc/bind'
         $vardir             = '/var/cache/bind'
         $optionspath        = "${dnsdir}/named.conf.options"
@@ -11,7 +11,7 @@ class dns::params {
         $user               = 'bind'
         $group              = 'bind'
       }
-      'redhat', 'centos': {
+      'RedHat': {
         $dnsdir             = '/etc'
         $vardir             = '/var/named'
         $optionspath        = '/etc/named/options.conf'
@@ -23,7 +23,7 @@ class dns::params {
         $group              = 'named'
       }
       default: {
-        fail ("Unsupported operating system $::operatingsystem")
+        fail ("Unsupported operating system family $::osfamily")
       }
     }
 
