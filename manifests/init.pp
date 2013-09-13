@@ -3,7 +3,6 @@
 # === Parameters:
 #
 # $repo::                   This can be stable, rc, or nightly
-#                           type:array
 #
 # $gpgcheck::               Turn on/off gpg check in repo files (effective only on RedHat family systems)
 #                           type:boolean
@@ -117,6 +116,8 @@
 #
 # $register_in_foreman::    Register proxy back in Foreman
 #
+# $registered_name::        Proxy name which is registered in Foreman
+#
 # $registered_proxy_url::   Proxy URL which is registered in Foreman
 #
 # $foreman_base_url::       Base Foreman URL used for REST interaction
@@ -176,6 +177,7 @@ class foreman_proxy (
   $keyfile               = $foreman_proxy::params::keyfile,
   $register_in_foreman   = $foreman_proxy::params::register_in_foreman,
   $foreman_base_url      = $foreman_proxy::params::foreman_base_url,
+  $registered_name       = $foreman_proxy::params::registered_name,
   $registered_proxy_url  = $foreman_proxy::params::registered_proxy_url,
   $oauth_effective_user  = $foreman_proxy::params::oauth_effective_user,
   $oauth_consumer_key    = $foreman_proxy::params::oauth_consumer_key,
