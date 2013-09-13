@@ -1,0 +1,6 @@
+fixtures:
+  repositories:
+    apache: 'git://github.com/theforeman/puppet-apache'
+
+  symlinks:
+    passenger: "#{source_dir}"
