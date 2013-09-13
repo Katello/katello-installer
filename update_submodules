@@ -11,7 +11,12 @@
 #
 # To add a new module, add it to this file and run `update_sumodules your-new-module`
 
-NAME=$1
+if [ "$1" = "foreman_modules" ]; then
+    ONLY_FOREMAN=1
+else
+    NAME=$1
+fi
+
 
 FOREMAN_INSTALLER_DIR=foreman-installer
 FOREMAN_INSTALLER_URL=git@github.com:theforeman/foreman-installer.git
@@ -56,9 +61,11 @@ update_foreman_submodule () {
     update_submodule $name $FOREMAN_INSTALLER_DIR/modules/$name $REF
 }
 
+if [ "$ONLY_FOREMAN" != "1" ]; then
+  update_submodule mongodb https://github.com/puppetlabs/puppetlabs-mongodb
+fi
 
-update_submodule mongodb https://github.com/puppetlabs/puppetlabs-mongodb
-update_submodule apache https://github.com/theforeman/puppet-apache
+update_foreman_submodule apache
 update_foreman_submodule create_resources
 update_foreman_submodule concat_native
 update_foreman_submodule stdlib
