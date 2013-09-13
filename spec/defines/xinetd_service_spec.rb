@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 describe 'xinetd::service' do
+
+  let :facts do
+    { :osfamily => 'Debian' }
+  end
+
   let :default_params do
     {
       'port'   => '80',
