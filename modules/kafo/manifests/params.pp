@@ -24,4 +24,11 @@ class kafo::params {
   $oauth_effective_user  = $foreman_proxy::params::oauth_effective_user
   $oauth_consumer_key    = "foreman"
   $oauth_consumer_secret = undef
+
+  $katello_user = undef
+  $katello_password = undef
+  $katello_org = "Katello Infrastructure"
+  $katello_repo_provider = "node-installer"
+  $katello_product = "node-certs"
+  $katello_activation_key = undef
 }
