@@ -8,26 +8,10 @@
 #
 # $certs_tar::   path to tar file with certs to generate
 #
-# $pulp::        should Pulp be configured on the node
-#                type:boolean
-#
-# $dns::         should DNS be configured on the node
-#                type:boolean
-#
-# $dhcp::        should DHCP be configured on the node
-#                type:boolean
-#
-# $tftp::        should TFTP be configured on the node
-#                type:boolean
-#
 class kafo::node_certs (
   $parent_fqdn = $fqdn,
   $child_fqdn  = $kafo::params::child_fqdn,
-  $certs_tar   = $kafo::params::child_fqdn,
-  $pulp        = $kafo::params::pulp,
-  $dns        = $kafo::params::dns,
-  $dhcp        = $kafo::params::dhcp,
-  $tftp        = $kafo::params::tftp
+  $certs_tar   = $kafo::params::child_fqdn
   ) inherits kafo::params {
 
   validate_present($child_fqdn)
@@ -40,13 +24,11 @@ class kafo::node_certs (
   }
 
 
-  if $pulp {
-    class { 'apache::ssl': notify => Certs::Tar_create[$certs_tar] }
-    class { 'pulp::child::certs': notify => Certs::Tar_create[$certs_tar] }
-    class { 'pulp::parent::certs':
-      hostname => $parent_fqdn,
-      deploy => true,
-    }
+  class { 'apache::certs': notify => Certs::Tar_create[$certs_tar] }
+  class { 'pulp::child::certs': notify => Certs::Tar_create[$certs_tar] }
+  class { 'pulp::parent::certs':
+    hostname => $parent_fqdn,
+    deploy => true,
   }
 
   certs::tar_create { $certs_tar: }

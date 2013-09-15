@@ -7,10 +7,9 @@ class apache::certs (
     $apache_ssl_cert = '/etc/pki/tls/certs/katello-node.crt',
     $apache_ssl_key = '/etc/pki/tls/private/katello-node.key'
   ) {
-  include apache::ssl
 
-  cert { "${certs::node_fqdn}-ssl":
-    hostname    => $certs::node_fqdn,
+  cert { "${::certs::node_fqdn}-ssl":
+    hostname    => $::certs::node_fqdn,
     ensure      => present,
     country     => $::certs::country,
     state       => $::certs::state,
@@ -26,14 +25,15 @@ class apache::certs (
 
   if $deploy {
     include apache
+    include apache::ssl
 
     pubkey { $apache_ssl_cert:
       ensure => present,
-      cert => Cert["${certs::node_fqdn}-ssl"]
+      cert => Cert["${::certs::node_fqdn}-ssl"]
     } ~>
     privkey { $apache_ssl_key:
       ensure => present,
-      cert => Cert["${certs::node_fqdn}-ssl"]
+      cert => Cert["${::certs::node_fqdn}-ssl"]
     }
 
     file { "${apache::params::configdir}/ssl.conf":
