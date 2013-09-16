@@ -13,6 +13,7 @@ Puppet::Type.type(:cert).provide(:katello_ssl_tool, :parent => Puppet::Provider:
                      '--ca-cert', ca_details[:pubkey],
                      '--ca-key', ca_details[:privkey],
                      '--server-cert', File.basename(pubkey),
+                     '--server-cert-req', "#{File.basename(pubkey)}.req",
                      '--server-key', File.basename(privkey),
                      '--server-rpm', rpmfile_base_name,
                      *common_args)
