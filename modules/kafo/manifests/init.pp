@@ -100,7 +100,13 @@ class kafo (
     validate_present($oauth_consumer_secret)
   }
 
-  class { 'certs': generate => false, deploy   => true }
+  if $parent_fqdn == $fqdn {
+    $certs_generate = true
+  } else {
+    $certs_generate = false
+  }
+
+  class { 'certs': generate => $certs_generate, deploy   => true }
 
   if $pulp {
     class { 'apache::certs': }
