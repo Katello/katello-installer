@@ -97,9 +97,14 @@ module Puppet::Provider::KatelloSslTool
     end
 
     def new_version_available?
-      current_version = version_from_name(`rpm -q #{rpmfile_base_name}`)
-      latest_version = version_from_name(`rpm -pq #{rpmfile}`)
-      (latest_version <=> current_version) > 0
+      if File.exists?(rpmfile)
+        current_version = version_from_name(`rpm -q #{rpmfile_base_name}`)
+        latest_version = version_from_name(`rpm -pq #{rpmfile}`)
+        (latest_version <=> current_version) > 0
+      else
+        `yum check-update #{rpmfile_base_name} &>/dev/null`
+        $?.exitstatus == 100
+      end
     end
 
     def version_from_name(rpmname)
