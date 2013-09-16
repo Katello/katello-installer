@@ -8,6 +8,9 @@
 #
 # $certs_tar::   path to tar file with certs to generate
 #
+# $regenerate::  regenerate certs for the node
+#                type:boolean
+#
 # $katello_user:: Katello username used for creating repo with certs.
 #                 This param indicates that we want to distribute the certs via
 #                 Katello repo
@@ -27,6 +30,7 @@ class kafo::node_certs (
   $parent_fqdn = $fqdn,
   $child_fqdn  = $kafo::params::child_fqdn,
   $certs_tar   = $kafo::params::child_fqdn,
+  $regenerate  = $kafo::params::regenerate,
   $katello_user = $kafo::params::katello_user,
   $katello_password = $kafo::params::katello_password,
   $katello_org = $kafo::params::katello_org,
@@ -40,6 +44,7 @@ class kafo::node_certs (
   class {'::certs':
     node_fqdn => $child_fqdn,
     generate => true,
+    regenerate => $regenerate,
     deploy   => false
   }
 

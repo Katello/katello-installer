@@ -5,6 +5,7 @@ class kafo::params {
   $parent_fqdn           = undef
   $child_fqdn            = undef
   $certs_tar             = undef
+  $regenerate            = false
   $pulp                  = true
   $pulp_admin_password   = undef
 
