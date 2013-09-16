@@ -86,7 +86,6 @@ class kafo (
 
   if $pulp {
     validate_pulp($pulp)
-    validate_file_exists($certs_tar)
   }
 
   $foreman_url = "https://$parent_fqdn/foreman"

@@ -6,6 +6,7 @@ module Puppet::Provider::KatelloSslTool
     initvars
 
     commands :rpm => 'rpm'
+    commands :yum => 'yum'
     commands :katello_ssl_tool_command => 'katello-ssl-tool'
 
     def exists?
@@ -86,7 +87,13 @@ module Puppet::Provider::KatelloSslTool
     end
 
     def deploy!
-      rpm('-Uvh', '--force', rpmfile)
+      if File.exists?(rpmfile)
+        # the rpm is available locally on the file system
+        rpm('-Uvh', '--force', rpmfile)
+      else
+        # we search the rpm in yum repo
+        yum("install", "-y", rpmfile_base_name)
+      end
     end
 
     def new_version_available?
