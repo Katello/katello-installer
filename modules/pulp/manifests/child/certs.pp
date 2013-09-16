@@ -42,7 +42,7 @@ class pulp::child::certs (
     } ~>
 
     pubkey { $pulp::ssl_ca_cert:
-      # Defined in apache::ssl module
+      # Defined in apache::certs module
       cert => Cert["${pulp::child::certs::hostname}-ssl"],
     }
   }
