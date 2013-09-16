@@ -16,12 +16,6 @@ class apache::ssl {
         require => Package['httpd'],
         notify => Class['apache::service'],
       }
-      file { "${apache::params::configdir}/ssl.conf":
-          mode => '0644',
-          owner => 'root',
-          group => 'root',
-          notify => Exec['reload-apache'],
-      }
       file {['/var/cache/mod_ssl', '/var/cache/mod_ssl/scache']:
           ensure => directory,
           owner => 'apache',
