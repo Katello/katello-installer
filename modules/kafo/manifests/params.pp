@@ -21,7 +21,7 @@ class kafo::params {
   $dns                   = $foreman_proxy::params::dns
   $dns_interface         = $foreman_proxy::params::dns_interface
   $dns_forwareders       = $foreman_proxy::params::dns_forwarders
-  $register_in_foreman   = $foreman_proxy::params::register_in_foreman
+  $register_in_foreman   = false
   $oauth_effective_user  = $foreman_proxy::params::oauth_effective_user
   $oauth_consumer_key    = "foreman"
   $oauth_consumer_secret = undef
