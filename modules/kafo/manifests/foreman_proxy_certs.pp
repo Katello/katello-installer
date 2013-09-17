@@ -1,11 +1,11 @@
 class kafo::foreman_proxy_certs (
-    $hostname = $::certs::node_fqdn,
-    $generate = $::certs::generate,
+    $hostname   = $::certs::node_fqdn,
+    $generate   = $::certs::generate,
     $regenerate = $::certs::regenerate,
-    $deploy   = $::certs::deploy,
-    $ca       = $::certs::default_ca,
-    $proxy_cert   = $::kafo::params::foreman_proxy_cert,
-    $proxy_key   = $::kafo::params::foreman_proxy_key,
+    $deploy     = $::certs::deploy,
+    $ca         = $::certs::default_ca,
+    $proxy_cert = $::kafo::params::foreman_proxy_cert,
+    $proxy_key  = $::kafo::params::foreman_proxy_key,
     $proxy_ca   = $::kafo::params::foreman_proxy_ca
   ) {
 
@@ -21,7 +21,7 @@ class kafo::foreman_proxy_certs (
     expiration  => $::certs::expiration,
     ca          => $ca,
     generate    => $generate,
-    regenerate    => $regenerate,
+    regenerate  => $regenerate,
     deploy      => $deploy,
   }
 
@@ -36,7 +36,7 @@ class kafo::foreman_proxy_certs (
 
     file { $proxy_key:
       owner => "foreman-proxy",
-      mode => "400"
+      mode  => "400"
     }
 
     pubkey { $proxy_ca:

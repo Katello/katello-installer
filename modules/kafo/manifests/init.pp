@@ -125,19 +125,19 @@ class kafo (
   if $puppet {
     class { 'kafo::puppet_certs':
       client_cert => $kafo::params::puppet_client_cert,
-      client_key => $kafo::params::puppet_client_key,
-      client_ca => $kafo::params::puppet_client_ca,
+      client_key  => $kafo::params::puppet_client_key,
+      client_ca   => $kafo::params::puppet_client_ca,
     } ~>
 
     class { puppet:
-      server => true,
-      server_foreman_url => $foreman_url,
-      server_foreman_ssl_cert => $kafo::params::puppet_client_cert,
-      server_foreman_ssl_key => $kafo::params::puppet_client_key,
-      server_foreman_ssl_ca => $kafo::params::puppet_client_ca,
+      server                      => true,
+      server_foreman_url          => $foreman_url,
+      server_foreman_ssl_cert     => $kafo::params::puppet_client_cert,
+      server_foreman_ssl_key      => $kafo::params::puppet_client_key,
+      server_foreman_ssl_ca       => $kafo::params::puppet_client_ca,
       server_storeconfigs_backend => false,
-      server_git_repo => true, # for seeting up the /modules/$envifronment modulepath
-      server_config_version => ''
+      server_git_repo             => true, # for seeting up the /modules/$envifronment modulepath
+      server_config_version       => ''
     }
   }
 
@@ -148,17 +148,17 @@ class kafo (
       # we make sure the certs for foreman are properly deployed
       class { 'kafo::foreman_certs':
         hostname => $parent_fqdn,
-        deploy => true,
-        before => Class[foreman_proxy],
+        deploy   => true,
+        before   => Class[foreman_proxy],
       }
     }
 
     class { 'kafo::foreman_proxy_certs':
       proxy_cert => $kafo::params::foreman_proxy_cert,
-      proxy_key => $kafo::params::foreman_proxy_key,
-      proxy_ca => $kafo::params::foreman_proxy_ca,
-      require => Package['foreman-proxy'],
-      before => Service['foreman-proxy'],
+      proxy_key  => $kafo::params::foreman_proxy_key,
+      proxy_ca   => $kafo::params::foreman_proxy_ca,
+      require    => Package['foreman-proxy'],
+      before     => Service['foreman-proxy'],
     }
 
     class { foreman_proxy:

@@ -1,11 +1,11 @@
 class kafo::puppet_certs (
-    $hostname = $::certs::node_fqdn,
-    $generate = $::certs::generate,
-    $regenerate = $::certs::regenerate,
-    $deploy   = $::certs::deploy,
-    $ca       = $::certs::default_ca,
-    $client_cert   = $::kafo::params::puppet_client_cert,
-    $client_key   = $::kafo::params::puppet_client_key,
+    $hostname    = $::certs::node_fqdn,
+    $generate    = $::certs::generate,
+    $regenerate  = $::certs::regenerate,
+    $deploy      = $::certs::deploy,
+    $ca          = $::certs::default_ca,
+    $client_cert = $::kafo::params::puppet_client_cert,
+    $client_key  = $::kafo::params::puppet_client_key,
     $client_ca   = $::kafo::params::puppet_client_ca
   ) {
 
@@ -21,7 +21,7 @@ class kafo::puppet_certs (
     expiration  => $::certs::expiration,
     ca          => $ca,
     generate    => $generate,
-    regenerate    => $regenerate,
+    regenerate  => $regenerate,
     deploy      => $deploy,
   }
 
