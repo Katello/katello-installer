@@ -166,7 +166,7 @@ class kafo (
      dns_forwarders        => $dns_forwarders,
      register_in_foreman   => $register_in_foreman,
      foreman_base_url      => $foreman_url,
-     registered_proxy_url  => "http://${fqdn}:${foreman_proxy_port}",
+     registered_proxy_url  => "https://${fqdn}:${foreman_proxy_port}",
      oauth_effective_user  => $oauth_effective_user,
      oauth_consumer_key    => $oauth_consumer_key,
      oauth_consumer_secret => $oauth_consumer_secret
