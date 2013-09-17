@@ -7,9 +7,8 @@ class pulp::child::certs (
     $nodes_cert = '/etc/pki/pulp/nodes/local.crt'
   ) {
 
-  # cert for nodes authenitcation
+  # cert for agent -> child node authentication
   cert { "${pulp::child::certs::hostname}-child-cert":
-    # TODO: override common name so that it can't be used as server cert
     hostname    => $pulp::child::certs::hostname,
     common_name => 'admin:admin:0',
     purpose     => client,

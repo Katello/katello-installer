@@ -49,16 +49,26 @@ class kafo::node_certs (
   }
 
 
+  class { 'kafo::puppet_certs': }
+  class { 'kafo::foreman_proxy_certs': }
   class { 'apache::certs': }
   class { 'pulp::child::certs': }
   class { 'pulp::parent::certs':
     hostname => $parent_fqdn,
     deploy => true,
   }
+  class { 'kafo::foreman_certs':
+    hostname => $parent_fqdn,
+    deploy => true,
+  }
 
   if $certs_tar {
     certs::tar_create { $certs_tar:
-      subscribe => [Class['apache::certs'], Class['pulp::child::certs']]
+      subscribe => [Class['kafo::puppet_certs'],
+                    Class['kafo::foreman_certs'],
+                    Class['kafo::foreman_proxy_certs'],
+                    Class['apache::certs'],
+                    Class['pulp::child::certs']]
     }
   }
 
@@ -71,7 +81,11 @@ class kafo::node_certs (
       repo_provider => $katello_repo_provider,
       product => $katello_product,
       package_files => ["/root/ssl-build/*.noarch.rpm", "/root/ssl-build/$child_fqdn/*.noarch.rpm"],
-      subscribe => [Class['apache::certs'], Class['pulp::child::certs']],
+      subscribe => [Class['kafo::puppet_certs'],
+                    Class['kafo::foreman_certs'],
+                    Class['kafo::foreman_proxy_certs'],
+                    Class['apache::certs'],
+                    Class['pulp::child::certs']],
     }
 
     if $katello_activation_key {

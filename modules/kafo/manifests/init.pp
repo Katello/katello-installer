@@ -122,12 +122,18 @@ class kafo (
   }
 
   if $puppet {
+    class { 'kafo::puppet_certs':
+      client_cert => $kafo::params::puppet_client_cert,
+      client_key => $kafo::params::puppet_client_key,
+      client_ca => $kafo::params::puppet_client_ca,
+    } ~>
+
     class { puppet:
       server => true,
       server_foreman_url => $foreman_url,
-      server_foreman_ssl_ca => '',
-      server_foreman_ssl_cert => '',
-      server_foreman_ssl_key => '',
+      server_foreman_ssl_cert => $kafo::params::puppet_client_cert,
+      server_foreman_ssl_key => $kafo::params::puppet_client_key,
+      server_foreman_ssl_ca => $kafo::params::puppet_client_ca,
       server_storeconfigs_backend => false,
       server_git_repo => true, # for seeting up the /modules/$envifronment modulepath
       server_config_version => ''
@@ -136,13 +142,19 @@ class kafo (
 
 
   if $tftp or $dhcp or $dns or $puppet or $puppetca {
+    class { 'kafo::foreman_proxy_certs':
+      proxy_cert => $kafo::params::foreman_proxy_cert,
+      proxy_key => $kafo::params::foreman_proxy_key,
+      proxy_ca => $kafo::params::foreman_proxy_ca,
+    } ~>
+
     class { foreman_proxy:
      custom_repo           => true,
      port                  => $foreman_proxy_port,
      puppetca              => $puppetca,
-     ssl_ca                => false,
-     ssl_cert              => false,
-     ssl_key               => false,
+     ssl_cert              => $kafo::params::foreman_proxy_cert,
+     ssl_key               => $kafo::params::foreman_proxy_key,
+     ssl_ca                => $kafo::params::foreman_proxy_ca,
      tftp                  => $tftp,
      dhcp                  => $dhcp,
      dhcp_interface        => $dhcp_interface,
