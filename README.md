@@ -77,12 +77,11 @@ node-install  --parent-fqdn katello.example.com\
               --verbose
 
 # Install only pulp node (no Foreman proxy or the network services)
+  and use certs from tar file
 
 node-install  --parent-fqdn katello.example.com\
               --pulp true\
               --certs-tar ~/certs.tar.gz\
-              --dns false --dhcp false --tftp false\
-              --puppet false --puppetca false\
               --verbose
 
 # Install only DNS with smart proxy
@@ -91,8 +90,6 @@ node-install  --parent-fqdn katello.example.com\
               --dns true\
               --dns-forwarders 8.8.8.8 --dns-forwarders  8.8.4.4\
               --dns-interface virbr1\
-              --pulp false --dns false --dhcp false --tftp false\
-              --puppet false --puppetca false\
               --register-in-foreman true\
               --oauth-consumer-secret "foreman"\
               --oauth-consumer-secret "mysecretoauthkey"\

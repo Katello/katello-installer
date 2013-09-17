@@ -6,19 +6,20 @@ class kafo::params {
   $child_fqdn            = undef
   $certs_tar             = undef
   $regenerate            = false
-  $pulp                  = true
+  $pulp                  = false
   $pulp_admin_password   = undef
 
-  $puppet                = true
-  $puppetca              = true
+  $puppet                = false
+  $puppetca              = false
 
   $foreman_proxy_port    = "9090"
-  $dhcp                  = $foreman_proxy::params::dhcp
+  $tftp                  = false
+  $dhcp                  = false
   $dhcp_interface        = $foreman_proxy::params::dhcp_interface
   $dhcp_gateway          = $foreman_proxy::params::dhcp_gateway
   $dhcp_range            = $foreman_proxy::params::dhcp_range
   $dhcp_nameservers      = $foreman_proxy::params::dhcp_nameservers
-  $dns                   = $foreman_proxy::params::dns
+  $dns                   = false
   $dns_interface         = $foreman_proxy::params::dns_interface
   $dns_forwareders       = $foreman_proxy::params::dns_forwarders
   $register_in_foreman   = false
