@@ -3,7 +3,7 @@
 %global scl_ruby /usr/bin/ruby
 
 Name: node-installer
-Version: 0.0.6
+Version: 0.0.7
 Release: 1%{?dist}
 Summary: Puppet-based installer for the katello nodes
 Group: Applications/System
@@ -48,6 +48,10 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %{_sbindir}/node-certs-generate
 
 %changelog
+* Tue Sep 17 2013 Ivan Necas <inecas@redhat.com> 0.0.7-1
+- Make sure the CA is deployed to foreman before registering the smart proxy
+  (inecas@redhat.com)
+
 * Tue Sep 17 2013 Ivan Necas <inecas@redhat.com> 0.0.6-1
 - Whitespace (inecas@redhat.com)
 - No services installed by default (inecas@redhat.com)
