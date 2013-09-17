@@ -3,7 +3,7 @@
 %global scl_ruby /usr/bin/ruby
 
 Name: node-installer
-Version: 0.0.5
+Version: 0.0.6
 Release: 1%{?dist}
 Summary: Puppet-based installer for the katello nodes
 Group: Applications/System
@@ -48,6 +48,17 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %{_sbindir}/node-certs-generate
 
 %changelog
+* Tue Sep 17 2013 Ivan Necas <inecas@redhat.com> 0.0.6-1
+- Whitespace (inecas@redhat.com)
+- No services installed by default (inecas@redhat.com)
+- Certs for foreman, smart-proxy and puppetmaster (inecas@redhat.com)
+- Ability to install foreman-proxy specific tools on master (inecas@redhat.com)
+- Don't register in foreman unless specified explicitly (inecas@redhat.com)
+- Use yum to install the package when not available locally (inecas@redhat.com)
+- Basic katello_repo and katello_activation_key provider (inecas@redhat.com)
+- Always generate all the certs that could be used by the node
+  (inecas@redhat.com)
+
 * Fri Sep 13 2013 Ivan Necas <inecas@redhat.com> 0.0.5-1
 - Support for installing puppet server and CA (inecas@redhat.com)
 * Thu Sep 12 2013 Ivan Necas <inecas@redhat.com> 0.0.4-1
