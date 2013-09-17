@@ -149,7 +149,7 @@ class kafo (
       class { 'kafo::foreman_certs':
         hostname => $parent_fqdn,
         deploy   => true,
-        before   => Class[foreman_proxy],
+        before     => Service['foreman-proxy'],
       }
     }
 
