@@ -157,7 +157,9 @@ class kafo (
       proxy_cert => $kafo::params::foreman_proxy_cert,
       proxy_key => $kafo::params::foreman_proxy_key,
       proxy_ca => $kafo::params::foreman_proxy_ca,
-    } ~>
+      require => Package['foreman-proxy'],
+      before => Service['foreman-proxy'],
+    }
 
     class { foreman_proxy:
      custom_repo           => true,
