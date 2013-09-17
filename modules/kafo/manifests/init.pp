@@ -101,6 +101,7 @@ class kafo (
   }
 
   if $parent_fqdn == $fqdn {
+    # we are installing node features on the master
     $certs_generate = true
   } else {
     $certs_generate = false
@@ -142,6 +143,16 @@ class kafo (
 
 
   if $tftp or $dhcp or $dns or $puppet or $puppetca {
+
+    if $certs_generate {
+      # we make sure the certs for foreman are properly deployed
+      class { 'kafo::foreman_certs':
+        hostname => $parent_fqdn,
+        deploy => true,
+        before => Class[foreman_proxy],
+      }
+    }
+
     class { 'kafo::foreman_proxy_certs':
       proxy_cert => $kafo::params::foreman_proxy_cert,
       proxy_key => $kafo::params::foreman_proxy_key,
