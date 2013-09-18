@@ -38,6 +38,10 @@
 # $dns::                    Use DNS
 #                           type:boolean
 #
+# $dns_zone::               DNS zone name
+#
+# $dns_reverse::            DNS reverse zone name
+#
 # $dns_interface::          DNS interface
 #
 # $dns_forwarders::         DNS forwarders
@@ -73,6 +77,8 @@ class kafo (
   $dhcp_nameservers      = $kafo::params::dhcp_nameservers,
 
   $dns                   = $kafo::params::dns,
+  $dns_zone              = $kafo::params::dns_zone,
+  $dns_reverse           = $kafo::params::dns_reverse,
   $dns_interface         = $kafo::params::dns_interface,
   $dns_forwarders        = $kafo::params::dns_forwarders,
 
@@ -175,6 +181,8 @@ class kafo (
      dhcp_range            => $dhcp_range,
      dhcp_nameservers      => $dhcp_nameservers,
      dns                   => $dns,
+     dns_zone              => $dns_zone,
+     dns_reverse           => $dns_reverse,
      dns_interface         => $dns_interface,
      dns_forwarders        => $dns_forwarders,
      register_in_foreman   => $register_in_foreman,

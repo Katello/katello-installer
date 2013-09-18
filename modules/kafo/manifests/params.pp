@@ -20,6 +20,8 @@ class kafo::params {
   $dhcp_range            = $foreman_proxy::params::dhcp_range
   $dhcp_nameservers      = $foreman_proxy::params::dhcp_nameservers
   $dns                   = false
+  $dns_zone              = $foreman_proxy::params::dns_zone
+  $dns_reverse           = $foreman_proxy::params::dns_reverse
   $dns_interface         = $foreman_proxy::params::dns_interface
   $dns_forwareders       = $foreman_proxy::params::dns_forwarders
   $register_in_foreman   = false
