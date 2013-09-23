@@ -3,7 +3,7 @@
 %global scl_ruby /usr/bin/ruby
 
 Name: node-installer
-Version: 0.0.8
+Version: 0.0.9
 Release: 1%{?dist}
 Summary: Puppet-based installer for the katello nodes
 Group: Applications/System
@@ -48,6 +48,9 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %{_sbindir}/node-certs-generate
 
 %changelog
+* Mon Sep 23 2013 Ivan Necas <inecas@redhat.com> 0.0.9-1
+- Sanitize Katello output (inecas@redhat.com)
+
 * Wed Sep 18 2013 Ivan Necas <inecas@redhat.com> 0.0.8-1
 - Paremetrize dns zone name (inecas@redhat.com)
 
