@@ -3,7 +3,7 @@
 %global scl_ruby /usr/bin/ruby
 
 Name: node-installer
-Version: 0.0.9
+Version: 0.0.10
 Release: 1%{?dist}
 Summary: Puppet-based installer for the katello nodes
 Group: Applications/System
@@ -48,6 +48,10 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %{_sbindir}/node-certs-generate
 
 %changelog
+* Tue Sep 24 2013 Ivan Necas <inecas@redhat.com> 0.0.10-1
+- 1009964 - Revert "Workaround for #3080 - install foreman-selinux whenever
+  passenger is used" (inecas@redhat.com)
+
 * Mon Sep 23 2013 Ivan Necas <inecas@redhat.com> 0.0.9-1
 - Sanitize Katello output (inecas@redhat.com)
 
