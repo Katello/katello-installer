@@ -1,8 +1,10 @@
 class pulp::child (
-    $parent_fqdn = undef,
-    $parent_qpid_scheme = 'ssl',
-    $parent_qpid_port   = '5671',
-    $consumer_bundle = '/etc/pki/pulp/consumer/parent_bundle.crt'
+    $parent_fqdn           = undef,
+    $parent_qpid_scheme    = 'ssl',
+    $parent_qpid_port      = '5671',
+    $oauth_effective_user  = 'admin',
+    $oauth_key             = 'key',
+    $oauth_secret          = 'secret'
   ) {
 
   if ! $parent_fqdn { fail('$parent_fqdn has to be specified') }

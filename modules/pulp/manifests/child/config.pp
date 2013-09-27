@@ -1,8 +1,8 @@
 class pulp::child::config {
 
   file {
-    "/etc/pulp/consumer/consumer.conf":
-      content => template("pulp/etc/pulp/consumer/consumer.conf.erb"),
+    "/etc/pulp/nodes.conf":
+     content => template("pulp/etc/pulp/nodes.conf.erb"),
   }
 
 }

@@ -63,6 +63,7 @@ Examples
 
 node-install  --parent-fqdn katello.example.com\
               --pulp true\
+              --pulp-oauth-secret "mysecretoauthkey"\
               --dns true\
               --dns-forwarders 8.8.8.8 --dns-forwarders  8.8.4.4\
               --dns-interface virbr1\
@@ -72,8 +73,7 @@ node-install  --parent-fqdn katello.example.com\
               --puppet true\
               --puppetca true\
               --register-in-foreman true\
-              --oauth-consumer-secret "foreman"\
-              --oauth-consumer-secret "mysecretoauthkey"\
+              --foreman-oauth-secret "mysecretoauthkey"\
               --verbose
 
 # Install only pulp node (no Foreman proxy or the network services)
@@ -81,6 +81,7 @@ node-install  --parent-fqdn katello.example.com\
 
 node-install  --parent-fqdn katello.example.com\
               --pulp true\
+              --pulp-oauth-secret "mysecretoauthkey"\
               --certs-tar ~/certs.tar.gz\
               --verbose
 
@@ -91,8 +92,7 @@ node-install  --parent-fqdn katello.example.com\
               --dns-forwarders 8.8.8.8 --dns-forwarders  8.8.4.4\
               --dns-interface virbr1\
               --register-in-foreman true\
-              --oauth-consumer-secret "foreman"\
-              --oauth-consumer-secret "mysecretoauthkey"\
+              --foreman-oauth-secret "mysecretoauthkey"\
               --verbose
 
 ```

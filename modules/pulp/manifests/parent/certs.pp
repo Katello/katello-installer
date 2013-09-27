@@ -4,7 +4,7 @@ class pulp::parent::certs (
     $regenerate = $::certs::regenerate,
     $deploy   = $::certs::deploy,
     $ca       = $::certs::default_ca,
-    $nodes_cert = '/etc/pki/pulp/nodes/local.crt'
+    $nodes_cert = '/etc/pki/pulp/nodes/node.crt'
   ) {
 
   # cert for nodes authenitcation

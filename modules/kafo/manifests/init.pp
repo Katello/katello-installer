@@ -2,96 +2,106 @@
 #
 # === Parameters:
 #
-# $parent_fqdn::            fqdn of the parent node. REQUIRED
+# $parent_fqdn::                    fqdn of the parent node. REQUIRED
 #
-# $certs_tar::              path to a tar with certs for the node
+# $certs_tar::                      path to a tar with certs for the node
 #
-# $pulp::                   should Pulp be configured on the node
-#                           type:boolean
+# $pulp::                           should Pulp be configured on the node
+#                                   type:boolean
 #
-# $pulp_admin_password::    passowrd for the Pulp admin user.It should be left blank so that random password is generated
-#                           type:password
+# $pulp_admin_password::            passowrd for the Pulp admin user.It should be left blank so that random password is generated
+#                                   type:password
 #
-# $foreman_proxy_port::     Port on which will foreman proxy listen
-#                           type:integer
+# $pulp_oauth_effective_user::      User to be used for Pulp REST interaction
 #
-# $puppet::                 Use puppet
-#                           type:boolean
+# $pulp_oauth_key::                 OAuth key to be used for Pulp REST interaction
 #
-# $puppetca::               Use puppet ca
-#                           type:boolean
+# $pulp_oauth_secret::              OAuth secret to be used for Pulp REST interaction
 #
-# $tftp::                   Use TFTP
-#                           type:boolean
+# $foreman_proxy_port::             Port on which will foreman proxy listen
+#                                   type:integer
 #
-# $dhcp::                   Use DHCP
-#                           type:boolean
+# $puppet::                         Use puppet
+#                                   type:boolean
 #
-# $dhcp_interface::         DHCP listen interface
+# $puppetca::                       Use puppet ca
+#                                   type:boolean
 #
-# $dhcp_gateway::           DHCP pool gateway
+# $tftp::                           Use TFTP
+#                                   type:boolean
 #
-# $dhcp_range::             Space-separated DHCP pool range
+# $dhcp::                           Use DHCP
+#                                   type:boolean
 #
-# $dhcp_nameservers::       DHCP nameservers
+# $dhcp_interface::                 DHCP listen interface
 #
-# $dns::                    Use DNS
-#                           type:boolean
+# $dhcp_gateway::                   DHCP pool gateway
 #
-# $dns_zone::               DNS zone name
+# $dhcp_range::                     Space-separated DHCP pool range
 #
-# $dns_reverse::            DNS reverse zone name
+# $dhcp_nameservers::               DHCP nameservers
 #
-# $dns_interface::          DNS interface
+# $dns::                            Use DNS
+#                                   type:boolean
 #
-# $dns_forwarders::         DNS forwarders
-#                           type:array
+# $dns_zone::                       DNS zone name
 #
-# $register_in_foreman::    Register proxy back in Foreman
-#                           type:boolean
+# $dns_reverse::                    DNS reverse zone name
 #
-# $oauth_effective_user::   User to be used for REST interaction
+# $dns_interface::                  DNS interface
 #
-# $oauth_consumer_key::     OAuth key to be used for REST interaction
+# $dns_forwarders::                 DNS forwarders
+#                                   type:array
 #
-# $oauth_consumer_secret::  OAuth secret to be used for REST interaction
+# $register_in_foreman::            Register proxy back in Foreman
+#                                   type:boolean
+#
+# $foreman_oauth_effective_user::   User to be used for Foreman REST interaction
+#
+# $foreman_oauth_key::              OAuth key to be used for Foreman REST interaction
+#
+# $foreman_oauth_secret::           OAuth secret to be used for Foreman REST interaction
 #
 #
 class kafo (
-  $parent_fqdn           = $kafo::params::parent_fqdn,
-  $certs_tar             = $kafo::params::certs_tar,
-  $pulp                  = $kafo::params::pulp,
-  $pulp_admin_password   = $kafo::params::pulp_admin_password,
+  $parent_fqdn                   = $kafo::params::parent_fqdn,
+  $certs_tar                     = $kafo::params::certs_tar,
+  $pulp                          = $kafo::params::pulp,
+  $pulp_admin_password           = $kafo::params::pulp_admin_password,
+  $pulp_oauth_effective_user     = $kafo::params::pulp_oauth_effective_user,
+  $pulp_oauth_key                = $kafo::params::pulp_oauth_key,
+  $pulp_oauth_secret             = $kafo::params::pulp_oauth_secret,
 
-  $foreman_proxy_port    = $kafo::params::foreman_proxy_port,
+  $foreman_proxy_port            = $kafo::params::foreman_proxy_port,
 
-  $puppet                = $kafo::params::puppet,
-  $puppetca              = $kafo::params::puppetca,
+  $puppet                        = $kafo::params::puppet,
+  $puppetca                      = $kafo::params::puppetca,
 
-  $tftp                  = $kafo::params::tftp,
+  $tftp                          = $kafo::params::tftp,
 
-  $dhcp                  = $kafo::params::dhcp,
-  $dhcp_interface        = $kafo::params::dhcp_interface,
-  $dhcp_gateway          = $kafo::params::dhcp_gateway,
-  $dhcp_range            = $kafo::params::dhcp_range,
-  $dhcp_nameservers      = $kafo::params::dhcp_nameservers,
+  $dhcp                          = $kafo::params::dhcp,
+  $dhcp_interface                = $kafo::params::dhcp_interface,
+  $dhcp_gateway                  = $kafo::params::dhcp_gateway,
+  $dhcp_range                    = $kafo::params::dhcp_range,
+  $dhcp_nameservers              = $kafo::params::dhcp_nameservers,
 
-  $dns                   = $kafo::params::dns,
-  $dns_zone              = $kafo::params::dns_zone,
-  $dns_reverse           = $kafo::params::dns_reverse,
-  $dns_interface         = $kafo::params::dns_interface,
-  $dns_forwarders        = $kafo::params::dns_forwarders,
+  $dns                           = $kafo::params::dns,
+  $dns_zone                      = $kafo::params::dns_zone,
+  $dns_reverse                   = $kafo::params::dns_reverse,
+  $dns_interface                 = $kafo::params::dns_interface,
+  $dns_forwarders                = $kafo::params::dns_forwarders,
 
-  $register_in_foreman   = $kafo::params::register_in_foreman,
-  $oauth_effective_user  = $kafo::params::oauth_effective_user,
-  $oauth_consumer_key    = $kafo::params::oauth_consumer_key,
-  $oauth_consumer_secret = $kafo::params::oauth_consumer_secret
+  $register_in_foreman           = $kafo::params::register_in_foreman,
+  $foreman_oauth_effective_user  = $kafo::params::foreman_oauth_effective_user,
+  $foreman_oauth_key             = $kafo::params::foreman_oauth_key,
+  $foreman_oauth_secret          = $kafo::params::foreman_oauth_secret
   ) inherits kafo::params {
 
   validate_present($parent_fqdn)
 
   if $pulp {
     validate_pulp($pulp)
+    validate_present($pulp_oauth_secret)
   }
 
   $foreman_url = "https://$parent_fqdn/foreman"
@@ -103,7 +113,7 @@ class kafo (
   }
 
   if $register_in_foreman {
-    validate_present($oauth_consumer_secret)
+    validate_present($foreman_oauth_secret)
   }
 
   if $parent_fqdn == $fqdn {
@@ -118,10 +128,15 @@ class kafo (
   if $pulp {
     class { 'apache::certs': }
     class { 'pulp':
-      default_password => $pulp_admin_password
+      default_password => $pulp_admin_password,
+      oauth_key        => $pulp_oauth_key,
+      oauth_secret     => $pulp_oauth_secret
     }
     class { 'pulp::child':
-      parent_fqdn => $parent_fqdn
+      parent_fqdn          => $parent_fqdn,
+      oauth_effective_user => $pulp_oauth_effective_user,
+      oauth_key            => $pulp_oauth_key,
+      oauth_secret         => $pulp_oauth_secret
     }
     katello_node { "https://${parent_fqdn}/katello":
       content => $pulp
@@ -188,9 +203,9 @@ class kafo (
      register_in_foreman   => $register_in_foreman,
      foreman_base_url      => $foreman_url,
      registered_proxy_url  => "https://${fqdn}:${foreman_proxy_port}",
-     oauth_effective_user  => $oauth_effective_user,
-     oauth_consumer_key    => $oauth_consumer_key,
-     oauth_consumer_secret => $oauth_consumer_secret
+     oauth_effective_user  => $foreman_oauth_effective_user,
+     oauth_consumer_key    => $foreman_oauth_key,
+     oauth_consumer_secret => $foreman_oauth_secret
     }
   }
 }
