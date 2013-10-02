@@ -17,6 +17,7 @@ class kafo::params {
 
   $foreman_proxy_port            = "9090"
   $tftp                          = false
+  $tftp_servername               = $foreman_proxy::params::tftp_servername
   $dhcp                          = false
   $dhcp_interface                = $foreman_proxy::params::dhcp_interface
   $dhcp_gateway                  = $foreman_proxy::params::dhcp_gateway

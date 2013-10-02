@@ -30,6 +30,8 @@
 # $tftp::                           Use TFTP
 #                                   type:boolean
 #
+# $tftp_servername::                Defines the TFTP server name to use, overrides the name in the subnet declaration
+#
 # $dhcp::                           Use DHCP
 #                                   type:boolean
 #
@@ -78,6 +80,7 @@ class kafo (
   $puppetca                      = $kafo::params::puppetca,
 
   $tftp                          = $kafo::params::tftp,
+  $tftp_servername               = $kafo::params::tftp_servername,
 
   $dhcp                          = $kafo::params::dhcp,
   $dhcp_interface                = $kafo::params::dhcp_interface,
@@ -184,29 +187,30 @@ class kafo (
     }
 
     class { foreman_proxy:
-     custom_repo           => true,
-     port                  => $foreman_proxy_port,
-     puppetca              => $puppetca,
-     ssl_cert              => $kafo::params::foreman_proxy_cert,
-     ssl_key               => $kafo::params::foreman_proxy_key,
-     ssl_ca                => $kafo::params::foreman_proxy_ca,
-     tftp                  => $tftp,
-     dhcp                  => $dhcp,
-     dhcp_interface        => $dhcp_interface,
-     dhcp_gateway          => $dhcp_gateway,
-     dhcp_range            => $dhcp_range,
-     dhcp_nameservers      => $dhcp_nameservers,
-     dns                   => $dns,
-     dns_zone              => $dns_zone,
-     dns_reverse           => $dns_reverse,
-     dns_interface         => $dns_interface,
-     dns_forwarders        => $dns_forwarders,
-     register_in_foreman   => $register_in_foreman,
-     foreman_base_url      => $foreman_url,
-     registered_proxy_url  => "https://${fqdn}:${foreman_proxy_port}",
-     oauth_effective_user  => $foreman_oauth_effective_user,
-     oauth_consumer_key    => $foreman_oauth_key,
-     oauth_consumer_secret => $foreman_oauth_secret
+      custom_repo           => true,
+      port                  => $foreman_proxy_port,
+      puppetca              => $puppetca,
+      ssl_cert              => $kafo::params::foreman_proxy_cert,
+      ssl_key               => $kafo::params::foreman_proxy_key,
+      ssl_ca                => $kafo::params::foreman_proxy_ca,
+      tftp                  => $tftp,
+      tftp_servername       => $tftp_servername,
+      dhcp                  => $dhcp,
+      dhcp_interface        => $dhcp_interface,
+      dhcp_gateway          => $dhcp_gateway,
+      dhcp_range            => $dhcp_range,
+      dhcp_nameservers      => $dhcp_nameservers,
+      dns                   => $dns,
+      dns_zone              => $dns_zone,
+      dns_reverse           => $dns_reverse,
+      dns_interface         => $dns_interface,
+      dns_forwarders        => $dns_forwarders,
+      register_in_foreman   => $register_in_foreman,
+      foreman_base_url      => $foreman_url,
+      registered_proxy_url  => "https://${fqdn}:${foreman_proxy_port}",
+      oauth_effective_user  => $foreman_oauth_effective_user,
+      oauth_consumer_key    => $foreman_oauth_key,
+      oauth_consumer_secret => $foreman_oauth_secret
     }
   }
 }
