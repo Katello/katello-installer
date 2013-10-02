@@ -3,7 +3,7 @@
 %global scl_ruby /usr/bin/ruby
 
 Name: node-installer
-Version: 0.0.12
+Version: 0.0.13
 Release: 1%{?dist}
 Summary: Puppet-based installer for the katello nodes
 Group: Applications/System
@@ -48,6 +48,9 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %{_sbindir}/node-certs-generate
 
 %changelog
+* Wed Oct 02 2013 Ivan Necas <inecas@redhat.com> 0.0.13-1
+- Properly set the owner for /etc/puppet/environments (inecas@redhat.com)
+
 * Fri Sep 27 2013 Ivan Necas <inecas@redhat.com> 0.0.12-1
 - Make sure goferd is restarted when server.conf changes (inecas@redhat.com)
 
