@@ -30,6 +30,8 @@
 # $tftp::                           Use TFTP
 #                                   type:boolean
 #
+# $tftp_servername::                Defines the TFTP server name to use, overrides the name in the subnet declaration
+#
 # $dhcp::                           Use DHCP
 #                                   type:boolean
 #
@@ -78,6 +80,7 @@ class kafo (
   $puppetca                      = $kafo::params::puppetca,
 
   $tftp                          = $kafo::params::tftp,
+  $tftp_servername               = $kafo::params::tftp_servername,
 
   $dhcp                          = $kafo::params::dhcp,
   $dhcp_interface                = $kafo::params::dhcp_interface,
@@ -190,6 +193,7 @@ class kafo (
       ssl_key               => $kafo::params::foreman_proxy_key,
       ssl_ca                => $kafo::params::foreman_proxy_ca,
       tftp                  => $tftp,
+      tftp_servername       => $tftp_servername,
       dhcp                  => $dhcp,
       dhcp_interface        => $dhcp_interface,
       dhcp_gateway          => $dhcp_gateway,
