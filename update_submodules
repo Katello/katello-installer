@@ -65,6 +65,7 @@ update_foreman_submodule () {
 
 if [ "$ONLY_FOREMAN" != "1" ]; then
   update_submodule mongodb https://github.com/puppetlabs/puppetlabs-mongodb
+  update_submodule puppet https://github.com/theforeman/puppet-puppet
 fi
 
 update_foreman_submodule apache
@@ -75,7 +76,9 @@ update_foreman_submodule dhcp
 update_foreman_submodule dns
 update_foreman_submodule tftp
 update_foreman_submodule xinetd
-update_foreman_submodule puppet
+# temporarily till https://github.com/theforeman/puppet-puppet/\
+# commit/de8444ee0289ac4a14bae05689f0c1f674d29264 gets into rc
+# update_foreman_submodule puppet
 update_foreman_submodule git
 update_foreman_submodule passenger
 update_foreman_submodule foreman_proxy
