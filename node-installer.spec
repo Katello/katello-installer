@@ -3,7 +3,7 @@
 %global scl_ruby /usr/bin/ruby
 
 Name: node-installer
-Version: 0.0.13
+Version: 0.0.14
 Release: 1%{?dist}
 Summary: Puppet-based installer for the katello nodes
 Group: Applications/System
@@ -48,6 +48,10 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %{_sbindir}/node-certs-generate
 
 %changelog
+* Wed Oct 02 2013 Ivan Necas <inecas@redhat.com> 0.0.14-1
+- Install pulp-puppet-plugins to support puppet content on child
+  (inecas@redhat.com)
+
 * Wed Oct 02 2013 Ivan Necas <inecas@redhat.com> 0.0.13-1
 - Properly set the owner for /etc/puppet/environments (inecas@redhat.com)
 
