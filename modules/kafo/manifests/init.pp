@@ -157,7 +157,8 @@ class kafo (
       server_foreman_ssl_key      => $kafo::params::puppet_client_key,
       server_foreman_ssl_ca       => $kafo::params::puppet_client_ca,
       server_storeconfigs_backend => false,
-      server_git_repo             => true, # for seeting up the /modules/$envifronment modulepath
+      server_dynamic_environments => true,
+      server_environments_owner   => 'apache',
       server_config_version       => ''
     }
   }
