@@ -31,6 +31,9 @@ class puppet::server::config inherits puppet::config {
     puppet_basedir => $puppet::server_puppet_basedir,
     enc_api        => $puppet::server_enc_api,
     report_api     => $puppet::server_report_api,
+    ssl_ca         => $server_foreman_ssl_ca,
+    ssl_cert       => $server_foreman_ssl_cert,
+    ssl_key        => $server_foreman_ssl_key,
   }
 
   $ca_server                   = $::puppet::ca_server
@@ -68,13 +71,13 @@ class puppet::server::config inherits puppet::config {
     owner  => $puppet::server_user,
   }
 
-  if $puppet::server_git_repo {
+  # location where our puppet environments are located
+  file { $puppet::server_envs_dir:
+    ensure => directory,
+    owner  => $puppet::server_environments_owner,
+  }
 
-    # location where our puppet environments are located
-    file { $puppet::server_envs_dir:
-      ensure => directory,
-      owner  => $puppet::server_user,
-    }
+  if $puppet::server_git_repo {
 
     # need to chown the $vardir before puppet does it, or else
     # we can't write puppet.git/ on the first run
@@ -102,9 +105,8 @@ class puppet::server::config inherits puppet::config {
     }
 
   }
-  else
-  {
-    file { [$puppet::server_envs_dir, '/usr/share/puppet', $puppet::server_common_modules_path]:
+  elsif ! $puppet::server_dynamic_environments {
+    file { ['/usr/share/puppet', $puppet::server_common_modules_path]:
       ensure => directory,
     }
 
@@ -118,5 +120,4 @@ class puppet::server::config inherits puppet::config {
     # setup empty directories for our environments
     puppet::server::env {$puppet::server_environments: }
   }
-
 }
