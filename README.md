@@ -45,7 +45,7 @@ On the node:
 # the node has to be registered to Katello prior the installation
 rpm -ivh http://master.example.com/pub/candlepin-cert-consumer-latest.noarch.rpm
 subscription-manager register\
-  --org "Katello Infrastructure" --activation_key node-installer
+  --org "Katello Infrastructure" --activationkey node-installer
 
 yum install -y node-installer
 node-install --parent-fqdn master.example.com
