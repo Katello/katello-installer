@@ -6,8 +6,18 @@ class apache::install {
     Debian: {
       $http_package = 'apache2'
     }
+    Linux: {
+      case $::operatingsystem {
+        Amazon: {
+          $http_package = 'httpd'
+        }
+        default: {
+          fail("${::hostname}: This module does not support operatingsystem ${::operatingsystem}")
+        }
+      }
+    }
     default: {
-      fail("${::hostname}: This module does not support operatingsystem ${::osfamily}")
+      fail("${::hostname}: This module does not support osfamily ${::osfamily}")
     }
   }
 
