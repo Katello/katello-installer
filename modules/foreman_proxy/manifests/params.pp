@@ -17,7 +17,7 @@ class foreman_proxy::params {
   $user = 'foreman-proxy'
   $log  = '/var/log/foreman-proxy/proxy.log'
 
-  $puppet_home = $puppet::params::puppet_vardir
+  $puppet_home = $puppet::params::server_vardir
 
   # Enable SSL, ensure proxy is added with "https://" protocol if true
   $ssl = true
@@ -73,7 +73,10 @@ class foreman_proxy::params {
   $tftp_syslinux_files = ['pxelinux.0','menu.c32','chain.c32','memdisk']
   $tftp_root           = $tftp::params::root
   $tftp_dirs           = ["${tftp_root}/pxelinux.cfg","${tftp_root}/boot"]
-  $tftp_servername     = $ipaddress_eth0
+  $tftp_servername     = $ipaddress_eth0 ? {
+    undef   => $ipaddress,
+    default => $ipaddress_eth0,
+  }
 
   # DHCP settings - requires optional DHCP puppet module
   $dhcp             = false
@@ -132,6 +135,10 @@ class foreman_proxy::params {
   }
 
   $dns_forwarders = []
+
+  # BMC options
+  $bmc = false
+  $bmc_default_provider = 'ipmitool'
 
   # Proxy can register itself within a Foreman instance
   $register_in_foreman = true
