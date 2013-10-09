@@ -105,6 +105,8 @@
 #
 # $dns_interface::          DNS interface
 #
+# $dns_zone::               DNS zone name
+#
 # $dns_reverse::            DNS reverse zone name
 #
 # $dns_server::             Address of DNS server to manage
@@ -112,9 +114,15 @@
 # $dns_forwarders::         DNS forwarders
 #                           type:array
 #
+# $bmc::                    Use BMC
+#                           type:boolean
+#
+# $bmc_default_provider::   BMC default provider.
+#
 # $keyfile::                DNS server keyfile path
 #
 # $register_in_foreman::    Register proxy back in Foreman
+#                           type:boolean
 #
 # $registered_name::        Proxy name which is registered in Foreman
 #
@@ -171,9 +179,12 @@ class foreman_proxy (
   $dns                   = $foreman_proxy::params::dns,
   $dns_managed           = $foreman_proxy::params::dns_managed,
   $dns_interface         = $foreman_proxy::params::dns_interface,
+  $dns_zone              = $foreman_proxy::params::dns_zone,
   $dns_reverse           = $foreman_proxy::params::dns_reverse,
   $dns_server            = $foreman_proxy::params::dns_server,
   $dns_forwarders        = $foreman_proxy::params::dns_forwarders,
+  $bmc                   = $foreman_proxy::params::bmc,
+  $bmc_default_provider  = $foreman_proxy::params::bmc_default_provider,
   $keyfile               = $foreman_proxy::params::keyfile,
   $register_in_foreman   = $foreman_proxy::params::register_in_foreman,
   $foreman_base_url      = $foreman_proxy::params::foreman_base_url,
@@ -185,7 +196,7 @@ class foreman_proxy (
 ) inherits foreman_proxy::params {
 
   # Validate misc params
-  validate_bool($ssl, $manage_sudoersd, $use_sudoersd)
+  validate_bool($ssl, $manage_sudoersd, $use_sudoersd, $register_in_foreman)
   validate_array($trusted_hosts)
 
   # Validate puppet params
@@ -194,6 +205,7 @@ class foreman_proxy (
 
   # Validate tftp params
   validate_bool($tftp)
+  validate_string($tftp_servername)
 
   # Validate dhcp params
   validate_bool($dhcp, $dhcp_managed)
@@ -202,6 +214,10 @@ class foreman_proxy (
   validate_bool($dns)
   validate_string($dns_interface, $dns_reverse, $dns_server, $keyfile)
   validate_array($dns_forwarders)
+
+  # Validate bmc params
+  validate_bool($bmc)
+  validate_re($bmc_default_provider, '^(freeipmi|ipmitool|shell)$')
 
   class { 'foreman_proxy::install': } ~>
   class { 'foreman_proxy::config': } ~>
