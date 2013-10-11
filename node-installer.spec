@@ -3,7 +3,7 @@
 %global scl_ruby /usr/bin/ruby
 
 Name: node-installer
-Version: 0.0.15
+Version: 0.0.16
 Release: 1%{?dist}
 Summary: Puppet-based installer for the katello nodes
 Group: Applications/System
@@ -53,6 +53,11 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %{_sbindir}/node-certs-generate
 
 %changelog
+* Fri Oct 11 2013 Unknown name <inecas@redhat.com> 0.0.16-1
+- 1017074 - correctly set the flags for config files in spec
+  (inecas@redhat.com)
+- Update the modules to Foreman 1.3-rc4 (inecas@redhat.com)
+
 * Wed Oct 02 2013 Ivan Necas <inecas@redhat.com> 0.0.15-1
 - Merge pull request #2 from domcleal/tftp_servername (inecas@redhat.com)
 - 975166 - expose tftp_servername (dcleal@redhat.com)
