@@ -1,3 +1,4 @@
+# Define new zone for the dns
 define dns::zone (
     $zonetype='master',
     $soa='',
@@ -14,9 +15,9 @@ define dns::zone (
   $contact = "root.${name}."
   $serial = 1
 
-  if ! defined(Class["dns"]) {
-    class { dns:
-      zonefilepath => $zonefilepath,
+  if ! defined(Class[dns]) {
+    class { 'dns':
+      zonefilepath     => $zonefilepath,
       namedservicename => $namedservicename
     }
   }

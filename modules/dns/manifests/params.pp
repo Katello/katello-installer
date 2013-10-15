@@ -1,3 +1,4 @@
+# Default parameters
 class dns::params {
     case $::osfamily {
       'Debian': {
@@ -23,7 +24,7 @@ class dns::params {
         $group              = 'named'
       }
       default: {
-        fail ("Unsupported operating system family $::osfamily")
+        fail ("Unsupported operating system family ${::osfamily}")
       }
     }
 
