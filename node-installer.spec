@@ -3,7 +3,7 @@
 %global scl_ruby /usr/bin/ruby
 
 Name: node-installer
-Version: 0.0.16
+Version: 0.0.17
 Release: 1%{?dist}
 Summary: Puppet-based installer for the katello nodes
 Group: Applications/System
@@ -53,6 +53,10 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %{_sbindir}/node-certs-generate
 
 %changelog
+* Tue Oct 15 2013 Ivan Necas <inecas@redhat.com>
+- Update foreman puppet modules (inecas@redhat.com)
+- 1017449: Updating pulp server.conf (daviddavis@redhat.com)
+
 * Fri Oct 11 2013 Unknown name <inecas@redhat.com> 0.0.16-1
 - 1017074 - correctly set the flags for config files in spec
   (inecas@redhat.com)
