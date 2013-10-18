@@ -62,8 +62,7 @@ Puppet::Type.type(:katello_repo).provide(:katello_cli, :parent => Puppet::Provid
               "create",
               "--org", resource[:org],
               "--product", resource[:product],
-              "--name", resource[:repo],
-              "--url", "http://localhost") # TODO: url should not be required
+              "--name", resource[:repo])
     end
   end
 
