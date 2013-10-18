@@ -3,9 +3,10 @@ require 'spec_helper'
 describe 'puppet::server::config' do
   let :facts do
     {
-      :osfamily   => 'RedHat',
-      :fqdn       => 'puppetmaster.example.com',
-      :clientcert => 'puppetmaster.example.com',
+      :osfamily    => 'RedHat',
+      :rubyversion => '1.9.3',
+      :fqdn        => 'puppetmaster.example.com',
+      :clientcert  => 'puppetmaster.example.com',
     }
   end
 
@@ -44,7 +45,7 @@ describe 'puppet::server::config' do
         :foreman_url    => "https://#{facts[:fqdn]}",
         :facts          => true,
         :puppet_home    => '/var/lib/puppet',
-        :puppet_basedir => '/usr/lib/ruby/site_ruby//puppet',
+        :puppet_basedir => '/usr/lib/ruby/site_ruby/1.9/puppet',
       })
     end
 
@@ -172,6 +173,25 @@ describe 'puppet::server::config' do
     it 'should configure puppet.conf' do
       should contain_file('/etc/puppet/puppet.conf').
         with_content(%r{^\s+manifest\s+= /etc/puppet/environments/\$environment/manifests/site.pp\n\s+modulepath\s+= /etc/puppet/environments/\$environment/modules\n\s+config_version\s+= $})
+    end
+  end
+
+  describe 'with SSL path overrides' do
+    let :pre_condition do
+      "class {'puppet':
+          server                  => true,
+          server_foreman_ssl_ca   => '/etc/example/ca.pem',
+          server_foreman_ssl_cert => '/etc/example/cert.pem',
+          server_foreman_ssl_key  => '/etc/example/key.pem',
+       }"
+    end
+
+    it 'should pass SSL parameters to the ENC' do
+      should contain_class('foreman::puppetmaster').with({
+        :ssl_ca   => '/etc/example/ca.pem',
+        :ssl_cert => '/etc/example/cert.pem',
+        :ssl_key  => '/etc/example/key.pem',
+      })
     end
   end
 end
