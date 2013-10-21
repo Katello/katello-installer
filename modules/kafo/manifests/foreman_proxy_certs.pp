@@ -36,7 +36,7 @@ class kafo::foreman_proxy_certs (
 
     file { $proxy_key:
       owner => "foreman-proxy",
-      mode  => "400"
+      mode  => "0400"
     }
 
     pubkey { $proxy_ca:

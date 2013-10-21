@@ -8,4 +8,8 @@ Puppet::Type.type(:privkey).provide(:katello_ssl_tool, :parent => Puppet::Provid
     cert_details[:privkey]
   end
 
+  def mode
+    0400
+  end
+
 end

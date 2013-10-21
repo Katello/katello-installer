@@ -36,7 +36,7 @@ class kafo::foreman_certs (
 
     file { $client_key:
       owner => "foreman",
-      mode => "400"
+      mode => "0400"
     }
 
     pubkey { $client_ca:
