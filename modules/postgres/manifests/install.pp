@@ -1,6 +1,6 @@
 class postgres::install {
 
-  package { ["postgresql-server","postgresql"]: ensure => installed }
+  package { ['postgresql-server','postgresql']: ensure => installed }
 
   user { $postgres::params::user:
     shell      => '/bin/bash',
@@ -22,10 +22,10 @@ class postgres::install {
     $postgres::params::home:
       owner   => $postgres::params::user,
       group   => $postgres::params::group,
-      mode    => 700,
+      mode    => '0700',
       require => User[$postgres::params::user];
   }
 
-  File[$postgres::params::home] -> Exec["InitDB"]
-  Package["postgresql-server"] -> Exec["InitDB"]
+  File[$postgres::params::home] -> Exec['InitDB']
+  Package['postgresql-server'] -> Exec['InitDB']
 }

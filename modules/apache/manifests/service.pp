@@ -15,13 +15,13 @@ class apache::service {
 
   exec { 'reload-apache':
     command             => "service ${http_service} reload",
-    path                => ["/sbin", "/usr/sbin", "/bin", "/usr/bin"],
+    path                => ['/sbin', '/usr/sbin', '/bin', '/usr/bin'],
     onlyif              => $::operatingsystem ? {
       /(Debian|Ubuntu)/ => '/usr/sbin/apache2ctl -t',
       default           => '/usr/sbin/apachectl -t',
     },
-    require     => Service[$http_service],
-    refreshonly => true,
+    require             => Service[$http_service],
+    refreshonly         => true,
   }
 
 }

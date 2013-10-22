@@ -20,7 +20,7 @@ class foreman::params {
   $use_vhost    = true
   # force SSL (note: requires passenger)
   $ssl          = true
-  #define which interface passenger should listen on, undef means all interfaces
+  # define which interface passenger should listen on, undef means all interfaces
   $passenger_interface = ''
   # Choose whether you want to enable locations and organizations.
   $locations_enabled      = false

@@ -9,18 +9,18 @@ class apache::certs (
   ) {
 
   cert { "${::certs::node_fqdn}-ssl":
-    hostname    => $::certs::node_fqdn,
-    ensure      => present,
-    country     => $::certs::country,
-    state       => $::certs::state,
-    city        => $::certs::sity,
-    org         => $::certs::org,
-    org_unit    => $::certs::org_unit,
-    expiration  => $::certs::expiration,
-    ca          => $ca,
-    generate    => $generate,
+    hostname      => $::certs::node_fqdn,
+    ensure        => present,
+    country       => $::certs::country,
+    state         => $::certs::state,
+    city          => $::certs::sity,
+    org           => $::certs::org,
+    org_unit      => $::certs::org_unit,
+    expiration    => $::certs::expiration,
+    ca            => $ca,
+    generate      => $generate,
     regenerate    => $regenerate,
-    deploy      => $deploy,
+    deploy        => $deploy,
   }
 
   if $deploy {
@@ -29,11 +29,11 @@ class apache::certs (
 
     pubkey { $apache_ssl_cert:
       ensure => present,
-      cert => Cert["${::certs::node_fqdn}-ssl"]
+      cert   => Cert["${::certs::node_fqdn}-ssl"]
     } ~>
     privkey { $apache_ssl_key:
       ensure => present,
-      cert => Cert["${::certs::node_fqdn}-ssl"]
+      cert   => Cert["${::certs::node_fqdn}-ssl"]
     } ->
     file { $apache_ssl_key:
       owner => $apache::params::user,
@@ -42,12 +42,12 @@ class apache::certs (
     }
 
     file { "${apache::params::configdir}/ssl.conf":
-      content => template("apache/ssl.conf.erb"),
-      mode   => '0644',
-      owner  => 'root',
-      group  => 'root',
+      content => template('apache/ssl.conf.erb'),
+      mode    => '0644',
+      owner   => 'root',
+      group   => 'root',
       require => [Pubkey[$apache_ssl_cert], Privkey[$apache_ssl_key]],
-      notify => Exec['reload-apache'],
+      notify  => Exec['reload-apache'],
     }
   }
 }

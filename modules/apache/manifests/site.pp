@@ -15,4 +15,3 @@ define apache::site(
     content => template('apache/vhost.conf'),
   }
 }
-

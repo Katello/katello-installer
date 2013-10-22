@@ -11,18 +11,18 @@ class kafo::foreman_certs (
 
   # cert for authentication of puppetmaster against foreman
   cert { "${::kafo::foreman_certs::hostname}-foreman-client":
-    hostname    => $::kafo::foreman_certs::hostname,
-    purpose     => client,
-    country     => $::certs::country,
-    state       => $::certs::state,
-    city        => $::certs::sity,
-    org         => 'FOREMAN',
-    org_unit    => 'PUPPET',
-    expiration  => $::certs::expiration,
-    ca          => $ca,
-    generate    => $generate,
+    hostname      => $::kafo::foreman_certs::hostname,
+    purpose       => client,
+    country       => $::certs::country,
+    state         => $::certs::state,
+    city          => $::certs::sity,
+    org           => 'FOREMAN',
+    org_unit      => 'PUPPET',
+    expiration    => $::certs::expiration,
+    ca            => $ca,
+    generate      => $generate,
     regenerate    => $regenerate,
-    deploy      => $deploy,
+    deploy        => $deploy,
   }
 
   if $deploy {
@@ -35,8 +35,8 @@ class kafo::foreman_certs (
     } ->
 
     file { $client_key:
-      owner => "foreman",
-      mode => "0400"
+      owner => 'foreman',
+      mode  => '0400'
     }
 
     pubkey { $client_ca:

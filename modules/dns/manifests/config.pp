@@ -43,4 +43,3 @@ class dns::config {
     mode    => '0640',
   }
 }
-

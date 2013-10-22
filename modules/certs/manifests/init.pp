@@ -20,15 +20,15 @@ class certs (
   ca { 'candlepin-ca':
     ensure      => present,
     common_name => $certs::ca_common_name,
-    country => $certs::country,
-    state   => $certs::state,
-    city    => $certs::city,
-    org     => $certs::org,
-    org_unit => $certs::org_unit,
-    expiration => $certs::ca_expiration,
-    generate => $certs::generate,
-    regenerate => $certs::regenerate_ca,
-    deploy   => true,
+    country     => $certs::country,
+    state       => $certs::state,
+    city        => $certs::city,
+    org         => $certs::org,
+    org_unit    => $certs::org_unit,
+    expiration  => $certs::ca_expiration,
+    generate    => $certs::generate,
+    regenerate  => $certs::regenerate_ca,
+    deploy      => true,
   }
 
 }

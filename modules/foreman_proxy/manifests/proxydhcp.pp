@@ -14,8 +14,8 @@ class foreman_proxy::proxydhcp {
     dnsdomain    => [$::domain],
     nameservers  => $nameservers,
     interfaces   => [$foreman_proxy::dhcp_interface],
-    #dnsupdatekey => /etc/bind/keys.d/foreman,
-    #require      => Bind::Key[ 'foreman' ],
+    # dnsupdatekey => /etc/bind/keys.d/foreman,
+    # require      => Bind::Key[ 'foreman' ],
     pxeserver    => $ip,
     pxefilename  => 'pxelinux.0',
   }

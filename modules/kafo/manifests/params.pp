@@ -15,7 +15,7 @@ class kafo::params {
   $puppet                = false
   $puppetca              = false
 
-  $foreman_proxy_port            = "9090"
+  $foreman_proxy_port            = '9090'
   $tftp                          = false
   $tftp_servername               = $foreman_proxy::params::tftp_servername
   $dhcp                          = false
@@ -30,14 +30,14 @@ class kafo::params {
   $dns_forwareders               = $foreman_proxy::params::dns_forwarders
   $register_in_foreman           = false
   $foreman_oauth_effective_user  = $foreman_proxy::params::oauth_effective_user
-  $foreman_oauth_key             = "foreman"
+  $foreman_oauth_key             = 'foreman'
   $foreman_oauth_secret          = undef
 
   $katello_user = undef
   $katello_password = undef
-  $katello_org = "Katello Infrastructure"
-  $katello_repo_provider = "node-installer"
-  $katello_product = "node-certs"
+  $katello_org = 'Katello Infrastructure'
+  $katello_repo_provider = 'node-installer'
+  $katello_product = 'node-certs'
   $katello_activation_key = undef
 
   $foreman_client_cert = '/etc/foreman/client_cert.pem'
