@@ -3,7 +3,7 @@
 %global scl_ruby /usr/bin/ruby
 
 Name: node-installer
-Version: 0.0.17
+Version: 0.0.18
 Release: 1%{?dist}
 Summary: Puppet-based installer for the katello nodes
 Group: Applications/System
@@ -53,6 +53,11 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %{_sbindir}/node-certs-generate
 
 %changelog
+* Tue Oct 22 2013 Unknown name <inecas@redhat.com> 0.0.18-1
+- 1021119 - make sure private keys are never world readable (inecas@redhat.com)
+- Document the parameters of the pulp class (shk@redhat.com)
+- 1020975 - do not create node cert repos with a url (jsherril@redhat.com)
+
 * Tue Oct 15 2013 Ivan Necas <inecas@redhat.com>
 - Update foreman puppet modules (inecas@redhat.com)
 - 1017449: Updating pulp server.conf (daviddavis@redhat.com)
