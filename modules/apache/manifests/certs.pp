@@ -34,6 +34,11 @@ class apache::certs (
     privkey { $apache_ssl_key:
       ensure => present,
       cert => Cert["${::certs::node_fqdn}-ssl"]
+    } ->
+    file { $apache_ssl_key:
+      owner => $apache::params::user,
+      group => $apache::params::group,
+      mode  => '0400';
     }
 
     file { "${apache::params::configdir}/ssl.conf":

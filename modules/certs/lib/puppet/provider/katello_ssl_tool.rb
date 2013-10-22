@@ -175,7 +175,7 @@ module Puppet::Provider::KatelloSslTool
     end
 
     def create
-      File.open(resource[:path], "w") { |f| f << expected_content }
+      File.open(resource[:path], "w", mode) { |f| f << expected_content }
     end
 
     protected
@@ -196,6 +196,10 @@ module Puppet::Provider::KatelloSslTool
     # what path to copy from
     def source_path
       raise NotImplementedError
+    end
+
+    def mode
+      0644
     end
 
     def cert_details
