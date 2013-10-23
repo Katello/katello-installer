@@ -74,6 +74,12 @@ if [ "$SOURCE" = 'thirdparty' ]; then
   update_submodule mongodb https://github.com/puppetlabs/puppetlabs-mongodb
 elif [ "$SOURCE" = 'katello' ]; then
   update_katello_submodule certs
+  update_katello_submodule apache
+  update_katello_submodule kafo
+  update_katello_submodule katello
+  update_katello_submodule pulp
+  update_katello_submodule qpid
+  update_katello_submodule service_wait
 elif [ "$SOURCE" = 'foreman' ]; then
   update_foreman_submodule apache
   update_foreman_submodule create_resources
