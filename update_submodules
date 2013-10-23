@@ -7,18 +7,20 @@
 #   http://blogs.atlassian.com/2013/05/alternatives-to-git-submodule-git-subtree/
 #
 # This script keeps the list of external modules we have and updates them.
-# If argument specified, only this module is updated.
 #
-# To add a new module, add it to this file and run `update_sumodules your-new-module`
+# To add a new module, add it to this file using `update_module`, `update_foreman_module` or `update_katello_module`.
+#
+# To update the modules run:
+#
+# ./update_submodules $SOURCE [$NAME]
+#
+# where $SOURCE might be "thirdparty", "foreman" or "katello"
+# when $NAME specified, only specific module will be updated.
 
 set -exo pipefail
 
-if [ "$1" = "foreman_modules" ]; then
-    ONLY_FOREMAN=1
-else
-    NAME=$1
-fi
-
+SOURCE=$1
+NAME=$2
 
 FOREMAN_INSTALLER_DIR=foreman-installer
 FOREMAN_INSTALLER_URL=git@github.com:theforeman/foreman-installer.git
@@ -63,20 +65,33 @@ update_foreman_submodule () {
     update_submodule $name $FOREMAN_INSTALLER_DIR/modules/$name $REF
 }
 
-if [ "$ONLY_FOREMAN" != "1" ]; then
+update_katello_submodule () {
+    name=$1
+    update_submodule $name https://github.com/Katello/puppet-$name
+}
+
+if [ "$SOURCE" = 'thirdparty' ]; then
   update_submodule mongodb https://github.com/puppetlabs/puppetlabs-mongodb
+elif [ "$SOURCE" = 'katello' ]; then
+  update_katello_submodule certs
+elif [ "$SOURCE" = 'foreman' ]; then
+  update_foreman_submodule apache
+  update_foreman_submodule create_resources
+  update_foreman_submodule concat_native
+  update_foreman_submodule stdlib
+  update_foreman_submodule dhcp
+  update_foreman_submodule dns
+  update_foreman_submodule tftp
+  update_foreman_submodule xinetd
+  update_foreman_submodule puppet
+  update_foreman_submodule git
+  update_foreman_submodule passenger
+  update_foreman_submodule foreman_proxy
+  update_foreman_submodule foreman
+else
+  echo "Unkown puppet modules source: $SOURCE"
+  exit 1
 fi
 
-update_foreman_submodule apache
-update_foreman_submodule create_resources
-update_foreman_submodule concat_native
-update_foreman_submodule stdlib
-update_foreman_submodule dhcp
-update_foreman_submodule dns
-update_foreman_submodule tftp
-update_foreman_submodule xinetd
-update_foreman_submodule puppet
-update_foreman_submodule git
-update_foreman_submodule passenger
-update_foreman_submodule foreman_proxy
-update_foreman_submodule foreman
+
+
