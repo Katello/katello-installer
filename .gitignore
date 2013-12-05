@@ -1,1 +1,3 @@
 foreman-installer
+.vagrant
+Vagrantfile
