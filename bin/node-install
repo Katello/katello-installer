@@ -5,6 +5,6 @@ require 'kafo'
 
 CONFIG_FILE = "./config/kafo.child.yaml"
 
-KafoConfigure.run
+Kafo::KafoConfigure.run
 
-KafoConfigure.exit_code == 2 ? exit(0) : exit(KafoConfigure.exit_code)
+Kafo::KafoConfigure.exit_code == 2 ? exit(0) : exit(Kafo::KafoConfigure.exit_code)
