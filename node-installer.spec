@@ -45,10 +45,10 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %{_datadir}/%{name}
 %dir %{_sysconfdir}/%{name}
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.certs.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.child.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.node.yaml
 %config %{_sysconfdir}/%{name}/config_header.txt
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/kafo.certs.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/kafo.child.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/kafo.node.yaml
 %{_sbindir}/node-install
 %{_sbindir}/node-certs-generate
 

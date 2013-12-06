@@ -3,7 +3,7 @@
 require 'rubygems'
 require 'kafo'
 
-CONFIG_FILE = "./config/kafo.child.yaml"
+CONFIG_FILE = "./config/kafo.node.yaml"
 
 Kafo::KafoConfigure.run
 
