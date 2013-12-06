@@ -1,0 +1,12 @@
+--- 
+  :log_dir: /var/log/katello-install
+  :log_level: :debug
+  :no_prefix: true
+  :mapping: {}
+  :answer_file: "./config/answers.katello.yaml"
+  :installer_dir: "."
+  :modules_dir: "./modules"
+  :default_values_dir: "./config"
+  :colors: true
+  :log_name: katello-install.log
+  :password: l7VtnWiPeKe412o2CVBM6yVbTkKGh6L_CKx4_zBkmUE

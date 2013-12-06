@@ -1,3 +1,4 @@
 foreman-installer
 .vagrant
 Vagrantfile
+config/default_values.yaml
