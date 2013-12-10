@@ -3,7 +3,7 @@
   :log_level: :debug
   :no_prefix: true
   :mapping: {}
-  :answer_file: "./config/answers.katello.yaml"
+  :answer_file: "./config/answers.katello_installer.yaml"
   :installer_dir: "."
   :modules_dir: "./modules"
   :default_values_dir: "./config"

@@ -24,4 +24,4 @@
 :mapping:
   :node_certs:
     :manifest_name: node_certs
-    :dir_name: kafo
+    :dir_name: katello_installer

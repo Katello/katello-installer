@@ -26,18 +26,18 @@
 # $katello_activation_key::  Activation key that registers the system
 #                            with access to the cert repo (OPTIONAL)
 #
-class kafo::node_certs (
+class katello_installer::node_certs (
   $parent_fqdn            = $fqdn,
-  $child_fqdn             = $kafo::params::child_fqdn,
-  $certs_tar              = $kafo::params::child_fqdn,
-  $regenerate             = $kafo::params::regenerate,
-  $katello_user           = $kafo::params::katello_user,
-  $katello_password       = $kafo::params::katello_password,
-  $katello_org            = $kafo::params::katello_org,
-  $katello_repo_provider  = $kafo::params::katello_repo_provider,
-  $katello_product        = $kafo::params::katello_product,
-  $katello_activation_key = $kafo::params::katello_activation_key
-  ) inherits kafo::params {
+  $child_fqdn             = $katello_installer::params::child_fqdn,
+  $certs_tar              = $katello_installer::params::child_fqdn,
+  $regenerate             = $katello_installer::params::regenerate,
+  $katello_user           = $katello_installer::params::katello_user,
+  $katello_password       = $katello_installer::params::katello_password,
+  $katello_org            = $katello_installer::params::katello_org,
+  $katello_repo_provider  = $katello_installer::params::katello_repo_provider,
+  $katello_product        = $katello_installer::params::katello_product,
+  $katello_activation_key = $katello_installer::params::katello_activation_key
+  ) inherits katello_installer::params {
 
   validate_present($child_fqdn)
 
@@ -49,24 +49,24 @@ class kafo::node_certs (
   }
 
 
-  class { 'kafo::puppet_certs': }
-  class { 'kafo::foreman_proxy_certs': }
+  class { 'katello_installer::puppet_certs': }
+  class { 'katello_installer::foreman_proxy_certs': }
   class { 'apache::certs': }
   class { 'pulp::child::certs': }
   class { 'pulp::parent::certs':
     hostname => $parent_fqdn,
     deploy   => true,
   }
-  class { 'kafo::foreman_certs':
+  class { 'katello_installer::foreman_certs':
     hostname => $parent_fqdn,
     deploy   => true,
   }
 
   if $certs_tar {
     certs::tar_create { $certs_tar:
-      subscribe => [Class['kafo::puppet_certs'],
-                    Class['kafo::foreman_certs'],
-                    Class['kafo::foreman_proxy_certs'],
+      subscribe => [Class['katello_installer::puppet_certs'],
+                    Class['katello_installer::foreman_certs'],
+                    Class['katello_installer::foreman_proxy_certs'],
                     Class['apache::certs'],
                     Class['pulp::child::certs']]
     }
@@ -81,9 +81,9 @@ class kafo::node_certs (
       repo_provider => $katello_repo_provider,
       product       => $katello_product,
       package_files => ["/root/ssl-build/*.noarch.rpm", "/root/ssl-build/$child_fqdn/*.noarch.rpm"],
-      subscribe     => [Class['kafo::puppet_certs'],
-                        Class['kafo::foreman_certs'],
-                        Class['kafo::foreman_proxy_certs'],
+      subscribe     => [Class['katello_installer::puppet_certs'],
+                        Class['katello_installer::foreman_certs'],
+                        Class['katello_installer::foreman_proxy_certs'],
                         Class['apache::certs'],
                         Class['pulp::child::certs']],
     }

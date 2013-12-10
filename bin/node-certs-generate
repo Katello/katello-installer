@@ -3,8 +3,8 @@
 require 'rubygems'
 require 'kafo'
 
-CONFIG_FILE = "./config/kafo.certs.yaml"
+CONFIG_FILE = "./config/katello_installer.certs.yaml"
 
-KafoConfigure.run
+Kafo::KafoConfigure.run
 
-KafoConfigure.exit_code == 2  ? exit(0) : exit(KafoConfigure.exit_code)
+Kafo::KafoConfigure.exit_code == 2  ? exit(0) : exit(Kafo::KafoConfigure.exit_code)

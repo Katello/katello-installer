@@ -1,4 +1,4 @@
-class kafo::params {
+class katello_installer::params {
 
   include foreman_proxy::params
 

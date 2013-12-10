@@ -65,40 +65,40 @@
 # $foreman_oauth_secret::           OAuth secret to be used for Foreman REST interaction
 #
 #
-class kafo (
-  $parent_fqdn                   = $kafo::params::parent_fqdn,
-  $certs_tar                     = $kafo::params::certs_tar,
-  $pulp                          = $kafo::params::pulp,
-  $pulp_admin_password           = $kafo::params::pulp_admin_password,
-  $pulp_oauth_effective_user     = $kafo::params::pulp_oauth_effective_user,
-  $pulp_oauth_key                = $kafo::params::pulp_oauth_key,
-  $pulp_oauth_secret             = $kafo::params::pulp_oauth_secret,
+class katello_installer::node (
+  $parent_fqdn                   = $katello_installer::params::parent_fqdn,
+  $certs_tar                     = $katello_installer::params::certs_tar,
+  $pulp                          = $katello_installer::params::pulp,
+  $pulp_admin_password           = $katello_installer::params::pulp_admin_password,
+  $pulp_oauth_effective_user     = $katello_installer::params::pulp_oauth_effective_user,
+  $pulp_oauth_key                = $katello_installer::params::pulp_oauth_key,
+  $pulp_oauth_secret             = $katello_installer::params::pulp_oauth_secret,
 
-  $foreman_proxy_port            = $kafo::params::foreman_proxy_port,
+  $foreman_proxy_port            = $katello_installer::params::foreman_proxy_port,
 
-  $puppet                        = $kafo::params::puppet,
-  $puppetca                      = $kafo::params::puppetca,
+  $puppet                        = $katello_installer::params::puppet,
+  $puppetca                      = $katello_installer::params::puppetca,
 
-  $tftp                          = $kafo::params::tftp,
-  $tftp_servername               = $kafo::params::tftp_servername,
+  $tftp                          = $katello_installer::params::tftp,
+  $tftp_servername               = $katello_installer::params::tftp_servername,
 
-  $dhcp                          = $kafo::params::dhcp,
-  $dhcp_interface                = $kafo::params::dhcp_interface,
-  $dhcp_gateway                  = $kafo::params::dhcp_gateway,
-  $dhcp_range                    = $kafo::params::dhcp_range,
-  $dhcp_nameservers              = $kafo::params::dhcp_nameservers,
+  $dhcp                          = $katello_installer::params::dhcp,
+  $dhcp_interface                = $katello_installer::params::dhcp_interface,
+  $dhcp_gateway                  = $katello_installer::params::dhcp_gateway,
+  $dhcp_range                    = $katello_installer::params::dhcp_range,
+  $dhcp_nameservers              = $katello_installer::params::dhcp_nameservers,
 
-  $dns                           = $kafo::params::dns,
-  $dns_zone                      = $kafo::params::dns_zone,
-  $dns_reverse                   = $kafo::params::dns_reverse,
-  $dns_interface                 = $kafo::params::dns_interface,
-  $dns_forwarders                = $kafo::params::dns_forwarders,
+  $dns                           = $katello_installer::params::dns,
+  $dns_zone                      = $katello_installer::params::dns_zone,
+  $dns_reverse                   = $katello_installer::params::dns_reverse,
+  $dns_interface                 = $katello_installer::params::dns_interface,
+  $dns_forwarders                = $katello_installer::params::dns_forwarders,
 
-  $register_in_foreman           = $kafo::params::register_in_foreman,
-  $foreman_oauth_effective_user  = $kafo::params::foreman_oauth_effective_user,
-  $foreman_oauth_key             = $kafo::params::foreman_oauth_key,
-  $foreman_oauth_secret          = $kafo::params::foreman_oauth_secret
-  ) inherits kafo::params {
+  $register_in_foreman           = $katello_installer::params::register_in_foreman,
+  $foreman_oauth_effective_user  = $katello_installer::params::foreman_oauth_effective_user,
+  $foreman_oauth_key             = $katello_installer::params::foreman_oauth_key,
+  $foreman_oauth_secret          = $katello_installer::params::foreman_oauth_secret
+  ) inherits katello_installer::params {
 
   validate_present($parent_fqdn)
 
@@ -147,18 +147,18 @@ class kafo (
   }
 
   if $puppet {
-    class { 'kafo::puppet_certs':
-      client_cert => $kafo::params::puppet_client_cert,
-      client_key  => $kafo::params::puppet_client_key,
-      client_ca   => $kafo::params::puppet_client_ca,
+    class { 'katello_installer::puppet_certs':
+      client_cert => $katello_installer::params::puppet_client_cert,
+      client_key  => $katello_installer::params::puppet_client_key,
+      client_ca   => $katello_installer::params::puppet_client_ca,
     } ~>
 
     class { puppet:
       server                      => true,
       server_foreman_url          => $foreman_url,
-      server_foreman_ssl_cert     => $kafo::params::puppet_client_cert,
-      server_foreman_ssl_key      => $kafo::params::puppet_client_key,
-      server_foreman_ssl_ca       => $kafo::params::puppet_client_ca,
+      server_foreman_ssl_cert     => $katello_installer::params::puppet_client_cert,
+      server_foreman_ssl_key      => $katello_installer::params::puppet_client_key,
+      server_foreman_ssl_ca       => $katello_installer::params::puppet_client_ca,
       server_storeconfigs_backend => false,
       server_dynamic_environments => true,
       server_environments_owner   => 'apache',
@@ -171,17 +171,17 @@ class kafo (
 
     if $certs_generate {
       # we make sure the certs for foreman are properly deployed
-      class { 'kafo::foreman_certs':
+      class { 'katello_installer::foreman_certs':
         hostname => $parent_fqdn,
         deploy   => true,
         before     => Service['foreman-proxy'],
       }
     }
 
-    class { 'kafo::foreman_proxy_certs':
-      proxy_cert => $kafo::params::foreman_proxy_cert,
-      proxy_key  => $kafo::params::foreman_proxy_key,
-      proxy_ca   => $kafo::params::foreman_proxy_ca,
+    class { 'katello_installer::foreman_proxy_certs':
+      proxy_cert => $katello_installer::params::foreman_proxy_cert,
+      proxy_key  => $katello_installer::params::foreman_proxy_key,
+      proxy_ca   => $katello_installer::params::foreman_proxy_ca,
       require    => Package['foreman-proxy'],
       before     => Service['foreman-proxy'],
     }
@@ -190,9 +190,9 @@ class kafo (
       custom_repo           => true,
       port                  => $foreman_proxy_port,
       puppetca              => $puppetca,
-      ssl_cert              => $kafo::params::foreman_proxy_cert,
-      ssl_key               => $kafo::params::foreman_proxy_key,
-      ssl_ca                => $kafo::params::foreman_proxy_ca,
+      ssl_cert              => $katello_installer::params::foreman_proxy_cert,
+      ssl_key               => $katello_installer::params::foreman_proxy_key,
+      ssl_ca                => $katello_installer::params::foreman_proxy_ca,
       tftp                  => $tftp,
       tftp_servername       => $tftp_servername,
       dhcp                  => $dhcp,
