@@ -14,14 +14,21 @@ class puppet::params {
   $splay               = false
   $runinterval         = '1800'
   $runmode             = 'service'
+  $cron_cmd            = undef
   $agent_noop          = false
   $show_diff           = false
+  $configtimeout       = 120
   $ca_server           = undef
+  $classfile           = '$vardir/classes.txt'
 
   # Need your own config templates? Specify here:
-  $agent_template  = 'puppet/puppet.conf.erb'
+  $main_template   = 'puppet/puppet.conf.erb'
+  $agent_template  = 'puppet/agent/puppet.conf.erb'
   $auth_template   = 'puppet/auth.conf.erb'
   $nsauth_template = 'puppet/namespaceauth.conf.erb'
+
+  # Will this host be a puppet agent ?
+  $agent                     = true
 
   # Will this host be a puppetmaster?
   $server                    = false
@@ -35,6 +42,7 @@ class puppet::params {
   $server_external_nodes     = '/etc/puppet/node.rb'
   $server_enc_api            = 'v2'
   $server_report_api         = 'v2'
+  $server_certname           = $::clientcert
 
   # Need a new master template for the server?
   $server_template = 'puppet/server/puppet.conf.erb'
@@ -45,6 +53,8 @@ class puppet::params {
 
   # Set 'false' for static environments, or 'true' for git-based workflow
   $server_git_repo             = false
+  # Git branch to puppet env mapping for the post receive hook
+  $server_git_branch_map       = {}
 
   # Static environments config, ignore if the git_repo or dynamic_environments is 'true'
   # What environments do we have
@@ -86,10 +96,6 @@ class puppet::params {
     /(Debian|Ubuntu)/ => ['puppet-common','puppet'],
     default           => ['puppet'],
   }
-
-  # This only applies to puppet::cron
-  $cron_range          = 60 # the maximum value for our cron
-  $cron_interval       = 2  # the amount of values within the $cron_range
 
   # Only use 'puppet cert' on versions where puppetca no longer exists
   if versioncmp($::puppetversion, '3.0') < 0 {
