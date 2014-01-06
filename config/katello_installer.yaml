@@ -1,5 +1,5 @@
 --- 
-  :log_dir: /var/log/katello-install
+  :log_dir: /var/log/katello/katello-install
   :log_level: :debug
   :no_prefix: true
   :mapping: {}
@@ -10,3 +10,7 @@
   :colors: true
   :log_name: katello-install.log
   :password: l7VtnWiPeKe412o2CVBM6yVbTkKGh6L_CKx4_zBkmUE
+  :order: 
+    - katello
+    - foreman
+    - puppet

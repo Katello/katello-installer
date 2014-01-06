@@ -1,1 +1,8 @@
-elasticsearch: true
+---
+katello: true
+foreman: 
+  organizations_enabled: true
+  custom_repo: true
+  ssl: false
+puppet:
+  server: true

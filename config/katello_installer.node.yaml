@@ -3,13 +3,12 @@
   :log_name: node-install.log
   :log_level: :debug
   :no_prefix: true
-  :mapping: {}
+  :mapping:
+    :node:
+      :manifest_name: node
+      :dir_name: katello_installer
   :answer_file: "./config/answers.node.yaml"
   :installer_dir: "."
   :default_values_dir: "./config"
   :colors: true
   :password: uxS4ujd-2VAytk6t14svT8Bf1rW011BOAQ5ZcTX5ElM
-  :mapping:
-    :node:
-      :manifest_name: node
-      :dir_name: katello_installer
