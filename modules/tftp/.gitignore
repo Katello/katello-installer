@@ -15,3 +15,5 @@ tmtags
 tags
 
 pkg/
+Gemfile.lock
+spec/fixtures/
