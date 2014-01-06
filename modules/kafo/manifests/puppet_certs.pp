@@ -35,8 +35,8 @@ class kafo::puppet_certs (
     } ->
 
     file { $client_key:
-      owner => "puppet",
-      mode => "0400"
+      owner => 'puppet',
+      mode  => '0400'
     }
 
     pubkey { $client_ca:

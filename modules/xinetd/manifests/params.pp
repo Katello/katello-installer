@@ -31,4 +31,3 @@ class xinetd::params {
   }
 
 }
-

@@ -64,11 +64,11 @@ class pulp (
 
   include apache
 
-  class { mongodb:
+  class { 'mongodb':
     logpath => '/var/lib/mongodb/mongodb.log',
-    dbpath => '/var/lib/mongodb',
+    dbpath  => '/var/lib/mongodb',
   }
-  class { qpid: }
+  class { 'qpid': }
 
   class { 'pulp::install':
     require => [Class['mongodb'], Class['qpid']]

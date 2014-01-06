@@ -9,18 +9,18 @@ class qpid::certs (
   if $ssl {
 
     cert { "${qpid::certs::hostname}-qpid-broker":
-      hostname    => $qpid::certs::hostname,
-      ensure      => present,
-      country     => $::certs::country,
-      state       => $::certs::state,
-      city        => $::certs::sity,
-      org         => $::certs::org,
-      org_unit    => $::certs::org_unit,
-      expiration  => $::certs::expiration,
-      ca          => $ca,
-      generate    => $generate,
+      hostname      => $qpid::certs::hostname,
+      ensure        => present,
+      country       => $::certs::country,
+      state         => $::certs::state,
+      city          => $::certs::sity,
+      org           => $::certs::org,
+      org_unit      => $::certs::org_unit,
+      expiration    => $::certs::expiration,
+      ca            => $ca,
+      generate      => $generate,
       regenerate    => $regenerate,
-      deploy      => $deploy,
+      deploy        => $deploy,
     }
 
     if $deploy {

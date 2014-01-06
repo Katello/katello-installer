@@ -80,7 +80,7 @@ class kafo::node_certs (
       org           => $katello_org,
       repo_provider => $katello_repo_provider,
       product       => $katello_product,
-      package_files => ["/root/ssl-build/*.noarch.rpm", "/root/ssl-build/$child_fqdn/*.noarch.rpm"],
+      package_files => ['/root/ssl-build/*.noarch.rpm', "/root/ssl-build/${child_fqdn}/*.noarch.rpm"],
       subscribe     => [Class['kafo::puppet_certs'],
                         Class['kafo::foreman_certs'],
                         Class['kafo::foreman_proxy_certs'],

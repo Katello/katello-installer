@@ -13,8 +13,8 @@ class pulp::params {
   $default_login = 'admin'
   $default_password = 'admin'
 
-  $ssl_certificate_file     = "/etc/candlepin/certs/candlepin-ca.crt"
-  $ssl_certificate_key_file = "/etc/candlepin/certs/candlepin-ca.key"
+  $ssl_certificate_file     = '/etc/candlepin/certs/candlepin-ca.crt'
+  $ssl_certificate_key_file = '/etc/candlepin/certs/candlepin-ca.key'
   $ssl_certificate_ca_file  = $ssl_certificate_file
 
   $repo_auth = true

@@ -107,7 +107,7 @@ class kafo (
     validate_present($pulp_oauth_secret)
   }
 
-  $foreman_url = "https://$parent_fqdn/foreman"
+  $foreman_url = "https://${parent_fqdn}/foreman"
 
   if $certs_tar {
     certs::tar_extract { $certs_tar:
@@ -153,7 +153,7 @@ class kafo (
       client_ca   => $kafo::params::puppet_client_ca,
     } ~>
 
-    class { puppet:
+    class { 'puppet':
       server                      => true,
       server_foreman_url          => $foreman_url,
       server_foreman_ssl_cert     => $kafo::params::puppet_client_cert,
@@ -172,8 +172,8 @@ class kafo (
     if $certs_generate {
       # we make sure the certs for foreman are properly deployed
       class { 'kafo::foreman_certs':
-        hostname => $parent_fqdn,
-        deploy   => true,
+        hostname   => $parent_fqdn,
+        deploy     => true,
         before     => Service['foreman-proxy'],
       }
     }
@@ -186,7 +186,7 @@ class kafo (
       before     => Service['foreman-proxy'],
     }
 
-    class { foreman_proxy:
+    class { 'foreman_proxy':
       custom_repo           => true,
       port                  => $foreman_proxy_port,
       puppetca              => $puppetca,

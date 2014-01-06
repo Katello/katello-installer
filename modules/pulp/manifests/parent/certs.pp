@@ -9,19 +9,19 @@ class pulp::parent::certs (
 
   # cert for nodes authenitcation
   cert { "${pulp::parent::certs::hostname}-parent-cert":
-    hostname    => $pulp::parent::certs::hostname,
-    common_name => 'pulp-child-node-cert',
-    purpose     => client,
-    country     => $::certs::country,
-    state       => $::certs::state,
-    city        => $::certs::sity,
-    org         => 'PULP',
-    org_unit    => 'NODES',
-    expiration  => $::certs::expiration,
-    ca          => $ca,
-    generate    => $generate,
+    hostname      => $pulp::parent::certs::hostname,
+    common_name   => 'pulp-child-node-cert',
+    purpose       => client,
+    country       => $::certs::country,
+    state         => $::certs::state,
+    city          => $::certs::sity,
+    org           => 'PULP',
+    org_unit      => 'NODES',
+    expiration    => $::certs::expiration,
+    ca            => $ca,
+    generate      => $generate,
     regenerate    => $regenerate,
-    deploy      => $deploy,
+    deploy        => $deploy,
   }
 
   if $deploy {
@@ -30,9 +30,9 @@ class pulp::parent::certs (
     } ~>
     # TODO: temporary until we switch to new modules for setting parent
     exec { 'reload-pulp':
-      command             => "service httpd reload",
-      path                => ["/sbin", "/usr/sbin", "/bin", "/usr/bin"],
-      refreshonly => true,
+      command             => 'service httpd reload',
+      path                => ['/sbin', '/usr/sbin', '/bin', '/usr/bin'],
+      refreshonly         => true,
     }
   }
 }

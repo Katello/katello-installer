@@ -30,10 +30,10 @@ class dns::params {
 
     $namedconf_path     = "${dnsdir}/named.conf"
 
-    #pertaining to rndc
+    # pertaining to rndc
     $rndckeypath      = "${dnsdir}/rndc.key"
 
-    #pertaining to views
+    # pertaining to views
     $publicviewpath   = "${dnsdir}/zones.conf"
 
     $forwarders       = []
