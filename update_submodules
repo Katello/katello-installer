@@ -76,6 +76,7 @@ if [ "$SOURCE" = 'thirdparty' ]; then
 elif [ "$SOURCE" = 'katello' ]; then
   update_katello_submodule apache
   update_katello_submodule certs
+  update_katello_submodule elasticsearch
   update_katello_submodule kafo
   update_katello_submodule katello
   update_katello_submodule pulp
