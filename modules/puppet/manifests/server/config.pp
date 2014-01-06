@@ -46,9 +46,8 @@ class puppet::server::config inherits puppet::config {
     $server_node_terminus = 'plain'
   }
 
-  # appends our server configuration to puppet.conf
-  File ["${puppet::server_dir}/puppet.conf"] {
-    content => template($puppet::agent_template, $puppet::server_template),
+  concat_fragment { 'puppet.conf+30-master':
+    content => template($puppet::server_template),
   }
 
   ## If the ssl dir is not the default dir, it needs to be created before running
@@ -96,6 +95,7 @@ class puppet::server::config inherits puppet::config {
       require => File[$puppet::server_envs_dir],
     }
 
+    $git_branch_map = $puppet::server_git_branch_map
     # git post hook to auto generate an environment per branch
     file { "${puppet::server_git_repo_path}/hooks/${puppet::server_post_hook_name}":
       content => template($puppet::server_post_hook_content),

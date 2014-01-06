@@ -34,22 +34,42 @@
 # $runmode::                       Select the mode to setup the puppet agent.
 #                                  Can be either 'cron' or 'service'.
 #
-# $agent_noop::                    Run the agent in noop mode.
-#                                  type:boolean
+# $cron_cmd::                      Specify command to launch when runmode is
+#                                  set 'cron'.
 #
 # $show_diff::                     Show and report changed files with diff output
+#
+# $configtimeout::                 How long the client should wait for the
+#                                  configuration to be retrieved before
+#                                  considering it a failure.
+#                                  type:integer
 #
 # $ca_server::                     Use a different ca server. Should be either
 #                                  a string with the location of the ca_server
 #                                  or 'false'.
 #
-# $agent_template::                Use a custom template for the agent puppet
+# $classfile::                     The file in which puppet agent stores a list
+#                                  of the classes associated with the retrieved
 #                                  configuration.
 #
 # $auth_template::                 Use a custom template for the auth
 #                                  configuration.
 #
 # $nsauth_template::               Use a custom template for the nsauth configuration.
+#
+# $main_template::                 Use a custom template for the main puppet
+#                                  configuration.
+#
+# == puppet::agent parameters
+#
+# $agent::                         Should a puppet agent be installed
+#                                  type:boolean
+#
+# $agent_noop::                    Run the agent in noop mode.
+#                                  type:boolean
+#
+# $agent_template::                Use a custom template for the agent puppet
+#                                  configuration.
 #
 # $client_package::                Install a custom package to provide
 #                                  the puppet client
@@ -113,6 +133,10 @@
 #
 # $server_git_repo_path::          Git repository path
 #
+# $server_git_branch_map::         Git branch to puppet env mapping for the
+#                                  default post receive hook
+#                                  type:hash
+#
 # $server_post_hook_content::      Which template to use for git post hook
 #
 # $server_post_hook_name::         Name of a git hook
@@ -126,6 +150,8 @@
 # $server_ssl_dir::                SSL directory
 #
 # $server_package::                Custom package name for puppet master
+#
+# $server_certname::               The name to use when handling certificates.
 #
 # === Advanced server parameters:
 #
@@ -203,13 +229,18 @@ class puppet (
   $splay                       = $puppet::params::splay,
   $runinterval                 = $puppet::params::runinterval,
   $runmode                     = $puppet::params::runmode,
+  $cron_cmd                    = $puppet::params::cron_cmd,
   $agent_noop                  = $puppet::params::agent_noop,
   $show_diff                   = $puppet::params::show_diff,
+  $configtimeout               = $puppet::params::configtimeout,
   $ca_server                   = $puppet::params::ca_server,
+  $classfile                   = $puppet::params::classfile,
+  $main_template               = $puppet::params::main_template,
   $agent_template              = $puppet::params::agent_template,
   $auth_template               = $puppet::params::auth_template,
   $nsauth_template             = $puppet::params::nsauth_template,
   $client_package              = $puppet::params::client_package,
+  $agent                       = $puppet::params::agent,
   $server                      = $puppet::params::server,
   $server_user                 = $puppet::params::user,
   $server_group                = $puppet::params::group,
@@ -233,12 +264,14 @@ class puppet (
   $server_manifest_path        = $puppet::params::server_manifest_path,
   $server_common_modules_path  = $puppet::params::server_common_modules_path,
   $server_git_repo_path        = $puppet::params::server_git_repo_path,
+  $server_git_branch_map       = $puppet::params::server_git_branch_map,
   $server_post_hook_content    = $puppet::params::server_post_hook_content,
   $server_post_hook_name       = $puppet::params::server_post_hook_name,
   $server_storeconfigs_backend = $puppet::params::server_storeconfigs_backend,
   $server_app_root             = $puppet::params::server_app_root,
   $server_ssl_dir              = $puppet::params::server_ssl_dir,
   $server_package              = $puppet::params::server_package,
+  $server_certname             = $puppet::params::server_certname,
   $server_enc_api              = $puppet::params::server_enc_api,
   $server_report_api           = $puppet::params::server_report_api,
   $server_foreman_url          = $foreman::params::foreman_url,
@@ -254,6 +287,7 @@ class puppet (
   validate_bool($pluginsync)
   validate_bool($splay)
   validate_bool($agent_noop)
+  validate_bool($agent)
   validate_bool($server)
   validate_bool($server_ca)
   validate_bool($server_passenger)
@@ -263,13 +297,16 @@ class puppet (
 
   validate_string($server_external_nodes)
 
-  class { 'puppet::install': } ~>
   class { 'puppet::config': } ->
   Class['puppet']
 
+  if $agent == true {
+    include ::puppet::agent
+    Class['puppet::agent'] -> Class['puppet']
+  }
+
   if $server == true {
-    class { 'puppet::server':
-      require => Class['puppet::config'],
-    }
+    include ::puppet::server
+    Class['puppet::server'] -> Class['puppet']
   }
 }
