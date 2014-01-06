@@ -12,7 +12,8 @@ class dns(
   $namedservicename = $dns::params::namedservicename,
   $zonefilepath = $dns::params::zonefilepath,
   $localzonepath = $dns::params::localzonepath,
-  $forwarders = $dns::params::forwarders
+  $forwarders = $dns::params::forwarders,
+  $listen_on_v6 = $dns::params::listen_on_v6
 ) inherits dns::params {
   class { 'dns::install': } ~>
   class { 'dns::config': } ~>

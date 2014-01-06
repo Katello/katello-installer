@@ -37,4 +37,6 @@ class dns::params {
     $publicviewpath   = "${dnsdir}/zones.conf"
 
     $forwarders       = []
+
+    $listen_on_v6     = 'any'
 }
