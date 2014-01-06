@@ -4,6 +4,7 @@
 SETTINGS = {
   :url          => "<%= @foreman_url %>",  # e.g. https://foreman.example.com
   :puppetdir    => "<%= @puppet_home %>",  # e.g. /var/lib/puppet
+  :puppetuser   => "<%= @puppet_user %>",  # e.g. puppet
   :facts        => <%= @facts %>,          # true/false to upload facts
   :timeout      => 10,
   # if CA is specified, remote Foreman host will be verified
@@ -28,6 +29,10 @@ end
 
 def puppetdir
   SETTINGS[:puppetdir] || raise("Must provide puppet base directory - please edit file")
+end
+
+def puppetuser
+  SETTINGS[:puppetuser] || 'puppet'
 end
 
 def stat_file(certname)
@@ -63,7 +68,10 @@ end
 def upload_all_facts
   Dir["#{puppetdir}/yaml/facts/*.yaml"].each do |f|
     certname = File.basename(f, ".yaml")
-    upload_facts(certname, f)
+    # Skip empty host fact yaml files
+    if File.size(f) != 0
+      upload_facts(certname, f)
+    end
   end
 end
 
@@ -77,7 +85,7 @@ end
 
 def upload_facts(certname, filename)
   # Temp file keeping the last run time
-  stat = stat_file(certname)
+  stat = stat_file("#{certname}-push-facts")
   last_run = File.exists?(stat) ? File.stat(stat).mtime.utc : Time.now - 365*24*60*60
   last_fact = File.stat(filename).mtime.utc
   if last_fact > last_run
@@ -102,6 +110,7 @@ def upload_facts(certname, filename)
         end
       end
       res.start { |http| http.request(req) }
+      cache("#{certname}-push-facts", "Facts from this host were last pushed to #{uri} at #{Time.now}\n")
     rescue => e
       raise "Could not send facts to Foreman: #{e}"
     end
@@ -145,12 +154,12 @@ end
 # Actual code starts here
 
 if __FILE__ == $0 then
-  # Setuid to puppet if we can
+  # Setuid to puppet user if we can
   begin
-    Process::GID.change_privilege(Etc.getgrnam('puppet').gid) unless Etc.getpwuid.name == 'puppet'
-    Process::UID.change_privilege(Etc.getpwnam('puppet').uid) unless Etc.getpwuid.name == 'puppet'
+    Process::GID.change_privilege(Etc.getgrnam(puppetuser).gid) unless Etc.getpwuid.name == puppetuser
+    Process::UID.change_privilege(Etc.getpwnam(puppetuser).uid) unless Etc.getpwuid.name == puppetuser
   rescue
-    $stderr.puts "cannot switch to user 'puppet', continuing as '#{Etc.getpwuid.name}'"
+    $stderr.puts "cannot switch to user #{puppetuser}, continuing as '#{Etc.getpwuid.name}'"
   end
 
   begin
