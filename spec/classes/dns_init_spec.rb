@@ -17,7 +17,8 @@ describe 'dns' do
 
     it { should contain_package('dns').with_ensure('present').with_name('bind') }
 
-    it { should contain_file('/etc/named/options.conf') }
+    it { should contain_file('/etc/named/options.conf').
+          with_content(%r{listen-on-v6 { any; };})}
     it { should contain_file('/var/named/dynamic').with_ensure('directory') }
     it { should contain_file('/etc/named.conf').
           with_content(%r{include "/etc/rndc.key"}).
@@ -30,4 +31,9 @@ describe 'dns' do
     it { should contain_service('named').with_ensure('running').with_enable(true) }
   end
 
+  describe 'with ipv6 disabled' do
+    let(:params) { {:listen_on_v6 => 'none'} }
+    it { should contain_file('/etc/named/options.conf').
+          with_content(%r{listen-on-v6 { none; };})}
+  end
 end

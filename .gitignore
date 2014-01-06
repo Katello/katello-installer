@@ -12,7 +12,21 @@ tmtags
 
 ## VIM
 *.swp
+*.swo
 tags
 
-pkg/
+## Bundler
 Gemfile.lock
+.bundle
+vendor/
+
+## rbenv / rvm
+.rbenv*
+.rvmrc*
+.ruby-version
+
+## rspec
+spec/fixtures/
+
+## Puppet module
+pkg/
