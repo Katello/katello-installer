@@ -1,4 +1,7 @@
 ---
+certs:
+  generate: true
+  deploy: true
 katello: true
 foreman: 
   organizations_enabled: true
