@@ -4,18 +4,18 @@ require 'spec_helper'
 describe 'foreman::config::passenger' do
   let :default_facts do
     {
-      :concat_basedir           => '/tmp',
-      :interfaces               => 'lo',
-      :ipaddress_lo             => '127.0.0.1',
-      :postgres_default_version => '8.4',
+      :concat_basedir => '/tmp',
+      :interfaces     => 'lo',
+      :ipaddress_lo   => '127.0.0.1',
     }
   end
 
   context 'on redhat' do
     let :facts do
       default_facts.merge({
-        :operatingsystem => 'RedHat',
-        :osfamily        => 'RedHat',
+        :operatingsystem        => 'RedHat',
+        :operatingsystemrelease => '6.4',
+        :osfamily               => 'RedHat',
       })
     end
 
@@ -99,6 +99,23 @@ describe 'foreman::config::passenger' do
 
       it 'should not contain the HTTPS vhost' do
         should_not contain_file('foreman_vhost').with_content(/<VirtualHost \*:443>/)
+      end
+    end
+
+    describe 'with custom ssl cert' do
+      let :pre_condition do
+        "class {'foreman':
+          server_ssl_cert => 'foo',
+          server_ssl_key  => 'bar',
+          server_ssl_ca   => 'baz',
+          ssl             => true,
+        }"
+      end
+
+      it 'should specify trust chain' do
+        should contain_file('foreman_vhost').with_content(/SSLCertificateFile\s+foo/)
+        should contain_file('foreman_vhost').with_content(/SSLCertificateKeyFile\s+bar/)
+        should contain_file('foreman_vhost').with_content(/SSLCertificateChainFile\s+baz/)
       end
     end
   end

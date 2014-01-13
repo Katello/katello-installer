@@ -28,6 +28,13 @@
 #
 # $repo::                   This can be stable, rc, or nightly
 #
+# $configure_epel_repo::    If disabled the EPEL repo will not be configured on RedHat family systems.
+#                           type:boolean
+#
+# $configure_scl_repo::     If disabled the the SCL repo will not be configured on Red Hat clone systems.
+#                           (Currently only installs repos for CentOS and Scientific)
+#                           type:boolean
+#
 # $selinux::                when undef, foreman-selinux will be installed if SELinux is enabled
 #                           setting to false/true will override this check (e.g. set to false on 1.1)
 #                           type:boolean
@@ -81,6 +88,12 @@
 #
 # $passenger_interface::    Defines which network interface passenger should listen on, undef means all interfaces
 #
+# $server_ssl_ca::          Defines Apache mod_ssl SSLCertificateChainFile setting in Foreman vhost conf file.
+#
+# $server_ssl_cert::        Defines Apache mod_ssl SSLCertificateFile setting in Foreman vhost conf file.
+#
+# $server_ssl_key::         Defines Apache mod_ssl SSLCertificateKeyFile setting in Foreman vhost conf file.
+#
 # $oauth_active::           Enable OAuth authentication for REST API
 #                           type:boolean
 #
@@ -101,6 +114,8 @@ class foreman (
   $ssl                    = $foreman::params::ssl,
   $custom_repo            = $foreman::params::custom_repo,
   $repo                   = $foreman::params::repo,
+  $configure_epel_repo    = $foreman::params::configure_epel_repo,
+  $configure_scl_repo     = $foreman::params::configure_scl_repo,
   $selinux                = $foreman::params::selinux,
   $gpgcheck               = $foreman::params::gpgcheck,
   $version                = $foreman::params::version,
@@ -123,6 +138,9 @@ class foreman (
   $locations_enabled      = $foreman::params::locations_enabled,
   $organizations_enabled  = $foreman::params::organizations_enabled,
   $passenger_interface    = $foreman::params::passenger_interface,
+  $server_ssl_ca          = $foreman::params::server_ssl_ca,
+  $server_ssl_cert        = $foreman::params::server_ssl_cert,
+  $server_ssl_key         = $foreman::params::server_ssl_key,
   $oauth_active           = $foreman::params::oauth_active,
   $oauth_map_users        = $foreman::params::oauth_map_users,
   $oauth_consumer_key     = $foreman::params::oauth_consumer_key,
