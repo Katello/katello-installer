@@ -4,6 +4,11 @@ Puppet::Type.type(:pubkey).provide(:katello_ssl_tool, :parent => Puppet::Provide
 
   protected
 
+  def expected_content
+    # strips the textual info from the certificate file
+    openssl('x509', '-in', source_path)
+  end
+
   def source_path
     cert_details[:pubkey]
   end

@@ -1,4 +1,5 @@
-class pulp::child::certs (
+# Pulp Node Certs
+class certs::pulp_child (
     $hostname   = $::certs::node_fqdn,
     $generate   = $::certs::generate,
     $regenerate = $::certs::regenerate,
@@ -12,8 +13,8 @@ class pulp::child::certs (
     } ~>
 
     pubkey { $pulp::ssl_ca_cert:
-      # Defined in apache::certs module
-      cert => Cert["${pulp::child::certs::hostname}-ssl"],
+      # Defined in certs::apache module
+      cert => Cert["${::certs::pulp_child::hostname}-ssl"],
     }
   }
 }

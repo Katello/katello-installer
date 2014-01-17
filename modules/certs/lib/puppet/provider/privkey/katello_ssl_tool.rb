@@ -4,6 +4,23 @@ Puppet::Type.type(:privkey).provide(:katello_ssl_tool, :parent => Puppet::Provid
 
   protected
 
+  def expected_content
+    if resource[:unprotect]
+      tmp_file = "#{source_path}.tmp"
+      begin
+        openssl('rsa',
+                '-in', source_path,
+                '-out', tmp_file,
+                '-passin', "file:#{cert_details[:passphrase_file]}")
+        File.read(tmp_file)
+      ensure
+        File.delete(tmp_file) if File.exists?(tmp_file)
+      end
+    else
+      super
+    end
+  end
+
   def source_path
     cert_details[:privkey]
   end

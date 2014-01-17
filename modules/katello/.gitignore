@@ -1,0 +1,16 @@
+.vagrant
+*.swp
+*.swo
+
+.bundle
+vendor/
+
+pkg/
+
+Gemfile.lock
+
+.rbenv*
+.rvmrc*
+.ruby-version
+
+spec/fixtures/
