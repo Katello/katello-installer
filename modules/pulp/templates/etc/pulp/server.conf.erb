@@ -41,7 +41,7 @@ server_name: <%= (has_variable?("fqdn") ? fqdn : hostname).downcase %>
 key_url: /pulp/gpg
 ks_url: /pulp/ks
 default_login: <%= @default_login %>
-default_password: <%= scope.function_decrypt([@default_password]) %>
+default_password: <%= @default_password %>
 debugging_mode: false
 
 # = Security =
@@ -231,11 +231,11 @@ db_config: /etc/pulp/logging/db.cfg
 
 [messaging]
 url: <%= @messaging_url %>
-<% if @cacert -%>
-cacert: <%= @cacert %>
+<% if @messaging_ca_cert -%>
+cacert: <%= @messaging_ca_cert %>
 <% end -%>
-<% if @clientcert -%>
-clientcert: <%= @clientcert %>
+<% if @messaging_client_cert -%>
+clientcert: <%= @messaging_client_cert %>
 <% end -%>
 topic_exchange: 'amq.topic'
 install_timeout: 36h:3d

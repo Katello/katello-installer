@@ -1,3 +1,8 @@
+#
+# == Class: pulp::child
+#
+# Install and configure Pulp node
+#
 class pulp::child (
     $parent_fqdn           = undef,
     $parent_qpid_scheme    = 'ssl',
@@ -11,7 +16,7 @@ class pulp::child (
 
   class { 'pulp::child::install': } ~>
 
-  class { 'pulp::child::certs':
+  class { '::certs::pulp_child':
     notify => [Class['pulp::config'], Service[httpd], Class['pulp::child::service']]
   } ~>
 
