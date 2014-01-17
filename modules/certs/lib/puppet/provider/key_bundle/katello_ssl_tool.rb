@@ -5,14 +5,23 @@ Puppet::Type.type(:key_bundle).provide(:katello_ssl_tool, :parent => Puppet::Pro
   protected
 
   def expected_content
-    [privkey, pubkey].map { |f| File.read(f) }.join("\n")
-  end
-
-  def privkey
-    resource[:privkey] || cert_details[:privkey]
+    [privkey, pubkey].join("\n")
   end
 
   def pubkey
+    # strips the textual info from the certificate file
+    openssl('x509', '-in', pubkey_source_path)
+  end
+
+  def privkey
+    File.read(privkey_source_path)
+  end
+
+  def privkey_source_path
+    resource[:privkey] || cert_details[:privkey]
+  end
+
+  def pubkey_source_path
     resource[:pubkey] || cert_details[:pubkey]
   end
 
