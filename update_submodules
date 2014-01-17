@@ -14,8 +14,11 @@
 #
 # ./update_submodules $SOURCE [$NAME]
 #
-# where $SOURCE might be "thirdparty", "foreman" or "katello"
+# where $SOURCE might be "thirdparty", "foreman", "katello" or "scratch".
 # when $NAME specified, only specific module will be updated.
+# when scratch specified as source, it will checkout a 'scratch' branch
+# and use update_submodules_scratch file to load module from custom
+# location
 
 set -exo pipefail
 
@@ -27,14 +30,17 @@ FOREMAN_INSTALLER_URL=git@github.com:theforeman/foreman-installer.git
 # we need to create a ref to be able to subtree from the submodule
 REF=node-installer
 FOREMAN_BRANCH=develop
-if ! [ -e $FOREMAN_INSTALLER_DIR ]; then
-  git clone $FOREMAN_INSTALLER_URL $FOREMAN_INSTALLER_DIR
-fi
-pushd $FOREMAN_INSTALLER_DIR > /dev/null;
-   git checkout $FOREMAN_BRANCH
-   git pull
-   git submodule update --init
-popd > /dev/null
+
+update_foreman_installer_repo () {
+    if ! [ -e $FOREMAN_INSTALLER_DIR ]; then
+      git clone $FOREMAN_INSTALLER_URL $FOREMAN_INSTALLER_DIR
+    fi
+    pushd $FOREMAN_INSTALLER_DIR > /dev/null;
+    git checkout $FOREMAN_BRANCH
+    git pull
+    git submodule update --init
+    popd > /dev/null
+}
 
 update_submodule () {
     name=$1
@@ -48,6 +54,12 @@ update_submodule () {
 	    command="add"
         fi
 	echo $branch
+        if [ "$command" == "add" -a -n "$branch" ]; then
+           # it's not possible to add branch from beginnign
+           # add master and pull branch
+           git subtree "add" --prefix $path $url master --squash
+           command="pull"
+        fi
         git subtree $command --prefix $path $url $branch --squash
     fi
 }
@@ -83,6 +95,7 @@ elif [ "$SOURCE" = 'katello' ]; then
   update_katello_submodule qpid
   update_katello_submodule service_wait
 elif [ "$SOURCE" = 'foreman' ]; then
+  update_foreman_installer_repo
   update_foreman_submodule create_resources
   update_foreman_submodule concat
   update_foreman_submodule concat_native
@@ -97,10 +110,19 @@ elif [ "$SOURCE" = 'foreman' ]; then
   update_foreman_submodule passenger
   update_foreman_submodule foreman_proxy
   update_foreman_submodule foreman
+elif [ "$SOURCE" = 'scratch' ]; then
+  echo Checking out scratch branch
+  git checkout -b scratch
+  git add update_submodules_scratch
+  git commit -m "Scratch start" --allow-empty
+  source update_submodules_scratch
+  cat <<MSG
+Your scratch branch is ready.
+You can go back with and forget the scratch with:
+
+  echo "git checkout -; git branch -D scratch
+MSG
 else
   echo "Unkown puppet modules source: $SOURCE"
   exit 1
 fi
-
-
-

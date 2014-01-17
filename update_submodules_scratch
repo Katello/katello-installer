@@ -1,0 +1,12 @@
+# Modify this file to update some submodules from remote repos and/or
+# custom branches.
+#
+# Example: let's say you want to test installer with new version of
+# puppetlabs-mongodb, develop branch: just put here:
+#
+# update_submodule mongodb https://github.com/puppetlabs/puppetlabs-mongodb develop
+#
+# and run
+#
+#     $ ./update_submodules scratch
+#
