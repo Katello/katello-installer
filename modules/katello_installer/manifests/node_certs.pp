@@ -49,26 +49,26 @@ class katello_installer::node_certs (
   }
 
 
-  class { 'katello_installer::puppet_certs': }
-  class { 'katello_installer::foreman_proxy_certs': }
-  class { 'apache::certs': }
-  class { 'pulp::child::certs': }
-  class { 'pulp::parent::certs':
+  class { 'certs::puppet': }
+  class { 'certs::foreman_proxy': }
+  class { 'certs::apache': }
+  class { 'certs::pulp_child': }
+  class { 'certs::pulp_parent':
     hostname => $parent_fqdn,
     deploy   => true,
   }
-  class { 'katello_installer::foreman_certs':
+  class { 'certs::foreman':
     hostname => $parent_fqdn,
     deploy   => true,
   }
 
   if $certs_tar {
     certs::tar_create { $certs_tar:
-      subscribe => [Class['katello_installer::puppet_certs'],
-                    Class['katello_installer::foreman_certs'],
-                    Class['katello_installer::foreman_proxy_certs'],
-                    Class['apache::certs'],
-                    Class['pulp::child::certs']]
+      subscribe => [Class['certs::puppet'],
+                    Class['certs::foreman'],
+                    Class['certs::foreman_proxy'],
+                    Class['certs::apache'],
+                    Class['certs::pulp_child']]
     }
   }
 
@@ -81,11 +81,11 @@ class katello_installer::node_certs (
       repo_provider => $katello_repo_provider,
       product       => $katello_product,
       package_files => ["/root/ssl-build/*.noarch.rpm", "/root/ssl-build/$child_fqdn/*.noarch.rpm"],
-      subscribe     => [Class['katello_installer::puppet_certs'],
-                        Class['katello_installer::foreman_certs'],
-                        Class['katello_installer::foreman_proxy_certs'],
-                        Class['apache::certs'],
-                        Class['pulp::child::certs']],
+      subscribe     => [Class['certs::puppet'],
+                        Class['certs::foreman'],
+                        Class['certs::foreman_proxy'],
+                        Class['certs::apache'],
+                        Class['certs::pulp_child']],
     }
 
     if $katello_activation_key {

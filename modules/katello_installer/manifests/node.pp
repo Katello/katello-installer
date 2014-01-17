@@ -129,7 +129,7 @@ class katello_installer::node (
   class { 'certs': generate => $certs_generate, deploy   => true }
 
   if $pulp {
-    class { 'apache::certs': }
+    class { 'certs::apache': }
     class { 'pulp':
       default_password => $pulp_admin_password,
       oauth_key        => $pulp_oauth_key,
@@ -147,18 +147,14 @@ class katello_installer::node (
   }
 
   if $puppet {
-    class { 'katello_installer::puppet_certs':
-      client_cert => $katello_installer::params::puppet_client_cert,
-      client_key  => $katello_installer::params::puppet_client_key,
-      client_ca   => $katello_installer::params::puppet_client_ca,
-    } ~>
+    class { 'certs::puppet': } ~>
 
     class { puppet:
       server                      => true,
       server_foreman_url          => $foreman_url,
-      server_foreman_ssl_cert     => $katello_installer::params::puppet_client_cert,
-      server_foreman_ssl_key      => $katello_installer::params::puppet_client_key,
-      server_foreman_ssl_ca       => $katello_installer::params::puppet_client_ca,
+      server_foreman_ssl_cert     => $::certs::puppet::client_cert,
+      server_foreman_ssl_key      => $::certs::puppet::client_key,
+      server_foreman_ssl_ca       => $::certs::puppet::client_ca,
       server_storeconfigs_backend => false,
       server_dynamic_environments => true,
       server_environments_owner   => 'apache',
@@ -171,17 +167,14 @@ class katello_installer::node (
 
     if $certs_generate {
       # we make sure the certs for foreman are properly deployed
-      class { 'katello_installer::foreman_certs':
+      class { 'certs::foreman':
         hostname => $parent_fqdn,
         deploy   => true,
         before     => Service['foreman-proxy'],
       }
     }
 
-    class { 'katello_installer::foreman_proxy_certs':
-      proxy_cert => $katello_installer::params::foreman_proxy_cert,
-      proxy_key  => $katello_installer::params::foreman_proxy_key,
-      proxy_ca   => $katello_installer::params::foreman_proxy_ca,
+    class { 'certs::foreman_proxy':
       require    => Package['foreman-proxy'],
       before     => Service['foreman-proxy'],
     }
@@ -190,9 +183,9 @@ class katello_installer::node (
       custom_repo           => true,
       port                  => $foreman_proxy_port,
       puppetca              => $puppetca,
-      ssl_cert              => $katello_installer::params::foreman_proxy_cert,
-      ssl_key               => $katello_installer::params::foreman_proxy_key,
-      ssl_ca                => $katello_installer::params::foreman_proxy_ca,
+      ssl_cert              => $::certs::foreman_proxy::proxy_cert,
+      ssl_key               => $::certs::foreman_proxy::proxy_key,
+      ssl_ca                => $::certs::foreman_proxy::proxy_ca,
       tftp                  => $tftp,
       tftp_servername       => $tftp_servername,
       dhcp                  => $dhcp,

@@ -11,6 +11,7 @@
   :log_name: katello-install.log
   :password: l7VtnWiPeKe412o2CVBM6yVbTkKGh6L_CKx4_zBkmUE
   :order: 
+    - certs
     - katello
     - foreman
     - puppet
