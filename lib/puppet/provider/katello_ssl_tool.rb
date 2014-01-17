@@ -24,6 +24,7 @@ module Puppet::Provider::KatelloSslTool
 
       passphrase_file = passphrase_file(cert_name)
       if File.exists?(passphrase_file)
+        details[:passphrase_file] = passphrase_file
         details[:passphrase] = File.read(passphrase_file).chomp
       end
 
@@ -33,7 +34,7 @@ module Puppet::Provider::KatelloSslTool
     def self.pubkey(name)
       # TODO: just temporarily until we have this changes in katello installer as well
       if name == 'candlepin-ca'
-        '/usr/share/katello/candlepin-cert.crt'
+        '/usr/share/katello/candlepin-ca.crt'
       else
         target_path("certs/#{name}.crt")
       end
@@ -168,6 +169,8 @@ module Puppet::Provider::KatelloSslTool
     include Puppet::Util::Checksums
 
     initvars
+
+    commands :openssl => 'openssl'
 
     def exists?
       return false unless File.exists?(resource[:path])
