@@ -2,10 +2,10 @@
 %undefine scl_prefix
 %global scl_ruby /usr/bin/ruby
 
-Name: node-installer
+Name: katello-installer
 Version: 0.0.18
 Release: 1%{?dist}
-Summary: Puppet-based installer for the katello nodes
+Summary: Puppet-based installer for the Katello and Katello Nodes
 Group: Applications/System
 License: GPLv3+ and ASL 2.0
 URL: http://katello.org
