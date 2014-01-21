@@ -29,6 +29,7 @@ sed -ri '1sX(/usr/bin/ruby|/usr/bin/env ruby)X%{scl_ruby}X' bin/*
 #configure the paths
 sed -ri 'sX\./configX%{_sysconfdir}/%{name}Xg' bin/* config/*
 sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/%{name}Xg' config/*
+sed -ri 'sX\:modules_dir.*$X:modules_dir: %{_datadir}/%{name}/modulesXg' config/*
 
 %install
 install -d -m0755 %{buildroot}%{_sysconfdir}/%{name}
@@ -36,6 +37,7 @@ install -d -m0755 %{buildroot}/%{_datadir}/%{name}
 install -d -m0755 %{buildroot}/%{_sbindir}
 cp -dpR bin modules %{buildroot}/%{_datadir}/%{name}
 cp -dpR config/* %{buildroot}/%{_sysconfdir}/%{name}
+ln -sf %{_datadir}/%{name}/bin/katello-installer %{buildroot}/%{_sbindir}/katello-installer
 ln -sf %{_datadir}/%{name}/bin/node-install %{buildroot}/%{_sbindir}/node-install
 ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node-certs-generate
 
@@ -44,11 +46,14 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %doc README.*
 %{_datadir}/%{name}
 %dir %{_sysconfdir}/%{name}
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.katello_installer.yaml
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.certs.yaml
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.node.yaml
 %config %{_sysconfdir}/%{name}/config_header.txt
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/kafo.certs.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/kafo.node.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello_installer.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello_installer.certs.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello_installer.node.yaml
+%{_sbindir}/katello-installer
 %{_sbindir}/node-install
 %{_sbindir}/node-certs-generate
 
