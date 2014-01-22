@@ -25,6 +25,8 @@ class foreman::params {
   # Choose whether you want to enable locations and organizations.
   $locations_enabled      = false
   $organizations_enabled  = false
+  $configure_epel_repo    = true
+  $configure_scl_repo     = true
 
 # Advance configurations - no need to change anything here by default
   # if set to true, no repo will be added by this module, letting you to
@@ -64,12 +66,14 @@ class foreman::params {
           $puppet_basedir  = '/usr/share/ruby/vendor_ruby/puppet'
           $yumcode = "f${::operatingsystemrelease}"
           $passenger_scl = undef
+          $plugin_prefix = 'rubygem-foreman_'
         }
         default: {
           $puppet_basedir = regsubst($::rubyversion, '^(\d+\.\d+).*$', '/usr/lib/ruby/site_ruby/\1/puppet')
           $yumcode = regsubst($::operatingsystemrelease, '^(\d+)\..*$', 'el\1')
           # add passenger::install::scl as EL uses SCL on Foreman 1.2+
           $passenger_scl = 'ruby193'
+          $plugin_prefix = 'ruby193-rubygem-foreman_'
         }
       }
     }
@@ -77,6 +81,7 @@ class foreman::params {
       $puppet_basedir  = '/usr/lib/ruby/vendor_ruby/puppet'
       $apache_conf_dir = '/etc/apache2/conf.d'
       $passenger_scl = undef
+      $plugin_prefix = 'ruby-foreman-'
     }
     Linux: {
       case $::operatingsystem {
@@ -86,6 +91,7 @@ class foreman::params {
           $yumcode = 'el6'
           # add passenger::install::scl as EL uses SCL on Foreman 1.2+
           $passenger_scl = 'ruby193'
+          $plugin_prefix = 'ruby193-rubygem-foreman_'
         }
         default: {
           fail("${::hostname}: This module does not support operatingsystem ${::operatingsystem}")
@@ -97,12 +103,18 @@ class foreman::params {
     }
   }
   $puppet_home = '/var/lib/puppet'
+  $puppet_user = 'puppet'
 
   # If CA is specified, remote Foreman host will be verified in reports/ENC scripts
   $client_ssl_ca   = "${puppet_home}/ssl/certs/ca.pem"
   # Used to authenticate to Foreman, required if require_ssl_puppetmasters is enabled
   $client_ssl_cert = "${puppet_home}/ssl/certs/${::fqdn}.pem"
   $client_ssl_key  = "${puppet_home}/ssl/private_keys/${::fqdn}.pem"
+
+  # Set these values if you want Passenger to serve a CA-provided cert instead of puppet's
+  $server_ssl_ca   = "${puppet_home}/ssl/certs/ca.pem"
+  $server_ssl_cert = "${puppet_home}/ssl/certs/${::fqdn}.pem"
+  $server_ssl_key  = "${puppet_home}/ssl/private_keys/${::fqdn}.pem"
 
   # We need the REST API interface with OAuth for some REST Puppet providers
   $oauth_active = true

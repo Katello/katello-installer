@@ -12,14 +12,7 @@
 
   AddDefaultCharset UTF-8
 
-  <Directory <%= scope.lookupvar 'foreman::app_root' %>/public>
-    <IfVersion < 2.4>
-      Allow from all
-    </IfVersion>  
-    <IfVersion >= 2.4>
-      Require all granted
-    </IfVersion>
-  </Directory>
+  <%= scope.function_template(['foreman/_assets.conf.erb']) %>
 
 </VirtualHost>
 
@@ -36,21 +29,12 @@
 
   AddDefaultCharset UTF-8
 
-  <Directory <%= scope.lookupvar 'foreman::app_root' %>/public>
-    <IfVersion < 2.4>
-      Allow from all
-    </IfVersion>  
-    <IfVersion >= 2.4>
-      Require all granted
-    </IfVersion>
-  </Directory>
-
-  # Use puppet certificates for SSL
+  <%= scope.function_template(['foreman/_assets.conf.erb']) %>
 
   SSLEngine On
-  SSLCertificateFile      /var/lib/puppet/ssl/certs/<%= @fqdn %>.pem
-  SSLCertificateKeyFile   /var/lib/puppet/ssl/private_keys/<%= @fqdn %>.pem
-  SSLCertificateChainFile /var/lib/puppet/ssl/certs/ca.pem
+  SSLCertificateFile      <%= @ssl_cert %>
+  SSLCertificateKeyFile   <%= @ssl_key %>
+  SSLCertificateChainFile <%= @ssl_ca %>
   SSLCACertificateFile    /var/lib/puppet/ssl/certs/ca.pem
   SSLVerifyClient         optional
   SSLOptions              +StdEnvVars

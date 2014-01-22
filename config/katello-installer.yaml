@@ -1,5 +1,0 @@
-:log_level: :debug
-:no_prefix: true
-:answer_file: ./config/answers.katello-installer.yaml
-:installer_dir: .
-:default_values_dir: ./config

@@ -405,12 +405,16 @@ Returns boolean based on kind and value:
 * ipaddress
 * network
 
-has_interface_with("macaddress", "x:x:x:x:x:x")
-has_interface_with("ipaddress", "127.0.0.1")    => true
+*Examples:*
+
+    has_interface_with("macaddress", "x:x:x:x:x:x")
+    has_interface_with("ipaddress", "127.0.0.1")    => true
+
 etc.
 
 If no "kind" is given, then the presence of the interface is checked:
-has_interface_with("lo")                        => true
+
+    has_interface_with("lo")                        => true
 
 
 - *Type*: rvalue
@@ -540,7 +544,7 @@ Returns true if the variable passed to this function is a string.
 
 join
 ----
-This function joins an array into a string using a seperator.
+This function joins an array into a string using a separator.
 
 *Examples:*
 
@@ -766,7 +770,7 @@ are replaced by a single character.
 
 str2bool
 --------
-This converts a string to a boolean. This attempt to convert strings that
+This converts a string to a boolean. This attempts to convert strings that
 contain things like: y, 1, t, true to 'true' and strings that contain things
 like: 0, f, n, false, no to 'false'.
 

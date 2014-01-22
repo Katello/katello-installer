@@ -128,4 +128,50 @@ describe 'foreman_proxy::config' do
         with({})
     end
   end
+
+  context 'with pupppetrun_provider set to mcollective' do
+    let :facts do
+      {
+        :fqdn                   => 'host.example.org',
+        :ipaddress              => '127.0.1.2',
+        :operatingsystem        => 'RedHat',
+        :operatingsystemrelease => '6',
+        :osfamily               => 'RedHat',
+      }
+    end
+
+    let :pre_condition do
+      'class {"foreman_proxy":
+        puppetrun          => true,
+        puppetrun_provider => "mcollective",
+      }'
+    end
+
+    it 'should contain mcollective as puppet_provider' do
+      should contain_file('/etc/foreman-proxy/settings.yml').
+        with_content(%r{^:puppet_provider: mcollective$}).
+        with({
+          :owner   => 'foreman-proxy',
+          :group   => 'foreman-proxy',
+          :mode    => '0644',
+          :require => 'Class[Foreman_proxy::Install]',
+          :notify  => 'Class[Foreman_proxy::Service]',
+        })
+    end
+  end
+
+  context 'ssl disabled' do
+    let :pre_condition do
+      'class {"foreman_proxy":
+        ssl => false,
+      }'
+    end
+
+    it 'should comment out ssl configuration files' do
+      should contain_file('/etc/foreman-proxy/settings.yml').
+        with_content(%r{^#:ssl_ca_file: ssl/certs/ca.pem$}).
+        with_content(%r{^#:ssl_certificate: ssl/certs/fqdn.pem$}).
+        with_content(%r{^#:ssl_private_key: ssl/private_keys/fqdn.key$})
+    end
+  end
 end

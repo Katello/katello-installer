@@ -3,8 +3,10 @@ class foreman::config::passenger(
 
   # specifiy which interface to bind passenger to eth0, eth1, ...
   $listen_on_interface = '',
-  $scl_prefix = undef
-
+  $scl_prefix = undef,
+  $ssl_ca = $foreman::server_ssl_ca,
+  $ssl_cert = $foreman::server_ssl_cert,
+  $ssl_key = $foreman::server_ssl_key
 ) {
   include apache::ssl
   include ::passenger
@@ -30,15 +32,8 @@ class foreman::config::passenger(
     path    => "${foreman::apache_conf_dir}/foreman.conf",
     content => template($foreman_conf),
     mode    => '0644',
-    notify  => Exec['reload-apache'],
+    notify  => Class['foreman::service'],
     require => Class['foreman::install'],
-  }
-
-  exec {'restart_foreman':
-    command     => "/bin/touch ${foreman::app_root}/tmp/restart.txt",
-    refreshonly => true,
-    cwd         => $foreman::app_root,
-    path        => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
   }
 
   file { ["${foreman::app_root}/config.ru", "${foreman::app_root}/config/environment.rb"]:

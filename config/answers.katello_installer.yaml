@@ -1,0 +1,14 @@
+---
+certs:
+  generate: true
+  deploy: true
+katello: true
+foreman: 
+  organizations_enabled: true
+  custom_repo: true
+  ssl: true
+  server_ssl_cert: /etc/pki/tls/certs/katello-node.crt
+  server_ssl_key: /etc/pki/tls/private/katello-node.key
+  server_ssl_ca: /etc/pki/tls/certs/katello-ca.crt
+puppet:
+  server: true

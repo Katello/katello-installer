@@ -15,6 +15,8 @@ class puppet::server {
     $ssl_chain     = "${::puppet::server_ssl_dir}/ca/ca_crt.pem"
   } else {
     $ssl_ca_cert = "${::puppet::server_ssl_dir}/certs/ca.pem"
+    $ssl_ca_crl  = false
+    $ssl_chain   = false
   }
 
   $ssl_cert      = "${::puppet::server_ssl_dir}/certs/${::fqdn}.pem"
@@ -35,4 +37,5 @@ class puppet::server {
   class { 'puppet::server::service': }->
   Class['puppet::server']
 
+  Class['puppet::config'] ~> Class['puppet::server::service']
 }

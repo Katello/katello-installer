@@ -25,6 +25,19 @@ class xinetd::params {
       $package_name  = 'xinetd'
       $service_name  = 'xinetd'
     }
+    'Linux': {
+      case $::operatingsystem {
+        'Amazon': {
+          $confdir      = '/etc/xinetd.d'
+          $conffile     = '/etc/xinetd.conf'
+          $package_name = 'xinetd'
+          $service_name = 'xinetd'
+        }
+        default: {
+          fail("xinetd: module does not support Linux operatingsystem ${::operatingsystem}")
+        }
+      }
+    }
     default:   {
       fail("xinetd: module does not support osfamily ${::osfamily}")
     }

@@ -3,17 +3,17 @@ require 'spec_helper'
 describe 'foreman::install' do
   let :default_facts do
     {
-      :concat_basedir           => '/tmp',
-      :interfaces               => '',
-      :postgres_default_version => '8.4',
+      :concat_basedir => '/tmp',
+      :interfaces     => '',
     }
   end
 
   context 'RedHat' do
     let :facts do
       default_facts.merge({
-        :operatingsystem => 'RedHat',
-        :osfamily        => 'RedHat',
+        :operatingsystem        => 'RedHat',
+        :operatingsystemrelease => '6.4',
+        :osfamily               => 'RedHat',
       })
     end
 
@@ -23,11 +23,14 @@ describe 'foreman::install' do
       end
 
       it { should contain_foreman__install__repos('foreman') }
-
-      it { should contain_package('foreman-postgresql').with({
-	'require' => 'Foreman::Install::Repos[foreman]',
-	'ensure' => 'present',
+      it { should contain_class('foreman::install::repos::extra').with({
+        :configure_scl_repo  => true,
+        :configure_epel_repo => true,
       })}
+
+      it { should contain_package('foreman-postgresql').with_ensure('present') }
+      it { should contain_package('foreman-postgresql').that_requires('Foreman::Install::Repos[foreman]') }
+      it { should contain_package('foreman-postgresql').that_requires('Class[foreman::install::repos::extra]') }
     end
 
     describe 'with version' do
@@ -39,10 +42,8 @@ describe 'foreman::install' do
 
       it { should contain_foreman__install__repos('foreman') }
 
-      it { should contain_package('foreman-postgresql').with({
-	'require' => 'Foreman::Install::Repos[foreman]',
-	'ensure' => 'latest',
-      })}
+      it { should contain_package('foreman-postgresql').with_ensure('latest') }
+      it { should contain_package('foreman-postgresql').that_requires('Foreman::Install::Repos[foreman]') }
     end
 
     describe 'with custom repo' do
@@ -54,7 +55,7 @@ describe 'foreman::install' do
 
       it { should_not contain_foreman__install__repos('foreman') }
 
-      it { should contain_package('foreman-postgresql').with_require([]) }
+      it { should contain_package('foreman-postgresql').that_requires('Class[foreman::install::repos::extra]') }
     end
 
     describe 'with sqlite' do
@@ -64,7 +65,8 @@ describe 'foreman::install' do
          }"
       end
 
-      it { should contain_package('foreman-sqlite').with_require('Foreman::Install::Repos[foreman]') }
+      it { should contain_package('foreman-sqlite').that_requires('Foreman::Install::Repos[foreman]') }
+      it { should contain_package('foreman-sqlite').that_requires('Class[foreman::install::repos::extra]') }
     end
 
     describe 'with postgresql' do
@@ -74,7 +76,8 @@ describe 'foreman::install' do
          }"
       end
 
-      it { should contain_package('foreman-postgresql').with_require('Foreman::Install::Repos[foreman]') }
+      it { should contain_package('foreman-postgresql').that_requires('Foreman::Install::Repos[foreman]') }
+      it { should contain_package('foreman-postgresql').that_requires('Class[foreman::install::repos::extra]') }
     end
 
     describe 'with mysql' do
@@ -84,15 +87,17 @@ describe 'foreman::install' do
          }"
       end
 
-      it { should contain_package('foreman-mysql2').with_require('Foreman::Install::Repos[foreman]') }
+      it { should contain_package('foreman-mysql2').that_requires('Foreman::Install::Repos[foreman]') }
+      it { should contain_package('foreman-mysql2').that_requires('Class[foreman::install::repos::extra]') }
     end
 
     context 'with SELinux enabled' do
       let :facts do
         default_facts.merge({
-          :operatingsystem => 'RedHat',
-          :osfamily        => 'RedHat',
-          :selinux         => 'true',
+          :operatingsystem        => 'RedHat',
+          :operatingsystemrelease => '6.4',
+          :osfamily               => 'RedHat',
+          :selinux                => 'true',
         })
       end
 
@@ -100,7 +105,8 @@ describe 'foreman::install' do
         let :pre_condition do
           "class {'foreman': }"
         end
-        it { should contain_package('foreman-selinux').with_require('Foreman::Install::Repos[foreman]') }
+        it { should contain_package('foreman-selinux').that_requires('Foreman::Install::Repos[foreman]') }
+        it { should contain_package('foreman-selinux').that_requires('Class[foreman::install::repos::extra]') }
       end
 
       describe 'with selinux false' do
@@ -118,16 +124,18 @@ describe 'foreman::install' do
              selinux => true,
            }"
         end
-        it { should contain_package('foreman-selinux').with_require('Foreman::Install::Repos[foreman]') }
+        it { should contain_package('foreman-selinux').that_requires('Foreman::Install::Repos[foreman]') }
+        it { should contain_package('foreman-selinux').that_requires('Class[foreman::install::repos::extra]') }
       end
     end
 
     context 'with SELinux disabled' do
       let :facts do
         default_facts.merge({
-          :operatingsystem => 'RedHat',
-          :osfamily        => 'RedHat',
-          :selinux         => 'false',
+          :operatingsystem        => 'RedHat',
+          :operatingsystemrelease => '6.4',
+          :osfamily               => 'RedHat',
+          :selinux                => 'false',
         })
       end
 
@@ -153,17 +161,18 @@ describe 'foreman::install' do
              selinux => true,
            }"
         end
-        it { should contain_package('foreman-selinux').with_require('Foreman::Install::Repos[foreman]') }
+        it { should contain_package('foreman-selinux').that_requires('Foreman::Install::Repos[foreman]') }
+        it { should contain_package('foreman-selinux').that_requires('Class[foreman::install::repos::extra]') }
       end
     end
-
   end
 
   context 'on debian' do
     let :facts do
       default_facts.merge({
-        :operatingsystem => 'Debian',
-        :osfamily        => 'Debian',
+        :operatingsystem        => 'Debian',
+        :operatingsystemrelease => 'wheezy',
+        :osfamily               => 'Debian',
       })
     end
 
@@ -173,11 +182,14 @@ describe 'foreman::install' do
       end
 
       it { should contain_foreman__install__repos('foreman') }
-
-      it { should contain_package('foreman-postgresql').with({
-	'require' => 'Foreman::Install::Repos[foreman]',
-	'ensure' => 'present',
+      it { should contain_class('foreman::install::repos::extra').with({
+        :configure_scl_repo  => true,
+        :configure_epel_repo => true,
       })}
+
+      it { should contain_package('foreman-postgresql').with_ensure('present') }
+      it { should contain_package('foreman-postgresql').that_requires('Foreman::Install::Repos[foreman]') }
+      it { should contain_package('foreman-postgresql').that_requires('Class[foreman::install::repos::extra]') }
     end
 
     describe 'with version' do
@@ -189,10 +201,9 @@ describe 'foreman::install' do
 
       it { should contain_foreman__install__repos('foreman') }
 
-      it { should contain_package('foreman-postgresql').with({
-	'require' => 'Foreman::Install::Repos[foreman]',
-	'ensure' => 'latest',
-      })}
+      it { should contain_package('foreman-postgresql').with_ensure('latest') }
+      it { should contain_package('foreman-postgresql').that_requires('Foreman::Install::Repos[foreman]') }
+      it { should contain_package('foreman-postgresql').that_requires('Class[foreman::install::repos::extra]') }
     end
 
     describe 'with custom repo' do
@@ -203,8 +214,7 @@ describe 'foreman::install' do
       end
 
       it { should_not contain_foreman__install__repos('foreman') }
-
-      it { should contain_package('foreman-postgresql').with_require([]) }
+      it { should contain_package('foreman-postgresql').that_requires('Class[foreman::install::repos::extra]') }
     end
 
     describe 'with sqlite' do
@@ -214,7 +224,8 @@ describe 'foreman::install' do
          }"
       end
 
-      it { should contain_package('foreman-sqlite3').with_require('Foreman::Install::Repos[foreman]') }
+      it { should contain_package('foreman-sqlite3').that_requires('Foreman::Install::Repos[foreman]') }
+      it { should contain_package('foreman-sqlite3').that_requires('Class[foreman::install::repos::extra]') }
     end
 
     describe 'with postgresql' do
@@ -224,7 +235,8 @@ describe 'foreman::install' do
          }"
       end
 
-      it { should contain_package('foreman-postgresql').with_require('Foreman::Install::Repos[foreman]') }
+      it { should contain_package('foreman-postgresql').that_requires('Foreman::Install::Repos[foreman]') }
+      it { should contain_package('foreman-postgresql').that_requires('Class[foreman::install::repos::extra]') }
     end
 
     describe 'with mysql' do
@@ -234,7 +246,8 @@ describe 'foreman::install' do
          }"
       end
 
-      it { should contain_package('foreman-mysql2').with_require('Foreman::Install::Repos[foreman]') }
+      it { should contain_package('foreman-mysql2').that_requires('Foreman::Install::Repos[foreman]') }
+      it { should contain_package('foreman-mysql2').that_requires('Class[foreman::install::repos::extra]') }
     end
   end
 end

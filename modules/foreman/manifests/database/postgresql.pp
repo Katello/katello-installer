@@ -16,8 +16,11 @@ class foreman::database::postgresql {
   }
 
   include postgresql::client, postgresql::server
-  postgresql::db { $dbname:
+  postgresql::server::db { $dbname:
     user     => $foreman::db_username,
     password => $password,
+    owner    => $foreman::db_username,
   }
+
+  Postgresql::Server::Role[$foreman::db_username] -> Postgresql::Server::Database[$dbname]
 }

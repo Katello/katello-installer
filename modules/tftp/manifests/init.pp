@@ -1,11 +1,6 @@
-class tftp {
-  include tftp::params
-  include tftp::install
-  include tftp::config
-  include tftp::service
-
-  Class['tftp::params']~>
-  Class['tftp::install']~>
-  Class['tftp::config']~>
-  Class['tftp::service']
+class tftp inherits tftp::params {
+  class {'tftp::install':} ->
+  class {'tftp::config':} ~>
+  class {'tftp::service':} ->
+  Class['tftp']
 }
