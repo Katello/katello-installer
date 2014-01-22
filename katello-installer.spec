@@ -3,7 +3,7 @@
 %global scl_ruby /usr/bin/ruby
 
 Name: katello-installer
-Version: 0.0.18
+Version: 0.0.19
 Release: 1%{?dist}
 Summary: Puppet-based installer for the Katello and Katello Nodes
 Group: Applications/System
@@ -58,6 +58,9 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %{_sbindir}/node-certs-generate
 
 %changelog
+* Wed Jan 22 2014 Eric D Helms <ehelms@redhat.com> 0.0.19-1
+- new package built with tito
+
 * Tue Oct 22 2013 Unknown name <inecas@redhat.com> 0.0.18-1
 - 1021119 - make sure private keys are never world readable (inecas@redhat.com)
 - Document the parameters of the pulp class (shk@redhat.com)
