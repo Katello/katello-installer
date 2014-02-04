@@ -1,17 +1,7 @@
-## MAC OS
-.DS_Store
-
-## TEXTMATE
-*.tmproj
-tmtags
-
-## EMACS
-*~
-\#*
-.\#*
-
-## VIM
-*.swp
-tags
-
-pkg/
+.pkg
+Gemfile.lock
+vendor
+spec/fixtures
+.rspec_system
+.bundle
+.*sw*
