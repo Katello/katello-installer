@@ -1,5 +1,5 @@
 name    'theforeman-dns'
-version '1.3.0'
+version '1.4.0'
 source 'git://github.com/theforeman/puppet-dns'
 author 'ZLeslie, theforeman'
 license 'Apache License Version 2.0'
