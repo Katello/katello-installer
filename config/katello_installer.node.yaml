@@ -10,5 +10,6 @@
   :answer_file: "./config/answers.node.yaml"
   :installer_dir: "."
   :default_values_dir: "./config"
+  :modules_dir: "./modules"
   :colors: true
   :password: uxS4ujd-2VAytk6t14svT8Bf1rW011BOAQ5ZcTX5ElM
