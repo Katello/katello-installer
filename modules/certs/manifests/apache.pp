@@ -25,19 +25,15 @@ class certs::apache (
   }
 
   if $deploy {
-    include apache
-    include apache::ssl
 
     pubkey { $apache_ssl_cert:
       ensure => present,
       cert   => Cert["${::certs::node_fqdn}-ssl"]
-    }
-
+    } ~>
     pubkey { $apache_ca_cert:
       ensure => present,
       cert   => $ca
-    }
-
+    } ~>
     privkey { $apache_ssl_key:
       ensure => present,
       cert   => Cert["${::certs::node_fqdn}-ssl"]
@@ -46,15 +42,8 @@ class certs::apache (
       owner => $apache::params::user,
       group => $apache::params::group,
       mode  => '0400';
-    }
+    } ->
+    Service['httpd']
 
-    file { "${apache::params::configdir}/ssl.conf":
-      content => template('apache/ssl.conf.erb'),
-      mode    => '0644',
-      owner   => 'root',
-      group   => 'root',
-      require => [Pubkey[$apache_ssl_cert], Privkey[$apache_ssl_key]],
-      notify  => Exec['reload-apache'],
-    } -> Service['httpd']
   }
 }
