@@ -37,8 +37,8 @@ class katello (
   class { 'katello::install': } ~>
   class { 'certs::katello': } ~>
   class { 'katello::config': } ~>
-  Exec['foreman-rake-db:seed'] ~>
-  class{ 'katello::service': }
+  class { 'katello::service': } ~>
+  Exec['foreman-rake-db:seed']
 
   class { '::certs::pulp_parent': } ~>
   class { 'pulp':
