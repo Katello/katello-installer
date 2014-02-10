@@ -89,7 +89,6 @@ elif [ "$SOURCE" = 'katello' ]; then
   update_katello_submodule candlepin
   update_katello_submodule certs
   update_katello_submodule elasticsearch
-  update_katello_submodule kafo
   update_katello_submodule katello
   update_katello_submodule pulp
   update_katello_submodule qpid
