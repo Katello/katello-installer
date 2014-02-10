@@ -1,13 +1,17 @@
 # Pulp Master Certs configuration
 class certs::pulp_parent (
-    $hostname = $::certs::node_fqdn,
-    $generate = $::certs::generate,
+    $hostname   = $::certs::node_fqdn,
+    $generate   = $::certs::generate,
     $regenerate = $::certs::regenerate,
-    $deploy   = $::certs::deploy,
-    $ca       = $::certs::default_ca,
-    $nodes_cert = '/etc/pki/pulp/nodes/node.crt',
-    $messaging_ca_cert = $pulp::params::messaging_ca_cert,
-    $messaging_client_cert = $pulp::params::messaging_client_cert
+    $deploy     = $::certs::deploy,
+    $ca         = $::certs::default_ca,
+
+    $nodes_cert_dir = '/etc/pki/pulp/nodes',
+    $nodes_cert     = 'node.crt',
+
+    $messaging_ca_cert      = $pulp::params::messaging_ca_cert,
+    $messaging_client_cert  = $pulp::params::messaging_client_cert
+
   ) inherits pulp::params {
 
   # cert for nodes authenitcation
@@ -44,7 +48,14 @@ class certs::pulp_parent (
   }
 
   if $deploy {
-    key_bundle { $::certs::pulp_parent::nodes_cert:
+
+    file { $nodes_cert_dir:
+      ensure  => directory,
+      owner   => $certs::user,
+      group   => $certs::group,
+      mode    => '0755',
+    } ->
+    key_bundle { "${nodes_cert_dir}/${::certs::pulp_parent::nodes_cert}":
       cert => Cert["${::certs::pulp_parent::hostname}-parent-cert"],
     }
 
