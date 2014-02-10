@@ -1,3 +1,7 @@
+# == Class: certs::apache
+#
+# Certs configurations for Apache
+#
 class certs::apache (
     $hostname        = $::certs::node_fqdn,
     $generate        = $::certs::generate,

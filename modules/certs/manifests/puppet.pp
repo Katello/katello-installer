@@ -1,3 +1,4 @@
+# Class for handling Puppet cert configuration
 class certs::puppet (
     $hostname    = $::certs::node_fqdn,
     $generate    = $::certs::generate,
@@ -35,8 +36,9 @@ class certs::puppet (
     } ->
 
     file { $client_key:
-      owner => "puppet",
-      mode  => "0400",
+      ensure  => file,
+      owner   => 'puppet',
+      mode    => '0400',
     }
 
     pubkey { $client_ca:

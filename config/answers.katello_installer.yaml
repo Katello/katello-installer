@@ -2,6 +2,7 @@
 certs:
   generate: true
   deploy: true
+  group: foreman
 katello: true
 foreman: 
   organizations_enabled: true

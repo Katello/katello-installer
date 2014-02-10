@@ -10,34 +10,31 @@ class certs::candlepin (
     $ca_key                 = $::certs::params::candlepin_ca_key,
     $pki_dir                = $::certs::params::candlepin_pki_dir,
     $keystore               = $::certs::params::candlepin_keystore,
-    $keystore_password_file = $::certs::params::candlepin_keystore_password_file,
-    $keystore_password      = $::certs::params::candlepin_keystore_password,
+    $keystore_password_file = $::certs::candlepin_keystore_password_file,
+    $keystore_password      = $::certs::candlepin_keystore_password,
     $candlepin_certs_dir    = $::certs::params::candlepin_certs_dir
   ) inherits certs::params {
 
   Exec { logoutput => 'on_failure' }
 
   if $deploy {
+
+    File[$certs::pki_dir] ~>
     file { $keystore_password_file:
       ensure  => file,
       content => $keystore_password,
-      mode    => '0644',
+      mode    => '0600',
       owner   => 'tomcat',
-      group   => $::certs::user_groups,
+      group   => $::certs::group,
       replace => false;
-    } ~>
-    file { $pki_dir:
-      ensure => directory,
-      owner  => 'root',
-      group  => $::certs::user_groups,
-      mode   => '0750',
     } ~>
     pubkey { $ca_cert:
       cert => $ca,
     } ~>
     file { $ca_cert:
+      ensure  => file,
       owner   => 'root',
-      group   => $::certs::user_groups,
+      group   => $::certs::group,
       mode    => '0644';
     } ~>
     privkey { $ca_key:
@@ -45,9 +42,10 @@ class certs::candlepin (
       unprotect => true;
     } ~>
     file { $ca_key:
+      ensure  => file,
       owner   => 'root',
-      group   => $::certs::user_groups,
-      mode    => '0640';
+      group   => $::certs::group,
+      mode    => '0640',
     } ~>
     exec { 'generate-ssl-keystore':
       command   => "openssl pkcs12 -export -in ${ca_cert} -inkey ${ca_key} -out ${keystore} -name tomcat -CAfile ${ca_cert} -caname root -password \"file:${keystore_password_file}\"",

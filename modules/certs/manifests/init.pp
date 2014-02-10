@@ -50,6 +50,16 @@
 # $ca_expiration::        Ca expiration attribute for managed certificates
 #                         type: string
 #
+# $pki_dir::              The PKI directory under which to place certs
+#
+# $user::                 The system user name who should own the certs;
+#                         default 'foreman'
+#
+# $group::                The group who should own the certs;
+#                         default 'foreman'
+#
+# $password_file_dir::    The location to store password files
+#
 class certs (
 
   $log_dir        = $certs::params::log_dir,
@@ -66,16 +76,28 @@ class certs (
   $org_unit       = $certs::params::org_unit,
 
   $expiration     = $certs::params::expiration,
-  $ca_expiration  = $certs::params::ca_expiration
+  $ca_expiration  = $certs::params::ca_expiration,
+
+  $pki_dir = $::certs::params::candlepin_pki_dir,
+
+  $password_file_dir = $certs::params::password_file_dir,
+
+  $user   = $certs::params::user,
+  $group  = $certs::params::group
+
   ) inherits certs::params {
 
-  $user_groups            = $certs::params::user_groups
-  $nss_db_dir             = $certs::params::nss_db_dir
+  $nss_db_dir   = $certs::params::nss_db_dir
+  $default_ca   = Ca['candlepin-ca']
 
-  class { 'certs::install': }
+  $candlepin_keystore_password_file = "${password_file_dir}/keystore_password-file"
+  $candlepin_keystore_password = find_or_create_password($candlepin_keystore_password_file)
 
-  $default_ca = Ca['candlepin-ca']
+  $ssl_pk12_password_file = "${password_file_dir}/pk12_password-file"
+  $nss_db_password_file   = "${password_file_dir}/nss_db_password-file"
 
+  class { 'certs::install': } ->
+  class { 'certs::config': } ->
   ca { 'candlepin-ca':
     ensure      => present,
     common_name => $certs::ca_common_name,

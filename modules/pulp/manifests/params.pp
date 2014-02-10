@@ -1,4 +1,7 @@
+# == Class: pulp::params
+#
 # Pulp Master Params
+#
 class pulp::params {
 
   $oauth_key = 'pulp'
@@ -21,4 +24,6 @@ class pulp::params {
   $ssl_certificate_ca_file  = $ssl_certificate_file
 
   $repo_auth = true
+
+  $user_groups = []
 }

@@ -1,3 +1,4 @@
+# Handles Foreman certs configuration
 class certs::foreman (
     $hostname    = $::certs::node_fqdn,
     $generate    = $::certs::generate,
@@ -35,8 +36,9 @@ class certs::foreman (
     } ->
 
     file { $client_key:
-      owner => "foreman",
-      mode  => "0400"
+      ensure  => file,
+      owner   => 'foreman',
+      mode    => '0400',
     }
 
     pubkey { $client_ca:

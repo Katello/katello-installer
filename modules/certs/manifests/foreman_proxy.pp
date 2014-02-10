@@ -1,3 +1,4 @@
+# Handles Foreman Proxy cert configuration
 class certs::foreman_proxy (
     $hostname   = $::certs::node_fqdn,
     $generate   = $::certs::generate,
@@ -35,8 +36,9 @@ class certs::foreman_proxy (
     } ->
 
     file { $proxy_key:
-      owner => "foreman-proxy",
-      mode  => "0400"
+      ensure  => file,
+      owner   => 'foreman-proxy',
+      mode    => '0400'
     }
 
     pubkey { $proxy_ca:

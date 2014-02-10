@@ -1,11 +1,13 @@
 # Candlepin params
 class candlepin::params {
 
-  if file_exists('/usr/sbin/tomcat') and file_exists('/usr/sbin/tomcat6') {
-    $tomcat = 'tomcat'
-  }
-  else {
-    $tomcat = 'tomcat6'
+  case $::operatingsystem {
+    'Fedora': {
+      $tomcat = 'tomcat'
+    }
+    default: {
+      $tomcat = 'tomcat6'
+    }
   }
 
   $db_user = 'candlepin'
