@@ -42,6 +42,8 @@
 #
 # $thumbslug_oauth_secret:: The oauth secret for talking to Thumbslug
 #
+# $keystore_password::      Password for keystore being used with Tomcat
+#
 class candlepin (
 
   $db_name = $candlepin::params::db_name,
@@ -65,30 +67,18 @@ class candlepin (
 
   $thumbslug_enabled = $candlepin::params::thumbslug_enabled,
   $thumbslug_oauth_key = $candlepin::params::thumbslug_oauth_key,
-  $thumbslug_oauth_secret = $candlepin::params::thumbslug_oauth_secret
+  $thumbslug_oauth_secret = $candlepin::params::thumbslug_oauth_secret,
+
+  $keystore_password = 'UNSET'
 
   ) inherits candlepin::params {
 
   $weburl = "https://${::fqdn}/${candlepin::deployment_url}/distributors?uuid="
   $apiurl = "https://${::fqdn}/${candlepin::deployment_url}/api/distributors/"
 
-  include certs::params
-  $keystore_password_file = $::certs::params::candlepin_keystore_password_file
-  $keystore_password      = $::certs::params::candlepin_keystore_password
-
-  if $candlepin::thumbslug_enabled {
-    require 'thumbslug::params'
-    $thumbslug_oauth_key = 'thumbslug'
-    $thumbslug_oauth_secret = $thumbslug::params::oauth_secret
-    $env_filtering_enabled = false
-  }
-
   class { 'candlepin::install': } ~>
   class { 'candlepin::config': } ~>
-  class { 'certs::candlepin':
-    keystore_password_file => $keystore_password_file,
-    keystore_password      => $keystore_password,
-    } ~>
+  class { 'certs::candlepin': } ~>
   class { 'candlepin::database': } ~>
   class { 'candlepin::service': } ->
   Class['candlepin']
