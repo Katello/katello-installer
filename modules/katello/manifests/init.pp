@@ -40,20 +40,24 @@ class katello (
   class { 'katello::service': } ~>
   Exec['foreman-rake-db:seed']
 
+  class { 'certs::qpid': } ~>
   class { '::certs::pulp_parent': } ~>
   class { 'pulp':
-    oauth_key     => $katello::oauth_key,
-    oauth_secret  => $katello::oauth_secret,
-    messaging_url => 'ssl://localhost:5671',
-    before        => Exec['foreman-rake-db:seed']
+    oauth_key                   => $katello::oauth_key,
+    oauth_secret                => $katello::oauth_secret,
+    messaging_url               => 'ssl://localhost:5671',
+    qpid_ssl_cert_db            => '/etc/pki/katello/nssdb',
+    qpid_ssl_cert_password_file => '/etc/katello/nss_db_password-file',
+    before                      => Exec['foreman-rake-db:seed']
   }
 
   class { 'candlepin':
-    user_groups    => $katello::user_groups,
-    oauth_key      => $katello::oauth_key,
-    oauth_secret   => $katello::oauth_secret,
-    deployment_url => 'katello',
-    before         => Exec['foreman-rake-db:seed']
+    user_groups       => $katello::user_groups,
+    oauth_key         => $katello::oauth_key,
+    oauth_secret      => $katello::oauth_secret,
+    deployment_url    => 'katello',
+    keystore_password => $::certs::candlepin_keystore_password,
+    before            => Exec['foreman-rake-db:seed']
   }
 
   class{ 'elasticsearch':
