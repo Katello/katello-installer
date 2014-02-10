@@ -4,43 +4,49 @@
 #
 # === Parameters:
 #
-# $oauth_key::                The oauth key; defaults to pulp
+# $oauth_key::                  The oauth key; defaults to pulp
 #
-# $oauth_secret::             The oauth secret; defaults to secret
+# $oauth_secret::               The oauth secret; defaults to secret
 #
-# $messaging_url::            URL for the AMQP server that Pulp will use to
-#                             communicate with nodes.
+# $messaging_url::              URL for the AMQP server that Pulp will use to
+#                               communicate with nodes.
 #
-# $messaging_ca_cert:         The CA cert to authenicate against the AMQP server.
+# $messaging_ca_cert:           The CA cert to authenicate against the AMQP server.
 #
-# $messaging_client_cert::    The client certificate signed by the CA cert
-#                             above to authenticate.
+# $messaging_client_cert::      The client certificate signed by the CA cert
+#                               above to authenticate.
 #
-# $consumers_ca_cert::        The CA cert that the consumer will use to
-#                             authenticate with the AMQP server.
+# $consumers_ca_cert::          The CA cert that the consumer will use to
+#                               authenticate with the AMQP server.
 #
-# $consumers_ca_key::         The CA key that the consumer will use to authenticate
-#                             with the AMQP server.
+# $consumers_ca_key::           The CA key that the consumer will use to authenticate
+#                               with the AMQP server.
 #
-# $consumers_crl::            Certificate revocation list for consumers which
-#                             are no valid (have had their client certs
-#                             revoked)
+# $consumers_crl::              Certificate revocation list for consumers which
+#                               are no valid (have had their client certs
+#                               revoked)
 #
-# $ssl_ca_cert::              The SSL cert that will be used by Pulp to
-#                             verify the connection
+# $ssl_ca_cert::                The SSL cert that will be used by Pulp to
+#                               verify the connection
 #
-# $default_login::            Initial login; defaults to admin
+# $default_login::              Initial login; defaults to admin
 #
-# $default_password::         Initial password; defaults to admin
+# $default_password::           Initial password; defaults to admin
 #
-# $repo_auth::                Boolean to determine whether repos managed by
-#                             pulp will require authentication. Defaults
-#                             to true
+# $repo_auth::                  Boolean to determine whether repos managed by
+#                               pulp will require authentication. Defaults
+#                               to true
 #
-# $reset_data::               Boolean to reset the data in MongoDB. Defaults
-#                             to false
+# $reset_data::                 Boolean to reset the data in MongoDB. Defaults
+#                               to false
 #
-# $reset_cache::              Boolean to flush the cache. Defaults to false
+# $reset_cache::                Boolean to flush the cache. Defaults to false
+#
+# $qpid_ssl_cert_db             The location of the Qpid SSL cert database
+#
+# $qpid_ssl_cert_password_file  Location of the password file for the Qpid SSL cert
+#
+# $user_groups::                Additional user groups to add the qpid user to
 #
 class pulp (
   $oauth_key = $pulp::params::oauth_key,
@@ -61,7 +67,11 @@ class pulp (
   $repo_auth = true,
 
   $reset_data = false,
-  $reset_cache = false
+  $reset_cache = false,
+
+  $qpid_ssl_cert_db = 'UNSET',
+  $qpid_ssl_cert_password_file = 'UNSET',
+
   ) inherits pulp::params {
 
   class { 'apache':
@@ -74,7 +84,11 @@ class pulp (
     dbpath  => '/var/lib/mongodb',
   } ~>
   class { 'qpid':
-    ssl => true,
+    ssl                     => true,
+    ssl_cert_db             => $qpid_ssl_cert_db,
+    ssl_cert_password_file  => $qpid_ssl_cert_password_file,
+    ssl_cert_name           => 'broker',
+    user_groups             => $pulp::user_groups
   } ~>
   class { 'pulp::install':
     require => [Class['mongodb'], Class['qpid']]
