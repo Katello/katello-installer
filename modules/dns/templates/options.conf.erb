@@ -1,6 +1,0 @@
-directory "<%= @vardir %>";
-<% unless @forwarders.empty? -%>
-forwarders { <%= @forwarders.join("; ") %>; };
-<% end -%>
-
-listen-on-v6 { <%= @listen_on_v6 %>; };
