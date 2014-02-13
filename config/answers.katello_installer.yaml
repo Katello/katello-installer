@@ -11,5 +11,7 @@ foreman:
   server_ssl_cert: /etc/pki/tls/certs/katello-node.crt
   server_ssl_key: /etc/pki/tls/private/katello-node.key
   server_ssl_ca: /etc/pki/tls/certs/katello-ca.crt
-puppet:
-  server: true
+capsule:
+  register_in_foreman: true
+  puppet: true
+  puppetca: true

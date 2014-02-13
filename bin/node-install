@@ -3,6 +3,15 @@
 require 'rubygems'
 require 'kafo'
 
+puts <<MESSAGE
+The node-install script is out of order right now. If you're trying
+to install the smart-proxy releated stuff on the same box as the
+master, it's possible to use `katello-install --capluse-*` options.
+See `katello-installer --help` for more info.
+MESSAGE
+
+exit 1
+
 CONFIG_FILE = "./config/katello_installer.node.yaml"
 
 Kafo::KafoConfigure.run
