@@ -1,7 +1,7 @@
 --- 
   :log_dir: /var/log/katello/katello-install
   :log_level: :debug
-  :no_prefix: true
+  :no_prefix: false
   :mapping: {}
   :answer_file: "./config/answers.katello_installer.yaml"
   :installer_dir: "."
