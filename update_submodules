@@ -112,7 +112,7 @@ elif [ "$SOURCE" = 'foreman' ]; then
 elif [ "$SOURCE" = 'scratch' ]; then
   echo Checking out scratch branch
   git checkout -b scratch
-  git add update_submodules_scratch
+  git add -f update_submodules_scratch
   git commit -m "Scratch start" --allow-empty
   source update_submodules_scratch
   cat <<MSG
