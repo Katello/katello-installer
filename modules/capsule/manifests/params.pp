@@ -1,21 +1,26 @@
-class katello_installer::params {
+# Default params for capsule settings
+class capsule::params {
 
   include foreman_proxy::params
 
-  $parent_fqdn                = undef
-  $child_fqdn                 = undef
-  $certs_tar                  = undef
-  $regenerate                 = false
+  # when not specified, we expect all in one installation
+  $parent_fqdn                = $::fqdn
+
+  # OAuth credentials
+  # shares cached_data with the foreman module so they're the same
+  $foreman_oauth_key          = cache_data('oauth_consumer_key', random_password(32))
+  $foreman_oauth_secret       = cache_data('oauth_consumer_secret', random_password(32))
+
   $pulp                       = false
   $pulp_admin_password        = undef
   $pulp_oauth_effective_user  = 'admin'
   $pulp_oauth_key             = 'katello'
   $pulp_oauth_secret          = undef
 
-  $puppet                = false
-  $puppetca              = false
+  $puppet                        = false
+  $puppetca                      = false
 
-  $foreman_proxy_port            = "9090"
+  $foreman_proxy_port            = '9090'
   $tftp                          = false
   $tftp_servername               = $foreman_proxy::params::tftp_servername
   $dhcp                          = false
@@ -28,16 +33,6 @@ class katello_installer::params {
   $dns_reverse                   = $foreman_proxy::params::dns_reverse
   $dns_interface                 = $foreman_proxy::params::dns_interface
   $dns_forwareders               = $foreman_proxy::params::dns_forwarders
-  $register_in_foreman           = false
   $foreman_oauth_effective_user  = $foreman_proxy::params::oauth_effective_user
-  $foreman_oauth_key             = "foreman"
-  $foreman_oauth_secret          = undef
-
-  $katello_user = undef
-  $katello_password = undef
-  $katello_org = "Katello Infrastructure"
-  $katello_repo_provider = "node-installer"
-  $katello_product = "node-certs"
-  $katello_activation_key = undef
 
 }

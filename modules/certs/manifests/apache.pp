@@ -13,6 +13,8 @@ class certs::apache (
     $apache_ca_cert  = $::certs::params::apache_ca_cert
   ) inherits certs::params {
 
+  require '::apache'
+
   cert { "${::certs::node_fqdn}-ssl":
     ensure      => present,
     hostname    => $::certs::node_fqdn,
@@ -43,8 +45,8 @@ class certs::apache (
       cert   => Cert["${::certs::node_fqdn}-ssl"]
     } ->
     file { $apache_ssl_key:
-      owner => $apache::params::user,
-      group => $apache::params::group,
+      owner => $::apache::user,
+      group => $::apache::group,
       mode  => '0400';
     } ->
     Service['httpd']

@@ -2,14 +2,12 @@
 #
 # === Parameters:
 #
-# $parent_fqdn::             fqdn of the parent node. Usually not need to be set.
+# $parent_fqdn::             fqdn of the parent node. Does not usually
+#                            need to be set.
 #
 # $child_fqdn::              fqdn of the child node. REQUIRED
 #
 # $certs_tar::               path to tar file with certs to generate
-#
-# $regenerate::              regenerate certs for the node
-#                            type:boolean
 #
 # $katello_user::            Katello username used for creating repo with certs.
 #                            This param indicates that we want to distribute the certs via
@@ -26,38 +24,25 @@
 # $katello_activation_key::  Activation key that registers the system
 #                            with access to the cert repo (OPTIONAL)
 #
-class katello_installer::node_certs (
+class certs::capsule (
   $parent_fqdn            = $fqdn,
-  $child_fqdn             = $katello_installer::params::child_fqdn,
-  $certs_tar              = $katello_installer::params::child_fqdn,
-  $regenerate             = $katello_installer::params::regenerate,
-  $katello_user           = $katello_installer::params::katello_user,
-  $katello_password       = $katello_installer::params::katello_password,
-  $katello_org            = $katello_installer::params::katello_org,
-  $katello_repo_provider  = $katello_installer::params::katello_repo_provider,
-  $katello_product        = $katello_installer::params::katello_product,
-  $katello_activation_key = $katello_installer::params::katello_activation_key
-  ) inherits katello_installer::params {
+  $child_fqdn             = $certs::params::node_fqdn,
+  $certs_tar              = $certs::params::certs_tar,
+  $katello_user           = $certs::params::katello_user,
+  $katello_password       = $certs::params::katello_password,
+  $katello_org            = $certs::params::katello_org,
+  $katello_repo_provider  = $certs::params::katello_repo_provider,
+  $katello_product        = $certs::params::katello_product,
+  $katello_activation_key = $certs::params::katello_activation_key
+  ) inherits certs::params {
 
   validate_present($child_fqdn)
-
-  class {'::certs':
-    node_fqdn  => $child_fqdn,
-    generate   => true,
-    regenerate => $regenerate,
-    deploy     => false
-  }
-
 
   class { 'certs::puppet': }
   class { 'certs::foreman_proxy': }
   class { 'certs::apache': }
   class { 'certs::pulp_child': }
   class { 'certs::pulp_parent':
-    hostname => $parent_fqdn,
-    deploy   => true,
-  }
-  class { 'certs::foreman':
     hostname => $parent_fqdn,
     deploy   => true,
   }
@@ -80,7 +65,8 @@ class katello_installer::node_certs (
       org           => $katello_org,
       repo_provider => $katello_repo_provider,
       product       => $katello_product,
-      package_files => ["/root/ssl-build/*.noarch.rpm", "/root/ssl-build/$child_fqdn/*.noarch.rpm"],
+      package_files => ['/root/ssl-build/*.noarch.rpm',
+                        "/root/ssl-build/${child_fqdn}/*.noarch.rpm"],
       subscribe     => [Class['certs::puppet'],
                         Class['certs::foreman'],
                         Class['certs::foreman_proxy'],

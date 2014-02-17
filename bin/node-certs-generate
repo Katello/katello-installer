@@ -3,6 +3,13 @@
 require 'rubygems'
 require 'kafo'
 
+puts <<MESSAGE
+Due to changes in the other parts of the installer and Katello itself,
+this script is temporarily out of order
+MESSAGE
+
+exit 1
+
 CONFIG_FILE = "./config/katello_installer.certs.yaml"
 
 Kafo::KafoConfigure.run

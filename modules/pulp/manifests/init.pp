@@ -74,9 +74,7 @@ class pulp (
 
   ) inherits pulp::params {
 
-  class { 'apache':
-    default_vhost => false
-  }
+  include ::apache
 
   class { 'apache::mod::wsgi':} ~>
   class { 'mongodb':

@@ -1,19 +1,17 @@
 # Candlepin Database Setup
 class candlepin::database {
 
-  # Temporary direct use of liquibase to initiall migrate the candlepin database
-  # until support is added in cpdb - https://bugzilla.redhat.com/show_bug.cgi?id=1044574
-
   # Prevents errors if run from /root etc.
   Postgresql_psql {
     cwd => '/',
   }
 
+  # Temporary direct use of liquibase to initiall migrate the candlepin database
+  # until support is added in cpdb - https://bugzilla.redhat.com/show_bug.cgi?id=1044574
   include postgresql::client, postgresql::server
   postgresql::server::db { $candlepin::db_name:
     user     => $candlepin::db_user,
-    password => postgresql_password($candlepin::db_user, $candlepin::db_pass),
-    owner    => $candlepin::db_user,
+    password => postgresql_password($candlepin::db_user, $candlepin::db_password),
   } ~>
   exec { 'cpdb':
     path        => '/bin:/usr/bin',
@@ -22,10 +20,10 @@ class candlepin::database {
                           --changeLogFile=db/changelog/changelog-create.xml \
                           --url=jdbc:postgresql:candlepin \
                           --username=${candlepin::db_user}  \
-                          --password=${candlepin::db_name} \
+                          --password=${candlepin::db_password} \
                           migrate \
                           -Dcommunity=False \
-                          >> ${candlepin::params::cpdb_log} \
+                          >> ${candlepin::log_dir}/cpdb.log \
                           2>&1 && touch /var/lib/candlepin/cpdb_done",
     creates     => "${candlepin::log_dir}/cpdb_done",
     refreshonly => true,

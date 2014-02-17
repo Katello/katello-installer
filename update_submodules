@@ -87,6 +87,7 @@ if [ "$SOURCE" = 'thirdparty' ]; then
   update_submodule mongodb https://github.com/puppetlabs/puppetlabs-mongodb
 elif [ "$SOURCE" = 'katello' ]; then
   update_katello_submodule candlepin
+  update_katello_submodule capsule
   update_katello_submodule certs
   update_katello_submodule elasticsearch
   update_katello_submodule katello
@@ -111,7 +112,7 @@ elif [ "$SOURCE" = 'foreman' ]; then
 elif [ "$SOURCE" = 'scratch' ]; then
   echo Checking out scratch branch
   git checkout -b scratch
-  git add update_submodules_scratch
+  git add -f update_submodules_scratch
   git commit -m "Scratch start" --allow-empty
   source update_submodules_scratch
   cat <<MSG

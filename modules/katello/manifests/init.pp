@@ -40,17 +40,10 @@ class katello (
   class { 'katello::service': } ~>
   Exec['foreman-rake-db:seed']
 
+  class { 'certs::foreman': }
+
   class { 'certs::qpid': } ~>
   class { '::certs::pulp_parent': } ~>
-  class { 'pulp':
-    oauth_key                   => $katello::oauth_key,
-    oauth_secret                => $katello::oauth_secret,
-    messaging_url               => 'ssl://localhost:5671',
-    qpid_ssl_cert_db            => '/etc/pki/katello/nssdb',
-    qpid_ssl_cert_password_file => '/etc/katello/nss_db_password-file',
-    before                      => Exec['foreman-rake-db:seed']
-  }
-
   class { 'candlepin':
     user_groups       => $katello::user_groups,
     oauth_key         => $katello::oauth_key,
@@ -58,9 +51,26 @@ class katello (
     deployment_url    => 'katello',
     keystore_password => $::certs::candlepin_keystore_password,
     before            => Exec['foreman-rake-db:seed']
+  } ~>
+  class { 'pulp':
+    oauth_key                   => $katello::oauth_key,
+    oauth_secret                => $katello::oauth_secret,
+    messaging_url               => 'ssl://localhost:5671',
+    before                      => Exec['foreman-rake-db:seed'],
+    qpid_ssl_cert_db            => '/etc/pki/katello/nssdb',
+    qpid_ssl_cert_password_file => '/etc/katello/nss_db_password-file',
+    consumers_ca_cert           => $certs::candlepin::ca_cert,
+    consumers_ca_key            =>  $certs::candlepin::ca_key,
+    consumers_crl               => $candlepin::crl_file
+  }
+
+  class { 'certs::candlepin':
+    before => Class['candlepin::service']
   }
 
   class{ 'elasticsearch':
     before         => Exec['foreman-rake-db:seed']
   }
+
+  User<|title == apache|>{groups +> $user_groups}
 }

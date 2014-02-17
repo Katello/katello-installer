@@ -65,49 +65,49 @@
 # $foreman_oauth_secret::           OAuth secret to be used for Foreman REST interaction
 #
 #
-class katello_installer::node (
-  $parent_fqdn                   = $katello_installer::params::parent_fqdn,
-  $certs_tar                     = $katello_installer::params::certs_tar,
-  $pulp                          = $katello_installer::params::pulp,
-  $pulp_admin_password           = $katello_installer::params::pulp_admin_password,
-  $pulp_oauth_effective_user     = $katello_installer::params::pulp_oauth_effective_user,
-  $pulp_oauth_key                = $katello_installer::params::pulp_oauth_key,
-  $pulp_oauth_secret             = $katello_installer::params::pulp_oauth_secret,
+class capsule (
+  $parent_fqdn                   = $capsule::params::parent_fqdn,
+  $certs_tar                     = $capsule::params::certs_tar,
+  $pulp                          = $capsule::params::pulp,
+  $pulp_admin_password           = $capsule::params::pulp_admin_password,
+  $pulp_oauth_effective_user     = $capsule::params::pulp_oauth_effective_user,
+  $pulp_oauth_key                = $capsule::params::pulp_oauth_key,
+  $pulp_oauth_secret             = $capsule::params::pulp_oauth_secret,
 
-  $foreman_proxy_port            = $katello_installer::params::foreman_proxy_port,
+  $foreman_proxy_port            = $capsule::params::foreman_proxy_port,
 
-  $puppet                        = $katello_installer::params::puppet,
-  $puppetca                      = $katello_installer::params::puppetca,
+  $puppet                        = $capsule::params::puppet,
+  $puppetca                      = $capsule::params::puppetca,
 
-  $tftp                          = $katello_installer::params::tftp,
-  $tftp_servername               = $katello_installer::params::tftp_servername,
+  $tftp                          = $capsule::params::tftp,
+  $tftp_servername               = $capsule::params::tftp_servername,
 
-  $dhcp                          = $katello_installer::params::dhcp,
-  $dhcp_interface                = $katello_installer::params::dhcp_interface,
-  $dhcp_gateway                  = $katello_installer::params::dhcp_gateway,
-  $dhcp_range                    = $katello_installer::params::dhcp_range,
-  $dhcp_nameservers              = $katello_installer::params::dhcp_nameservers,
+  $dhcp                          = $capsule::params::dhcp,
+  $dhcp_interface                = $capsule::params::dhcp_interface,
+  $dhcp_gateway                  = $capsule::params::dhcp_gateway,
+  $dhcp_range                    = $capsule::params::dhcp_range,
+  $dhcp_nameservers              = $capsule::params::dhcp_nameservers,
 
-  $dns                           = $katello_installer::params::dns,
-  $dns_zone                      = $katello_installer::params::dns_zone,
-  $dns_reverse                   = $katello_installer::params::dns_reverse,
-  $dns_interface                 = $katello_installer::params::dns_interface,
-  $dns_forwarders                = $katello_installer::params::dns_forwarders,
+  $dns                           = $capsule::params::dns,
+  $dns_zone                      = $capsule::params::dns_zone,
+  $dns_reverse                   = $capsule::params::dns_reverse,
+  $dns_interface                 = $capsule::params::dns_interface,
+  $dns_forwarders                = $capsule::params::dns_forwarders,
 
-  $register_in_foreman           = $katello_installer::params::register_in_foreman,
-  $foreman_oauth_effective_user  = $katello_installer::params::foreman_oauth_effective_user,
-  $foreman_oauth_key             = $katello_installer::params::foreman_oauth_key,
-  $foreman_oauth_secret          = $katello_installer::params::foreman_oauth_secret
-  ) inherits katello_installer::params {
+  $register_in_foreman           = $capsule::params::register_in_foreman,
+  $foreman_oauth_effective_user  = $capsule::params::foreman_oauth_effective_user,
+  $foreman_oauth_key             = $capsule::params::foreman_oauth_key,
+  $foreman_oauth_secret          = $capsule::params::foreman_oauth_secret
+  ) inherits capsule::params {
 
-  validate_present($parent_fqdn)
+  validate_present($capsule::parent_fqdn)
 
   if $pulp {
     validate_pulp($pulp)
     validate_present($pulp_oauth_secret)
   }
 
-  $foreman_url = "https://$parent_fqdn/foreman"
+  $foreman_url = "https://${parent_fqdn}"
 
   if $certs_tar {
     certs::tar_extract { $certs_tar:
@@ -118,15 +118,6 @@ class katello_installer::node (
   if $register_in_foreman {
     validate_present($foreman_oauth_secret)
   }
-
-  if $parent_fqdn == $fqdn {
-    # we are installing node features on the master
-    $certs_generate = true
-  } else {
-    $certs_generate = false
-  }
-
-  class { 'certs': generate => $certs_generate, deploy   => true }
 
   if $pulp {
     class { 'certs::apache': }
@@ -149,7 +140,7 @@ class katello_installer::node (
   if $puppet {
     class { 'certs::puppet': } ~>
 
-    class { puppet:
+    class { 'puppet':
       server                      => true,
       server_foreman_url          => $foreman_url,
       server_foreman_ssl_cert     => $::certs::puppet::client_cert,
@@ -165,21 +156,12 @@ class katello_installer::node (
 
   if $tftp or $dhcp or $dns or $puppet or $puppetca {
 
-    if $certs_generate {
-      # we make sure the certs for foreman are properly deployed
-      class { 'certs::foreman':
-        hostname => $parent_fqdn,
-        deploy   => true,
-        before     => Service['foreman-proxy'],
-      }
-    }
-
     class { 'certs::foreman_proxy':
       require    => Package['foreman-proxy'],
       before     => Service['foreman-proxy'],
     }
 
-    class { foreman_proxy:
+    class { 'foreman_proxy':
       custom_repo           => true,
       port                  => $foreman_proxy_port,
       puppetca              => $puppetca,
@@ -200,7 +182,7 @@ class katello_installer::node (
       dns_forwarders        => $dns_forwarders,
       register_in_foreman   => $register_in_foreman,
       foreman_base_url      => $foreman_url,
-      registered_proxy_url  => "https://${fqdn}:${foreman_proxy_port}",
+      registered_proxy_url  => "https://${::fqdn}:${capsule::foreman_proxy_port}",
       oauth_effective_user  => $foreman_oauth_effective_user,
       oauth_consumer_key    => $foreman_oauth_key,
       oauth_consumer_secret => $foreman_oauth_secret
