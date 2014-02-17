@@ -1,29 +1,64 @@
 # Pulp Master Configuration
 class pulp::config {
 
-  file {
-    '/var/lib/pulp/packages':
-      ensure => directory,
-      owner  => 'apache',
-      group  => 'apache',
-      mode   => '0755';
+  file {'/var/lib/pulp/packages':
+    ensure => directory,
+    owner  => 'apache',
+    group  => 'apache',
+    mode   => '0755';
+  }
 
-    '/etc/pulp/server.conf':
-      ensure  => file,
-      content => template('pulp/etc/pulp/server.conf.erb'),
-      require => File['/var/lib/pulp/packages'],
-      owner   => 'apache',
-      mode    => '0600';
+  file {'/etc/pulp/server.conf':
+    ensure  => file,
+    content => template('pulp/etc/pulp/server.conf.erb'),
+    owner   => 'apache',
+    group   => 'apache',
+    mode    => '0600',
+  }
 
-    '/etc/httpd/conf.d/pulp.conf':
-      ensure  => file,
-      content => template('pulp/etc/httpd/conf.d/pulp.conf.erb');
-    '/etc/pulp/repo_auth.conf':
-      ensure  => file,
-      content => template('pulp/etc/pulp/repo_auth.conf.erb');
-    '/etc/pki/pulp/content/pulp-global-repo.ca':
+  file {'/etc/httpd/conf.d/pulp.conf':
+    ensure  => file,
+    content => template('pulp/etc/httpd/conf.d/pulp.conf.erb'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+  }
+
+  file {'/etc/httpd/conf.d/pulp_puppet.conf':
+    ensure  => file,
+    content => template('pulp/etc/httpd/conf.d/pulp_puppet.conf.erb'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+  }
+
+  file {'/etc/httpd/conf.d/pulp_rpm.conf':
+    ensure  => file,
+    content => template('pulp/etc/httpd/conf.d/pulp_rpm.conf.erb'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+  }
+
+  file {'/etc/httpd/conf.d/pulp_nodes.conf':
+    ensure  => file,
+    content => template('pulp/etc/httpd/conf.d/pulp_nodes.conf.erb'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+  }
+
+  file {'/etc/pulp/repo_auth.conf':
+    ensure  => file,
+    content => template('pulp/etc/pulp/repo_auth.conf.erb'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+  }
+
+  file {'/etc/pki/pulp/content/pulp-global-repo.ca':
       ensure => link,
-      target => $pulp::consumers_ca_cert;
+      target => $pulp::consumers_ca_cert,
   }
 
   if $pulp::reset_cache {
