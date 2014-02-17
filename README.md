@@ -20,8 +20,9 @@ Examples
 # Install also provisioning-related services
 
 katello-installer --capsule-dns true\
-                  --capsule-dns-forwarders 8.8.8.8 --dns-forwarders  8.8.4.4\
+                  --capsule-dns-forwarders 8.8.8.8 --capsule-dns-forwarders  8.8.4.4\
                   --capsule-dns-interface virbr1\
+                  --capsule-dns-zone example.com\
                   --capsule-dhcp true\
                   --capsule-dhcp-interface virbr1\
                   --capsule-tftp true\
@@ -31,8 +32,9 @@ katello-installer --capsule-dns true\
 # Install only DNS with smart proxy
 
 katello-installer --capsule-dns true\
-                  --capsule-dns-forwarders 8.8.8.8 --dns-forwarders  8.8.4.4\
+                  --capsule-dns-forwarders 8.8.8.8 --capsule-dns-forwarders  8.8.4.4\
                   --capsule-dns-interface virbr1\
+                  --capsule-dns-zone example.com\
                   --capsule-puppet false\
                   --capsule-puppetca false
 ```
