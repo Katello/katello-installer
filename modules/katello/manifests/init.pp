@@ -64,6 +64,10 @@ class katello (
     consumers_crl               => $candlepin::crl_file
   }
 
+  class { 'certs::candlepin':
+    before => Class['candlepin::service']
+  }
+
   class{ 'elasticsearch':
     before         => Exec['foreman-rake-db:seed']
   }
