@@ -60,4 +60,14 @@ class certs::params {
   $candlepin_keystore               = '/etc/pki/katello/keystore'
   $candlepin_certs_dir              = '/etc/candlepin/certs'
 
+  $certs_tar              = undef
+  # Settings for uploading packages to Katello
+  $katello_user           = undef
+  $katello_password       = undef
+  $katello_org            = 'Katello Infrastructure'
+  $katello_repo_provider  = 'node-installer'
+  $katello_product        = 'node-certs'
+  $katello_activation_key = undef
+
+
 }

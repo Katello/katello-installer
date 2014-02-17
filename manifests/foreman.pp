@@ -44,5 +44,19 @@ class certs::foreman (
     pubkey { $client_ca:
       cert => $ca,
     }
+
+    $foreman_config_cmd = "${::foreman::app_root}/script/foreman-config\
+      -k ssl_ca_file -v '${client_ca}'\
+      -k ssl_certificate -v '${client_cert}'\
+      -k ssl_priv_key -v '${client_key}'"
+    exec { 'foreman_certs_config':
+      environment => ["HOME=${::foreman::app_root}"],
+      cwd         => $::foreman::app_root,
+      command     => $foreman_config_cmd,
+      unless      => "${foreman_config_cmd} --dry-run",
+      user        => $::foreman::user,
+      require     => Class['foreman::service']
+    }
+
   }
 }
