@@ -1,8 +1,6 @@
-# == Class: candlepin
+# Install and Configure candlepin
 #
-# Install and configure candlepin
-#
-# === Parameters:
+# == Parameters:
 #
 # $oauth_key::              The oauth key for talking to the candlepin API;
 #                           default 'candlepin'
@@ -16,7 +14,7 @@
 # $db_user::                The Candlepin database username;
 #                           default 'candlepin'
 #
-# $db_pass::                The Candlepin database password;
+# $db_password::            The Candlepin database password;
 #                           default 'candlepin'
 #
 # $tomcat::                 The system tomcat to use, tomcat6 on RHEL6 and tomcat on most Fedoras
@@ -46,9 +44,9 @@
 #
 class candlepin (
 
-  $db_name = $candlepin::params::db_name,
-  $db_user = $candlepin::params::db_user,
-  $db_pass = $candlepin::params::db_pass,
+  $db_name     = $candlepin::params::db_name,
+  $db_user     = $candlepin::params::db_user,
+  $db_password = $candlepin::params::db_password,
 
   $tomcat = $candlepin::params::tomcat,
 
@@ -78,9 +76,8 @@ class candlepin (
 
   class { 'candlepin::install': } ~>
   class { 'candlepin::config': } ~>
-  class { 'certs::candlepin': } ~>
   class { 'candlepin::database': } ~>
-  class { 'candlepin::service': } ->
+  class { 'candlepin::service': } ~>
   Class['candlepin']
 
 }

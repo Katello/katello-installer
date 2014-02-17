@@ -14,11 +14,10 @@ class candlepin::params {
   $db_name = 'candlepin'
 
   # this comes from keystore
-  $db_pass = 'candlepin'
+  $db_password = random_password(32)
 
   # where to store output from cpsetup execution
   $log_dir  = '/var/log/candlepin'
-  $cpdb_log = "${log_dir}/cpdb.log"
 
   $crl_file = '/var/lib/candlepin/candlepin-crl.crl'
 
@@ -29,9 +28,6 @@ class candlepin::params {
   $thumbslug_oauth_secret = 'thumbslug'
 
   $user_groups = []
-
-  # database reinitialization flag
-  $reset_data = 'NONE'
 
   $env_filtering_enabled = true
   $thumbslug_enabled = false
