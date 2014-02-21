@@ -31,6 +31,7 @@ class foreman::config::passenger(
   $servername          = $::fqdn,
   $ssl                 = $foreman::ssl,
   $ssl_ca              = $foreman::server_ssl_ca,
+  $ssl_chain           = $foreman::server_ssl_chain,
   $ssl_cert            = $foreman::server_ssl_cert,
   $ssl_key             = $foreman::server_ssl_key,
   $use_vhost           = $foreman::use_vhost,
@@ -76,35 +77,52 @@ class foreman::config::passenger(
       $listen_interface = undef
     }
 
+    file { "${apache::confd_dir}/05-foreman.d":
+      ensure => 'directory',
+      owner  => 'root',
+      group  => 'root',
+      mode   => '0644',
+    }
+
     apache::vhost { 'foreman':
       servername      => $servername,
       serveraliases   => ['foreman'],
       ip              => $listen_interface,
       port            => 80,
       docroot         => $docroot,
-      priority        => '5',
+      priority        => '05',
       options         => ['SymLinksIfOwnerMatch'],
-      custom_fragment => template('foreman/apache-fragment.conf.erb', 'foreman/_assets.conf.erb'),
+      custom_fragment => template('foreman/apache-fragment.conf.erb', 'foreman/_assets.conf.erb',
+                                  'foreman/_virt_host_include.erb'),
     }
 
     if $ssl {
+
+      file { "${apache::confd_dir}/05-foreman-ssl.d":
+        ensure => 'directory',
+        owner  => 'root',
+        group  => 'root',
+        mode   => '0644',
+      }
+
       apache::vhost { 'foreman-ssl':
         servername        => $servername,
         serveraliases     => ['foreman'],
         ip                => $listen_interface,
         port              => 443,
         docroot           => $docroot,
-        priority          => '5',
+        priority          => '05',
         options           => ['SymLinksIfOwnerMatch'],
         ssl               => true,
         ssl_cert          => $ssl_cert,
         ssl_key           => $ssl_key,
-        ssl_chain         => $ssl_ca,
+        ssl_chain         => $ssl_chain,
         ssl_ca            => $ssl_ca,
         ssl_verify_client => 'optional',
         ssl_options       => '+StdEnvVars',
         ssl_verify_depth  => '3',
-        custom_fragment   => template('foreman/apache-fragment.conf.erb', 'foreman/_assets.conf.erb'),
+        custom_fragment   => template('foreman/apache-fragment.conf.erb', 'foreman/_assets.conf.erb',
+                                      'foreman/_ssl_virt_host_include.erb'),
       }
     }
   } else {

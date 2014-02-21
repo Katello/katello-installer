@@ -23,6 +23,7 @@
 #   of 'warn' is used.
 # - The $access_log specifies if *_access.log directives should be configured.
 # - The $ensure specifies if vhost file is present or absent.
+# - The $headers is a list of Header statement strings as per http://httpd.apache.org/docs/2.2/mod/mod_headers.html#header
 # - The $request_headers is a list of RequestHeader statement strings as per http://httpd.apache.org/docs/2.2/mod/mod_headers.html#requestheader
 # - $aliases is a list of Alias hashes for mod_alias as per http://httpd.apache.org/docs/current/mod/mod_alias.html
 #   each statement is a hash in the form of { alias => '/alias', path => '/real/path/to/directory' }
@@ -93,7 +94,7 @@ define apache::vhost(
     $add_listen                  = true,
     $docroot_owner               = 'root',
     $docroot_group               = $apache::params::root_group,
-    $serveradmin                 = false,
+    $serveradmin                 = undef,
     $ssl                         = false,
     $ssl_cert                    = $apache::default_ssl_cert,
     $ssl_key                     = $apache::default_ssl_key,
@@ -114,8 +115,6 @@ define apache::vhost(
     $servername                  = $name,
     $serveraliases               = [],
     $options                     = ['Indexes','FollowSymLinks','MultiViews'],
-    $index_options               = [],
-    $index_order_default         = [],
     $override                    = ['None'],
     $directoryindex              = '',
     $vhost_name                  = '*',
@@ -148,17 +147,24 @@ define apache::vhost(
     $redirect_source             = '/',
     $redirect_dest               = undef,
     $redirect_status             = undef,
+    $redirectmatch_status        = undef,
+    $redirectmatch_regexp        = undef,
     $rack_base_uris              = undef,
+    $headers                     = undef,
     $request_headers             = undef,
     $rewrites                    = undef,
+    $rewrite_base                = undef,
     $rewrite_rule                = undef,
     $rewrite_cond                = undef,
     $setenv                      = [],
     $setenvif                    = [],
     $block                       = [],
     $ensure                      = 'present',
+    $wsgi_application_group      = undef,
     $wsgi_daemon_process         = undef,
     $wsgi_daemon_process_options = undef,
+    $wsgi_import_script          = undef,
+    $wsgi_import_script_options  = undef,
     $wsgi_process_group          = undef,
     $wsgi_script_aliases         = undef,
     $custom_fragment             = undef,
@@ -167,11 +173,13 @@ define apache::vhost(
     $fastcgi_socket              = undef,
     $fastcgi_dir                 = undef,
     $additional_includes         = [],
+    $apache_version              = $apache::apache_version
   ) {
   # The base class must be included first because it is used by parameter defaults
   if ! defined(Class['apache']) {
     fail('You must include the apache base class before using any apache defined resources')
   }
+
   $apache_name = $apache::params::apache_name
 
   validate_re($ensure, '^(present|absent)$',
@@ -192,6 +200,9 @@ define apache::vhost(
   }
 
   # Deprecated backwards-compatibility
+  if $rewrite_base {
+    warning('Apache::Vhost: parameter rewrite_base is deprecated in favor of rewrites')
+  }
   if $rewrite_rule {
     warning('Apache::Vhost: parameter rewrite_rule is deprecated in favor of rewrites')
   }
@@ -204,6 +215,9 @@ define apache::vhost(
   }
   if $wsgi_daemon_process_options {
     validate_hash($wsgi_daemon_process_options)
+  }
+  if $wsgi_import_script_options {
+    validate_hash($wsgi_import_script_options)
   }
   if $itk {
     validate_hash($itk)
@@ -263,28 +277,28 @@ define apache::vhost(
   if $access_log_file {
     $access_log_destination = "${logroot}/${access_log_file}"
   } elsif $access_log_pipe {
-    $access_log_destination = "\"${access_log_pipe}\""
+    $access_log_destination = $access_log_pipe
   } elsif $access_log_syslog {
     $access_log_destination = $access_log_syslog
   } else {
     if $ssl {
-      $access_log_destination = "${logroot}/${servername}_access_ssl.log"
+      $access_log_destination = "${logroot}/${name}_access_ssl.log"
     } else {
-      $access_log_destination = "${logroot}/${servername}_access.log"
+      $access_log_destination = "${logroot}/${name}_access.log"
     }
   }
 
   if $error_log_file {
     $error_log_destination = "${logroot}/${error_log_file}"
   } elsif $error_log_pipe {
-    $error_log_destination = "\"${error_log_pipe}\""
+    $error_log_destination = $error_log_pipe
   } elsif $error_log_syslog {
     $error_log_destination = $error_log_syslog
   } else {
     if $ssl {
-      $error_log_destination = "${logroot}/${servername}_error_ssl.log"
+      $error_log_destination = "${logroot}/${name}_error_ssl.log"
     } else {
-      $error_log_destination = "${logroot}/${servername}_error.log"
+      $error_log_destination = "${logroot}/${name}_error.log"
     }
   }
 
@@ -381,8 +395,8 @@ define apache::vhost(
     $priority_real = '25'
   }
 
-  # Check if mod_headers is required to process $request_headers
-  if $request_headers {
+  # Check if mod_headers is required to process $headers/$request_headers
+  if $headers or $request_headers {
     if ! defined(Class['apache::mod::headers']) {
       include apache::mod::headers
     }
@@ -393,17 +407,31 @@ define apache::vhost(
 
   ## Create a default directory list if none defined
   if $directories {
+    if !is_hash($directories) and !(is_array($directories) and is_hash($directories[0])) {
+      fail("Apache::Vhost[${name}]: 'directories' must be either a Hash or an Array of Hashes")
+    }
     $_directories = $directories
   } else {
-    $_directories = [ {
+    $_directory = {
       provider       => 'directory',
       path           => $docroot,
       options        => $options,
       allow_override => $override,
       directoryindex => $directoryindex,
-      order          => 'allow,deny',
-      allow          => 'from all',
-    } ]
+    }
+
+    if $apache_version == 2.4 {
+      $_directory_version = {
+        require => 'all granted',
+      }
+    } else {
+      $_directory_version = {
+        order => 'allow,deny',
+        allow => 'from all',
+      }
+    }
+
+    $_directories = [ merge($_directory, $_directory_version) ]
   }
 
   # Template uses:
@@ -449,6 +477,8 @@ define apache::vhost(
   #   - $redirect_source
   #   - $redirect_dest
   #   - $redirect_status
+  # header fragment
+  #   - $headers
   # requestheader fragment:
   #   - $request_headers
   # rewrite fragment:
@@ -479,7 +509,9 @@ define apache::vhost(
   #   - $suphp_engine
   #   - $suphp_configpath
   # wsgi fragment:
+  #   - $wsgi_application_group
   #   - $wsgi_daemon_process
+  #   - $wsgi_import_script
   #   - $wsgi_process_group
   #   - $wsgi_script_aliases
   file { "${priority_real}-${filename}.conf":

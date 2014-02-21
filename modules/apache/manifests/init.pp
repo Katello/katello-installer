@@ -52,21 +52,21 @@ class apache (
   $logroot              = $apache::params::logroot,
   $log_level            = $apache::params::log_level,
   $ports_file           = $apache::params::ports_file,
+  $apache_version       = $apache::version::default,
   $server_tokens        = 'OS',
   $server_signature     = 'On',
   $trace_enable         = 'On',
   $package_ensure       = 'installed',
 ) inherits apache::params {
-
   validate_bool($default_vhost)
   validate_bool($default_ssl_vhost)
   validate_bool($default_confd_files)
   # true/false is sufficient for both ensure and enable
   validate_bool($service_enable)
 
-  $valid_mpms_re = $::osfamily ? {
-    'FreeBSD' => '(event|itk|peruser|prefork|worker)',
-    default   => '(itk|prefork|worker)'
+  $valid_mpms_re = $apache_version ? {
+    2.4     => '(event|itk|peruser|prefork|worker)',
+    default => '(event|itk|prefork|worker)'
   }
 
   if $mpm_module {
@@ -145,10 +145,12 @@ class apache (
       creates => $mod_dir,
       require => Package['httpd'],
     }
+    # Don't purge available modules if an enable dir is used
+    $purge_mod_dir = $purge_configs and !$mod_enable_dir
     file { $mod_dir:
       ensure  => directory,
       recurse => true,
-      purge   => $purge_configs,
+      purge   => $purge_mod_dir,
       notify  => Class['Apache::Service'],
       require => Package['httpd'],
     }
@@ -215,30 +217,35 @@ class apache (
   }
 
   if $apache::params::conf_dir and $apache::params::conf_file {
-    if $::osfamily == 'redhat' or $::operatingsystem == 'amazon' {
-      $docroot              = '/var/www/html'
-      $pidfile              = 'run/httpd.pid'
-      $error_log            = 'error_log'
-      $error_documents_path = '/var/www/error'
-      $scriptalias          = '/var/www/cgi-bin'
-      $access_log_file      = 'access_log'
-    } elsif $::osfamily == 'debian' {
-      $docroot              = '/var/www'
-      $pidfile              = '${APACHE_PID_FILE}'
-      $error_log            = 'error.log'
-      $error_documents_path = '/usr/share/apache2/error'
-      $scriptalias          = '/usr/lib/cgi-bin'
-      $access_log_file      = 'access.log'
-    } elsif $::osfamily == 'freebsd' {
-      $docroot              = '/usr/local/www/apache22/data'
-      $pidfile              = '/var/run/httpd.pid'
-      $error_log            = 'httpd-error.log'
-      $error_documents_path = '/usr/local/www/apache22/error'
-      $scriptalias          = '/usr/local/www/apache22/cgi-bin'
-      $access_log_file      = 'httpd-access.log'
-    } else {
-      fail("Unsupported osfamily ${::osfamily}")
-  }
+    case $::osfamily {
+      'debian': {
+        $docroot              = '/var/www'
+        $pidfile              = '${APACHE_PID_FILE}'
+        $error_log            = 'error.log'
+        $error_documents_path = '/usr/share/apache2/error'
+        $scriptalias          = '/usr/lib/cgi-bin'
+        $access_log_file      = 'access.log'
+      }
+      'redhat': {
+        $docroot              = '/var/www/html'
+        $pidfile              = 'run/httpd.pid'
+        $error_log            = 'error_log'
+        $error_documents_path = '/var/www/error'
+        $scriptalias          = '/var/www/cgi-bin'
+        $access_log_file      = 'access_log'
+      }
+      'freebsd': {
+        $docroot              = '/usr/local/www/apache22/data'
+        $pidfile              = '/var/run/httpd.pid'
+        $error_log            = 'httpd-error.log'
+        $error_documents_path = '/usr/local/www/apache22/error'
+        $scriptalias          = '/usr/local/www/apache22/cgi-bin'
+        $access_log_file      = 'httpd-access.log'
+      }
+      default: {
+        fail("Unsupported osfamily ${::osfamily}")
+      }
+    }
 
     $apxs_workaround = $::osfamily ? {
       'freebsd' => true,

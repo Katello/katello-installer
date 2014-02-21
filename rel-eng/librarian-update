@@ -1,0 +1,22 @@
+#!/usr/bin/bash -ex
+
+function help() {
+cat <<HELP
+Script for updating the librarian repos.
+HELP
+}
+
+function update() {
+    if ! git diff-index --quiet HEAD --; then
+        echo 'This script requires clean working directory to proceed'
+        exit 1
+    fi
+
+    rm -rf Puppetfile.lock modules/*
+    librarian-puppet install --verbose
+    find modules/ -maxdepth 2 -iname .git -exec rm -rf {} \;
+    git add -A .
+    git commit -m 'Update puppet modules'
+}
+
+update

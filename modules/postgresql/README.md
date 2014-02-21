@@ -322,6 +322,9 @@ This setting can be used to override the default postgresql configuration direct
 ####`bindir`
 This setting can be used to override the default postgresql binaries directory for the target platform. If not specified, the module will use whatever directory is the default for your OS distro.
 
+####`xlogdir`
+This setting can be used to override the default postgresql xlog directory. If not specified the module will use initdb's default path.
+
 ####`user`
 This setting can be used to override the default postgresql super user and owner of postgresql related files in the file system. If not specified, the module will use the user name 'postgres'.
 
@@ -396,7 +399,7 @@ List of strings for access control for connection method, users, databases, IPv4
 ####`ipv6acls`
 List of strings for access control for connection method, users, databases, IPv6 addresses; see [postgresql documentation](http://www.postgresql.org/docs/9.2/static/auth-pg-hba-conf.html) about `pg_hba.conf` for information (please note that the link will take you to documentation for the most recent version of Postgres, however links for earlier versions can be found on that page).
 
-####`inidb_path`
+####`initdb_path`
 Path to the `initdb` command.
 
 ####`createdb_path`
@@ -454,7 +457,7 @@ The ensure parameter passed on to postgresql client package resource.
 Installs the postgresql contrib package.
 
 ####`package_name`
-The name of the postgresql client package.
+The name of the postgresql contrib package.
 
 ####`package_ensure`
 The ensure parameter passed on to postgresql contrib package resource.

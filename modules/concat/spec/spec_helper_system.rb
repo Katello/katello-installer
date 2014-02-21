@@ -21,5 +21,15 @@ RSpec.configure do |c|
 
     # Install modules and dependencies
     puppet_module_install(:source => proj_root, :module_name => 'concat')
+    shell('puppet module install puppetlabs-stdlib')
   end
+
+  c.before(:all) do
+    shell('mkdir -p /tmp/concat')
+  end
+  c.after(:all) do
+    shell('rm -rf /tmp/concat /var/lib/puppet/concat')
+  end
+
+  c.treat_symbols_as_metadata_keys_with_true_values = true
 end

@@ -90,7 +90,7 @@ describe 'apache::vhost', :type => :define do
           :title => 'should contain docroot',
           :attr  => 'docroot',
           :value => '/not/default',
-          :match => [/^  DocumentRoot \/not\/default$/,/  <Directory \/not\/default>/],
+          :match => [/^  DocumentRoot "\/not\/default"$/,/  <Directory "\/not\/default">/],
         },
         {
           :title => 'should set a port',
@@ -165,7 +165,7 @@ describe 'apache::vhost', :type => :define do
           :title => 'should accept logroot',
           :attr  => 'logroot',
           :value => '/fake/log',
-          :match => [/CustomLog \/fake\/log\//,/ErrorLog \/fake\/log\//],
+          :match => [/CustomLog "\/fake\/log\//,/ErrorLog "\/fake\/log\//],
         },
         {
           :title => 'should accept log_level',
@@ -189,31 +189,31 @@ describe 'apache::vhost', :type => :define do
           :title => 'should accept syslog destination for access log',
           :attr  => 'access_log_syslog',
           :value => 'syslog:local1',
-          :match => [/CustomLog syslog:local1 combined$/],
+          :match => [/CustomLog "syslog:local1" combined$/],
         },
         {
           :title => 'should accept syslog destination for error log',
           :attr  => 'error_log_syslog',
           :value => 'syslog',
-          :match => [/ErrorLog syslog$/],
+          :match => [/ErrorLog "syslog"$/],
         },
         {
           :title => 'should accept custom format for access logs',
           :attr  => 'access_log_format',
           :value => '%h %{X-Forwarded-For}i %l %u %t \"%r\" %s %b  \"%{Referer}i\" \"%{User-agent}i\" \"Host: %{Host}i\" %T %D',
-          :match => [/CustomLog \/var\/log\/.+_access\.log "%h %\{X-Forwarded-For\}i %l %u %t \\"%r\\" %s %b  \\"%\{Referer\}i\\" \\"%\{User-agent\}i\\" \\"Host: %\{Host\}i\\" %T %D"$/],
+          :match => [/CustomLog "\/var\/log\/.+_access\.log" "%h %\{X-Forwarded-For\}i %l %u %t \\"%r\\" %s %b  \\"%\{Referer\}i\\" \\"%\{User-agent\}i\\" \\"Host: %\{Host\}i\\" %T %D"$/],
         },
         {
           :title => 'should contain access logs',
           :attr  => 'access_log',
           :value => true,
-          :match => [/CustomLog \/var\/log\/.+_access\.log combined$/],
+          :match => [/CustomLog "\/var\/log\/.+_access\.log" combined$/],
         },
         {
           :title    => 'should not contain access logs',
           :attr     => 'access_log',
           :value    => false,
-          :notmatch => [/CustomLog \/var\/log\/.+_access\.log combined$/],
+          :notmatch => [/CustomLog "\/var\/log\/.+_access\.log" combined$/],
         },
         {
           :title => 'should contain error logs',
@@ -269,7 +269,7 @@ describe 'apache::vhost', :type => :define do
           :attr  => 'scriptalias',
           :value => '/usr/scripts',
           :match => [
-            /^  ScriptAlias \/cgi-bin\/ \/usr\/scripts$/,
+            /^  ScriptAlias \/cgi-bin\/ "\/usr\/scripts"$/,
           ],
         },
         {
@@ -277,7 +277,7 @@ describe 'apache::vhost', :type => :define do
           :attr     => 'scriptaliases',
           :value    => { 'alias' => '/blah/', 'path' => '/usr/scripts' },
           :match    => [
-            /^  ScriptAlias \/blah\/ \/usr\/scripts$/,
+            /^  ScriptAlias \/blah\/ "\/usr\/scripts"$/,
           ],
           :nomatch  => [/ScriptAlias \/cgi\-bin\//],
         },
@@ -286,8 +286,8 @@ describe 'apache::vhost', :type => :define do
           :attr     => 'scriptaliases',
           :value    => [ { 'alias' => '/blah', 'path' => '/usr/scripts' }, { 'alias' => '/blah2', 'path' => '/usr/scripts' } ],
           :match    => [
-            /^  ScriptAlias \/blah \/usr\/scripts$/,
-            /^  ScriptAlias \/blah2 \/usr\/scripts$/,
+            /^  ScriptAlias \/blah "\/usr\/scripts"$/,
+            /^  ScriptAlias \/blah2 "\/usr\/scripts"$/,
           ],
           :nomatch  => [/ScriptAlias \/cgi\-bin\//],
         },
@@ -296,8 +296,8 @@ describe 'apache::vhost', :type => :define do
           :attr     => 'scriptaliases',
           :value    => [ { 'alias' => '/blah', 'path' => '/usr/scripts' }, { 'alias' => '/blah2/', 'path' => '/usr/scripts2/' } ],
           :match    => [
-            /^  ScriptAlias \/blah \/usr\/scripts$/,
-            /^  ScriptAlias \/blah2\/ \/usr\/scripts2\/$/,
+            /^  ScriptAlias \/blah "\/usr\/scripts"$/,
+            /^  ScriptAlias \/blah2\/ "\/usr\/scripts2\/"$/,
           ],
           :nomatch  => [/ScriptAlias \/cgi\-bin\//],
         },
@@ -309,7 +309,7 @@ describe 'apache::vhost', :type => :define do
           ## use FOO instead of $1 here.
           :value    => [ { 'aliasmatch' => '^/cgi-bin(.*)', 'path' => '/usr/local/apache/cgi-binFOO' } ],
           :match    => [
-            /^  ScriptAliasMatch \^\/cgi-bin\(\.\*\) \/usr\/local\/apache\/cgi-binFOO$/
+            /^  ScriptAliasMatch \^\/cgi-bin\(\.\*\) "\/usr\/local\/apache\/cgi-binFOO"$/
           ],
         },
         {
@@ -323,8 +323,8 @@ describe 'apache::vhost', :type => :define do
             { 'aliasmatch' => '"(?x)^/git/(.*/(HEAD|info/refs|objects/(info/[^/]+|[0-9a-f]{2}/[0-9a-f]{38}|pack/pack-[0-9a-f]{40}\.(pack|idx))|git-(upload|receive)-pack))"', 'path' => '/var/www/bin/gitolite-suexec-wrapper/FOO' },
           ],
           :match    => [
-            /^  ScriptAliasMatch \^\/cgi-bin\(\.\*\) \/usr\/local\/apache\/cgi-binFOO$/,
-            /^  ScriptAliasMatch "\(\?x\)\^\/git\/\(\.\*\/\(HEAD\|info\/refs\|objects\/\(info\/\[\^\/\]\+\|\[0-9a-f\]\{2\}\/\[0-9a-f\]\{38\}\|pack\/pack-\[0-9a-f\]\{40\}\\\.\(pack\|idx\)\)\|git-\(upload\|receive\)-pack\)\)" \/var\/www\/bin\/gitolite-suexec-wrapper\/FOO$/,
+            /^  ScriptAliasMatch \^\/cgi-bin\(\.\*\) "\/usr\/local\/apache\/cgi-binFOO"$/,
+            /^  ScriptAliasMatch "\(\?x\)\^\/git\/\(\.\*\/\(HEAD\|info\/refs\|objects\/\(info\/\[\^\/\]\+\|\[0-9a-f\]\{2\}\/\[0-9a-f\]\{38\}\|pack\/pack-\[0-9a-f\]\{40\}\\\.\(pack\|idx\)\)\|git-\(upload\|receive\)-pack\)\)" "\/var\/www\/bin\/gitolite-suexec-wrapper\/FOO"$/,
           ],
         },
         {
@@ -340,10 +340,10 @@ describe 'apache::vhost', :type => :define do
             { 'alias' => '/trac', 'path' => '/etc/apache2/trac.fcgi' },
           ],
           :match    => [
-            /^  ScriptAliasMatch "\(\?x\)\^\/git\/\(\.\*\/\(HEAD\|info\/refs\|objects\/\(info\/\[\^\/\]\+\|\[0-9a-f\]\{2\}\/\[0-9a-f\]\{38\}\|pack\/pack-\[0-9a-f\]\{40\}\\\.\(pack\|idx\)\)\|git-\(upload\|receive\)-pack\)\)" \/var\/www\/bin\/gitolite-suexec-wrapper\/FOO$/,
-            /^  ScriptAlias \/git \/var\/www\/gitweb\/index\.cgi$/,
-            /^  ScriptAliasMatch \^\/cgi-bin\(\.\*\) \/usr\/local\/apache\/cgi-binFOO$/,
-            /^  ScriptAlias \/trac \/etc\/apache2\/trac.fcgi$/,
+            /^  ScriptAliasMatch "\(\?x\)\^\/git\/\(\.\*\/\(HEAD\|info\/refs\|objects\/\(info\/\[\^\/\]\+\|\[0-9a-f\]\{2\}\/\[0-9a-f\]\{38\}\|pack\/pack-\[0-9a-f\]\{40\}\\\.\(pack\|idx\)\)\|git-\(upload\|receive\)-pack\)\)" "\/var\/www\/bin\/gitolite-suexec-wrapper\/FOO"$/,
+            /^  ScriptAlias \/git "\/var\/www\/gitweb\/index\.cgi"$/,
+            /^  ScriptAliasMatch \^\/cgi-bin\(\.\*\) "\/usr\/local\/apache\/cgi-binFOO"$/,
+            /^  ScriptAlias \/trac "\/etc\/apache2\/trac.fcgi"$/,
           ],
         },
         {
@@ -353,7 +353,7 @@ describe 'apache::vhost', :type => :define do
           :match    => [
             /^  ProxyPass          \/ http:\/\/fake.com\/$/,
             /^  <Location          \/>$/,
-            /^    ProxyPassReverse \/$/,
+            /^    ProxyPassReverse http:\/\/fake.com\/$/,
             /^  <\/Location>$/,
           ],
           :notmatch => [/ProxyPass .+!$/],
@@ -365,7 +365,7 @@ describe 'apache::vhost', :type => :define do
           :match    => [
             /^  ProxyPass \/path-a http:\/\/fake.com\/a$/,
             /^  <Location \/path-a>$/,
-            /^    ProxyPassReverse \/$/,
+            /^    ProxyPassReverse http:\/\/fake.com\/a$/,
             /^  <\/Location>$/,
 
           ],
@@ -381,11 +381,11 @@ describe 'apache::vhost', :type => :define do
           :match    => [
             /^  ProxyPass \/path-a\/ http:\/\/fake.com\/a\/$/,
             /^  <Location \/path-a\/>$/,
-            /^    ProxyPassReverse \/$/,
+            /^    ProxyPassReverse http:\/\/fake.com\/a\/$/,
             /^  <\/Location>$/,
             /^  ProxyPass \/path-b http:\/\/fake.com\/b$/,
             /^  <Location \/path-b>$/,
-            /^    ProxyPassReverse \/$/,
+            /^    ProxyPassReverse http:\/\/fake.com\/b$/,
             /^  <\/Location>$/,
           ],
           :notmatch => [/ProxyPass .+!$/],
@@ -397,6 +397,15 @@ describe 'apache::vhost', :type => :define do
           :match => [
             /^  RackBaseURI \/rack1$/,
             /^  RackBaseURI \/rack2$/,
+          ],
+        },
+        {
+          :title => 'should accept headers',
+          :attr  => 'headers',
+          :value => ['add something', 'merge something_else'],
+          :match => [
+            /^  Header add something$/,
+            /^  Header merge something_else$/,
           ],
         },
         {
@@ -468,13 +477,13 @@ describe 'apache::vhost', :type => :define do
           :title => 'should accept an array of alias hashes',
           :attr  => 'aliases',
           :value => [ { 'alias' => '/', 'path' => '/var/www'} ],
-          :match => [/^  Alias \/ \/var\/www$/],
+          :match => [/^  Alias \/ "\/var\/www"$/],
         },
         {
           :title => 'should accept an alias hash',
           :attr  => 'aliases',
           :value => { 'alias' => '/', 'path' => '/var/www'},
-          :match => [/^  Alias \/ \/var\/www$/],
+          :match => [/^  Alias \/ "\/var\/www"$/],
         },
         {
           :title => 'should accept multiple aliases',
@@ -485,9 +494,9 @@ describe 'apache::vhost', :type => :define do
             { 'alias' => '/css', 'path' => '/opt/someapp/css'},
           ],
           :match => [
-            /^  Alias \/ \/var\/www$/,
-            /^  Alias \/cgi-bin \/var\/www\/cgi-bin$/,
-            /^  Alias \/css \/opt\/someapp\/css$/,
+            /^  Alias \/ "\/var\/www"$/,
+            /^  Alias \/cgi-bin "\/var\/www\/cgi-bin"$/,
+            /^  Alias \/css "\/opt\/someapp\/css"$/,
           ],
         },
         {
@@ -525,9 +534,9 @@ describe 'apache::vhost', :type => :define do
             '/tmp/proxy_group_c',
           ],
           :match => [
-            /^  Include \/tmp\/proxy_group_a$/,
-            /^  Include \/tmp\/proxy_group_b$/,
-            /^  Include \/tmp\/proxy_group_c$/,
+            /^  Include "\/tmp\/proxy_group_a"$/,
+            /^  Include "\/tmp\/proxy_group_b"$/,
+            /^  Include "\/tmp\/proxy_group_c"$/,
           ],
         },
         {
@@ -539,8 +548,8 @@ describe 'apache::vhost', :type => :define do
         {
           :title => 'should accept a php_admin_flags',
           :attr  => 'php_admin_flags',
-          :value => { 'php_engine' => 'on' },
-          :match => [/^  php_admin_flag php_engine on$/],
+          :value => { 'engine' => 'on' },
+          :match => [/^  php_admin_flag engine on$/],
         },
         {
           :title => 'should accept php_admin_values',
@@ -576,7 +585,7 @@ describe 'apache::vhost', :type => :define do
           :title => 'should accept a wsgi script alias',
           :attr  => 'wsgi_script_aliases',
           :value => { '/' => '/var/www/myapp.wsgi'},
-          :match => [/^  WSGIScriptAlias \/ \/var\/www\/myapp.wsgi$/],
+          :match => [/^  WSGIScriptAlias \/ "\/var\/www\/myapp.wsgi"$/],
         },
         {
           :title => 'should accept multiple wsgi aliases',
@@ -587,18 +596,78 @@ describe 'apache::vhost', :type => :define do
             '/'     => '/usr/local/wsgi/scripts/myapp.wsgi',
           },
           :match => [
-            /^  WSGIScriptAlias \/wiki \/usr\/local\/wsgi\/scripts\/mywiki.wsgi$/,
-            /^  WSGIScriptAlias \/blog \/usr\/local\/wsgi\/scripts\/myblog.wsgi$/,
-            /^  WSGIScriptAlias \/ \/usr\/local\/wsgi\/scripts\/myapp.wsgi$/,
+            /^  WSGIScriptAlias \/wiki "\/usr\/local\/wsgi\/scripts\/mywiki.wsgi"$/,
+            /^  WSGIScriptAlias \/blog "\/usr\/local\/wsgi\/scripts\/myblog.wsgi"$/,
+            /^  WSGIScriptAlias \/ "\/usr\/local\/wsgi\/scripts\/myapp.wsgi"$/,
           ],
         },
+        {
+          :title => 'should accept a wsgi application group',
+          :attr  => 'wsgi_application_group',
+          :value => '%{GLOBAL}',
+          :match => [/^  WSGIApplicationGroup %{GLOBAL}$/],
+        },
+        {
+          :title => 'should contain environment variables',
+          :attr  => 'access_log_env_var',
+          :value => 'admin',
+          :match => [/CustomLog "\/var\/log\/.+_access\.log" combined env=admin$/]
+        },
+        {
+          :title => 'should contain virtual_docroot',
+          :attr  => 'virtual_docroot',
+          :value => '/not/default',
+          :match => [
+            /^  VirtualDocumentRoot "\/not\/default"$/,
+          ],
+        },
+        {
+          :title    => 'should accept multiple directories',
+          :attr     => 'directories',
+          :value    => [
+            { 'path' => '/opt/app' },
+            { 'path' => '/var/www' },
+            { 'path' => '/rspec/docroot'}
+          ],
+          :match    => [
+            /^  <Directory "\/opt\/app">$/,
+            /^  <Directory "\/var\/www">$/,
+            /^  <Directory "\/rspec\/docroot">$/,
+          ],
+        },
+      ].each do |param|
+        describe "when #{param[:attr]} is #{param[:value]}" do
+          let :params do default_params.merge({ param[:attr].to_sym => param[:value] }) end
+
+          it { should contain_file("25-#{title}.conf").with_mode('0644') }
+          if param[:match]
+            it "#{param[:title]}: matches" do
+              param[:match].each do |match|
+                should contain_file("25-#{title}.conf").with_content( match )
+              end
+            end
+          end
+          if param[:notmatch]
+            it "#{param[:title]}: notmatches" do
+              param[:notmatch].each do |notmatch|
+                should_not contain_file("25-#{title}.conf").with_content( notmatch )
+              end
+            end
+          end
+        end
+      end
+    end
+
+    # Apache below 2.4 (Default Version). All match and notmatch should be a list of regexs and exact match strings
+    context ".conf content with $apache_version < 2.4" do
+      [
         {
           :title    => 'should accept a directory',
           :attr     => 'directories',
           :value    => { 'path' => '/opt/app' },
           :notmatch => ['  <Directory /rspec/docroot>'],
           :match    => [
-            /^  <Directory \/opt\/app>$/,
+            /^  <Directory "\/opt\/app">$/,
             /^    AllowOverride None$/,
             /^    Order allow,deny$/,
             /^    Allow from all$/,
@@ -619,7 +688,7 @@ describe 'apache::vhost', :type => :define do
             'passenger_enabled' => 'onf',
           },
           :match    => [
-            /^  <Directory \/opt\/app>$/,
+            /^  <Directory "\/opt\/app">$/,
             /^    Header Set X-Robots-Tag "noindex, noarchive, nosnippet"$/,
             /^    Allow from rspec.org$/,
             /^    AllowOverride Lol$/,
@@ -652,7 +721,7 @@ describe 'apache::vhost', :type => :define do
             },
           ],
           :match    => [
-            /^  <Directory \/opt\/app1>$/,
+            /^  <Directory "\/opt\/app1">$/,
             /^    Allow from rspec.org$/,
             /^    AllowOverride AuthConfig Indexes$/,
             /^    Deny from google.com$/,
@@ -660,26 +729,12 @@ describe 'apache::vhost', :type => :define do
             /^    Order deny,yned$/,
             /^    PassengerEnabled onf$/,
             /^  <\/Directory>$/,
-            /^  <Directory \/opt\/app2>$/,
+            /^  <Directory "\/opt\/app2">$/,
             /^    AllowOverride None$/,
             /^    Order allow,deny$/,
             /^    Allow from all$/,
             /^    AddHandler cgi-script .cgi$/,
             /^  <\/Directory>$/,
-          ],
-        },
-        {
-          :title    => 'should accept multiple directories',
-          :attr     => 'directories',
-          :value    => [
-            { 'path' => '/opt/app' },
-            { 'path' => '/var/www' },
-            { 'path' => '/rspec/docroot'}
-          ],
-          :match    => [
-            /^  <Directory \/opt\/app>$/,
-            /^  <Directory \/var\/www>$/,
-            /^  <Directory \/rspec\/docroot>$/,
           ],
         },
         {
@@ -691,7 +746,7 @@ describe 'apache::vhost', :type => :define do
           },
           :notmatch => ['    AllowOverride None'],
           :match => [
-            /^  <Location \/>$/,
+            /^  <Location "\/">$/,
             /^    Order allow,deny$/,
             /^    Allow from all$/,
             /^  <\/Location>$/,
@@ -706,30 +761,33 @@ describe 'apache::vhost', :type => :define do
           },
           :notmatch => ['    AllowOverride None'],
           :match => [
-            /^  <Files index.html>$/,
+            /^  <Files "index.html">$/,
             /^    Order allow,deny$/,
             /^    Allow from all$/,
             /^  <\/Files>$/,
           ],
         },
         {
-          :title => 'should contain virtual_docroot',
-          :attr  => 'virtual_docroot',
-          :value => '/not/default',
+          :title => 'should accept files match for provider',
+          :attr  => 'directories',
+          :value => {
+            'path'     => 'index.html',
+            'provider' => 'filesmatch',
+          },
+          :notmatch => ['    AllowOverride None'],
           :match => [
-            /^  VirtualDocumentRoot \/not\/default$/,
+            /^  <FilesMatch "index.html">$/,
+            /^    Order allow,deny$/,
+            /^    Allow from all$/,
+            /^  <\/FilesMatch>$/,
           ],
         },
-        {
-          :title => 'should contain environment variables',
-          :attr  => 'access_log_env_var',
-          :value => 'admin',
-          :match => [/CustomLog \/var\/log\/.+_access\.log combined env=admin$/]
-        },
-
       ].each do |param|
         describe "when #{param[:attr]} is #{param[:value]}" do
-          let :params do default_params.merge({ param[:attr].to_sym => param[:value] }) end
+          let :params do default_params.merge({
+            param[:attr].to_sym => param[:value],
+            :apache_version => 2.2,
+          }) end
 
           it { should contain_file("25-#{title}.conf").with_mode('0644') }
           if param[:match]
@@ -750,49 +808,187 @@ describe 'apache::vhost', :type => :define do
       end
     end
 
+    # Apache equals or above 2.4. All match and notmatch should be a list of regexs and exact match strings
+    context ".conf content with $apache_version >= 2.4" do
+      [
+        {
+          :title    => 'should accept a directory',
+          :attr     => 'directories',
+          :value    => { 'path' => '/opt/app' },
+          :notmatch => ['  <Directory /rspec/docroot>'],
+          :match    => [
+            /^  <Directory "\/opt\/app">$/,
+            /^    AllowOverride None$/,
+            /^    Require all granted$/,
+            /^  <\/Directory>$/,
+          ],
+        },
+        {
+          :title    => 'should accept directory directives hash',
+          :attr     => 'directories',
+          :value    => {
+            'path'              => '/opt/app',
+            'headers'           => 'Set X-Robots-Tag "noindex, noarchive, nosnippet"',
+            'allow_override'    => 'Lol',
+            'options'           => '-MultiViews',
+            'require'           => 'something denied',
+            'passenger_enabled' => 'onf',
+          },
+          :match    => [
+            /^  <Directory "\/opt\/app">$/,
+            /^    Header Set X-Robots-Tag "noindex, noarchive, nosnippet"$/,
+            /^    AllowOverride Lol$/,
+            /^    Options -MultiViews$/,
+            /^    Require something denied$/,
+            /^    PassengerEnabled onf$/,
+            /^  <\/Directory>$/,
+          ],
+        },
+        {
+          :title    => 'should accept directory directives with arrays and hashes',
+          :attr     => 'directories',
+          :value    => [
+            {
+              'path'              => '/opt/app1',
+              'allow_override'    => ['AuthConfig','Indexes'],
+              'options'           => ['-MultiViews','+MultiViews'],
+              'require'           => ['host','example.org'],
+              'passenger_enabled' => 'onf',
+            },
+            {
+              'path'        => '/opt/app2',
+              'addhandlers' => {
+                'handler'    => 'cgi-script',
+                'extensions' => '.cgi',
+              },
+            },
+          ],
+          :match    => [
+            /^  <Directory "\/opt\/app1">$/,
+            /^    AllowOverride AuthConfig Indexes$/,
+            /^    Options -MultiViews \+MultiViews$/,
+            /^    Require host example.org$/,
+            /^    PassengerEnabled onf$/,
+            /^  <\/Directory>$/,
+            /^  <Directory "\/opt\/app2">$/,
+            /^    AllowOverride None$/,
+            /^    Require all granted$/,
+            /^    AddHandler cgi-script .cgi$/,
+            /^  <\/Directory>$/,
+          ],
+        },
+        {
+          :title => 'should accept location for provider',
+          :attr  => 'directories',
+          :value => {
+            'path'     => '/',
+            'provider' => 'location',
+          },
+          :notmatch => ['    AllowOverride None'],
+          :match => [
+            /^  <Location "\/">$/,
+            /^    Require all granted$/,
+            /^  <\/Location>$/,
+          ],
+        },
+        {
+          :title => 'should accept files for provider',
+          :attr  => 'directories',
+          :value => {
+            'path'     => 'index.html',
+            'provider' => 'files',
+          },
+          :notmatch => ['    AllowOverride None'],
+          :match => [
+            /^  <Files "index.html">$/,
+            /^    Require all granted$/,
+            /^  <\/Files>$/,
+          ],
+        },
+        {
+          :title => 'should accept files match for provider',
+          :attr  => 'directories',
+          :value => {
+            'path'     => 'index.html',
+            'provider' => 'filesmatch',
+          },
+          :notmatch => ['    AllowOverride None'],
+          :match => [
+            /^  <FilesMatch "index.html">$/,
+            /^    Require all granted$/,
+            /^  <\/FilesMatch>$/,
+          ],
+        },
+      ].each do |param|
+        describe "when #{param[:attr]} is #{param[:value]}" do
+          let :params do default_params.merge({
+            param[:attr].to_sym => param[:value],
+            :apache_version => 2.4,
+          }) end
+
+          it { should contain_file("25-#{title}.conf").with_mode('0644') }
+          if param[:match]
+            it "#{param[:title]}: matches" do
+              param[:match].each do |match|
+                should contain_file("25-#{title}.conf").with_content( match )
+              end
+            end
+          end
+          if param[:notmatch]
+            it "#{param[:title]}: notmatches" do
+              param[:notmatch].each do |notmatch|
+                should_not contain_file("25-#{title}.conf").with_content( notmatch )
+              end
+            end
+          end
+        end
+      end
+    end
+
+    # All match and notmatch should be a list of regexs and exact match strings
     context ".conf content with SSL" do
       [
         {
             :title => 'should accept setting SSLCertificateFile',
             :attr  => 'ssl_cert',
             :value => '/path/to/cert.pem',
-            :match => [/^  SSLCertificateFile      \/path\/to\/cert\.pem$/],
+            :match => [/^  SSLCertificateFile      "\/path\/to\/cert\.pem"$/],
         },
         {
             :title => 'should accept setting SSLCertificateKeyFile',
             :attr  => 'ssl_key',
             :value => '/path/to/cert.pem',
-            :match => [/^  SSLCertificateKeyFile   \/path\/to\/cert\.pem$/],
+            :match => [/^  SSLCertificateKeyFile   "\/path\/to\/cert\.pem"$/],
         },
         {
             :title => 'should accept setting SSLCertificateChainFile',
             :attr  => 'ssl_chain',
             :value => '/path/to/cert.pem',
-            :match => [/^  SSLCertificateChainFile \/path\/to\/cert\.pem$/],
+            :match => [/^  SSLCertificateChainFile "\/path\/to\/cert\.pem"$/],
         },
         {
             :title => 'should accept setting SSLCertificatePath',
             :attr  => 'ssl_certs_dir',
             :value => '/path/to/certs',
-            :match => [/^  SSLCACertificatePath    \/path\/to\/certs$/],
+            :match => [/^  SSLCACertificatePath    "\/path\/to\/certs"$/],
         },
         {
             :title => 'should accept setting SSLCertificateFile',
             :attr  => 'ssl_ca',
             :value => '/path/to/ca.pem',
-            :match => [/^  SSLCACertificateFile    \/path\/to\/ca\.pem$/],
+            :match => [/^  SSLCACertificateFile    "\/path\/to\/ca\.pem"$/],
         },
         {
             :title => 'should accept setting SSLRevocationPath',
             :attr  => 'ssl_crl_path',
             :value => '/path/to/crl',
-            :match => [/^  SSLCARevocationPath     \/path\/to\/crl$/],
+            :match => [/^  SSLCARevocationPath     "\/path\/to\/crl"$/],
         },
         {
             :title => 'should accept setting SSLRevocationFile',
             :attr  => 'ssl_crl',
             :value => '/path/to/crl.pem',
-            :match => [/^  SSLCARevocationFile     \/path\/to\/crl\.pem$/],
+            :match => [/^  SSLCARevocationFile     "\/path\/to\/crl\.pem"$/],
         },
         {
             :title => 'should accept setting SSLProxyEngine',
@@ -926,11 +1122,24 @@ describe 'apache::vhost', :type => :define do
         end
       end
 
+      describe 'when wsgi_import_script and wsgi_import_script_options are specified' do
+        let :params do default_params.merge({
+          :wsgi_import_script         => '/var/www/demo.wsgi',
+          :wsgi_import_script_options => { 'application-group' => '%{GLOBAL}', 'process-group' => 'wsgi' },
+        }) end
+        it 'should set wsgi_import_script_options' do
+          should contain_file("25-#{title}.conf").with_content(
+            /^  WSGIImportScript \/var\/www\/demo.wsgi application-group=%{GLOBAL} process-group=wsgi$/
+          )
+        end
+      end
+
       describe 'when rewrites are specified' do
         let :params do default_params.merge({
           :rewrites => [
             {
-              'comment'       => 'test rewrites',
+              'comment'      => 'test rewrites',
+              'rewrite_base' => '/mytestpath/',
               'rewrite_cond' => ['%{HTTP_USER_AGENT} ^Lynx/ [OR]', '%{HTTP_USER_AGENT} ^Mozilla/[12]'],
               'rewrite_rule' => ['^index\.html$ welcome.html', '^index\.cgi$ index.php'],
             }
@@ -942,6 +1151,9 @@ describe 'apache::vhost', :type => :define do
           )
           should contain_file("25-#{title}.conf").with_content(
             /^  RewriteCond %\{HTTP_USER_AGENT\} \^Lynx\/ \[OR\]$/
+          )
+          should contain_file("25-#{title}.conf").with_content(
+            /^  RewriteBase \/mytestpath\/$/
           )
           should contain_file("25-#{title}.conf").with_content(
             /^  RewriteCond %\{HTTP_USER_AGENT\} \^Mozilla\/\[12\]$/
@@ -974,7 +1186,7 @@ describe 'apache::vhost', :type => :define do
         }) end
         it 'should set suphp_configpath' do
           should contain_file("25-#{title}.conf").with_content(
-            /^  suPHP_ConfigPath \/etc\/php5\/apache2$/
+            /^  suPHP_ConfigPath "\/etc\/php5\/apache2"$/
           )
         end
       end
@@ -1104,6 +1316,20 @@ describe 'apache::vhost', :type => :define do
 
           it { should contain_file("25-#{title}.conf").with_content %r{  Redirect permanent /login http://10\.0\.0\.10/login} }
           it { should contain_file("25-#{title}.conf").with_content %r{  Redirect  /logout http://10\.0\.0\.10/logout} }
+        end
+        describe 'redirect match rules' do
+          let :params do
+            default_params.merge({
+              :redirectmatch_status => [
+                '404',
+              ],
+              :redirectmatch_regexp   => [
+                '/\.git(/.*|$)',
+              ],
+            })
+          end
+
+          it { should contain_file("25-#{title}.conf").with_content %r{  RedirectMatch 404 } }
         end
         describe 'without a status' do
           let :params do

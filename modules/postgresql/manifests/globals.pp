@@ -27,6 +27,7 @@ class postgresql::globals (
   $datadir              = undef,
   $confdir              = undef,
   $bindir               = undef,
+  $xlogdir              = undef,
 
   $user                 = undef,
   $group                = undef,
@@ -78,6 +79,7 @@ class postgresql::globals (
       /Archlinux/ => '9.2',
       default => '9.2',
     },
+    'FreeBSD' => '93',
     default => undef,
   }
   $globals_version = pick($version, $default_version, 'unknown')

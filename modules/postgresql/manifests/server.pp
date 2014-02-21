@@ -7,6 +7,7 @@ class postgresql::server (
   $postgres_password          = undef,
 
   $package_name               = $postgresql::params::server_package_name,
+  $client_package_name        = $postgresql::params::client_package_name,  
   $package_ensure             = $ensure,
 
   $plperl_package_name        = $postgresql::params::plperl_package_name,
@@ -29,6 +30,7 @@ class postgresql::server (
   $postgresql_conf_path       = $postgresql::params::postgresql_conf_path,
 
   $datadir                    = $postgresql::params::datadir,
+  $xlogdir                    = $postgresql::params::xlogdir,
 
   $pg_hba_conf_defaults       = $postgresql::params::pg_hba_conf_defaults,
 

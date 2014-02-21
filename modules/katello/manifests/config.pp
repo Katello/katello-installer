@@ -49,6 +49,11 @@ class katello::config {
     mode    => '0644',
   }
 
+  foreman::config::passenger::fragment{ 'katello':
+    content     => template('katello/etc/httpd/conf.d/05-foreman.d/katello.conf.erb'),
+    ssl_content => template('katello/etc/httpd/conf.d/05-foreman-ssl.d/katello.conf.erb'),
+  }
+
   file { '/etc/katello/client.conf':
     content => template('katello/etc/katello/client.conf.erb'),
     owner   => 'root',
