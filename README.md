@@ -38,3 +38,10 @@ katello-installer --capsule-dns true\
                   --capsule-puppet false\
                   --capsule-puppetca false
 ```
+
+Updating packages
+-----------------
+
+This repository uses librarian to handle the dependent puppet modules.
+To update the modules, run `rel-eng/librarian-update`, which updates
+all the modules. `tito` is used for doing the releases.

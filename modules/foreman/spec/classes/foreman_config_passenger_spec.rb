@@ -43,13 +43,25 @@ describe 'foreman::config::passenger' do
       should contain_file("#{params[:app_root]}/public")
     end
 
+    it 'should contain virt host plugin dir' do
+       should contain_file('/etc/httpd/conf.d/05-foreman.d').with({
+         'ensure'  => 'directory',
+       })
+    end
+
+    it 'should contain ssl virt host plugin dir' do
+       should contain_file('/etc/httpd/conf.d/05-foreman-ssl.d').with({
+         'ensure'  => 'directory',
+       })
+    end
+
     it 'should include a http vhost' do
       should contain_apache__vhost('foreman').with({
         :ip              => nil,
         :servername      => facts[:fqdn],
         :serveraliases   => ['foreman'],
         :docroot         => "#{params[:app_root]}/public",
-        :priority        => '5',
+        :priority        => '05',
         :options         => ['SymLinksIfOwnerMatch'],
         :port            => 80,
         :custom_fragment => %r{^<Directory #{params[:app_root]}/public>$},
@@ -62,13 +74,13 @@ describe 'foreman::config::passenger' do
         :servername        => facts[:fqdn],
         :serveraliases     => ['foreman'],
         :docroot           => "#{params[:app_root]}/public",
-        :priority          => '5',
+        :priority          => '05',
         :options           => ['SymLinksIfOwnerMatch'],
         :port              => 443,
         :ssl               => true,
         :ssl_cert          => params[:ssl_cert],
         :ssl_key           => params[:ssl_key],
-        :ssl_chain         => params[:ssl_ca],
+        :ssl_chain         => params[:ssl_chain],
         :ssl_ca            => params[:ssl_ca],
         :ssl_verify_client => 'optional',
         :ssl_options       => '+StdEnvVars',

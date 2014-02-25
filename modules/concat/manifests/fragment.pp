@@ -16,51 +16,96 @@
 # [*ensure*]
 #   Present/Absent or destination to a file to include another file
 # [*mode*]
-#   Mode for the file
+#   Deprecated
 # [*owner*]
-#   Owner of the file
+#   Deprecated
 # [*group*]
-#   Owner of the file
+#   Deprecated
 # [*backup*]
-#   Controls the filebucketing behavior of the final file and see File type
-#   reference for its use.  Defaults to 'puppet'
+#   Deprecated
 #
 define concat::fragment(
     $target,
-    $content=undef,
-    $source=undef,
-    $order=10,
-    $ensure = 'present',
-    $mode = '0644',
-    $owner = $::id,
-    $group = $concat::setup::root_group,
-    $backup = 'puppet') {
-  $safe_name = regsubst($name, '[/\n]', '_', 'GM')
-  $safe_target_name = regsubst($target, '[/\n]', '_', 'GM')
-  $concatdir = $concat::setup::concatdir
-  $fragdir = "${concatdir}/${safe_target_name}"
-
-  # if content is passed, use that, else if source is passed use that
-  # if neither passed, but $ensure is in symlink form, make a symlink
-  case $ensure {
-    '', 'absent', 'present', 'file', 'directory': {
-      if ! ($content or $source) {
-        crit('No content, source or symlink specified')
-      }
-    }
-    default: {
-      # do nothing, make puppet-lint happy
-    }
+    $content = undef,
+    $source  = undef,
+    $order   = 10,
+    $ensure  = 'present',
+    $mode    = undef,
+    $owner   = undef,
+    $group   = undef,
+    $backup  = undef
+) {
+  validate_string($target)
+  if ! ($ensure in [ 'present', 'absent' ]) {
+    warning('Passing a value other than \'present\' or \'absent\' as the $ensure parameter to concat::fragment is deprecated.  If you want to use the content of a file as a fragment please use the $source parameter.')
+  }
+  validate_string($content)
+  if !(is_string($source) or is_array($source)) {
+    fail('$source is not a string or an Array.')
+  }
+  validate_string($order)
+  if $mode {
+    warning('The $mode parameter to concat::fragment is deprecated and has no effect')
+  }
+  if $owner {
+    warning('The $owner parameter to concat::fragment is deprecated and has no effect')
+  }
+  if $group {
+    warning('The $group parameter to concat::fragment is deprecated and has no effect')
+  }
+  if $backup {
+    warning('The $backup parameter to concat::fragment is deprecated and has no effect')
   }
 
-  file{"${fragdir}/fragments/${order}_${safe_name}":
-    ensure  => $ensure,
-    mode    => $mode,
-    owner   => $owner,
-    group   => $group,
+  include concat::setup
+
+  $safe_name        = regsubst($name, '[/:\n]', '_', 'GM')
+  $safe_target_name = regsubst($target, '[/:\n]', '_', 'GM')
+  $concatdir        = $concat::setup::concatdir
+  $fragdir          = "${concatdir}/${safe_target_name}"
+
+  # The file type's semantics are problematic in that ensure => present will
+  # not over write a pre-existing symlink.  We are attempting to provide
+  # backwards compatiblity with previous concat::fragment versions that
+  # supported the file type's ensure => /target syntax
+
+  # be paranoid and only allow the fragment's file resource's ensure param to
+  # be file, absent, or a file target
+  $safe_ensure = $ensure ? {
+    ''        => 'file',
+    undef     => 'file',
+    'file'    => 'file',
+    'present' => 'file',
+    'absent'  => 'absent',
+    default   => $ensure,
+  }
+
+  # if it looks line ensure => /target syntax was used, fish that out
+  if ! ($ensure in ['', 'present', 'absent', 'file' ]) {
+    $ensure_target = $ensure
+  }
+
+  # the file type's semantics only allows one of: ensure => /target, content,
+  # or source
+  if ($ensure_target and $source) or
+    ($ensure_target and $content) or
+    ($source and $content) {
+    fail('You cannot specify more than one of $content, $source, $ensure => /target')
+  }
+
+  if ! ($content or $source or $ensure_target) {
+    crit('No content, source or symlink specified')
+  }
+
+  # punt on group ownership until some point in the distant future when $::gid
+  # can be relied on to be present
+  file { "${fragdir}/fragments/${order}_${safe_name}":
+    ensure  => $safe_ensure,
+    owner   => $::id,
+    mode    => '0640',
     source  => $source,
     content => $content,
-    backup  => $backup,
+    backup  => false,
     alias   => "concat_fragment_${name}",
     notify  => Exec["concat_${target}"]
   }

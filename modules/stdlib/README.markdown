@@ -83,15 +83,6 @@ converted to arrays of alternating keys and values.
 
 - *Type*: rvalue
 
-base64
---------
-Converts a string to and from base64 encoding.
-Requires an action ['encode','decode'] and either a plain or base64 encoded
-string
-
-
-- *Type*: rvalue
-
 bool2num
 --------
 Converts a boolean to a number. Converts the values:
@@ -204,47 +195,6 @@ Would return: ['a','c']
 
 - *Type*: rvalue
 
-delete_values
--------------
-Deletes all instances of a given value from a hash.
-
-*Examples:*
-
-    delete_values({'a'=>'A','b'=>'B','c'=>'C','B'=>'D'}, 'B')
-
-Would return: {'a'=>'A','c'=>'C','B'=>'D'}
-
-
-- *Type*: rvalue
-
-delete_undef_values
--------------------
-Deletes all instances of the undef value from an array or hash.
-
-*Examples:*
-    
-    $hash = delete_undef_values({a=>'A', b=>'', c=>undef, d => false})
-
-Would return: {a => 'A', b => '', d => false}
-
-    $array = delete_undef_values(['A','',undef,false])
-
-Would return: ['A','',false]
-
-- *Type*: rvalue
-
-difference
-----------
-This function returns the difference between two arrays.
-The returned array is a copy of the original array, removing any items that
-also appear in the second array.
-
-*Examples:*
-
-    difference(["a","b","c"],["b","c","d"])
-
-Would return: ["a"]
-
 dirname
 -------
 Returns the `dirname` of a path.
@@ -287,7 +237,7 @@ resource.
 
 This example only creates the resource if it does not already exist:
 
-    ensure_resource('user', 'dan', {'ensure' => 'present' })
+    ensure_resource('user, 'dan', {'ensure' => 'present' })
 
 If the resource already exists but does not match the specified parameters,
 this function will attempt to recreate the resource leading to a duplicate
@@ -405,16 +355,12 @@ Returns boolean based on kind and value:
 * ipaddress
 * network
 
-*Examples:*
-
-    has_interface_with("macaddress", "x:x:x:x:x:x")
-    has_interface_with("ipaddress", "127.0.0.1")    => true
-
+has_interface_with("macaddress", "x:x:x:x:x:x")
+has_interface_with("ipaddress", "127.0.0.1")    => true
 etc.
 
 If no "kind" is given, then the presence of the interface is checked:
-
-    has_interface_with("lo")                        => true
+has_interface_with("lo")                        => true
 
 
 - *Type*: rvalue
@@ -469,16 +415,6 @@ Would return: {'a'=>1,'b'=>2,'c'=>3}
 
 
 - *Type*: rvalue
-
-intersection
------------
-This function returns an array an intersection of two.
-
-*Examples:*
-
-    intersection(["a","b","c"],["b","c","d"])
-
-Would return: ["b","c"]
 
 is_array
 --------
@@ -544,7 +480,7 @@ Returns true if the variable passed to this function is a string.
 
 join
 ----
-This function joins an array into a string using a separator.
+This function joins an array into a string using a seperator.
 
 *Examples:*
 
@@ -770,7 +706,7 @@ are replaced by a single character.
 
 str2bool
 --------
-This converts a string to a boolean. This attempts to convert strings that
+This converts a string to a boolean. This attempt to convert strings that
 contain things like: y, 1, t, true to 'true' and strings that contain things
 like: 0, f, n, false, no to 'false'.
 
@@ -932,17 +868,6 @@ Returns the type when passed a variable. Type can be one of:
 
 - *Type*: rvalue
 
-union
------
-This function returns a union of two arrays.
-
-*Examples:*
-
-    union(["a","b","c"],["b","c","d"])
-
-Would return: ["a","b","c","d"]
-
-
 unique
 ------
 This function will remove duplicates from strings and arrays.
@@ -976,7 +901,7 @@ Converts a string or an array of strings to uppercase.
 
 Will return:
 
-    ABCD
+    ASDF
 
 
 - *Type*: rvalue

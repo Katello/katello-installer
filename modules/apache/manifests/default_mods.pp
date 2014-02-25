@@ -1,6 +1,7 @@
 class apache::default_mods (
-  $all  = true,
-  $mods = undef,
+  $all            = true,
+  $mods           = undef,
+  $apache_version = $apache::apache_version
 ) {
   # These are modules required to run the default configuration.
   # They are not configurable at this time, so we just include
@@ -25,10 +26,6 @@ class apache::default_mods (
         include apache::mod::mime_magic
         include apache::mod::vhost_alias
         include apache::mod::rewrite
-        if $::operatingsystem != "Fedora" or ($::operatingsystem == "Fedora" and $::operatingsystemrelease < 19) {
-          apache::mod { 'authn_alias': }
-          apache::mod { 'authn_default': }
-        } 
         apache::mod { 'actions': }
         apache::mod { 'auth_digest': }
         apache::mod { 'authn_anon': }
@@ -44,6 +41,18 @@ class apache::default_mods (
         apache::mod { 'suexec': }
         apache::mod { 'usertrack': }
         apache::mod { 'version': }
+
+        if $apache_version >= 2.4 {
+          # Lets fork it
+          apache::mod { 'systemd': }
+
+          apache::mod { 'unixd': }
+          apache::mod { 'authn_core': }
+        }
+        else {
+          apache::mod { 'authn_alias': }
+          apache::mod { 'authn_default': }
+        }
       }
       'freebsd': {
         include apache::mod::cache
@@ -88,6 +97,9 @@ class apache::default_mods (
       'worker': {
         include apache::mod::cgid
       }
+      default: {
+        # do nothing
+      }
     }
     include apache::mod::alias
     include apache::mod::autoindex
@@ -100,13 +112,43 @@ class apache::default_mods (
     include apache::mod::setenvif
     apache::mod { 'auth_basic': }
     apache::mod { 'authn_file': }
+
+    if $apache_version >= 2.4 {
+      # authz_core is needed for 'Require' directive
+      apache::mod { 'authz_core':
+        id => 'authz_core_module',
+      }
+
+      # filter is needed by mod_deflate
+      apache::mod { 'filter': }
+    } else {
+      apache::mod { 'authz_default': }
+    }
+
     apache::mod { 'authz_groupfile': }
     apache::mod { 'authz_user': }
     apache::mod { 'env': }
-    if $::operatingsystem != "Fedora" or ($::operatingsystem == "Fedora" and $::operatingsystemrelease < 19) {
-	    apache::mod { 'authz_default': }
-    }
   } elsif $mods {
     apache::default_mods::load { $mods: }
+
+    if $apache_version >= 2.4 {
+      # authz_core is needed for 'Require' directive
+      apache::mod { 'authz_core':
+        id => 'authz_core_module',
+      }
+
+      # filter is needed by mod_deflate
+      apache::mod { 'filter': }
+    }
+  } else {
+    if $apache_version >= 2.4 {
+      # authz_core is needed for 'Require' directive
+      apache::mod { 'authz_core':
+        id => 'authz_core_module',
+      }
+
+      # filter is needed by mod_deflate
+      apache::mod { 'filter': }
+    }
   }
 }
