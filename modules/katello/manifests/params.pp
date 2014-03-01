@@ -79,6 +79,9 @@ class katello::params {
   $oauth_token_file = '/etc/katello/oauth_token-file'
   $oauth_secret = find_or_create_password($oauth_token_file)
 
+  $post_sync_token_file = '/etc/katello/post_sync_token'
+  $post_sync_token = find_or_create_password($post_sync_token_file)
+
   # Subsystems settings
   $candlepin_url = 'https://localhost:8443/candlepin'
   $pulp_url      = subsystem_url('pulp/api/v2/')

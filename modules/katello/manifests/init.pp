@@ -18,6 +18,9 @@
 #
 # $oauth_secret::       The oauth secret for talking to the candlepin API;
 #
+# $post_sync_token::    The shared secret for pulp notifying katello about
+#                       completed syncs
+#
 # $log_dir::            Location for Katello log files to be placed
 #
 class katello (
@@ -28,6 +31,8 @@ class katello (
 
   $oauth_key = $katello::params::oauth_key,
   $oauth_secret = $katello::params::oauth_secret,
+
+  $post_sync_token = $katello::params::post_sync_token,
 
   $log_dir = $katello::params::log_dir
 
