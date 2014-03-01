@@ -11,7 +11,8 @@ mod 'puppetlabs/apache', :git => 'https://github.com/puppetlabs/puppetlabs-apach
 mod 'puppetlabs/xinetd', :git => 'https://github.com/puppetlabs/puppetlabs-xinetd'
 
 # Dependencies
-mod 'puppetlabs/mysql'
+mod 'puppetlabs/mysql', :git => 'https://github.com/puppetlabs/puppetlabs-mysql', :ref => '2.2.0'
+mod 'puppetlabs/firewall', :git => 'https://github.com/puppetlabs/puppetlabs-firewall', :ref => '1.0.0'
 mod 'theforeman/concat_native', :git => 'https://github.com/theforeman/puppet-concat'
 mod 'theforeman/dhcp', :git => 'https://github.com/theforeman/puppet-dhcp'
 mod 'theforeman/dns', :git => 'https://github.com/theforeman/puppet-dns'
