@@ -64,7 +64,6 @@ describe 'mysql::bindings class' do
         class { 'mysql::bindings':
           java_enable             => true,
           perl_enable             => true,
-          php_enable              => true,
           python_enable           => true,
           ruby_enable             => true,
           java_package_ensure     => present,
