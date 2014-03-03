@@ -6,3 +6,4 @@ bootstrap.sh
 update_submodules_scratch
 .librarian
 .tmp
+.rpm
