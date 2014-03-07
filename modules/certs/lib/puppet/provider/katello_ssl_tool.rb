@@ -22,40 +22,15 @@ module Puppet::Provider::KatelloSslTool
       details = { :pubkey  => pubkey(cert_name),
                   :privkey   => privkey(cert_name) }
 
-      passphrase_file = passphrase_file(cert_name)
-      if File.exists?(passphrase_file)
-        details[:passphrase_file] = passphrase_file
-        details[:passphrase] = File.read(passphrase_file).chomp
-      end
-
       return details
     end
 
     def self.pubkey(name)
-      # TODO: just temporarily until we have this changes in katello installer as well
-      if name == 'candlepin-ca'
-        '/usr/share/katello/candlepin-ca.crt'
-      else
-        target_path("certs/#{name}.crt")
-      end
+      target_path("certs/#{name}.crt")
     end
 
     def self.privkey(name)
-      # TODO: just temporarily until we have this changes in katello installer as well
-      if name == 'candlepin-ca'
-        build_path('candlepin-cert.key')
-      else
-        target_path("private/#{name}.key")
-      end
-    end
-
-    def self.passphrase_file(name)
-      # TODO: just temporarily until we have this changes in katello installer as well
-      if name == 'candlepin-ca'
-        '/etc/katello/candlepin_ca_password-file'
-      else
-        build_path("#{name}.pwd")
-      end
+      target_path("private/#{name}.key")
     end
 
     protected
@@ -142,23 +117,23 @@ module Puppet::Provider::KatelloSslTool
       self.class.privkey(resource[:name])
     end
 
-    def passphrase_file
-      self.class.passphrase_file(resource[:name])
-    end
-
     def full_path(file_name)
       self.class.full_path(file_name)
     end
 
-    def self.target_path(file_name = nil)
-      File.join("/etc/pki/tls", file_name)
+    def target_path(file_name = '')
+      self.class.target_path(file_name)
+    end
+
+    def self.target_path(file_name = '')
+      File.join("/etc/pki/katello-certs-tools", file_name)
     end
 
     def build_path(file_name)
       self.class.build_path(file_name)
     end
 
-    def self.build_path(file_name = nil)
+    def self.build_path(file_name = '')
       File.join("/root/ssl-build", file_name)
     end
 
@@ -191,7 +166,6 @@ module Puppet::Provider::KatelloSslTool
       File.read(resource[:path])
     end
 
-
     def checksum(content)
       md5(content)
     end
@@ -207,11 +181,11 @@ module Puppet::Provider::KatelloSslTool
 
     def cert_details
       return @cert_details if defined? @cert_details
-      if cert_resource = @resource[:cert]
+      if cert_resource = @resource[:key_pair]
         name = cert_resource.to_hash[:name]
         @cert_details = Puppet::Provider::KatelloSslTool::Cert.details(name)
       else
-        raise 'Cert was not specified'
+        raise 'Cert or Ca was not specified'
       end
     end
 

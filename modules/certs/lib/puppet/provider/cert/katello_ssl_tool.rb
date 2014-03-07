@@ -7,7 +7,7 @@ Puppet::Type.type(:cert).provide(:katello_ssl_tool, :parent => Puppet::Provider:
     resource[:common_name] ||= resource[:hostname]
     purpose = resource[:purpose]
     katello_ssl_tool("--gen-#{purpose}",
-                     '-p', ca_details[:passphrase],
+                     '-p', "file:#{resource[:password_file]}",
                      '--set-hostname', resource[:hostname],
                      '--set-common-name', resource[:common_name],
                      '--ca-cert', ca_details[:pubkey],

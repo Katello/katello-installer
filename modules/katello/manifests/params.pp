@@ -9,12 +9,6 @@ class katello::params {
     $scl_root = ''
   }
 
-  # First User and Org settings
-  $user_name = 'admin'
-  $user_pass = 'changeme'
-  $user_email = 'root@localhost'
-  $org_name  = 'ACME_Corporation'
-
   $deployment_url = '/katello'
 
   if file_exists('/usr/sbin/tomcat') and !file_exists('/usr/sbin/tomcat6') {
@@ -25,15 +19,15 @@ class katello::params {
   }
 
   case $deployment_url {
-      '/katello': {
-        $deployment = 'katello'
-      }
-      '/headpin': {
-        $deployment = 'headpin'
-      }
-      default : {
-        $deployment = 'katello'
-      }
+    '/katello': {
+      $deployment = 'katello'
+    }
+    '/headpin': {
+      $deployment = 'headpin'
+    }
+    default : {
+      $deployment = 'katello'
+    }
   }
 
   # HTTP Proxy settings (currently used by pulp)
@@ -43,41 +37,22 @@ class katello::params {
   $proxy_pass = 'NONE'
 
   # system settings
-  $host        = ''
-  $user        = 'katello'
-  $group       = 'katello'
   $user_groups = 'foreman'
-  $config_dir  = '/etc/katello'
-  $katello_dir = '/usr/share/katello'
-  $environment = 'production'
-  $log_dir     = '/var/log/katello'
-  $log_base    = '/var/log/katello'
-  $configure_log_base = "${log_base}/katello-install"
-  $db_env_log  = "${configure_log_base}/db_env.log"
-  $migrate_log = "${configure_log_base}/db_migrate.log"
-  $seed_log    = "${configure_log_base}/db_seed.log"
-
-  # katello upgrade settings
-  $katello_upgrade_scripts_dir  = '/usr/share/katello/install/upgrade-scripts'
-  $katello_upgrade_history_file = '/var/lib/katello/upgrade-history'
-
-  # SSL settings
-  $ssl_certificate_file     = '/etc/candlepin/certs/candlepin-ca.crt'
-  $ssl_certificate_key_file = '/etc/candlepin/certs/candlepin-ca.key'
-  $ssl_certificate_ca_file  = $ssl_certificate_file
+  $config_dir  = '/etc/foreman/plugins'
+  $log_dir     = '/var/log/foreman/plugins'
 
   # sysconfig settings
   $job_workers = 1
 
   # OAUTH settings
-  $oauth_key    = 'katello'
+  $oauth_key = 'katello'
 
   # we set foreman oauth key to foreman, so that katello knows where the call
   # comes from and can find the rigth secret. This way only one key-secret pair
   # is needed to be mainained for duplex communication.
-  $foreman_oauth_key    = 'foreman'
-  $oauth_token_file = '/etc/katello/oauth_token-file'
-  $oauth_secret = find_or_create_password($oauth_token_file)
+  $foreman_oauth_key = 'foreman'
+  $oauth_token_file = 'oauth_token-file'
+  $oauth_secret = cache_data($oauth_token_file, random_password(32))
 
   $post_sync_token_file = '/etc/katello/post_sync_token'
   $post_sync_token = find_or_create_password($post_sync_token_file)

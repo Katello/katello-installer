@@ -11,7 +11,7 @@ Puppet::Type.type(:privkey).provide(:katello_ssl_tool, :parent => Puppet::Provid
         openssl('rsa',
                 '-in', source_path,
                 '-out', tmp_file,
-                '-passin', "file:#{cert_details[:passphrase_file]}")
+                '-passin', "file:#{resource[:password_file]}")
         File.read(tmp_file)
       ensure
         File.delete(tmp_file) if File.exists?(tmp_file)
@@ -22,7 +22,11 @@ Puppet::Type.type(:privkey).provide(:katello_ssl_tool, :parent => Puppet::Provid
   end
 
   def source_path
-    cert_details[:privkey]
+    if @resource[:key_pair].type == 'Cert'
+      cert_details[:privkey]
+    elsif @resource[:key_pair].type == 'Ca'
+      Puppet::Type::Ca::ProviderKatello_ssl_tool.privkey(@resource[:key_pair].to_hash[:name])
+    end
   end
 
   def mode

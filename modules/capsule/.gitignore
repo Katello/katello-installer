@@ -1,8 +1,6 @@
 .vagrant
 *.swp
 *.swo
-*.swm
-*.swn
 
 .bundle
 vendor/

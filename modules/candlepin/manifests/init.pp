@@ -42,6 +42,12 @@
 #
 # $keystore_password::      Password for keystore being used with Tomcat
 #
+# $ca_key::                 CA key file to use
+#
+# $ca_cert::                CA certificate file to use
+#
+# $ca_key_password::        CA key password
+#
 class candlepin (
 
   $db_name     = $candlepin::params::db_name,
@@ -67,7 +73,11 @@ class candlepin (
   $thumbslug_oauth_key = $candlepin::params::thumbslug_oauth_key,
   $thumbslug_oauth_secret = $candlepin::params::thumbslug_oauth_secret,
 
-  $keystore_password = 'UNSET'
+  $keystore_password = undef,
+
+  $ca_key = $candlepin::params::ca_key,
+  $ca_cert = $candlepin::params::ca_crt,
+  $ca_key_password = $candlepin::params::ca_key_password
 
   ) inherits candlepin::params {
 

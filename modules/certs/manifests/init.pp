@@ -52,6 +52,8 @@
 #
 # $pki_dir::              The PKI directory under which to place certs
 #
+# $ssl_build_dir::       The directory where SSL keys, certs and RPMs will be generated
+#
 # $user::                 The system user name who should own the certs;
 #                         default 'foreman'
 #
@@ -59,6 +61,9 @@
 #                         default 'foreman'
 #
 # $password_file_dir::    The location to store password files
+#
+# $default_ca_name::      The name of the default CA;
+#                         default 'katello'
 #
 class certs (
 
@@ -78,38 +83,77 @@ class certs (
   $expiration     = $certs::params::expiration,
   $ca_expiration  = $certs::params::ca_expiration,
 
-  $pki_dir = $::certs::params::candlepin_pki_dir,
+  $pki_dir = $certs::params::pki_dir,
+  $ssl_build_dir = $certs::params::ssl_build_dir,
 
   $password_file_dir = $certs::params::password_file_dir,
 
   $user   = $certs::params::user,
-  $group  = $certs::params::group
+  $group  = $certs::params::group,
+
+  $default_ca_name = $certs::params::default_ca_name
 
   ) inherits certs::params {
 
-  $nss_db_dir   = $certs::params::nss_db_dir
-  $default_ca   = Ca['candlepin-ca']
+  $nss_db_dir   = "${pki_dir}/nssdb"
+  $default_ca   = Ca[$default_ca_name]
 
-  $candlepin_keystore_password_file = "${password_file_dir}/keystore_password-file"
-  $candlepin_keystore_password = find_or_create_password($candlepin_keystore_password_file)
-
-  $ssl_pk12_password_file = "${password_file_dir}/pk12_password-file"
-  $nss_db_password_file   = "${password_file_dir}/nss_db_password-file"
+  $ca_key = "${certs::pki_dir}/private/${default_ca_name}.key"
+  $ca_cert = "${certs::pki_dir}/certs/${default_ca_name}.crt"
+  $ca_cert_stripped = "${certs::pki_dir}/certs/${default_ca_name}-stripped.crt"
+  $ca_key_password = cache_data('ca_key_password', generate_password())
+  $ca_key_password_file = "${certs::pki_dir}/private/${default_ca_name}.pwd"
 
   class { 'certs::install': } ->
   class { 'certs::config': } ->
-  ca { 'candlepin-ca':
-    ensure      => present,
-    common_name => $certs::ca_common_name,
-    country     => $certs::country,
-    state       => $certs::state,
-    city        => $certs::city,
-    org         => $certs::org,
-    org_unit    => $certs::org_unit,
-    expiration  => $certs::ca_expiration,
-    generate    => $certs::generate,
-    regenerate  => $certs::regenerate_ca,
-    deploy      => true,
+  file { $ca_key_password_file:
+    ensure  => file,
+    content => $ca_key_password,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0400'
+  } ~>
+  ca { $default_ca_name:
+    ensure        => present,
+    common_name   => $certs::ca_common_name,
+    country       => $certs::country,
+    state         => $certs::state,
+    city          => $certs::city,
+    org           => $certs::org,
+    org_unit      => $certs::org_unit,
+    expiration    => $certs::ca_expiration,
+    generate      => $certs::generate,
+    deploy        => $certs::deploy,
+    password_file => $ca_key_password_file
+  }
+
+  if $deploy {
+
+    Ca[$default_ca_name] ~>
+    pubkey { $ca_cert:
+      key_pair  => $default_ca
+    } ~>
+    pubkey { $ca_cert_stripped:
+      strip     => true,
+      key_pair  => $default_ca
+    } ~>
+    privkey { $ca_key:
+      key_pair      => $default_ca,
+      unprotect     => true,
+      password_file => $ca_key_password_file
+    } ~>
+    file { $ca_key:
+      ensure  => file,
+      owner   => 'root',
+      group   => $certs::group,
+      mode    => '0440',
+    } ~>
+    file { $ca_cert:
+      ensure  => file,
+      owner   => 'root',
+      group   => $certs::group,
+      mode    => '0644',
+    }
   }
 
 }

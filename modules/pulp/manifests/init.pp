@@ -16,11 +16,14 @@
 # $messaging_client_cert::      The client certificate signed by the CA cert
 #                               above to authenticate.
 #
-# $consumers_ca_cert::          The CA cert that the consumer will use to
-#                               authenticate with the AMQP server.
+# $consumers_ca_cert::          The path to the CA cert that will be used to sign customer
+#                               and admin identification certificates
 #
-# $consumers_ca_key::           The CA key that the consumer will use to authenticate
-#                               with the AMQP server.
+# $consumers_ca_key::           The private key for the CA cert
+#
+# $ssl_ca_cert::                Full path to the CA certificate used to sign the Pulp
+#                               server's SSL certificate; consumers will use this to verify the
+#                               Pulp server's SSL certificate during the SSL handshake
 #
 # $consumers_crl::              Certificate revocation list for consumers which
 #                               are no valid (have had their client certs
@@ -49,6 +52,7 @@
 # $user_groups::                Additional user groups to add the qpid user to
 #
 class pulp (
+
   $oauth_key = $pulp::params::oauth_key,
   $oauth_secret = $pulp::params::oauth_secret,
 
@@ -56,11 +60,13 @@ class pulp (
   $messaging_ca_cert = $pulp::params::messaging_ca_cert,
   $messaging_client_cert = $pulp::params::messaging_client_cert,
 
-  $consumers_ca_cert = $consumers_ca_cert,
-  $consumers_ca_key = $consumers_ca_key,
-  $consumers_crl = undef,
+  $consumers_ca_cert = $pulp::params::consumers_ca_cert,
+  $consumers_ca_key = $pulp::params::consumers_ca_key,
+  $ssl_ca_cert = $pulp::params::ssl_ca_cert,
 
-  $ssl_ca_cert = '/etc/pki/tls/certs/pulp_ssl_cert.crt',
+  $consumers_crl = $pulp::params::consumers_crl,
+
+  $ssl_ca_cert = $pulp::params::ssl_ca_cert,
 
   $default_password = $pulp::params::default_password,
 
@@ -69,8 +75,8 @@ class pulp (
   $reset_data = false,
   $reset_cache = false,
 
-  $qpid_ssl_cert_db = 'UNSET',
-  $qpid_ssl_cert_password_file = 'UNSET',
+  $qpid_ssl_cert_db = $pulp::params::qpid_ssl_cert_db,
+  $qpid_ssl_cert_password_file = $pulp::params::qpid_ssl_cert_password_file
 
   ) inherits pulp::params {
 

@@ -23,6 +23,8 @@
 #
 # $log_dir::            Location for Katello log files to be placed
 #
+# $config_dir::         Location for Katello config files
+#
 class katello (
 
   $user = $katello::params::user,
@@ -34,48 +36,46 @@ class katello (
 
   $post_sync_token = $katello::params::post_sync_token,
 
-  $log_dir = $katello::params::log_dir
+  $log_dir = $katello::params::log_dir,
+  $config_dir = $katello::params::config_dir
 
   ) inherits katello::params {
 
+  Class['certs'] ~>
   class { 'certs::apache': } ~>
-  class { 'katello::install': } ~>
   class { 'certs::katello': } ~>
+  class { 'katello::install': } ~>
   class { 'katello::config': } ~>
-  class { 'katello::service': } ~>
-  Exec['foreman-rake-db:seed']
-
-  class { 'certs::foreman': }
-
-  class { 'certs::qpid': } ~>
-  class { '::certs::pulp_parent': } ~>
+  class { 'certs::candlepin': } ~>
   class { 'candlepin':
     user_groups       => $katello::user_groups,
     oauth_key         => $katello::oauth_key,
     oauth_secret      => $katello::oauth_secret,
     deployment_url    => 'katello',
-    keystore_password => $::certs::candlepin_keystore_password,
-    before            => Exec['foreman-rake-db:seed']
+    ca_key            => $certs::ca_key,
+    ca_cert           => $certs::ca_cert_stripped,
+    keystore_password => $::certs::candlepin::keystore_password,
   } ~>
+  class { 'certs::qpid': } ~>
+  class { 'certs::pulp_parent': } ~>
   class { 'pulp':
     oauth_key                   => $katello::oauth_key,
     oauth_secret                => $katello::oauth_secret,
     messaging_url               => 'ssl://localhost:5671',
-    before                      => Exec['foreman-rake-db:seed'],
-    qpid_ssl_cert_db            => '/etc/pki/katello/nssdb',
-    qpid_ssl_cert_password_file => '/etc/katello/nss_db_password-file',
-    consumers_ca_cert           => $certs::candlepin::ca_cert,
-    consumers_ca_key            =>  $certs::candlepin::ca_key,
-    consumers_crl               => $candlepin::crl_file
-  }
+    qpid_ssl_cert_db            => $certs::nss_db_dir,
+    qpid_ssl_cert_password_file => $certs::qpid::nss_db_password_file,
+    messaging_ca_cert           => $certs::pulp_parent::messaging_ca_cert,
+    messaging_client_cert       => $certs::pulp_parent::messaging_client_cert,
+    consumers_ca_cert           => $certs::ca_cert,
+    consumers_ca_key            => $certs::ca_key,
+    consumers_crl               => $candlepin::crl_file,
+  } ~>
+  class{ 'elasticsearch': } ~>
+  Exec['foreman-rake-db:seed']
 
-  class { 'certs::candlepin':
-    before => Class['candlepin::service']
-  }
+  class { 'certs::foreman': }
 
-  class{ 'elasticsearch':
-    before         => Exec['foreman-rake-db:seed']
-  }
+  class { 'katello::service': }
 
   User<|title == apache|>{groups +> $user_groups}
 }
