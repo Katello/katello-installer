@@ -8,9 +8,10 @@ foreman:
   organizations_enabled: true
   custom_repo: true
   ssl: true
-  server_ssl_cert: /etc/pki/tls/certs/katello-node.crt
-  server_ssl_key: /etc/pki/tls/private/katello-node.key
-  server_ssl_ca: /etc/pki/tls/certs/katello-ca.crt
+  server_ssl_cert: /etc/pki/katello/certs/katello-apache.crt
+  server_ssl_key: /etc/pki/katello/private/katello-apache.key
+  server_ssl_ca: /etc/pki/katello/certs/katello-ca.crt
+  server_ssl_chain: /etc/pki/katello/certs/katello-ca.crt
 capsule:
   register_in_foreman: true
   puppet: true
