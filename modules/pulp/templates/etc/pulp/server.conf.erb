@@ -68,9 +68,7 @@ debugging_mode: false
 
 [security]
 cacert:  <%= @consumers_ca_cert %>
-<% if @consumers_ca_key -%>
 cakey:   <%= @consumers_ca_key %>
-<% end -%>
 ssl_ca_certificate: <%= @ssl_ca_cert %>
 user_cert_expiration: 7
 consumer_cert_expiration: 3650

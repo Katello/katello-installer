@@ -9,8 +9,12 @@ Puppet::Type.type(:key_bundle).provide(:katello_ssl_tool, :parent => Puppet::Pro
   end
 
   def pubkey
-    # strips the textual info from the certificate file
-    openssl('x509', '-in', pubkey_source_path)
+    if resource[:strip]
+      # strips the textual info from the certificate file
+      openssl('x509', '-in', pubkey_source_path)
+    else
+      File.read(pubkey_source_path)
+    end
   end
 
   def privkey

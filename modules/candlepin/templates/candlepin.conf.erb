@@ -23,3 +23,9 @@ candlepin.auth.oauth.enable = true
 candlepin.auth.oauth.consumer.<%= @oauth_key %>.secret = <%= @oauth_secret %>
 candlepin.crl.file = <%= @crl_file %>
 <%- end -%>
+
+<% if @ca_key_password -%>
+candlepin.ca_key_password = <%= @ca_key_password %>
+<%- end -%>
+candlepin.ca_key = <%= @ca_key %>
+candlepin.ca_cert = <%= @ca_cert %>

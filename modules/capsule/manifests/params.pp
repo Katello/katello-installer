@@ -5,7 +5,6 @@ class capsule::params {
 
   # when not specified, we expect all in one installation
   $parent_fqdn                = $::fqdn
-  $certs_tar                  = undef
 
   # OAuth credentials
   # shares cached_data with the foreman module so they're the same

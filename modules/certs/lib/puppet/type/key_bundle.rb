@@ -8,4 +8,7 @@ Puppet::Type.newtype(:key_bundle) do
   newparam(:pubkey)
 
   newparam(:privkey)
+
+  # Whether to strip the certificate information from the pubkey
+  newparam(:strip)
 end

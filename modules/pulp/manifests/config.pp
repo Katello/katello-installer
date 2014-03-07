@@ -91,7 +91,8 @@ class pulp::config {
   if $pulp::consumers_crl {
     exec { 'setup-crl-symlink':
       command     => "/usr/bin/openssl x509 -in '${pulp::consumers_ca_cert}' -hash -noout | /usr/bin/xargs -I{} /bin/ln -sf '${pulp::consumers_crl}' '/etc/pki/pulp/content/{}.r0'",
-      logoutput   => 'on_failure'
+      logoutput   => 'on_failure',
+      refreshonly => true,
     }
   }
 }

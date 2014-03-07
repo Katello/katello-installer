@@ -18,21 +18,21 @@ FORGE
 GIT
   remote: https://github.com/Katello/puppet-candlepin
   ref: master
-  sha: 6a8030994273efff3b0a74fab3922cbe679b2cd1
+  sha: 7ee0194b6b0471e698f620042e44745f4c2539d3
   specs:
     katello/candlepin (0.0.1)
 
 GIT
   remote: https://github.com/Katello/puppet-capsule
   ref: master
-  sha: d0c4934be7f724494e16fd977cfba9df8d1028ef
+  sha: d5278fb0c17acb5eb63cd01cf1f64c6ff34d4b85
   specs:
     katello/capsule (0.0.1)
 
 GIT
   remote: https://github.com/Katello/puppet-certs
   ref: master
-  sha: 75bb0e6aab51ed986eed94da80c655af4f297436
+  sha: 8fc2804245b427463cee3b948edf96341ecf7f88
   specs:
     katello/certs (0.0.1)
 
@@ -53,14 +53,14 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello
   ref: master
-  sha: b72e9f39e19998eba8eb3d30d4f15f04eaf05aff
+  sha: ab9e13d49d1985cd7c2bb26a38b2859b1761691c
   specs:
     katello/katello (0.0.1)
 
 GIT
   remote: https://github.com/Katello/puppet-pulp
   ref: master
-  sha: 93665595c9c2ac524332b4b9026713bebef8309a
+  sha: b1051cda841a8daabbf2c49e3dde41b2c528870f
   specs:
     katello/pulp (0.0.1)
 

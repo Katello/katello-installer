@@ -14,7 +14,7 @@ class candlepin::params {
   $db_name = 'candlepin'
 
   # this comes from keystore
-  $db_password = random_password(32)
+  $db_password = cache_data('candlepin_db_password', random_password(32))
 
   # where to store output from cpsetup execution
   $log_dir  = '/var/log/candlepin'
@@ -26,6 +26,10 @@ class candlepin::params {
 
   $thumbslug_oauth_key = 'thumbslug'
   $thumbslug_oauth_secret = 'thumbslug'
+
+  $ca_key = '/etc/candlepin/certs/candlepin-ca.key'
+  $ca_cert = '/etc/candlepin/certs/candlepin-ca.crt'
+  $ca_key_password = undef
 
   $user_groups = []
 

@@ -11,6 +11,8 @@ class certs::params {
   }
 
   $log_dir = '/var/log/certs'
+  $pki_dir = '/etc/pki/katello'
+  $ssl_build_dir = '/root/ssl-build'
 
   $node_fqdn = $::fqdn
 
@@ -23,6 +25,7 @@ class certs::params {
   $regenerate_ca = false
   $deploy        = true
 
+  $default_ca_name = 'katello-ca'
   $country       = 'US'
   $state         = 'North Carolina'
   $city          = 'Raleigh'
@@ -31,32 +34,29 @@ class certs::params {
   $expiration    = '365'
   $ca_expiration = '36500'
 
-  $password_file_dir  = '/etc/katello'
-  $nss_db_dir = '/etc/pki/katello/nssdb'
+  $keystore_password_file = 'keystore_password-file'
+  $nss_db_dir = "${pki_dir}/nssdb"
 
   $user = 'root'
   $group = 'root'
 
-  $foreman_client_cert = '/etc/foreman/client_cert.pem'
-  $foreman_client_key  = '/etc/foreman/client_key.pem'
-  $foreman_client_ca   = '/etc/foreman/client_ca.pem'
+  $foreman_client_cert    = '/etc/foreman/client_cert.pem'
+  $foreman_client_key     = '/etc/foreman/client_key.pem'
+  $foreman_client_ca_cert = '/etc/foreman/client_ca.pem'
 
-  $foreman_proxy_cert = '/etc/foreman-proxy/ssl_cert.pem'
-  $foreman_proxy_key  = '/etc/foreman-proxy/ssl_key.pem'
-  $foreman_proxy_ca   = '/etc/foreman-proxy/ssl_ca.pem'
+  $foreman_proxy_cert    = '/etc/foreman-proxy/ssl_cert.pem'
+  $foreman_proxy_key     = '/etc/foreman-proxy/ssl_key.pem'
+  $foreman_proxy_ca_cert = '/etc/foreman-proxy/ssl_ca.pem'
 
   $puppet_client_cert = '/etc/puppet/client_cert.pem'
   $puppet_client_key  = '/etc/puppet/client_key.pem'
-  $puppet_client_ca   = '/etc/puppet/client_ca.pem'
+  $puppet_client_ca_cert = '/etc/puppet/client_ca.pem'
 
-  $apache_ssl_cert = '/etc/pki/tls/certs/katello-node.crt'
-  $apache_ssl_key  = '/etc/pki/tls/private/katello-node.key'
-  $apache_ca_cert  = '/etc/pki/tls/certs/katello-ca.crt'
+  $apache_cert_name = 'katello-apache'
 
   $candlepin_certs_storage          = '/etc/candlepin/certs'
   $candlepin_ca_cert                = '/etc/candlepin/certs/candlepin-ca.crt'
   $candlepin_ca_key                 = '/etc/candlepin/certs/candlepin-ca.key'
-  $candlepin_pki_dir                = '/etc/pki/katello'
   $candlepin_keystore               = '/etc/pki/katello/keystore'
   $candlepin_certs_dir              = '/etc/candlepin/certs'
 
@@ -68,6 +68,5 @@ class certs::params {
   $katello_repo_provider  = 'node-installer'
   $katello_product        = 'node-certs'
   $katello_activation_key = undef
-
 
 }
