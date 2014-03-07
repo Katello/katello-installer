@@ -4,9 +4,6 @@ forge 'http://forge.puppetlabs.com'
 # The Foreman part of Puppetfile (taken from foreman-installer #
 #################################################################
 
-# Temporary for Apache 2.4 support (post-0.11.0)
-mod 'puppetlabs/apache', :git => 'https://github.com/puppetlabs/puppetlabs-apache'
-
 # Temporary for Amazon Linux support (https://github.com/puppetlabs/puppetlabs-xinetd/issues/32)
 mod 'puppetlabs/xinetd', :git => 'https://github.com/puppetlabs/puppetlabs-xinetd'
 
