@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'apt::pin define' do
+describe 'apt::pin define', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
   context 'defaults' do
     it 'should work with no errors' do
       pp = <<-EOS
@@ -130,7 +130,7 @@ describe 'apt::pin define' do
 
       describe file('/etc/apt/preferences.d/vim-puppet.pref') do
         it { should be_file }
-        it { should contain 'Pin: origin "testrelease"' }
+        it { should contain 'Pin: origin testrelease' }
       end
     end
   end

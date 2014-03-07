@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'server:' do
+describe 'server:', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
   after :all do
     # Cleanup after tests have ran
     apply_manifest("class { 'postgresql::server': ensure => absent }", :catch_failures => true)
@@ -49,29 +49,20 @@ describe 'server:' do
   end
 end
 
-describe 'server without defaults:' do
-  before :all do
-    pp = <<-EOS
-      if($::operatingsystem =~ /Debian|Ubuntu/) {
-        # Need to make sure the correct utf8 locale is ready for our
-        # non-standard tests
-        file { '/etc/locale.gen':
-          content => "en_US ISO-8859-1\nen_NG UTF-8\nen_US UTF-8\n",
-        }~>
-        exec { '/usr/sbin/locale-gen':
-          logoutput => true,
-          refreshonly => true,
-        }
-      }
-    EOS
-
-    apply_manifest(pp, :catch_failures => true)
-  end
-
+describe 'server without defaults:', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
   context 'test installing non-default version of postgresql' do
     after :all do
       psql('--command="drop database postgresql_test_db" postgres', 'postgres')
       pp = <<-EOS.unindent
+        if $::osfamily == 'Debian' {
+          class { 'apt': }
+          # XXX Need to purge postgresql-common after uninstalling 9.3 because
+          # it leaves the init script behind. Poor packaging.
+          package { 'postgresql-common':
+            ensure  => purged,
+            require => Class['postgresql::server'],
+          }
+        }
         class { 'postgresql::globals':
           ensure              => absent,
           manage_package_repo => true,
@@ -81,11 +72,14 @@ describe 'server without defaults:' do
           ensure => absent,
         }
       EOS
-      apply_manifest(pp, :catch_failures => true)
+      expect(apply_manifest(pp, :catch_failures => true).stderr).to eq('')
     end
 
     it 'perform installation and create a db' do
       pp = <<-EOS.unindent
+        if $::osfamily == 'Debian' {
+          class { 'apt': }
+        }
         class { "postgresql::globals":
           version             => "9.3",
           manage_package_repo => true,
@@ -103,7 +97,7 @@ describe 'server without defaults:' do
         }
       EOS
 
-      apply_manifest(pp, :catch_failures => true)
+      expect(apply_manifest(pp, :catch_failures => true).stderr).to eq('')
       apply_manifest(pp, :catch_changes => true)
 
       shell('test -d /tmp/pg_xlogs') do |r|
@@ -153,7 +147,7 @@ describe 'server without defaults:' do
   end
 end
 
-describe 'server with firewall:' do
+describe 'server with firewall:', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
   after :all do
     apply_manifest("class { 'postgresql::server': ensure => absent }", :catch_failures => true)
   end
@@ -174,7 +168,7 @@ describe 'server with firewall:' do
   end
 end
 
-describe 'server without pg_hba.conf:' do
+describe 'server without pg_hba.conf:', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
   after :all do
     apply_manifest("class { 'postgresql::server': ensure => absent }", :catch_failures => true)
   end

@@ -1,20 +1,28 @@
 require 'spec_helper'
 describe 'apt::ppa', :type => :define do
-  [ { :lsbdistrelease => '11.04',
+  [
+    {
+      :lsbdistrelease  => '11.04',
       :lsbdistcodename => 'natty',
       :operatingsystem => 'Ubuntu',
-      :package => 'python-software-properties'},
-    { :lsbdistrelease => '12.10',
+      :lsbdistid       => 'Ubuntu',
+      :package         => 'python-software-properties'
+    },
+    {
+      :lsbdistrelease  => '12.10',
       :lsbdistcodename => 'quantal',
       :operatingsystem => 'Ubuntu',
-      :package => 'software-properties-common'},
+      :lsbdistid       => 'Ubuntu',
+      :package         => 'software-properties-common'
+    },
   ].each do |platform|
     context "on #{platform[:lsbdistcodename]}" do
       let :facts do
         {
-          :lsbdistrelease => platform[:lsbdistrelease],
+          :lsbdistrelease  => platform[:lsbdistrelease],
           :lsbdistcodename => platform[:lsbdistcodename],
           :operatingsystem => platform[:operatingsystem],
+          :lsbdistid       => platform[:lsbdistid],
         }
       end
       let :release do
@@ -125,7 +133,8 @@ describe 'apt::ppa', :type => :define do
         end
         let :facts do
           {:lsbdistcodename => '#{platform[:lsbdistcodename]}',
-           :operatingsystem => 'Ubuntu'}
+           :operatingsystem => 'Ubuntu',
+           :lsbdistid => 'Ubuntu'}
         end
         let(:title) { "ppa" }
         let(:release) { "#{platform[:lsbdistcodename]}" }
