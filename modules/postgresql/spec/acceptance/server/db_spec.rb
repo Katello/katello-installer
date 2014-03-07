@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'postgresql::server::db' do
+describe 'postgresql::server::db', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
   after :all do
     # Cleanup after tests have ran
     apply_manifest("class { 'postgresql::server': ensure => absent }", :catch_failures => true)
@@ -35,21 +35,11 @@ describe 'postgresql::server::db' do
     begin
       pp = <<-EOS.unindent
         class { 'postgresql::server': }
-        if($::operatingsystem == 'Debian') {
-          # Need to make sure the correct locale is installed first
-          file { '/etc/locale.gen':
-            content => "en_US ISO-8859-1\nen_NG UTF-8\n",
-          }~>
-          exec { '/usr/sbin/locale-gen':
-            logoutput   => true,
-            refreshonly => true,
-          }
-        }
         postgresql::server::db { 'test1':
           user     => 'test1',
           password => postgresql_password('test1', 'test1'),
           encoding => 'UTF8',
-          locale   => 'en_NG',
+          locale   => 'en_NG.UTF-8',
         }
       EOS
 
