@@ -36,3 +36,7 @@ mod 'katello/pulp', :git => 'https://github.com/Katello/puppet-pulp'
 mod 'katello/qpid', :git => 'https://github.com/Katello/puppet-qpid'
 mod 'katello/service_wait', :git => 'https://github.com/Katello/puppet-service_wait'
 mod 'puppetlabs/mongodb', :git => 'https://github.com/puppetlabs/puppetlabs-mongodb'
+
+# Katello devel specific modules
+mod 'katello/katello_devel', :git => 'https://github.com/Katello/puppet-katello_devel'
+mod 'katello/rvm', :git => 'https://github.com/blt04/puppet-rvm'

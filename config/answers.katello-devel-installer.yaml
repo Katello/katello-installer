@@ -1,0 +1,12 @@
+---
+certs:
+  group: vagrant
+  deploy: true
+  generate: true
+katello_devel:
+  deployment_dir: /home/vagrant
+  user: vagrant
+  db_type: postgres
+  rvm: true
+capsule:
+  puppet: true
