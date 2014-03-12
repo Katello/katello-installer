@@ -53,7 +53,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello
   ref: master
-  sha: ab9e13d49d1985cd7c2bb26a38b2859b1761691c
+  sha: 844c9d13e43fe9a4376bbadb3dedef566627a197
   specs:
     katello/katello (0.0.1)
 
@@ -136,7 +136,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman
   ref: master
-  sha: 67b713743d44a639e3d5a2d021dd9be42a3cb5ca
+  sha: 12aa4ab590028e3f3e01b253190e3c92c475b0c3
   specs:
     theforeman/foreman (2.0.1)
       puppetlabs/apache (~> 1.0)
