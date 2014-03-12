@@ -3,6 +3,8 @@
 # CHANGES WILL LIKELY BE OVERWRITTEN.
 #
 
+SSLOptions +StdEnvVars +ExportCertData +FakeBasicAuth
+
 Alias /pub /var/www/html/pub
 <Location /pub>
   PassengerEnabled off 
@@ -16,4 +18,14 @@ Alias /pub /var/www/html/pub
     SSLVerifyDepth 2
 </Location>
 
-SSLOptions +StdEnvVars +ExportCertData +FakeBasicAuth
+<Location /katello/api>
+  # client certs support (old rhsm clients)
+  RequestHeader set SSL_CLIENT_CERT "%{SSL_CLIENT_CERT}s"
+  SSLVerifyClient optional
+  SSLRenegBufferSize 16777216
+  SSLVerifyDepth 2
+
+  # report to CLI and RHSM nicely when Katello is down
+  ErrorDocument 500 '{"displayMessage": "Internal error, contact administrator", "errors": ["Internal error, contact administrator"], "status": "500" }'
+  ErrorDocument 503 '{"displayMessage": "Service unavailable or restarting, try later", "errors": ["Service unavailable or restarting, try later"], "status": "503" }'
+</Location>

@@ -5,10 +5,10 @@
 # === Parameters:
 #
 # $user::               The Katello system user name;
-#                       default 'katello'
+#                       default 'foreman'
 #
 # $group::              The Katello system user group;
-#                       default 'katello'
+#                       default 'foreman'
 #
 # $user_groups::        Extra user groups the Katello user is a part of;
 #                       default 'foreman

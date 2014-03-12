@@ -37,6 +37,8 @@ class katello::params {
   $proxy_pass = 'NONE'
 
   # system settings
+  $user = 'foreman'
+  $group = 'foreman'
   $user_groups = 'foreman'
   $config_dir  = '/etc/foreman/plugins'
   $log_dir     = '/var/log/foreman/plugins'
