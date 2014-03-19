@@ -25,6 +25,9 @@
 #
 # $config_dir::         Location for Katello config files
 #
+# $use_passenger::      Whether Katello is being deployed with Passenger;
+#                       default true
+#
 class katello (
 
   $user = $katello::params::user,
@@ -37,7 +40,9 @@ class katello (
   $post_sync_token = $katello::params::post_sync_token,
 
   $log_dir = $katello::params::log_dir,
-  $config_dir = $katello::params::config_dir
+  $config_dir = $katello::params::config_dir,
+
+  $use_passenger = $katello::params::use_passenger
 
   ) inherits katello::params {
 

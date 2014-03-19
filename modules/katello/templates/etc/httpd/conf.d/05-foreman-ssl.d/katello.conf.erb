@@ -7,7 +7,9 @@ SSLOptions +StdEnvVars +ExportCertData +FakeBasicAuth
 
 Alias /pub /var/www/html/pub
 <Location /pub>
-  PassengerEnabled off 
+  <% if @use_passenger %>
+  PassengerEnabled off
+  <% end %>
   Options +FollowSymLinks +Indexes
 </Location>
 
