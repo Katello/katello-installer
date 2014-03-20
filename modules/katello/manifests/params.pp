@@ -57,7 +57,7 @@ class katello::params {
   $oauth_secret = cache_data($oauth_token_file, random_password(32))
 
   $post_sync_token_file = '/etc/katello/post_sync_token'
-  $post_sync_token = find_or_create_password($post_sync_token_file)
+  $post_sync_token = cache_data('post_sync_token', random_password(32))
 
   # Subsystems settings
   $candlepin_url = 'https://localhost:8443/candlepin'
@@ -71,4 +71,6 @@ class katello::params {
   $use_foreman = false
   $ldap_roles = false
   $validate_ldap = false
+
+  $use_passenger = true
 }

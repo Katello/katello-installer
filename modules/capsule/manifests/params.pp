@@ -35,4 +35,7 @@ class capsule::params {
   $dns_forwareders               = $foreman_proxy::params::dns_forwarders
   $foreman_oauth_effective_user  = $foreman_proxy::params::oauth_effective_user
 
+  $register_in_foreman = false
+  $certs_tar = undef
+
 }

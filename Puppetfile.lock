@@ -25,14 +25,14 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-capsule
   ref: master
-  sha: d5278fb0c17acb5eb63cd01cf1f64c6ff34d4b85
+  sha: 241ca2cc7db14e63d37e04824eb5f1c225922d6c
   specs:
     katello/capsule (0.0.1)
 
 GIT
   remote: https://github.com/Katello/puppet-certs
   ref: master
-  sha: 8fc2804245b427463cee3b948edf96341ecf7f88
+  sha: 9fb309da5f0cc3e6cd7965237b5a09a7bea2e6c0
   specs:
     katello/certs (0.0.1)
 
@@ -46,14 +46,14 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-elasticsearch
   ref: master
-  sha: cbd8b6b8110c1f0d47b60873712312c2569be17c
+  sha: 4e2bfa4aba259a7abd93540a3c84aca929f97c64
   specs:
     katello/elasticsearch (0.0.1)
 
 GIT
   remote: https://github.com/Katello/puppet-katello
   ref: master
-  sha: 844c9d13e43fe9a4376bbadb3dedef566627a197
+  sha: 7259894ddb889938f43d7d3c223810253cea79ea
   specs:
     katello/katello (0.0.1)
 
@@ -113,9 +113,9 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-concat
   ref: master
-  sha: 517fdffbd3793e79b431635a8f1b3897e5498566
+  sha: 39c18c4ca9e30f0c2628ad02103860d2991d82fb
   specs:
-    theforeman/concat_native (1.3.0)
+    theforeman/concat_native (1.3.1)
 
 GIT
   remote: https://github.com/theforeman/puppet-dhcp
@@ -136,10 +136,10 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman
   ref: master
-  sha: 12aa4ab590028e3f3e01b253190e3c92c475b0c3
+  sha: db7e8aca2189e9a84eb397f4d34bf837bcdf76bb
   specs:
-    theforeman/foreman (2.0.1)
-      puppetlabs/apache (~> 1.0)
+    theforeman/foreman (2.1.0)
+      puppetlabs/apache (< 2.0.0, >= 1.0.0)
       puppetlabs/postgresql (>= 3.0.0)
       puppetlabs/stdlib (>= 2.0.0)
       theforeman/concat_native (>= 1.3.0)
@@ -147,9 +147,9 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman_proxy
   ref: master
-  sha: 13d061e6d16a0620a45299472d62062b1a3e470a
+  sha: fdbc6dd63a4bdd4e4df4caff67151a5a9884da0d
   specs:
-    theforeman/foreman_proxy (1.4.0)
+    theforeman/foreman_proxy (1.5.0)
       puppetlabs/stdlib (>= 2.0.0)
       theforeman/dhcp (>= 1.3.0)
       theforeman/dns (>= 1.3.0)
@@ -167,20 +167,21 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-puppet
   ref: master
-  sha: c8e1f3b6f26ad774ab71d7cd211255df9a382ad6
+  sha: 4e40bea909aa689fab5416702ddbad874d772fff
   specs:
-    theforeman/puppet (2.0.0)
-      puppetlabs/apache (~> 1.0)
+    theforeman/puppet (2.1.0)
+      puppetlabs/apache (< 2.0.0, >= 1.0.0)
       puppetlabs/stdlib (>= 2.0.0)
       theforeman/concat_native (>= 1.3.0)
+      theforeman/foreman (>= 1.3.0)
       theforeman/git (>= 1.3.0)
 
 GIT
   remote: https://github.com/theforeman/puppet-tftp
   ref: master
-  sha: 57cb5004d4c79125def1639384e4d66c271b0e04
+  sha: 6a0b8520f7cde207357809e7c4e43c7ed329b3ba
   specs:
-    theforeman/tftp (1.4.0)
+    theforeman/tftp (1.4.1)
       puppetlabs/xinetd (~> 1.1)
 
 DEPENDENCIES

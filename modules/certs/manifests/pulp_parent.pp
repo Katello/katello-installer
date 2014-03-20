@@ -7,11 +7,11 @@ class certs::pulp_parent (
   $deploy     = $::certs::deploy,
   $ca         = $::certs::default_ca,
 
-  $nodes_cert_dir = '/etc/pki/pulp/nodes',
-  $nodes_cert     = 'node.crt',
+  $nodes_cert_dir   = $certs::params::nodes_cert_dir,
+  $nodes_cert_name  = $certs::params::nodes_cert_name,
 
   $messaging_ca_cert     = $certs::ca_cert,
-  $messaging_client_cert = '/etc/pki/pulp/qpid_client_striped.crt',
+  $messaging_client_cert = $certs::params::messaging_client_cert
 
   ) inherits pulp::params {
 
@@ -59,7 +59,7 @@ class certs::pulp_parent (
       group   => $certs::group,
       mode    => '0755',
     } ->
-    key_bundle { "${nodes_cert_dir}/${::certs::pulp_parent::nodes_cert}":
+    key_bundle { "${nodes_cert_dir}/${::certs::pulp_parent::nodes_cert_name}":
       key_pair => Cert["${::certs::pulp_parent::hostname}-parent-cert"],
     }
 

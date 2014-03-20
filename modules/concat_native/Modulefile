@@ -1,5 +1,5 @@
 name    'theforeman-concat_native'
-version '1.3.0'
+version '1.3.1'
 source 'git://github.com/theforeman/puppet-concat'
 author 'Onyx Point, Inc.'
 license 'Apache 2.0'

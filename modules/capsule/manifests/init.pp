@@ -109,14 +109,12 @@ class capsule (
 
   $foreman_url = "https://${parent_fqdn}"
 
-  if $certs_tar {
-    certs::tar_extract { $certs_tar:
-      before => Class['certs']
-    }
-  }
-
   if $register_in_foreman {
     validate_present($foreman_oauth_secret)
+  }
+
+  if $certs_tar {
+    class { 'capsule::certs': }
   }
 
   if $pulp {

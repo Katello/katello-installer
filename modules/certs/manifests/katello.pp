@@ -10,7 +10,7 @@ class certs::katello {
     ensure => directory,
     owner  => 'apache',
     group  => 'apache',
-    mode   => '0755';
+    mode   => '0755',
   } ->
   file { "${certs::ssl_build_dir}/rhsm-katello-reconfigure":
     content => template('certs/rhsm-katello-reconfigure.erb'),

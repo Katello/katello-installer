@@ -29,13 +29,13 @@ common:
 
   candlepin:
     url: <%= scope.lookupvar("katello::params::candlepin_url") %>
-    oauth_key: <%= scope.lookupvar("katello::params::oauth_key") %>
-    oauth_secret: <%= scope.lookupvar("katello::params::oauth_secret") %>
+    oauth_key: <%= @oauth_key %>
+    oauth_secret: <%= @oauth_secret %>
 
   pulp:
     url: <%= scope.lookupvar("katello::params::pulp_url") %>
-    oauth_key: <%= scope.lookupvar("katello::params::oauth_key") %>
-    oauth_secret: <%= scope.lookupvar("katello::params::oauth_secret") %>
+    oauth_key: <%= @oauth_key %>
+    oauth_secret: <%= @oauth_secret %>
 
   foreman:
     url: <%= scope.lookupvar("katello::params::foreman_url") %>

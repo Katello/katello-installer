@@ -11,7 +11,7 @@ class certs::apache (
 
   ) inherits certs::params {
 
-  require '::apache'
+  include ::apache
 
   $apache_cert = "${certs::pki_dir}/certs/${apache_cert_name}.crt"
   $apache_key  = "${certs::pki_dir}/private/${apache_cert_name}.key"
