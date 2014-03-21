@@ -3,7 +3,7 @@ class katello_devel::install {
 
   include git
 
-  package{ ['pulp-katello-plugins', 'libvirt-devel', 'sqlite-devel', 'postgresql-devel']:
+  package{ ['pulp-katello-plugins', 'libvirt-devel', 'sqlite-devel', 'postgresql-devel', 'libxslt-devel', 'libxml2-devel']:
     ensure => present
   }
 

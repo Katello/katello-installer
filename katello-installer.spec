@@ -38,6 +38,7 @@ install -d -m0755 %{buildroot}/%{_sbindir}
 cp -dpR bin modules %{buildroot}/%{_datadir}/%{name}
 cp -dpR config/* %{buildroot}/%{_sysconfdir}/%{name}
 ln -sf %{_datadir}/%{name}/bin/katello-installer %{buildroot}/%{_sbindir}/katello-installer
+ln -sf %{_datadir}/%{name}/bin/katello-devel-installer %{buildroot}/%{_sbindir}/katello-devel-installer
 ln -sf %{_datadir}/%{name}/bin/node-install %{buildroot}/%{_sbindir}/node-install
 ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node-certs-generate
 
@@ -47,13 +48,16 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %{_datadir}/%{name}
 %dir %{_sysconfdir}/%{name}
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.katello_installer.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.katello-devel-installer.yaml
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.certs.yaml
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.node.yaml
 %config %{_sysconfdir}/%{name}/config_header.txt
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello_installer.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello-devel-installer.yaml
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello_installer.certs.yaml
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello_installer.node.yaml
 %{_sbindir}/katello-installer
+%{_sbindir}/katello-devel-installer
 %{_sbindir}/node-install
 %{_sbindir}/node-certs-generate
 

@@ -1,10 +1,8 @@
-Katello Installer
-=======================
+# Katello Installer
 
-A set of tools to properly configure Katello with Foreman.
+A set of tools to properly configure Katello with Foreman in production and development.
 
-Usage
------
+## Production Usage
 
 ```
 $ yum install -y katello-installer
@@ -13,8 +11,7 @@ $ yum install -y katello-installer
 $ katello-installer
 ```
 
-Examples
---------
+### Production Examples
 
 ```
 # Install also provisioning-related services
@@ -39,8 +36,30 @@ katello-installer --capsule-dns true\
                   --capsule-puppetca false
 ```
 
-Updating packages
------------------
+## Development Usage
+
+```
+$ yum install -y katello-installer
+
+# install Katello with Foreman from git
+$ katello-devel-installer
+```
+
+### Development Examples
+
+Install with custom user
+
+```
+katello-devel-installer --katello-devel-user testuser --certs-group testuser --katello-deployment-dir /home/testuser
+```
+
+Install without RVM
+
+```
+katello-devel-installer --katello-use-rvm false
+```
+
+## Updating packages
 
 This repository uses librarian to handle the dependent puppet modules.
 To update the modules, run `rel-eng/librarian-update`, which updates
