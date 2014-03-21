@@ -58,6 +58,13 @@ GIT
     katello/katello (0.0.1)
 
 GIT
+  remote: https://github.com/Katello/puppet-katello_devel
+  ref: master
+  sha: 3263022b2c4e7a0b9f3d75967033f70dd22c59e6
+  specs:
+    katello/katello_devel (0.0.1)
+
+GIT
   remote: https://github.com/Katello/puppet-pulp
   ref: master
   sha: b1051cda841a8daabbf2c49e3dde41b2c528870f
@@ -77,6 +84,13 @@ GIT
   sha: 83cc88b676d1808a55cdbed70103a3719fb74d0b
   specs:
     katello/service_wait (0.0.1)
+
+GIT
+  remote: https://github.com/blt04/puppet-rvm
+  ref: master
+  sha: 6b5591f297b1a46fc19e110e9c1031d80a326dce
+  specs:
+    katello/rvm (1.0.0)
 
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-firewall
@@ -191,8 +205,10 @@ DEPENDENCIES
   katello/common (>= 0)
   katello/elasticsearch (>= 0)
   katello/katello (>= 0)
+  katello/katello_devel (>= 0)
   katello/pulp (>= 0)
   katello/qpid (>= 0)
+  katello/rvm (>= 0)
   katello/service_wait (>= 0)
   puppetlabs/firewall (>= 0)
   puppetlabs/mongodb (>= 0)
