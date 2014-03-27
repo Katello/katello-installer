@@ -6,6 +6,7 @@ certs:
 katello: true
 foreman: 
   organizations_enabled: true
+  locations_enabled: true
   custom_repo: true
   ssl: true
   server_ssl_cert: /etc/pki/katello/certs/katello-apache.crt
