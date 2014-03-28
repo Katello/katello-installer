@@ -60,7 +60,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello_devel
   ref: master
-  sha: 3263022b2c4e7a0b9f3d75967033f70dd22c59e6
+  sha: dd4b387bc65eab8aee2a7b4e7fa27262e1b972e5
   specs:
     katello/katello_devel (0.0.1)
 
@@ -142,7 +142,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-dns
   ref: master
-  sha: 06f8dec8f257f7d92336a28e573b8c7729dccd72
+  sha: 0f8b5245ddd9fa14d422bcd459f5fee1638e31ef
   specs:
     theforeman/dns (1.4.0)
       theforeman/concat_native (>= 1.3.0)
@@ -150,7 +150,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman
   ref: master
-  sha: db7e8aca2189e9a84eb397f4d34bf837bcdf76bb
+  sha: aad76195117479ca6b2cbbf9f0579e3672a9c806
   specs:
     theforeman/foreman (2.1.0)
       puppetlabs/apache (< 2.0.0, >= 1.0.0)
@@ -161,7 +161,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman_proxy
   ref: master
-  sha: fdbc6dd63a4bdd4e4df4caff67151a5a9884da0d
+  sha: dd33a918daf8e91b4731b2b409590f26af7d0a20
   specs:
     theforeman/foreman_proxy (1.5.0)
       puppetlabs/stdlib (>= 2.0.0)
@@ -181,7 +181,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-puppet
   ref: master
-  sha: 4e40bea909aa689fab5416702ddbad874d772fff
+  sha: a25966bbda391a133815304c5d38c9bcb42f9a94
   specs:
     theforeman/puppet (2.1.0)
       puppetlabs/apache (< 2.0.0, >= 1.0.0)
@@ -193,10 +193,10 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-tftp
   ref: master
-  sha: 6a0b8520f7cde207357809e7c4e43c7ed329b3ba
+  sha: 53a6652b7c6271698c8dee8f6fb80efeac34e7b3
   specs:
     theforeman/tftp (1.4.1)
-      puppetlabs/xinetd (~> 1.1)
+      puppetlabs/xinetd (< 2.0.0, >= 1.1.0)
 
 DEPENDENCIES
   katello/candlepin (>= 0)

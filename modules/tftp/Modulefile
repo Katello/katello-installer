@@ -7,4 +7,4 @@ summary 'TFTP server configuration'
 description 'Module for configuring a TFTP server'
 project_page 'http://github.com/theforeman/foreman-installer'
 
-dependency 'puppetlabs/xinetd', '~> 1.1'
+dependency 'puppetlabs/xinetd', '>= 1.1.0 < 2.0.0'
