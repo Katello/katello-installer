@@ -30,12 +30,13 @@ sed -ri '1sX(/usr/bin/ruby|/usr/bin/env ruby)X%{scl_ruby}X' bin/*
 sed -ri 'sX\./configX%{_sysconfdir}/%{name}Xg' bin/* config/*
 sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/%{name}Xg' config/*
 sed -ri 'sX\:modules_dir.*$X:modules_dir: %{_datadir}/%{name}/modulesXg' config/*
+sed -ri 'sX\:hooks_dir.*$X:hooks_dir: %{_datadir}/%{name}/hooksXg' config/*
 
 %install
 install -d -m0755 %{buildroot}%{_sysconfdir}/%{name}
 install -d -m0755 %{buildroot}/%{_datadir}/%{name}
 install -d -m0755 %{buildroot}/%{_sbindir}
-cp -dpR bin modules %{buildroot}/%{_datadir}/%{name}
+cp -dpR bin modules hooks %{buildroot}/%{_datadir}/%{name}
 cp -dpR config/* %{buildroot}/%{_sysconfdir}/%{name}
 ln -sf %{_datadir}/%{name}/bin/katello-installer %{buildroot}/%{_sbindir}/katello-installer
 ln -sf %{_datadir}/%{name}/bin/katello-devel-installer %{buildroot}/%{_sbindir}/katello-devel-installer
