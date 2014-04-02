@@ -66,7 +66,7 @@ class katello (
   class { 'pulp':
     oauth_key                   => $katello::oauth_key,
     oauth_secret                => $katello::oauth_secret,
-    messaging_url               => 'ssl://localhost:5671',
+    messaging_url               => "ssl://${::fqdn}:5671",
     qpid_ssl_cert_db            => $certs::nss_db_dir,
     qpid_ssl_cert_password_file => $certs::qpid::nss_db_password_file,
     messaging_ca_cert           => $certs::pulp_parent::messaging_ca_cert,
