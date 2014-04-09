@@ -6,6 +6,7 @@
   :answer_file: "./config/answers.katello_installer.yaml"
   :installer_dir: "."
   :modules_dir: "./modules"
+  :hooks_dir: "./hooks"
   :default_values_dir: "./config"
   :colors: true
   :log_name: katello-install.log
