@@ -61,6 +61,12 @@ katello-devel-installer --katello-use-rvm false
 
 ## Updating packages
 
-This repository uses the gems librarian and librarian-puppet to handle the dependent 
-puppet modules. To update the modules, install the 2 gems and run `rel-eng/librarian-update`, 
-which updates all the modules. `tito` is used for doing the releases.
+This repository uses the gems librarian and librarian-puppet to handle the dependent
+puppet modules. To update all the modules and automatically commit the result:
+
+```
+gem install librarian librarian-puppet puppet
+rel-eng/librarian-update
+```
+
+`tito` is used for doing the releases.
