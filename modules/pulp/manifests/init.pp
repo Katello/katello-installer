@@ -94,6 +94,9 @@ class pulp (
     ssl_cert_name           => 'broker',
     user_groups             => $pulp::user_groups
   } ~>
+  # Make sure we install the mongodb client, used by service-wait to check
+  # that the server is up.
+  class {'::mongodb::client':} ~>
   class { 'pulp::install':
     require => [Class['mongodb'], Class['qpid']]
   } ~>
