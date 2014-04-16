@@ -47,13 +47,13 @@ class katello_devel (
 
   $group = $user
 
-  Class['certs'] ~>
-  class { 'certs::apache': } ~>
-  class { 'katello_devel::apache': } ~>
-  class { 'certs::katello': } ~>
-  class { 'katello_devel::install': } ~>
-  class { 'katello_devel::config': } ~>
-  class { 'katello_devel::database': } ~>
+  Class['certs'] ->
+  class { 'certs::apache': } ->
+  class { 'katello_devel::apache': } ->
+  class { 'certs::katello': } ->
+  class { 'katello_devel::install': } ->
+  class { 'katello_devel::config': } ->
+  class { 'katello_devel::database': } ->
   class { 'katello_devel::setup':
     require => [
       Class['pulp'],
@@ -62,8 +62,8 @@ class katello_devel (
     ]
   }
 
-  Class['certs'] ~>
-  class { 'certs::candlepin': } ~>
+  Class['certs'] ->
+  class { 'certs::candlepin': } ->
   class { 'candlepin':
     user_groups       => $katello_devel::group,
     oauth_key         => $katello_devel::oauth_key,
@@ -75,11 +75,11 @@ class katello_devel (
     require           => Class['katello_devel::database']
   }
 
-  Class['certs'] ~>
+  Class['certs'] ->
   class { 'certs::qpid':
     require => Class['qpid::install']
-  } ~>
-  class { 'certs::pulp_parent': } ~>
+  } ->
+  class { 'certs::pulp_parent': } ->
   class { 'pulp':
     oauth_key                   => $katello_devel::oauth_key,
     oauth_secret                => $katello_devel::oauth_secret,
