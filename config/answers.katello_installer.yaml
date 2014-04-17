@@ -17,3 +17,20 @@ capsule:
   register_in_foreman: true
   puppet: true
   puppetca: true
+
+foreman::plugin::bootdisk: true
+foreman::plugin::discovery: true
+foreman::plugin::hooks: true
+foreman::plugin::chef: false
+foreman::plugin::default_hostgroup: false
+foreman::plugin::puppetdb: false
+foreman::plugin::setup: false
+foreman::plugin::templates: false
+
+foreman::compute::ec2: true
+foreman::compute::gce: true
+foreman::compute::libvirt: true
+foreman::compute::openstack: false
+foreman::compute::ovirt: true
+foreman::compute::rackspace: false
+foreman::compute::vmware: true
