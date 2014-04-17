@@ -82,5 +82,7 @@ class katello (
 
   class { 'katello::service': }
 
+  Service['httpd'] -> Exec['foreman-rake-db:seed']
+
   User<|title == apache|>{groups +> $user_groups}
 }
