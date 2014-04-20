@@ -37,7 +37,7 @@ operation_retries: 2
 # debugging_mode: boolean; toggles Pulp's debugging capabilities
 
 [server]
-server_name: <%= (has_variable?("fqdn") ? fqdn : hostname).downcase %>
+server_name: <%= (has_variable?("fqdn") ? @fqdn : @hostname).downcase %>
 key_url: /pulp/gpg
 ks_url: /pulp/ks
 default_login: <%= @default_login %>
@@ -279,7 +279,7 @@ dispatch_interval: 30
 # sync_weight: concurrency weight of repository sync tasks
 
 [tasks]
-concurrency_threshold: <%= processorcount.to_i + 1 %>
+concurrency_threshold: <%= @processorcount.to_i + 1 %>
 dispatch_interval: 0.5
 archived_call_lifetime: 48
 consumer_content_weight: 0
