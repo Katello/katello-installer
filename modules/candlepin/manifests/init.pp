@@ -84,10 +84,10 @@ class candlepin (
   $weburl = "https://${::fqdn}/${candlepin::deployment_url}/distributors?uuid="
   $apiurl = "https://${::fqdn}/${candlepin::deployment_url}/api/distributors/"
 
-  class { 'candlepin::install': } ~>
-  class { 'candlepin::config': } ~>
-  class { 'candlepin::database': } ~>
-  class { 'candlepin::service': } ~>
+  class { 'candlepin::install': } ->
+  class { 'candlepin::config': } ->
+  class { 'candlepin::database': } ->
+  class { 'candlepin::service': } ->
   Class['candlepin']
 
 }
