@@ -1,0 +1,7 @@
+---
+certs:
+  generate: false
+  deploy: true
+katello: false
+foreman: false
+capsule: true

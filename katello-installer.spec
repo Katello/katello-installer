@@ -5,7 +5,7 @@
 Name: katello-installer
 Version: 0.0.19
 Release: 1%{?dist}
-Summary: Puppet-based installer for the Katello and Katello Nodes
+Summary: Puppet-based installer for the Katello and Katello Capsule
 Group: Applications/System
 License: GPLv3+ and ASL 2.0
 URL: http://katello.org
@@ -17,7 +17,7 @@ Requires: %{?scl_prefix}rubygem-kafo
 Requires:   %{?scl_prefix}rubygem-foreman_api >= 0.1.4
 
 %description
-Installer for Katello nodes.
+Installer for Katello Capsule.
 
 %prep
 %setup -q
@@ -40,8 +40,8 @@ cp -dpR bin modules hooks checks %{buildroot}/%{_datadir}/%{name}
 cp -dpR config/* %{buildroot}/%{_sysconfdir}/%{name}
 ln -sf %{_datadir}/%{name}/bin/katello-installer %{buildroot}/%{_sbindir}/katello-installer
 ln -sf %{_datadir}/%{name}/bin/katello-devel-installer %{buildroot}/%{_sbindir}/katello-devel-installer
-ln -sf %{_datadir}/%{name}/bin/node-install %{buildroot}/%{_sbindir}/node-install
-ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node-certs-generate
+ln -sf %{_datadir}/%{name}/bin/capsule-installer %{buildroot}/%{_sbindir}/capsule-installer
+ln -sf %{_datadir}/%{name}/bin/capsule-certs-generate %{buildroot}/%{_sbindir}/capsule-certs-generate
 
 %files
 %defattr(-,root,root,-)
@@ -50,17 +50,17 @@ ln -sf %{_datadir}/%{name}/bin/node-certs-generate %{buildroot}/%{_sbindir}/node
 %dir %{_sysconfdir}/%{name}
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.katello_installer.yaml
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.katello-devel-installer.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.certs.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.node.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.capsule_certs.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.capsule.yaml
 %config %{_sysconfdir}/%{name}/config_header.txt
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello_installer.yaml
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello-devel-installer.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello_installer.certs.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello_installer.node.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello_installer.capsule_certs.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello_installer.capsule.yaml
 %{_sbindir}/katello-installer
 %{_sbindir}/katello-devel-installer
-%{_sbindir}/node-install
-%{_sbindir}/node-certs-generate
+%{_sbindir}/capsule-installer
+%{_sbindir}/capsule-certs-generate
 
 %changelog
 * Wed Jan 22 2014 Eric D Helms <ehelms@redhat.com> 0.0.19-1
