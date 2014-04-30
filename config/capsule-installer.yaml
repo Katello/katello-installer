@@ -3,7 +3,7 @@
   :log_name: capsule-installer.log
   :log_level: :debug
   :no_prefix: true
-  :answer_file: "./config/answers.capsule.yaml"
+  :answer_file: "./config/answers.capsule-installer.yaml"
   :installer_dir: "."
   :default_values_dir: "./config"
   :modules_dir: "./modules"

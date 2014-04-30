@@ -3,7 +3,7 @@
 require 'rubygems'
 require 'kafo'
 
-CONFIG_FILE = "./config/katello_installer.capsule.yaml"
+CONFIG_FILE = "./config/capsule-installer.yaml"
 
 Kafo::KafoConfigure.run
 

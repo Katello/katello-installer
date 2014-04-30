@@ -48,15 +48,15 @@ ln -sf %{_datadir}/%{name}/bin/capsule-certs-generate %{buildroot}/%{_sbindir}/c
 %doc README.*
 %{_datadir}/%{name}
 %dir %{_sysconfdir}/%{name}
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.katello_installer.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.katello-installer.yaml
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.katello-devel-installer.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.capsule_certs.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.capsule.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.capsule-certs-generate.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.capsule-installer.yaml
 %config %{_sysconfdir}/%{name}/config_header.txt
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello_installer.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello-installer.yaml
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello-devel-installer.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello_installer.capsule_certs.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello_installer.capsule.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/capsule-certs-generate.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/capsule-installer.yaml
 %{_sbindir}/katello-installer
 %{_sbindir}/katello-devel-installer
 %{_sbindir}/capsule-installer
