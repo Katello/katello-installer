@@ -18,15 +18,6 @@
 #
 class git::params (
   $bin = '/usr/bin/git',
-  $package = undef
+  $package = 'git',
 ) {
-
-  $pkg = $package ? {
-    undef   => $::operatingystem ? {
-      /(?i:Debian|Ubuntu)/ => ['git-core'],
-      default              => ['git'],
-    },
-    default => $package,
-  }
-
 }
