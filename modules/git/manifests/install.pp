@@ -6,5 +6,7 @@
 class git::install {
   require git::params
 
-  package {$git::params::pkg: ensure => installed }
+  package { $git::params::package:
+    ensure => installed,
+  }
 }

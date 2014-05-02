@@ -16,7 +16,7 @@
 # Configures rhsm on client. Called from the certificate RPM.
 #
 
-KATELLO_SERVER=<%= has_variable?("fqdn") ? fqdn : hostname %>
+KATELLO_SERVER=<%= has_variable?("fqdn") ? @fqdn : @hostname %>
 PORT=443
 <% if scope.lookupvar("katello::params::deployment") == 'katello' %>
 BASEURL=https://$KATELLO_SERVER/pulp/repos

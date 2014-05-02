@@ -47,6 +47,17 @@ class katello_devel (
 
   $group = $user
 
+  $changeme = '$6$lb06/IMy$nZhR3LkR2tUunTQm68INFWMyb/8VA2vfYq0/fRzLoKSfuri.vvtjeLJf9V.wuHzw92.aw8NgUlJchMy/qK25x.'
+
+  user { $katello_devel::user:
+    ensure     => present,
+    managehome => true,
+    password   => $changeme,
+  } ~>
+  group { $katello_devel::group:
+    ensure => present
+  }
+
   Class['certs'] ~>
   class { 'certs::apache': } ~>
   class { 'katello_devel::apache': } ~>
