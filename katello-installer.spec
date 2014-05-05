@@ -36,7 +36,7 @@ sed -ri 'sX\:hooks_dir.*$X:hooks_dir: %{_datadir}/%{name}/hooksXg' config/*
 install -d -m0755 %{buildroot}%{_sysconfdir}/%{name}
 install -d -m0755 %{buildroot}/%{_datadir}/%{name}
 install -d -m0755 %{buildroot}/%{_sbindir}
-cp -dpR bin modules hooks %{buildroot}/%{_datadir}/%{name}
+cp -dpR bin modules hooks checks %{buildroot}/%{_datadir}/%{name}
 cp -dpR config/* %{buildroot}/%{_sysconfdir}/%{name}
 ln -sf %{_datadir}/%{name}/bin/katello-installer %{buildroot}/%{_sbindir}/katello-installer
 ln -sf %{_datadir}/%{name}/bin/katello-devel-installer %{buildroot}/%{_sbindir}/katello-devel-installer
