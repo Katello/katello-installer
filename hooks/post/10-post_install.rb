@@ -53,10 +53,14 @@ MSG
       org                   = "ACME_Corporation"
       say <<MSG
 
-  To finish the installation, copy <%= color("#{certs_tar}", :info) %>
-  to the system <%= color("#{capsule_fqdn}", :info) %> and run this command
-  on it (possibly with the customized parameters,
-  see <%= color("capsule-installer --help", :info) %> for mor info):
+  To finish the installation, follow these steps:
+
+  1. Ensure that the capsule-installer is available on the system.
+     The capsule-installer comes from the katello-installer package and
+     should be acquired through the means that are appropriate to your deployment.
+  2. Copy <%= color("#{certs_tar}", :info) %> to the system <%= color("#{capsule_fqdn}", :info) %> 
+  3. Run the following commands on the capsule (possibly with the customized
+     parameters, see <%= color("capsule-installer --help", :info) %> for more info):
 
   rpm -Uvh http://#{fqdn}/pub/katello-ca-consumer-latest.noarch.rpm
   subscription-manager register --org "<%= color('#{org}', :info) %>"
