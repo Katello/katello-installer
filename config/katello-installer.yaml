@@ -1,14 +1,14 @@
 ---
-  :log_dir: /var/log/katello/katello-install
+  :log_dir: /var/log/katello/installer
+  :log_name: katello-installer.log
   :log_level: :debug
   :no_prefix: false
-  :answer_file: "./config/answers.katello_installer.yaml"
+  :answer_file: "./config/answers.katello-installer.yaml"
   :installer_dir: "."
   :modules_dir: "./modules"
   :hooks_dir: "./hooks"
   :default_values_dir: "./config"
   :colors: true
-  :log_name: katello-install.log
   :password: l7VtnWiPeKe412o2CVBM6yVbTkKGh6L_CKx4_zBkmUE
   :order:
     - certs

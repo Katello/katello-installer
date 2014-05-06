@@ -16,24 +16,50 @@ $ katello-installer
 ```
 # Install also provisioning-related services
 
-katello-installer --capsule-dns true\
-                  --capsule-dns-forwarders 8.8.8.8 --capsule-dns-forwarders  8.8.4.4\
-                  --capsule-dns-interface virbr1\
-                  --capsule-dns-zone example.com\
-                  --capsule-dhcp true\
-                  --capsule-dhcp-interface virbr1\
-                  --capsule-tftp true\
-                  --capsule-puppet true\
-                  --capsule-puppetca true
+katello-installer --capsule-dns            "true"\
+                  --capsule-dns-forwarders "8.8.8.8"
+                  --capsule-dns-forwarders "8.8.4.4"\
+                  --capsule-dns-interface  "virbr1"\
+                  --capsule-dns-zone       "example.com"\
+                  --capsule-dhcp           "true"\
+                  --capsule-dhcp-interface "virbr1"\
+                  --capsule-tftp           "true"\
+                  --capsule-puppet         "true"\
+                  --capsule-puppetca       "true"
 
 # Install only DNS with smart proxy
 
-katello-installer --capsule-dns true\
-                  --capsule-dns-forwarders 8.8.8.8 --capsule-dns-forwarders  8.8.4.4\
-                  --capsule-dns-interface virbr1\
-                  --capsule-dns-zone example.com\
-                  --capsule-puppet false\
-                  --capsule-puppetca false
+katello-installer --capsule-dns            "true"\
+                  --capsule-dns-forwarders "8.8.8.8"
+                  --capsule-dns-forwarders "8.8.4.4"\
+                  --capsule-dns-interface  "virbr1"\
+                  --capsule-dns-zone       "example.com"\
+                  --capsule-puppet         "false"\
+                  --capsule-puppetca       "false"
+
+# Generate certificates for installing capsule on another system
+capsule-certs-generate --capsule-fqdn "mycapsule.example.com"\
+                       --certs-tar    "~/mycapsule.example.com-certs.tar"
+
+# Copy the ~/mycapsule.example.com-certs.tar to the capsule system
+# register the system to Katello and run:
+capsule-installer --parent-fqdn          "master.example.com"\
+                  --register-in-foreman  "true"\
+                  --foreman-oauth-key    "foreman_oauth_key"\
+                  --foreman-oauth-secret "foreman_oauth_secret"\
+                  --pulp-oauth-secret    "pulp_oauth_secret"\
+                  --certs-tar            "/root/mycapsule.exampe.com-certs.tar"\
+                  --puppet               "true"\
+                  --puppetca             "true"\
+                  --pulp                 "true"\
+                  --dns                  "true"\
+                  --dns-forwarders       "8.8.8.8"\
+                  --dns-forwarders       "8.8.4.4"\
+                  --dns-interface        "virbr1"\
+                  --dns-zone             "example.com"\
+                  --dhcp                 "true"\
+                  --dhcp-interface       "virbr1"\
+                  --tftp                 "true"\
 ```
 
 ## Development Usage

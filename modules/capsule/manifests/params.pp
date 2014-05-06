@@ -12,7 +12,7 @@ class capsule::params {
   $foreman_oauth_secret       = cache_data('oauth_consumer_secret', random_password(32))
 
   $pulp                       = false
-  $pulp_admin_password        = undef
+  $pulp_admin_password        = cache_data('pulp_node_admin_password', random_password(32))
   $pulp_oauth_effective_user  = 'admin'
   $pulp_oauth_key             = 'katello'
   $pulp_oauth_secret          = undef

@@ -39,4 +39,3 @@ mod 'puppetlabs/mongodb', :git => 'https://github.com/puppetlabs/puppetlabs-mong
 
 # Katello devel specific modules
 mod 'katello/katello_devel', :git => 'https://github.com/Katello/puppet-katello_devel'
-mod 'katello/rvm', :git => 'https://github.com/blt04/puppet-rvm'

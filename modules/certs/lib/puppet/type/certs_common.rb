@@ -51,10 +51,18 @@ module Certs
       end
     end
 
-    autorequire(:key_pair) do
-      if @parameters.has_key?(:key_pair)
+    define_method(:autorequire_cert) do |type|
+      if @parameters.has_key?(:key_pair) && @parameters[:key_pair].value.type == type
         @parameters[:key_pair].value.to_hash[:name]
       end
+    end
+
+    autorequire(:cert) do
+      autorequire_cert('Cert')
+    end
+
+    autorequire(:ca) do
+      autorequire_cert('Ca')
     end
 
     autorequire(:file) do

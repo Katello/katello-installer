@@ -26,14 +26,14 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-capsule
   ref: master
-  sha: 241ca2cc7db14e63d37e04824eb5f1c225922d6c
+  sha: e35caa692027b47208bb38afa16e2589cd30f208
   specs:
     katello/capsule (0.0.1)
 
 GIT
   remote: https://github.com/Katello/puppet-certs
   ref: master
-  sha: c0378751b8a65bc76620306025f126ef601c541c
+  sha: 0112f4be86bff4308bb41201bc9302f93cee623f
   specs:
     katello/certs (0.0.1)
 
@@ -54,7 +54,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello
   ref: master
-  sha: 6be7c9f7f51ef6c843a9c4933d87fda784ece6a6
+  sha: 1437d0246ba8527d60139ca7c5eb0acbcb3035ee
   specs:
     katello/katello (0.0.1)
 
@@ -69,7 +69,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-pulp
   ref: master
-  sha: d41cbdcd22294a6b2bf5d9287acda168be8a1790
+  sha: 59763678ddc3a51a0ded1d5dabec62fda3353914
   specs:
     katello/pulp (0.0.1)
 
@@ -86,13 +86,6 @@ GIT
   sha: 83cc88b676d1808a55cdbed70103a3719fb74d0b
   specs:
     katello/service_wait (0.0.1)
-
-GIT
-  remote: https://github.com/blt04/puppet-rvm
-  ref: master
-  sha: 6b5591f297b1a46fc19e110e9c1031d80a326dce
-  specs:
-    katello/rvm (1.0.0)
 
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-firewall
@@ -152,7 +145,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman
   ref: master
-  sha: 93fb9b49232bd17637a00c1ead3ae61d3f4b35f5
+  sha: 4b5caab257112cc943a2f5fc82aabb9d5f91cd04
   specs:
     theforeman/foreman (2.1.2)
       puppetlabs/apache (< 2.0.0, >= 1.0.0)
@@ -211,7 +204,6 @@ DEPENDENCIES
   katello/katello_devel (>= 0)
   katello/pulp (>= 0)
   katello/qpid (>= 0)
-  katello/rvm (>= 0)
   katello/service_wait (>= 0)
   puppetlabs/firewall (>= 0)
   puppetlabs/mongodb (>= 0)

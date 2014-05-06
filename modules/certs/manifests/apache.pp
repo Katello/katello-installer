@@ -7,18 +7,15 @@ class certs::apache (
   $deploy          = $::certs::deploy,
 
   $ca              = $::certs::default_ca,
-  $apache_cert_name = $::certs::params::apache_cert_name,
-
   ) inherits certs::params {
 
-  include ::apache
-
-  $apache_cert = "${certs::pki_dir}/certs/${apache_cert_name}.crt"
-  $apache_key  = "${certs::pki_dir}/private/${apache_cert_name}.key"
+  $apache_cert_name = "${hostname}-apache"
+  $apache_cert = "${certs::pki_dir}/certs/katello-apache.crt"
+  $apache_key  = "${certs::pki_dir}/private/katello-apache.key"
 
   cert { $apache_cert_name:
     ensure        => present,
-    hostname      => $::certs::node_fqdn,
+    hostname      => $hostname,
     country       => $::certs::country,
     state         => $::certs::state,
     city          => $::certs::sity,
@@ -33,6 +30,8 @@ class certs::apache (
   }
 
   if $deploy {
+
+    include ::apache
 
     Cert[$apache_cert_name] ~>
     pubkey { $apache_cert:

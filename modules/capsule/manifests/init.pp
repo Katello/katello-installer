@@ -10,7 +10,6 @@
 #                                   type:boolean
 #
 # $pulp_admin_password::            passowrd for the Pulp admin user.It should be left blank so that random password is generated
-#                                   type:password
 #
 # $pulp_oauth_effective_user::      User to be used for Pulp REST interaction
 #
@@ -107,37 +106,44 @@ class capsule (
     validate_present($pulp_oauth_secret)
   }
 
+  $capsule_fqdn = $::fqdn
   $foreman_url = "https://${parent_fqdn}"
 
   if $register_in_foreman {
     validate_present($foreman_oauth_secret)
   }
 
-  if $certs_tar {
-    class { 'capsule::certs': }
-  }
-
   if $pulp {
-    class { 'certs::apache': }
+    class { 'certs::apache':
+      hostname => $capsule_fqdn
+    }
+
     class { 'pulp':
       default_password => $pulp_admin_password,
       oauth_key        => $pulp_oauth_key,
       oauth_secret     => $pulp_oauth_secret
-    }
+    } ~>
     class { 'pulp::child':
       parent_fqdn          => $parent_fqdn,
       oauth_effective_user => $pulp_oauth_effective_user,
       oauth_key            => $pulp_oauth_key,
       oauth_secret         => $pulp_oauth_secret
     }
+
+    class { 'certs::pulp_child':
+      hostname => $capsule_fqdn,
+      notify   => [ Class['pulp'], Class['pulp::child'] ],
+    }
+
     katello_node { "https://${parent_fqdn}/katello":
       content => $pulp
     }
   }
 
   if $puppet {
-    class { 'certs::puppet': } ~>
-
+    class { 'certs::puppet':
+      hostname => $capsule_fqdn
+    } ~>
     class { 'puppet':
       server                      => true,
       server_foreman_url          => $foreman_url,
@@ -151,10 +157,12 @@ class capsule (
     }
   }
 
+  $foreman_proxy = $tftp or $dhcp or $dns or $puppet or $puppetca
 
-  if $tftp or $dhcp or $dns or $puppet or $puppetca {
+  if $foreman_proxy {
 
     class { 'certs::foreman_proxy':
+      hostname   => $capsule_fqdn,
       require    => Package['foreman-proxy'],
       before     => Service['foreman-proxy'],
     }
@@ -180,10 +188,28 @@ class capsule (
       dns_forwarders        => $dns_forwarders,
       register_in_foreman   => $register_in_foreman,
       foreman_base_url      => $foreman_url,
-      registered_proxy_url  => "https://${::fqdn}:${capsule::foreman_proxy_port}",
+      registered_proxy_url  => "https://${capsule_fqdn}:${capsule::foreman_proxy_port}",
       oauth_effective_user  => $foreman_oauth_effective_user,
       oauth_consumer_key    => $foreman_oauth_key,
       oauth_consumer_secret => $foreman_oauth_secret
     }
+  }
+
+  if $certs_tar {
+    certs::tar_extract { $capsule::certs_tar: }
+
+    if $pulp {
+      Certs::Tar_extract[$certs_tar] -> Class['certs::apache']
+      Certs::Tar_extract[$certs_tar] -> Class['certs::pulp_child']
+    }
+
+    if $puppet {
+      Certs::Tar_extract[$certs_tar] -> Class['certs::puppet']
+    }
+
+    if $foreman_proxy {
+      Certs::Tar_extract[$certs_tar] -> Class['certs::foreman_proxy']
+    }
+
   }
 }
