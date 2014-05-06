@@ -17,7 +17,8 @@ Requires: %{?scl_prefix}rubygem-kafo
 Requires:   %{?scl_prefix}rubygem-foreman_api >= 0.1.4
 
 %description
-Installer for Katello Capsule.
+A set of tools for installation of Katello and Katello Capsule,
+including Foreman and Foreman Proxy.
 
 %prep
 %setup -q
