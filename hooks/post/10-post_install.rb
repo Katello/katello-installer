@@ -60,7 +60,8 @@ MSG
      should be acquired through the means that are appropriate to your deployment.
   2. Copy <%= color("#{certs_tar}", :info) %> to the system <%= color("#{capsule_fqdn}", :info) %> 
   3. Run the following commands on the capsule (possibly with the customized
-     parameters, see <%= color("capsule-installer --help", :info) %> for more info):
+     parameters, see <%= color("capsule-installer --help", :info) %> and
+     documentation for more info on setting up additional services):
 
   rpm -Uvh http://#{fqdn}/pub/katello-ca-consumer-latest.noarch.rpm
   subscription-manager register --org "<%= color('#{org}', :info) %>"
@@ -72,16 +73,7 @@ MSG
                     --certs-tar            "<%= color('#{certs_tar}', :info) %>"\\
                     --puppet               "<%= color('true', :info) %>"\\
                     --puppetca             "<%= color('true', :info) %>"\\
-                    --pulp                 "<%= color('true', :info) %>"\\
-                    --dns                  "<%= color('true', :info) %>"\\
-                    --dns-forwarders       "<%= color('8.8.8.8', :info) %>"\\
-                    --dns-forwarders       "<%= color('8.8.4.4', :info) %>"\\
-                    --dns-interface        "<%= color('virbr1', :info) %>"\\
-                    --dns-zone             "<%= color('yourdomain.example.com', :info) %>"\\
-                    --dhcp                 "<%= color('true', :info) %>"\\
-                    --dhcp-interface       "<%= color('virbr1', :info) %>"\\
-                    --tftp                 "<%= color('true', :info) %>"
-
+                    --pulp                 "<%= color('true', :info) %>"
 MSG
     end
   end
