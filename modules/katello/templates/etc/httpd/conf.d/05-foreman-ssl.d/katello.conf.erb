@@ -13,15 +13,7 @@ Alias /pub /var/www/html/pub
   Options +FollowSymLinks +Indexes
 </Location>
 
-<Location /subscription>
-    RequestHeader set SSL_CLIENT_CERT "%{SSL_CLIENT_CERT}s"
-    SSLVerifyClient optional
-    SSLRenegBufferSize 16777216
-    SSLVerifyDepth 2
-</Location>
-
-<Location /katello/api>
-  # client certs support (old rhsm clients)
+<LocationMatch /subscription|/katello/api>
   RequestHeader set SSL_CLIENT_CERT "%{SSL_CLIENT_CERT}s"
   SSLVerifyClient optional
   SSLRenegBufferSize 16777216
@@ -30,4 +22,4 @@ Alias /pub /var/www/html/pub
   # report to CLI and RHSM nicely when Katello is down
   ErrorDocument 500 '{"displayMessage": "Internal error, contact administrator", "errors": ["Internal error, contact administrator"], "status": "500" }'
   ErrorDocument 503 '{"displayMessage": "Service unavailable or restarting, try later", "errors": ["Service unavailable or restarting, try later"], "status": "503" }'
-</Location>
+</LocationMatch>

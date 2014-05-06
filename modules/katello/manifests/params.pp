@@ -53,7 +53,7 @@ class katello::params {
   # comes from and can find the rigth secret. This way only one key-secret pair
   # is needed to be mainained for duplex communication.
   $foreman_oauth_key = 'foreman'
-  $oauth_token_file = 'oauth_token-file'
+  $oauth_token_file = 'katello_oauth_secret'
   $oauth_secret = cache_data($oauth_token_file, random_password(32))
 
   $post_sync_token_file = '/etc/katello/post_sync_token'

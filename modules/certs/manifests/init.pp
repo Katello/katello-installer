@@ -137,23 +137,26 @@ class certs (
       strip     => true,
       key_pair  => $default_ca
     } ~>
-    privkey { $ca_key:
-      key_pair      => $default_ca,
-      unprotect     => true,
-      password_file => $ca_key_password_file
-    } ~>
-    file { $ca_key:
-      ensure  => file,
-      owner   => 'root',
-      group   => $certs::group,
-      mode    => '0440',
-    } ~>
     file { $ca_cert:
       ensure  => file,
       owner   => 'root',
       group   => $certs::group,
       mode    => '0644',
     }
-  }
 
+    if $generate {
+      Ca[$default_ca_name] ~>
+      privkey { $ca_key:
+        key_pair      => $default_ca,
+        unprotect     => true,
+        password_file => $ca_key_password_file
+      } ~>
+      file { $ca_key:
+        ensure  => file,
+        owner   => 'root',
+        group   => $certs::group,
+        mode    => '0440',
+      }
+    }
+  }
 }
