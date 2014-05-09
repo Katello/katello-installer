@@ -1,7 +1,7 @@
 # Katello Config
 class katello::config {
 
-  file { '/usr/share/foreman/bundler.d/katello.rb':
+  file { '/usr/share/foreman/bundler.d/katello.local.rb':
     ensure  => file,
     owner   => $katello::user,
     group   => $katello::group,
