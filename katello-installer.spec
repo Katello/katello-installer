@@ -34,6 +34,7 @@ sed -ri 'sX\:hooks_dir.*$X:hooks_dir: %{_datadir}/%{name}/hooksXg' config/*
 
 %install
 install -d -m0755 %{buildroot}%{_sysconfdir}/%{name}
+install -d -m0755 %{buildroot}%{_localstatedir}/log/%{name}
 install -d -m0755 %{buildroot}/%{_datadir}/%{name}
 install -d -m0755 %{buildroot}/%{_sbindir}
 cp -dpR bin modules hooks checks %{buildroot}/%{_datadir}/%{name}
@@ -48,6 +49,7 @@ ln -sf %{_datadir}/%{name}/bin/capsule-certs-generate %{buildroot}/%{_sbindir}/c
 %doc README.*
 %{_datadir}/%{name}
 %dir %{_sysconfdir}/%{name}
+%dir %{_localstatedir}/log/%{name}
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.katello-installer.yaml
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.katello-devel-installer.yaml
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.capsule-certs-generate.yaml

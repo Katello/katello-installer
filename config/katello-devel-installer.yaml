@@ -1,5 +1,6 @@
 --- 
   :log_dir: /var/log/katello-installer
+  :log_name: katello-devel-installer.log
   :log_level: :debug
   :no_prefix: true
   :answer_file: "./config/answers.katello-devel-installer.yaml"
@@ -10,5 +11,4 @@
   :order:
     - certs
     - katello_devel
-  :log_name: katello-devel-installer.log
   :password: l7VtnWiPeKe412o2CVBM6yVbTkKGh6L_CKx4_zBkmUE
