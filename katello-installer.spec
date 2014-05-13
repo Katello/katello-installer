@@ -14,7 +14,6 @@ Source0: %{name}-%{version}.tar.gz
 BuildArch: noarch
 
 Requires: %{?scl_prefix}rubygem-kafo
-Requires:   %{?scl_prefix}rubygem-foreman_api >= 0.1.4
 
 %description
 A set of tools for installation of Katello and Katello Capsule,
