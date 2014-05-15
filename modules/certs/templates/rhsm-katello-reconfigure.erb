@@ -16,14 +16,12 @@
 # Configures rhsm on client. Called from the certificate RPM.
 #
 
-KATELLO_SERVER=<%= has_variable?("fqdn") ? @fqdn : @hostname %>
+KATELLO_SERVER=<%= @hostname %>
 PORT=443
-<% if scope.lookupvar("katello::params::deployment") == 'katello' %>
 BASEURL=https://$KATELLO_SERVER/pulp/repos
-<% else %>
-BASEURL=https://$KATELLO_SERVER:8088
-<% end %>
-PREFIX=/<%=scope.lookupvar("katello::params::deployment_url")%>/api
+
+DEPLOYMENT_URL=<%= @deployment_url %>
+PREFIX=$DEPLOYMENT_URL/api
 CFG=/etc/rhsm/rhsm.conf
 CFG_BACKUP=$CFG.kat-backup
 

@@ -1,5 +1,5 @@
 # Katello specific certs settings
-class certs::katello {
+class certs::katello ($hostname = $fqdn, $deployment_url = undef){
 
   $katello_www_pub_dir            = '/var/www/html/pub'
   $candlepin_consumer_name        = "${$certs::default_ca_name}-consumer-${::fqdn}"

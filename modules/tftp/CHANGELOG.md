@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.4.2
+* Fix Modulefile specification for Forge compatibility
+
 ## 1.4.1
 * Specify xinetd version to workaround librarian-puppet bug
 
