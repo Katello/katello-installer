@@ -16,6 +16,11 @@
 # $messaging_client_cert::      The client certificate signed by the CA cert
 #                               above to authenticate.
 #
+# $broker_url::                 URL for the Celery broker that Pulp will use to
+#                               queue tasks.
+#
+# $broker_use_ssl::             Set to true if deploying broker for Celery with SSL.
+#
 # $consumers_ca_cert::          The path to the CA cert that will be used to sign customer
 #                               and admin identification certificates
 #
@@ -59,6 +64,9 @@ class pulp (
   $messaging_url = $pulp::params::messaging_url,
   $messaging_ca_cert = $pulp::params::messaging_ca_cert,
   $messaging_client_cert = $pulp::params::messaging_client_cert,
+
+  $broker_url = $pulp::params::broker_url,
+  $broker_use_ssl = $pulp::params::broker_use_ssl,
 
   $consumers_ca_cert = $pulp::params::consumers_ca_cert,
   $consumers_ca_key = $pulp::params::consumers_ca_key,
