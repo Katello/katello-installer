@@ -12,7 +12,7 @@ class katello_devel::config {
     mode    => '0644',
   }
 
-  file { "${katello_devel::deployment_dir}/foreman/bundler.d/katello.rb":
+  file { "${katello_devel::deployment_dir}/foreman/bundler.d/katello.local.rb":
     ensure  => link,
     target  => "${katello_devel::deployment_dir}/katello/doc/katello.local.rb",
     owner   => $katello_devel::user,

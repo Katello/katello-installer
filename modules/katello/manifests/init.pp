@@ -48,7 +48,9 @@ class katello (
 
   Class['certs'] ~>
   class { 'certs::apache': } ~>
-  class { 'certs::katello': } ~>
+  class { 'certs::katello':
+    deployment_url => $katello::deployment_url,
+  } ~>
   class { 'katello::install': } ~>
   class { 'katello::config': } ~>
   class { 'certs::candlepin': } ~>

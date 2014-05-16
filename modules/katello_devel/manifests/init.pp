@@ -61,7 +61,9 @@ class katello_devel (
   Class['certs'] ~>
   class { 'certs::apache': } ~>
   class { 'katello_devel::apache': } ~>
-  class { 'certs::katello': } ~>
+  class { 'certs::katello':
+    deployment_url => '/katello'
+  } ~>
   class { 'katello_devel::install': } ~>
   class { 'katello_devel::config': } ~>
   class { 'katello_devel::database': } ~>

@@ -6,14 +6,14 @@ FORGE
       puppetlabs/stdlib (>= 2.4.0)
     puppetlabs/apt (1.4.2)
       puppetlabs/stdlib (>= 2.2.1)
-    puppetlabs/concat (1.1.0-rc1)
-      puppetlabs/stdlib (>= 3.0.0)
+    puppetlabs/concat (1.1.0)
+      puppetlabs/stdlib (>= 4.0.0)
     puppetlabs/postgresql (3.3.3)
       puppetlabs/apt (< 2.0.0, >= 1.1.0)
       puppetlabs/concat (< 2.0.0, >= 1.0.0)
       puppetlabs/firewall (>= 0.0.4)
       puppetlabs/stdlib (< 5.0.0, >= 3.2.0)
-    puppetlabs/stdlib (4.1.0)
+    puppetlabs/stdlib (4.2.1)
     puppetlabs/vcsrepo (0.2.0)
 
 GIT
@@ -33,7 +33,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-certs
   ref: master
-  sha: 0112f4be86bff4308bb41201bc9302f93cee623f
+  sha: 0c37bc8ebce721cc3db8695a3af9656496801010
   specs:
     katello/certs (0.0.1)
 
@@ -54,14 +54,14 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello
   ref: master
-  sha: 1437d0246ba8527d60139ca7c5eb0acbcb3035ee
+  sha: 6920fa2d744e47d5944411dec3f4a0943504c7b7
   specs:
     katello/katello (0.0.1)
 
 GIT
   remote: https://github.com/Katello/puppet-katello_devel
   ref: master
-  sha: 3233b9c131c1a24b0f0d6dfca87ad7dc48cf8fb9
+  sha: 2631471274c6a8dcd70ff906ca6e6037976dd05b
   specs:
     katello/katello_devel (0.0.1)
       puppetlabs/vcsrepo (>= 0.2.0)
@@ -97,7 +97,7 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-mongodb
   ref: master
-  sha: a12e4cd59b12b5c76606c51a27e56c325485735a
+  sha: 2b72d860e19e51c3a0b09ca5fe9af200bd733284
   specs:
     puppetlabs/mongodb (0.7.0)
       puppetlabs/apt (>= 1.0.0)
@@ -145,7 +145,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman
   ref: master
-  sha: 4b5caab257112cc943a2f5fc82aabb9d5f91cd04
+  sha: 1e2f254f96ab829c4f0144295fa8b291c28f6302
   specs:
     theforeman/foreman (2.1.2)
       puppetlabs/apache (< 2.0.0, >= 1.0.0)
@@ -157,7 +157,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman_proxy
   ref: master
-  sha: c81027822db01690d519e7ff40e8a79c697e8f84
+  sha: 759b85177495d72e06cb28b06598897dcfec9661
   specs:
     theforeman/foreman_proxy (1.6.1)
       puppetlabs/stdlib (>= 2.3.0)
@@ -177,9 +177,9 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-puppet
   ref: master
-  sha: 3aecb348718010fed16ac278bc344656c4916a78
+  sha: cbf49730b55c3b54313dec1fd14855186d82ba58
   specs:
-    theforeman/puppet (2.1.1)
+    theforeman/puppet (2.1.2)
       puppetlabs/apache (< 2.0.0, >= 1.0.0)
       puppetlabs/stdlib (>= 2.0.0)
       theforeman/concat_native (>= 1.3.0)
@@ -189,9 +189,9 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-tftp
   ref: master
-  sha: 53a6652b7c6271698c8dee8f6fb80efeac34e7b3
+  sha: 7a10f13e236275622ff7efec552488e056c5bc4f
   specs:
-    theforeman/tftp (1.4.1)
+    theforeman/tftp (1.4.2)
       puppetlabs/xinetd (< 2.0.0, >= 1.1.0)
 
 DEPENDENCIES
