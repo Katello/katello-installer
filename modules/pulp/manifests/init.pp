@@ -111,6 +111,7 @@ class pulp (
   class { 'pulp::config':
     require => [Class['mongodb'], Class['qpid']]
   } ~>
+  class { 'pulp::service': } ~>
   Service['httpd']
   ->
   Class[pulp]
