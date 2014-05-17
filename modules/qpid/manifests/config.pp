@@ -9,8 +9,12 @@ class qpid::config {
     groups => [$qpid::user_groups],
   }
 
-  file { '/etc/qpidd.conf':
-    content => template('qpid/etc/qpidd.conf.erb')
+  file { '/etc/qpid/qpidd.conf':
+    ensure  => file,
+    content => template('qpid/qpidd.conf.erb'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
   }
 
 }

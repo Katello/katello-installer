@@ -85,6 +85,7 @@ class pulp::config {
     creates     => '/var/lib/pulp/init.flag',
     path        => '/bin:/usr/bin',
     logoutput   => 'on_failure',
+    user        => 'apache',
     require     => File['/etc/pulp/server.conf'],
   }
 

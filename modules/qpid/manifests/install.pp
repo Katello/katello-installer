@@ -4,23 +4,17 @@
 #
 class qpid::install {
 
-  case $::operatingsystem {
-    'Fedora': {
-      $packages_to_install = ['qpid-cpp-server','qpid-cpp-client']
-    }
-    default: {
-      $packages_to_install = ['qpid-cpp-server','qpid-cpp-client','qpid-cpp-client-ssl','qpid-cpp-server-ssl']
-    }
-  }
+  $packages_to_install = ['qpid-cpp-server',
+                          'qpid-cpp-client',
+                          'python-qpid-qmf',
+                          'python-qpid',
+                          'policycoreutils-python',
+                          'qpid-tools',
+                          ]
 
   package { $packages_to_install:
     ensure => 'installed',
     before => Service['qpidd']
   }
 
-  package {'policycoreutils-python':
-    ensure => 'installed'
-  }
-
 }
-
