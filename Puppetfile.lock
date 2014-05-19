@@ -76,7 +76,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-qpid
   ref: master
-  sha: 6807115debb774422c0b2f681553e57764325333
+  sha: 0d220ced29348006fd89574e0dd85659d068f491
   specs:
     katello/qpid (0.0.1)
 
