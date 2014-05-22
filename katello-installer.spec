@@ -14,6 +14,7 @@ Source0: %{name}-%{version}.tar.gz
 BuildArch: noarch
 
 Requires: %{?scl_prefix}rubygem-kafo
+Requires: %{?scl_prefix}rubygem-apipie-bindings >= 0.0.6
 
 %description
 A set of tools for installation of Katello and Katello Capsule,
