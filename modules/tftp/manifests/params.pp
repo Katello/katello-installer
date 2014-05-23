@@ -1,3 +1,4 @@
+# TFTP defaults
 class tftp::params {
   case $::osfamily {
     Debian: {

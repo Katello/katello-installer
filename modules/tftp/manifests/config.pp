@@ -1,3 +1,4 @@
+# Configure TFTP
 class tftp::config {
 
   case $tftp::params::daemon {

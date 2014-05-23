@@ -1,3 +1,4 @@
+# Manage TFTP
 class tftp inherits tftp::params {
   class {'tftp::install':} ->
   class {'tftp::config':} ~>

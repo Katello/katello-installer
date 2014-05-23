@@ -26,14 +26,14 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-capsule
   ref: master
-  sha: e35caa692027b47208bb38afa16e2589cd30f208
+  sha: a1aee4f8d9c112186f85151c2190df99de67f9c1
   specs:
     katello/capsule (0.0.1)
 
 GIT
   remote: https://github.com/Katello/puppet-certs
   ref: master
-  sha: 0c37bc8ebce721cc3db8695a3af9656496801010
+  sha: bc1f86cd177b3b3a89bb0cb1c912ccd7396daccb
   specs:
     katello/certs (0.0.1)
 
@@ -129,7 +129,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-dhcp
   ref: master
-  sha: 3ecc8b2d4e924aab8cff983eb87f739b51459f4f
+  sha: ac5b79c73b7bd58fff96d71b65ae5cee294f9ecf
   specs:
     theforeman/dhcp (1.3.1)
       theforeman/concat_native (>= 1.3.0)
@@ -145,7 +145,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman
   ref: master
-  sha: 1e2f254f96ab829c4f0144295fa8b291c28f6302
+  sha: 2e2065d07b5265e54f9b73ace4ace92c53e850be
   specs:
     theforeman/foreman (2.1.2)
       puppetlabs/apache (< 2.0.0, >= 1.0.0)
@@ -189,7 +189,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-tftp
   ref: master
-  sha: 7a10f13e236275622ff7efec552488e056c5bc4f
+  sha: c8bc8ea6bd4911dc76e5beaa0805cc6554038335
   specs:
     theforeman/tftp (1.4.2)
       puppetlabs/xinetd (< 2.0.0, >= 1.1.0)

@@ -1,3 +1,4 @@
+# TFTP service
 class tftp::service {
 
   # No service needed if not daemonized

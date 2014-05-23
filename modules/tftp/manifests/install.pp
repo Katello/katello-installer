@@ -1,3 +1,4 @@
+# Install TFTP
 class tftp::install {
   package { $tftp::params::package:
     ensure => installed,

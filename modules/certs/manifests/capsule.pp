@@ -24,6 +24,7 @@ class certs::capsule (
   class { 'certs::foreman':       hostname => $capsule_fqdn }
   class { 'certs::foreman_proxy': hostname => $capsule_fqdn }
   class { 'certs::apache':        hostname => $capsule_fqdn }
+  class { 'certs::qpid':          hostname => $capsule_fqdn }
   class { 'certs::pulp_child':    hostname => $capsule_fqdn }
   class { 'certs::pulp_parent':
     hostname => $parent_fqdn,
@@ -35,6 +36,7 @@ class certs::capsule (
       subscribe => [Class['certs::puppet'],
                     Class['certs::foreman'],
                     Class['certs::foreman_proxy'],
+                    Class['certs::qpid'],
                     Class['certs::apache'],
                     Class['certs::pulp_child']]
     }

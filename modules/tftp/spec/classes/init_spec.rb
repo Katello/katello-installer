@@ -9,6 +9,8 @@ describe 'tftp' do
       }
     end
 
+    it { should compile.with_all_deps }
+
     it 'should include classes' do
       should contain_class('tftp::install')
       should contain_class('tftp::config')
