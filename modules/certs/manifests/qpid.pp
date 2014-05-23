@@ -38,6 +38,7 @@ class certs::qpid (
     $pfx_path               = "${certs::pki_dir}/${qpid_cert_name}.pfx"
     $nssdb_files            = ["${::certs::nss_db_dir}/cert8.db", "${::certs::nss_db_dir}/key3.db", "${::certs::nss_db_dir}/secmod.db"]
 
+    Package['httpd'] -> Package['qpid-cpp-server'] ->
     Cert[$qpid_cert_name] ~>
     pubkey { $client_cert:
       key_pair => Cert["${::certs::qpid::hostname}-qpid-broker"]

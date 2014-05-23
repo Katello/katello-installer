@@ -7,6 +7,23 @@ class certs::pulp_child (
     $ca         = $::certs::default_ca
   ) {
 
+  cert { "${::certs::pulp_child::hostname}-qpid-client-cert":
+    hostname      => $::certs::pulp_child::hostname,
+    common_name   => 'pulp-qpid-client-cert',
+    purpose       => client,
+    country       => $::certs::country,
+    state         => $::certs::state,
+    city          => $::certs::city,
+    org           => 'PULP',
+    org_unit      => $::certs::org_unit,
+    expiration    => $::certs::expiration,
+    ca            => $ca,
+    generate      => $generate,
+    regenerate    => $regenerate,
+    deploy        => $deploy,
+    password_file => $certs::ca_key_password_file,
+  }
+
   if $deploy {
     pubkey { $pulp::consumers_ca_cert:
       key_pair => $ca,
@@ -25,5 +42,16 @@ class certs::pulp_child (
       # Defined in certs::apache module
       key_pair => Cert["${hostname}-apache"],
     }
+
+    Cert["${::certs::pulp_child::hostname}-qpid-client-cert"] ~>
+    key_bundle { $pulp::messaging_client_cert:
+      key_pair => Cert["${::certs::pulp_child::hostname}-qpid-client-cert"],
+    } ~>
+    file { $pulp::messaging_client_cert:
+      owner   => 'apache',
+      group   => 'apache',
+      mode    => '0640',
+    }
+
   }
 }
