@@ -31,4 +31,7 @@
   <%- if @passenger_use_global_queue -%>
   PassengerUseGlobalQueue <%= @passenger_use_global_queue %>
   <%- end -%>
+
+  # Increase the timeout due to the number of gems being loaded
+  PassengerStartTimeout 360
 </IfModule>
