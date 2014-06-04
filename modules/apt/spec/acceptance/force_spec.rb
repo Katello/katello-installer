@@ -7,7 +7,7 @@ describe 'apt::force define', :unless => UNSUPPORTED_PLATFORMS.include?(fact('os
     it 'should work with no errors' do
       pp = <<-EOS
       include apt
-      apt::force { 'vim': release => false, }
+      apt::force { 'vim': }
       EOS
 
       shell('apt-get remove -y vim')
@@ -41,7 +41,7 @@ describe 'apt::force define', :unless => UNSUPPORTED_PLATFORMS.include?(fact('os
     it 'should work with no errors' do
       pp = <<-EOS
       include apt
-      apt::force { 'vim': version => '1.1.1', release => false, }
+      apt::force { 'vim': version => '1.1.1' }
       EOS
 
       shell('apt-get remove -y vim')
@@ -59,7 +59,7 @@ describe 'apt::force define', :unless => UNSUPPORTED_PLATFORMS.include?(fact('os
     it 'should work with no errors' do
       pp = <<-EOS
       include apt
-      apt::force { 'vim': release => false, timeout => '1' }
+      apt::force { 'ocaml': timeout => '1' }
       EOS
 
       shell('apt-get clean')
@@ -68,7 +68,7 @@ describe 'apt::force define', :unless => UNSUPPORTED_PLATFORMS.include?(fact('os
       end
     end
 
-    describe package('vim') do
+    describe package('ocaml') do
       it { should_not be_installed }
     end
   end

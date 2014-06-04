@@ -1,3 +1,8 @@
+##2014-06-04 - Release 4.2.2
+### Summary
+
+This release adds PE3.3 support in the metadata and fixes a few tests.
+
 ## 2014-05-08 - Release - 4.2.1
 ### Summary
 This release moves a stray symlink that can cause problems.

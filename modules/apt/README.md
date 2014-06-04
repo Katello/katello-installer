@@ -3,12 +3,6 @@ apt
 
 [![Build Status](https://travis-ci.org/puppetlabs/puppetlabs-apt.png?branch=master)](https://travis-ci.org/puppetlabs/puppetlabs-apt)
 
-## Description
-
-Provides helpful definitions for dealing with Apt.
-
-=======
-
 Overview
 --------
 
@@ -19,17 +13,19 @@ Module Description
 
 APT automates obtaining and installing software packages on \*nix systems.
 
+***Note:** While this module allows the use of short keys, we STRONGLY RECOMMEND that you DO NOT USE short keys, as they pose a serious security issue in that they open you up to collision attacks.*
+
 Setup
 -----
 
 **What APT affects:**
 
 * package/service/configuration files for APT
+    * NOTE: Setting the `purge_preferences` or `purge_preferences_d` parameters to 'true' will destroy any existing configuration that was not declared with puppet. The default for these parameters is 'false'.
 * your system's `sources.list` file and `sources.list.d` directory
     * NOTE: Setting the `purge_sources_list` and `purge_sources_list_d` parameters to 'true' will destroy any existing content that was not declared with Puppet. The default for these parameters is 'false'.
 * system repositories
 * authentication keys
-* wget (optional)
 
 ### Beginning with APT
 
@@ -63,7 +59,7 @@ The parameters for `apt` are not required in general and are predominantly for d
 
 Puppet will manage your system's `sources.list` file and `sources.list.d` directory but will do its best to respect existing content.
 
-If you declare your apt class with `purge_sources_list` and `purge_sources_list_d` set to 'true', Puppet will unapologetically purge any existing content it finds that wasn't declared with Puppet.
+If you declare your apt class with `purge_sources_list`, `purge_sources_list_d`, `purge_preferences` and `purge_preferences_d` set to 'true', Puppet will unapologetically purge any existing content it finds that wasn't declared with Puppet.
 
 ### apt::builddep
 
@@ -81,9 +77,31 @@ Forces a package to be installed from a specific release.  This class is particu
       require => Apt::Source['debian_unstable'],
     }
 
+### apt_key
+
+A native Puppet type and provider for managing GPG keys for APT is provided by
+this module.
+
+    apt_key { 'puppetlabs':
+      ensure => 'present',
+      id     => '4BD6EC30',
+    }
+
+You can additionally set the following attributes:
+
+ * `source`: HTTP, HTTPS or FTP location of a GPG key or path to a file on the
+             target host;
+ * `content`: Instead of pointing to a file, pass the key in as a string;
+ * `server`: The GPG key server to use. It defaults to *keyserver.ubuntu.com*;
+ * `keyserver_options`: Additional options to pass to `--keyserver`.
+
+Because it is a native type it can be used in and queried for with MCollective.
+
 ### apt::key
 
-Adds a key to the list of keys used by APT to authenticate packages.
+Adds a key to the list of keys used by APT to authenticate packages. This type
+uses the aforementioned `apt_key` native type. As such it no longer requires
+the wget command that the old implementation depended on.
 
     apt::key { 'puppetlabs':
       key        => '4BD6EC30',
@@ -94,8 +112,6 @@ Adds a key to the list of keys used by APT to authenticate packages.
       key        => 'D50582E6',
       key_source => 'http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key',
     }
-
-Note that use of `key_source` requires wget to be installed and working.
 
 ### apt::pin
 
@@ -113,6 +129,49 @@ Note you can also specifying more complex pins using distribution properties.
       release_version => '3.0',
       component       => 'main',
       label           => 'Debian'
+    }
+
+If you wish to pin a number of packages you may specify the packages as a space
+delimited string using the `packages` attribute or pass in an array of package
+names.
+
+### apt::hold
+
+When you wish to hold a package in Puppet is should be done by passing in
+'held' as the ensure attribute to the package resource. However, a lot of
+public modules do not take this into account and generally do not work well
+with an ensure of 'held'.
+
+There is an additional issue that when Puppet is told to hold a package, it
+will hold it at the current version installed, there is no way to tell it in
+one go to install a specific version and then hold that version without using
+an exec resource that wraps `dpkg --set-selections` or `apt-mark`.
+
+At first glance this could also be solved by just passing the version required
+to the ensure attribute but that only means that Puppet will install that
+version once it processes that package. It does not inform apt that we want
+this package to be held. In other words; if another package somehow wants to
+upgrade this one (because of a version requirement in a dependency), apt
+should not allow it.
+
+In order to solve this you can use apt::hold. It's implemented by creating
+a preferences file with a priority of 1001, meaning that under normal
+circumstances this preference will always win. Because the priority is > 1000
+apt will interpret this as 'this should be the version installed and I am
+allowed to downgrade the current package if needed'.
+
+With this you can now set a package's ensure attribute to 'latest' but still
+get the version specified by apt::hold. You can do it like this:
+
+    apt::hold { 'vim':
+      version => '2:7.3.547-7',
+    }
+
+Since you might just want to hold Vim at version 7.3 and not care about the
+rest you can also pass in a version with a glob:
+
+    apt::hold { 'vim':
+      version => '2:7.3.*',
     }
 
 ### apt::ppa
@@ -153,6 +212,27 @@ If you would like to configure your system so the source is the Puppet Labs APT 
       key_server => 'pgp.mit.edu',
     }
 
+
+#### Hiera example
+<pre>
+apt::sources:
+  'debian_unstable':
+      location: 'http://debian.mirror.iweb.ca/debian/'
+      release: 'unstable'
+      repos: 'main contrib non-free'
+      required_packages: 'debian-keyring debian-archive-keyring'
+      key: '55BE302B'
+      key_server: 'subkeys.pgp.net'
+      pin: '-10'
+      include_src: 'true'
+
+  'puppetlabs':
+      location: 'http://apt.puppetlabs.com'
+      repos: 'main'
+      key: '4BD6EC30'
+      key_server: 'pgp.mit.edu'
+</pre>
+
 ### Testing
 
 The APT module is mostly a collection of defined resource types, which provide reusable logic that can be leveraged to manage APT. It does provide smoke tests for testing functionality on a target system, as well as spec tests for checking a compiled catalog against an expected set of resources.
@@ -190,6 +270,10 @@ Implementation
 
 Adds the necessary components to get backports for Ubuntu and Debian. The release name defaults to `$lsbdistcodename`. Setting this manually can cause undefined behavior (read: universe exploding).
 
+By default this class drops a Pin-file for Backports pinning it to a priority of 200, lower than the normal Debian archive which gets a priority of 500 to ensure your packages with `ensure => latest` don't get magically upgraded from Backports without your explicit say-so.
+
+If you raise the priority through the `pin_priority` parameter to *500*, identical to the rest of the Debian mirrors, normal policy goes into effect and the newest version wins/becomes the candidate apt will want to install or upgrade to. This means that if a package is available from Backports it and its dependencies will be pulled in from Backports unless you explicitly set the `ensure` attribute of the `package` resource to `installed`/`present` or a specific version.
+
 Limitations
 -----------
 
@@ -220,6 +304,7 @@ A lot of great people have contributed to this module. A somewhat current list f
 * Branan Purvine-Riley <branan@puppetlabs.com>
 * Christian G. Warden <cwarden@xerus.org>
 * Dan Bode <bodepd@gmail.com> <dan@puppetlabs.com>
+* Daniel Tremblay <github@danieltremblay.ca>
 * Garrett Honeycutt <github@garretthoneycutt.com>
 * Jeff Wallace <jeff@evolvingweb.ca> <jeff@tjwallace.ca>
 * Ken Barber <ken@bob.sh>
@@ -234,3 +319,5 @@ A lot of great people have contributed to this module. A somewhat current list f
 * Spencer Krum <spencer@puppetlabs.com>
 * William Van Hevelingen <blkperl@cat.pdx.edu> <wvan13@gmail.com>
 * Zach Leslie <zach@puppetlabs.com>
+* Daniele Sluijters <github@daenney.net>
+* Daniel Paulus <daniel@inuits.eu>

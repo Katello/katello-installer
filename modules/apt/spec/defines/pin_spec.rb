@@ -15,14 +15,14 @@ describe 'apt::pin', :type => :define do
 
   [
     { :params  => {},
-      :content => "# my_pin\nExplanation: : my_pin\nPackage: *\nPin: release a=my_pin\nPin-Priority: 0\n"
+      :content => "Explanation: : my_pin\nPackage: *\nPin: release a=my_pin\nPin-Priority: 0\n"
     },
     {
       :params => {
         :packages => 'apache',
         :priority => '1'
       },
-      :content => "# my_pin\nExplanation: : my_pin\nPackage: apache\nPin: release a=my_pin\nPin-Priority: 1\n"
+      :content => "Explanation: : my_pin\nPackage: apache\nPin: release a=my_pin\nPin-Priority: 1\n"
     },
     {
       :params => {
@@ -30,7 +30,7 @@ describe 'apt::pin', :type => :define do
         :packages => 'apache',
         :priority => '1'
       },
-      :content => "# my_pin\nExplanation: : my_pin\nPackage: apache\nPin: release a=my_pin\nPin-Priority: 1\n"
+      :content => "Explanation: : my_pin\nPackage: apache\nPin: release a=my_pin\nPin-Priority: 1\n"
     },
     {
       :params => {
@@ -38,7 +38,7 @@ describe 'apt::pin', :type => :define do
         :packages => 'apache',
         :priority => '1'
       },
-      :content => "# my_pin\nExplanation: : my_pin\nPackage: apache\nPin: release a=my_pin\nPin-Priority: 1\n"
+      :content => "Explanation: : my_pin\nPackage: apache\nPin: release a=my_pin\nPin-Priority: 1\n"
     },
     {
       :params => {
@@ -46,7 +46,7 @@ describe 'apt::pin', :type => :define do
         :priority => '1',
         :release  => 'my_newpin'
       },
-      :content => "# my_pin\nExplanation: : my_pin\nPackage: apache\nPin: release a=my_newpin\nPin-Priority: 1\n"
+      :content => "Explanation: : my_pin\nPackage: apache\nPin: release a=my_newpin\nPin-Priority: 1\n"
     },
     {
       :params => {
@@ -54,19 +54,19 @@ describe 'apt::pin', :type => :define do
         :priority => '1',
         :version  => '2.2.16*'
       },
-      :content => "# my_pin\nExplanation: : my_pin\nPackage: apache\nPin: version 2.2.16*\nPin-Priority: 1\n"
+      :content => "Explanation: : my_pin\nPackage: apache\nPin: version 2.2.16*\nPin-Priority: 1\n"
     },
     {
       :params => {
         :priority => '1',
         :origin   => 'ftp.de.debian.org'
       },
-      :content => "# my_pin\nExplanation: : my_pin\nPackage: *\nPin: origin ftp.de.debian.org\nPin-Priority: 1\n"
+      :content => "Explanation: : my_pin\nPackage: *\nPin: origin ftp.de.debian.org\nPin-Priority: 1\n"
     },
     {
       :params => {
         :packages        => 'apache',
-        :priority        => '1',  
+        :priority        => '1',
         :release         => 'stable',
         :codename        => 'wheezy',
         :release_version => '3.0',
@@ -74,7 +74,13 @@ describe 'apt::pin', :type => :define do
         :originator      => 'Debian',
         :label           => 'Debian'
       },
-      :content => "# my_pin\nExplanation: : my_pin\nPackage: apache\nPin: release a=stable, n=wheezy, v=3.0, c=main, o=Debian, l=Debian\nPin-Priority: 1\n"
+      :content => "Explanation: : my_pin\nPackage: apache\nPin: release a=stable, n=wheezy, v=3.0, c=main, o=Debian, l=Debian\nPin-Priority: 1\n"
+    },
+    {
+      :params => {
+        :packages        => ['apache', 'ntop'],
+      },
+      :content => "Explanation: : my_pin\nPackage: apache ntop\nPin: release a=my_pin\nPin-Priority: 0\n"
     },
   ].each do |param_set|
     describe "when #{param_set == {} ? "using default" : "specifying"} define parameters" do
@@ -97,6 +103,18 @@ describe 'apt::pin', :type => :define do
           'content' => param_set[:content],
         })
       }
+    end
+  end
+
+  describe 'resource title with invalid chars' do
+    context 'spaces' do
+      let(:title) { 'oh my god this is not valid' }
+      it { should contain_file('oh_my_god_this_is_not_valid.pref') }
+    end
+
+    context '#$&*$' do
+      let(:title) { 'so && many $* invalid @! things' }
+      it { should contain_file('so____many____invalid____things.pref') }
     end
   end
 end

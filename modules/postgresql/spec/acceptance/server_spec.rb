@@ -1,9 +1,31 @@
 require 'spec_helper_acceptance'
 
+# Hack around the fact that so far only Ubuntu 14.04 seems to have moved this
+# file.  Can revisit if everyone else gets clever.
+
+case fact('operatingsystem')
+when 'Ubuntu'
+  case fact('operatingsystemrelease')
+  when '14.04'
+    pghba_file = '/etc/postgresql/9.3/main/pg_hba.conf'
+  when '12.04'
+    pghba_file = '/etc/postgresql/9.1/main/pg_hba.conf'
+  end
+else
+  pghba_file = '/var/lib/pgsql/data/pg_hba.conf'
+end
+
 describe 'server:', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
   after :all do
     # Cleanup after tests have ran
-    apply_manifest("class { 'postgresql::server': ensure => absent }", :catch_failures => true)
+    pp = <<-EOS.unindent
+      class { 'postgresql::server': ensure => absent } ->
+      class { 'postgresql::client': package_ensure => absent }
+    EOS
+    apply_manifest(pp, :catch_failures => true)
+    if fact('osfamily') == 'RedHat'
+      shell('rpm -qa | grep postgres | xargs rpm -e')
+    end
   end
 
   it 'test loading class with no parameters' do
@@ -17,6 +39,13 @@ describe 'server:', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) 
 
   describe port(5432) do
     it { should be_listening }
+  end
+
+  describe file(pghba_file) do
+    it { should be_file }
+    it { should be_owned_by 'postgres' }
+    it { should be_grouped_into 'postgres' }
+    it { should be_mode 640 }
   end
 
   describe 'setting postgres password' do
@@ -64,15 +93,20 @@ describe 'server without defaults:', :unless => UNSUPPORTED_PLATFORMS.include?(f
           }
         }
         class { 'postgresql::globals':
-          ensure              => absent,
           manage_package_repo => true,
           version             => '9.3',
         }
         class { 'postgresql::server':
           ensure => absent,
+        } ->
+        class { 'postgresql::client':
+          package_ensure => absent,
         }
       EOS
-      expect(apply_manifest(pp, :catch_failures => true).stderr).to eq('')
+      apply_manifest(pp, :catch_failures => true)
+      if fact('osfamily') == 'RedHat'
+        shell('rpm -qa | grep postgres | xargs rpm -e')
+      end
     end
 
     it 'perform installation and create a db' do
@@ -92,12 +126,9 @@ describe 'server without defaults:', :unless => UNSUPPORTED_PLATFORMS.include?(f
           user     => "foo1",
           password => postgresql_password('foo1', 'foo1'),
         }
-        postgresql::server::config_entry { 'port':
-          value => '5432',
-        }
       EOS
 
-      expect(apply_manifest(pp, :catch_failures => true).stderr).to eq('')
+      apply_manifest(pp, :catch_failures => true)
       apply_manifest(pp, :catch_changes => true)
 
       shell('test -d /tmp/pg_xlogs') do |r|
@@ -113,11 +144,38 @@ describe 'server without defaults:', :unless => UNSUPPORTED_PLATFORMS.include?(f
     end
   end
 
+  context 'test deprecating non-default version of postgresql to postgresql::server' do
+    after :all do
+      pp = <<-EOS.unindent
+        class { 'postgresql::globals':
+          version => '9.3',
+        }
+        class { 'postgresql::server':
+          ensure  => absent,
+        } ->
+        class { 'postgresql::client':
+          package_ensure  => absent,
+        }
+      EOS
+      apply_manifest(pp, :catch_failures => true)
+    end
+
+    it 'raises a warning' do
+      pp = <<-EOS.unindent
+      class { 'postgresql::server':
+        ensure  => absent,
+        version => '9.3',
+      }
+      EOS
+      expect(apply_manifest(pp, :catch_failures => false).stderr).to match(/Passing "version" to postgresql::server is deprecated/i)
+    end
+  end
+
   unless ((fact('osfamily') == 'RedHat' and fact('lsbmajdistrelease') == '5') ||
     fact('osfamily') == 'Debian')
 
     context 'override locale and encoding' do
-      after :each do
+      before :each do
         apply_manifest("class { 'postgresql::server': ensure => absent }", :catch_failures => true)
       end
 
@@ -162,6 +220,9 @@ describe 'server with firewall:', :unless => UNSUPPORTED_PLATFORMS.include?(fact
         }
       EOS
 
+      if fact('osfamily') == 'RedHat' and fact('operatingsystemmajrelease') == '5'
+        shell('iptables -F')
+      end
       apply_manifest(pp, :catch_failures => true)
       apply_manifest(pp, :catch_changes => true)
     end
@@ -183,6 +244,29 @@ describe 'server without pg_hba.conf:', :unless => UNSUPPORTED_PLATFORMS.include
 
       apply_manifest(pp, :catch_failures => true)
       apply_manifest(pp, :catch_changes => true)
+    end
+  end
+end
+
+describe 'server on alternate port:', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
+  after :all do
+    apply_manifest("class { 'postgresql::server': ensure => absent }", :catch_failures => true)
+  end
+
+  context 'test installing postgresql with alternate port' do
+    it 'perform installation and make sure it is idempotent' do
+      pp = <<-EOS.unindent
+        class { "postgresql::server":
+          port => 5433,
+        }
+      EOS
+
+      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pp, :catch_changes => true)
+    end
+
+    describe port(5433) do
+      it { should be_listening }
     end
   end
 end

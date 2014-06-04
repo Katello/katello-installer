@@ -4,16 +4,11 @@ FORGE
     puppetlabs/apache (1.0.1)
       puppetlabs/concat (>= 1.0.0)
       puppetlabs/stdlib (>= 2.4.0)
-    puppetlabs/apt (1.4.2)
+    puppetlabs/apt (1.5.0)
       puppetlabs/stdlib (>= 2.2.1)
     puppetlabs/concat (1.1.0)
       puppetlabs/stdlib (>= 4.0.0)
-    puppetlabs/postgresql (3.3.3)
-      puppetlabs/apt (< 2.0.0, >= 1.1.0)
-      puppetlabs/concat (< 2.0.0, >= 1.0.0)
-      puppetlabs/firewall (>= 0.0.4)
-      puppetlabs/stdlib (< 5.0.0, >= 3.2.0)
-    puppetlabs/stdlib (4.2.1)
+    puppetlabs/stdlib (4.2.2)
     puppetlabs/vcsrepo (0.2.0)
 
 GIT
@@ -112,6 +107,17 @@ GIT
       puppetlabs/stdlib (>= 3.2.0)
 
 GIT
+  remote: https://github.com/puppetlabs/puppetlabs-postgresql
+  ref: master
+  sha: dcd1741c0378e2261b9c7ba57e6477db14ace649
+  specs:
+    puppetlabs/postgresql (3.3.3)
+      puppetlabs/apt (< 2.0.0, >= 1.1.0)
+      puppetlabs/concat (< 2.0.0, >= 1.0.0)
+      puppetlabs/firewall (>= 0.0.4)
+      puppetlabs/stdlib (< 5.0.0, >= 3.2.0)
+
+GIT
   remote: https://github.com/puppetlabs/puppetlabs-xinetd
   ref: master
   sha: bbcebf25f059a6ace3a0b6ae5ce707a0923ac458
@@ -208,6 +214,7 @@ DEPENDENCIES
   puppetlabs/firewall (>= 0)
   puppetlabs/mongodb (>= 0)
   puppetlabs/mysql (>= 0)
+  puppetlabs/postgresql (>= 0)
   puppetlabs/xinetd (>= 0)
   theforeman/concat_native (>= 0)
   theforeman/dhcp (>= 0)

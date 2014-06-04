@@ -75,9 +75,12 @@ describe 'apt class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')
       apply_manifest(pp, :catch_failures => true)
     end
 
-    describe file('/etc/apt/apt.conf.d/proxy') do
+    describe file('/etc/apt/apt.conf.d/01proxy') do
       it { should be_file }
       it { should contain 'Acquire::http::Proxy "http://localhost:7042\";' }
+    end
+    describe file('/etc/apt/apt.conf.d/proxy') do
+      it { should_not be_file }
     end
   end
 
@@ -117,9 +120,12 @@ describe 'apt class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')
       apply_manifest(pp, :catch_failures => true)
     end
 
-    describe file('/etc/apt/apt.conf.d/proxy') do
+    describe file('/etc/apt/apt.conf.d/01proxy') do
       it { should be_file }
       it { should contain 'Acquire::http::Proxy "http://localhost:7042\";' }
+    end
+    describe file('/etc/apt/apt.conf.d/proxy') do
+      it { should_not be_file }
     end
   end
 
@@ -170,6 +176,47 @@ describe 'apt class', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')
       end
 
       describe file('/etc/apt/sources.list.d/fake.list') do
+        it { should_not be_file }
+      end
+    end
+  end
+
+  context 'purge_preferences' do
+    context 'false' do
+      it 'creates a preferences file' do
+        shell("echo 'original' > /etc/apt/preferences")
+      end
+
+      it 'should work with no errors' do
+        pp = <<-EOS
+        class { 'apt': purge_preferences => false }
+        EOS
+
+        apply_manifest(pp, :catch_failures => true)
+      end
+
+      describe file('/etc/apt/preferences') do
+        it { should be_file }
+        it 'is not managed by Puppet' do
+          shell("grep 'original' /etc/apt/preferences", {:acceptable_exit_codes => 0})
+        end
+      end
+    end
+
+    context 'true' do
+      it 'creates a preferences file' do
+        shell('touch /etc/apt/preferences')
+      end
+
+      it 'should work with no errors' do
+        pp = <<-EOS
+        class { 'apt': purge_preferences => true }
+        EOS
+
+        apply_manifest(pp, :catch_failures => true)
+      end
+
+      describe file('/etc/apt/preferences') do
         it { should_not be_file }
       end
     end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 describe 'apt', :type => :class do
-  let(:facts) { { :lsbdistid => 'Debian' } }
+  let(:facts) { { :lsbdistid => 'Debian', :osfamily => 'Debian' } }
   let :default_params do
     {
       :disable_keys => :undef,
@@ -18,6 +18,10 @@ describe 'apt', :type => :class do
       :proxy_port => '3128',
       :purge_sources_list => true,
       :purge_sources_list_d => true,
+    },
+    {
+      :purge_preferences   => true,
+      :purge_preferences_d => true,
     },
     {
       :disable_keys => false
@@ -86,6 +90,38 @@ describe 'apt', :type => :class do
           })
         end
       }
+      it {
+        if param_hash[:purge_preferences]
+          should create_file('apt-preferences').with({
+            :ensure  => 'absent',
+            :path    => '/etc/apt/preferences',
+          })
+        else
+          should_not contain_file('apt-preferences')
+        end
+      }
+
+      it {
+        if param_hash[:purge_preferences_d]
+          should create_file("preferences.d").with({
+            'path'    => "/etc/apt/preferences.d",
+            'ensure'  => "directory",
+            'owner'   => "root",
+            'group'   => "root",
+            'purge'   => true,
+            'recurse' => true,
+          })
+        else
+          should create_file("preferences.d").with({
+            'path'    => "/etc/apt/preferences.d",
+            'ensure'  => "directory",
+            'owner'   => "root",
+            'group'   => "root",
+            'purge'   => false,
+            'recurse' => false,
+          })
+        end
+      }
 
       it {
         should contain_exec("apt_update").with({
@@ -115,14 +151,14 @@ describe 'apt', :type => :class do
       describe 'when setting a proxy' do
         it {
           if param_hash[:proxy_host]
-            should contain_file('configure-apt-proxy').with(
-              'path'    => '/etc/apt/apt.conf.d/proxy',
-              'content' => "Acquire::http::Proxy \"http://#{param_hash[:proxy_host]}:#{param_hash[:proxy_port]}\";",
+            should contain_file('01proxy').with(
+              'path'    => '/etc/apt/apt.conf.d/01proxy',
+              'content' => "Acquire::http::Proxy \"http://#{param_hash[:proxy_host]}:#{param_hash[:proxy_port]}\";\n",
               'notify'  => "Exec[apt_update]"
             )
           else
-            should contain_file('configure-apt-proxy').with(
-              'path'    => '/etc/apt/apt.conf.d/proxy',
+            should contain_file('01proxy').with(
+              'path'    => '/etc/apt/apt.conf.d/01proxy',
               'notify'  => 'Exec[apt_update]',
               'ensure'  => 'absent'
             )
