@@ -61,7 +61,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello_devel
   ref: master
-  sha: 2631471274c6a8dcd70ff906ca6e6037976dd05b
+  sha: c93eb2640de0533baadb6404d31c8f9d167571b1
   specs:
     katello/katello_devel (0.0.1)
       puppetlabs/vcsrepo (>= 0.2.0)
@@ -69,7 +69,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-pulp
   ref: master
-  sha: daa05b3c14339eef95b471ec3a4ed672243000e4
+  sha: 89e61b893b30f970a91380cac3491cde794f151c
   specs:
     katello/pulp (0.0.1)
 

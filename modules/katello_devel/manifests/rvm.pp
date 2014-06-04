@@ -1,7 +1,7 @@
 # Setup and create gemset for RVM
 class katello_devel::rvm {
 
-  $install_command = "su -c 'curl -L https://get.rvm.io | bash -s' - ${katello_devel::user}"
+  $install_command = "su -c 'curl -L https://get.rvm.io | bash -s stable' - ${katello_devel::user}"
 
   package{ ['curl', 'bash']:
     ensure => present
