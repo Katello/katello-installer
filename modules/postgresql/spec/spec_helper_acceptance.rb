@@ -29,18 +29,26 @@ def shellescape(str)
   return str
 end
 
-def psql(psql_cmd, user = 'postgres', exit_codes = [0], &block)
+def psql(psql_cmd, user = 'postgres', exit_codes = [0,1], &block)
   psql = "psql #{psql_cmd}"
   shell("su #{shellescape(user)} -c #{shellescape(psql)}", :acceptable_exit_codes => exit_codes, &block)
 end
 
-unless ENV['RS_PROVISION'] == 'no'
+unless ENV['RS_PROVISION'] == 'no' or ENV['BEAKER_provision'] == 'no'
+  if hosts.first.is_pe?
+    install_pe
+  else
+    install_puppet
+  end
   hosts.each do |host|
-    if host.is_pe?
-      install_pe
-    else
-      install_puppet
-      on host, "mkdir -p #{host['distmoduledir']}"
+    shell("mkdir -p #{host['distmoduledir']}")
+    if ! host.is_pe?
+      # Augeas is only used in one place, for Redhat.
+      if fact('osfamily') == 'RedHat'
+        install_package host, 'ruby-devel'
+        install_package host, 'augeas-devel'
+        install_package host, 'ruby-augeas'
+      end
     end
   end
 end
@@ -65,6 +73,10 @@ RSpec.configure do |c|
         on host, "echo \"en_US ISO-8859-1\nen_NG.UTF-8 UTF-8\nen_US.UTF-8 UTF-8\n\" > /etc/locale.gen"
         on host, '/usr/sbin/locale-gen'
         on host, '/usr/sbin/update-locale'
+      end
+      if fact('osfamily') == 'RedHat'
+        shell('yum -y install policycoreutils-python')
+        shell('semanage port -a -t postgresql_port_t -p tcp 5433')
       end
       on host, puppet('module','install','puppetlabs-stdlib'), { :acceptable_exit_codes => [0,1] }
       on host, puppet('module','install','puppetlabs-firewall'), { :acceptable_exit_codes => [0,1] }

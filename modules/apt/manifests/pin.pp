@@ -3,7 +3,7 @@
 
 define apt::pin(
   $ensure          = present,
-  $explanation     = "${::caller_module_name}: ${name}",
+  $explanation     = "${caller_module_name}: ${name}",
   $order           = '',
   $packages        = '*',
   $priority        = 0,
@@ -37,7 +37,13 @@ define apt::pin(
   # Read the manpage 'apt_preferences(5)', especially the chapter
   # 'Thea Effect of APT Preferences' to understand the following logic
   # and the difference between specific and general form
-  if $packages != '*' { # specific form
+  if is_array($packages) {
+    $packages_string = join($packages, ' ')
+  } else {
+    $packages_string = $packages
+  }
+
+  if $packages_string != '*' { # specific form
 
     if ( $pin_release != '' and ( $origin != '' or $version != '' )) or
       ( $origin != '' and ( $pin_release != '' or $version != '' )) or
@@ -62,7 +68,17 @@ define apt::pin(
     ''      => "${preferences_d}/${name}.pref",
     default => "${preferences_d}/${order}-${name}.pref",
   }
-  file { "${name}.pref":
+
+  # According to man 5 apt_preferences:
+  # The files have either no or "pref" as filename extension
+  # and only contain alphanumeric, hyphen (-), underscore (_) and period
+  # (.) characters. Otherwise APT will print a notice that it has ignored a
+  # file, unless that file matches a pattern in the
+  # Dir::Ignore-Files-Silently configuration list - in which case it will
+  # be silently ignored.
+  $file_name = regsubst($title, '[^0-9a-z\-_\.]', '_', 'IG')
+
+  file { "${file_name}.pref":
     ensure  => $ensure,
     path    => $path,
     owner   => root,

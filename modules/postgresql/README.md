@@ -226,10 +226,12 @@ Classes:
 * [postgresql::globals](#class-postgresqlglobals)
 * [postgresql::lib::devel](#class-postgresqllibdevel)
 * [postgresql::lib::java](#class-postgresqllibjava)
+* [postgresql::lib::perl](#class-postgresqllibperl)
 * [postgresql::lib::python](#class-postgresqllibpython)
 * [postgresql::server](#class-postgresqlserver)
 * [postgresql::server::plperl](#class-postgresqlserverplperl)
 * [postgresql::server::contrib](#class-postgresqlservercontrib)
+* [postgresql::server::postgis](#class-postgresqlserverpostgis)
 
 Resources:
 
@@ -288,11 +290,17 @@ This setting can be used to override the default postgresql devel package name. 
 ####`java_package_name`
 This setting can be used to override the default postgresql java package name. If not specified, the module will use whatever package name is the default for your OS distro.
 
+####`perl_package_name`
+This setting can be used to override the default postgresql Perl package name. If not specified, the module will use whatever package name is the default for your OS distro.
+
 ####`plperl_package_name`
 This setting can be used to override the default postgresql PL/perl package name. If not specified, the module will use whatever package name is the default for your OS distro.
 
 ####`python_package_name`
 This setting can be used to override the default postgresql Python package name. If not specified, the module will use whatever package name is the default for your OS distro.
+
+####`service_ensure`
+This setting can be used to override the default postgresql service ensure status. If not specified, the module will use `ensure` instead.
 
 ####`service_name`
 This setting can be used to override the default postgresql service name. If not specified, the module will use whatever service name is the default for your OS distro.
@@ -347,6 +355,9 @@ The version of PostgreSQL to install/manage. This is a simple way of providing a
 
 Defaults to your operating system default.
 
+####`postgis_version`
+The version of PostGIS to install if you install PostGIS. Defaults to the lowest available with the version of PostgreSQL to be installed.
+
 ####`needs_initdb`
 This setting can be used to explicitly call the initdb operation after server package is installed and before the postgresql service is started. If not specified, the module will decide whether to call initdb or not depending on your OS distro.
 
@@ -372,9 +383,6 @@ The following list are options that you can set in the `config_hash` parameter o
 ####`ensure`
 This value default to `present`. When set to `absent` it will remove all packages, configuration and data so use this with extreme caution.
 
-####`version`
-This will set the version of the PostgreSQL software to install. Defaults to your operating systems default.
-
 ####`postgres_password`
 This value defaults to `undef`, meaning the super user account in the postgres database is a user called `postgres` and this account does not have a password. If you provide this setting, the module will set the password for the `postgres` user to your specified value.
 
@@ -390,7 +398,7 @@ This sets the default package name for the PL/Perl extension. Defaults to utilis
 ####`service_name`
 This setting can be used to override the default postgresql service name. If not specified, the module will use whatever service name is the default for your OS distro.
 
-####`service_name`
+####`service_provider`
 This setting can be used to override the default postgresql service provider. If not specified, the module will use whatever service name is the default for your OS distro.
 
 ####`service_status`
@@ -401,6 +409,9 @@ This setting is used to specify the name of the default database to connect with
 
 ####`listen_addresses`
 This value defaults to `localhost`, meaning the postgres server will only accept connections from localhost. If you'd like to be able to connect to postgres from remote machines, you can override this setting. A value of `*` will tell postgres to accept connections from any remote machine. Alternately, you can specify a comma-separated list of hostnames or IP addresses. (For more info, have a look at the `postgresql.conf` file from your system's postgres package).
+
+####`port`
+This value defaults to `5432`, meaning the postgres server will listen on TCP port 5432. Note that the same port number is used for all IP addresses the server listens on.
 
 ####`ip_mask_deny_postgres_user`
 This value defaults to `0.0.0.0/0`. Sometimes it can be useful to block the superuser account from remote connections if you are allowing other database users to connect remotely. Set this to an IP and mask for which you want to deny connections by the postgres superuser account. So, e.g., the default value of `0.0.0.0/0` will match any remote IP and deny access, so the postgres user won't be able to connect remotely at all. Conversely, a value of `0.0.0.0/32` would not match any remote IP, and thus the deny rule will not be applied and the postgres user will be allowed to connect.
@@ -481,6 +492,8 @@ The name of the postgresql contrib package.
 ####`package_ensure`
 The ensure parameter passed on to postgresql contrib package resource.
 
+###Class: postgresql::server::postgis
+Installs the postgresql postgis packages.
 
 ###Class: postgresql::lib::devel
 Installs the packages containing the development libraries for PostgreSQL.
@@ -500,6 +513,16 @@ The name of the postgresql java package.
 
 ####`package_ensure`
 The ensure parameter passed on to postgresql java package resource.
+
+
+###Class: postgresql::lib::perl
+This class installs the postgresql Perl libraries. For customer requirements you can customise the following parameters:
+
+####`package_name`
+The name of the postgresql perl package.
+
+####`package_ensure`
+The ensure parameter passed on to postgresql perl package resource.
 
 
 ###Class: postgresql::lib::python
@@ -553,6 +576,9 @@ For example, to create a database called `test1` with a corresponding user of th
 
 ####`namevar`
 The namevar for the resource designates the name of the database.
+
+####`dbname`
+The name of the database to be created. Defaults to `namevar`.
 
 ####`user`
 User to create and assign access to the database upon creation. Mandatory.
@@ -697,6 +723,9 @@ Whether to grant the ability to create new roles with this role. Defaults to `fa
 ####`login`
 Whether to grant login capability for the new role. Defaults to `false`.
 
+####`inherit`
+Whether to grant inherit capability for the new role. Defaults to `true`.
+
 ####`superuser`
 Whether to grant super user capability for the new role. Defaults to `false`.
 
@@ -822,10 +851,16 @@ Works with versions of PostgreSQL from 8.1 through 9.2.
 Current it is only actively tested with the following operating systems:
 
 * Debian 6.x and 7.x
-* Centos 5.x and 6.x
-* Ubuntu 10.04 and 12.04
+* Centos 5.x, 6.x, and 7.x.
+* Ubuntu 10.04 and 12.04, 14.04
 
 Although patches are welcome for making it work with other OS distros, it is considered best effort.
+
+### RHEL7
+
+Currently the following features are unsupported:
+
+* Postgis (There is no existing postgis package for RHEL7, and it's not in EPEL7 yet.)
 
 Development
 ------------
@@ -862,11 +897,11 @@ If you want to run the system tests, make sure you also have:
 
 Then run the tests using:
 
-    bundle exec rake spec:system
+    bundle exec rspec spec/acceptance
 
 To run the tests on different operating systems, see the sets available in .nodeset.yml and run the specific set with the following syntax:
 
-    RSPEC_SET=debian-607-x64 bundle exec rake spec:system
+    RSPEC_SET=debian-607-x64 bundle exec rspec spec/acceptance
 
 Transfer Notice
 ----------------

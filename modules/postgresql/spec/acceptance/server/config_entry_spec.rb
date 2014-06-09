@@ -23,4 +23,22 @@ describe 'postgresql::server::config_entry:', :unless => UNSUPPORTED_PLATFORMS.i
       expect(r.stderr).to eq('')
     end
   end
+
+  it 'should correctly set a quotes-required string' do
+    pp = <<-EOS.unindent
+      class { 'postgresql::server': }
+
+      postgresql::server::config_entry { 'log_directory':
+        value => '/tmp/testfile',
+      }
+    EOS
+
+    apply_manifest(pp, :catch_failures => true)
+
+    psql('--command="show all" postgres') do |r|
+      r.stdout.should =~ /log_directory.+\/tmp\/testfile/
+      r.stderr.should be_empty
+      r.exit_code.should == 0
+    end
+  end
 end
