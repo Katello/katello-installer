@@ -57,6 +57,13 @@ else
   sed -i "s|^baseurl\s*=.*|baseurl=$BASEURL|g" $CFG
 fi
 
+if grep --quiet full_refresh_on_yum $CFG; then
+  sed -i "s/full_refresh_on_yum\s*=.*$/full_refresh_on_yum = 1/g"
+else
+  full_refresh_config="#config for on-premise management\nfull_refresh_on_yum = 1"
+  sed -i "s/baseurl.*/&\n\n$full_refresh_config/g" $CFG
+fi
+
 # restart goferd if it is installed and running
 [ -f /etc/init.d/goferd ] && \
   service goferd status >/dev/null && \

@@ -14,7 +14,7 @@ FORGE
 GIT
   remote: https://github.com/Katello/puppet-candlepin
   ref: master
-  sha: 7ee0194b6b0471e698f620042e44745f4c2539d3
+  sha: a5bc5ea67088e205409919f4db25f55f2a12633d
   specs:
     katello/candlepin (0.0.1)
 
@@ -28,7 +28,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-certs
   ref: master
-  sha: bc1f86cd177b3b3a89bb0cb1c912ccd7396daccb
+  sha: 22fb55c34a04ee74f75e57eba1d7f321e967a327
   specs:
     katello/certs (0.0.1)
 
@@ -49,7 +49,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello
   ref: master
-  sha: 6920fa2d744e47d5944411dec3f4a0943504c7b7
+  sha: 4fc5b6295bf61f4db055929d246ddb96195cc33c
   specs:
     katello/katello (0.0.1)
 
@@ -109,7 +109,7 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-postgresql
   ref: master
-  sha: dcd1741c0378e2261b9c7ba57e6477db14ace649
+  sha: 5d4ecb1b04c908fdc274c14e0e93276c8b132d2e
   specs:
     puppetlabs/postgresql (3.3.3)
       puppetlabs/apt (< 2.0.0, >= 1.1.0)
