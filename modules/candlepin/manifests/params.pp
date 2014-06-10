@@ -1,12 +1,13 @@
 # Candlepin params
 class candlepin::params {
 
-  case $::operatingsystem {
-    'Fedora': {
-      $tomcat = 'tomcat'
-    }
-    default: {
-      $tomcat = 'tomcat6'
+  $tomcat = $::osfamily ? {
+    /^(RedHat|Linux)/ => $::operatingsystem ? {
+      'Fedora'  => 'tomcat',
+      default   => $::operatingsystemrelease ? {
+        /^7\./  => 'tomcat',
+        default => 'tomcat6'
+      }
     }
   }
 

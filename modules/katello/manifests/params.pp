@@ -55,8 +55,6 @@ class katello::params {
   $foreman_oauth_key = 'foreman'
   $oauth_token_file = 'katello_oauth_secret'
   $oauth_secret = cache_data($oauth_token_file, random_password(32))
-
-  $post_sync_token_file = '/etc/katello/post_sync_token'
   $post_sync_token = cache_data('post_sync_token', random_password(32))
 
   # Subsystems settings
