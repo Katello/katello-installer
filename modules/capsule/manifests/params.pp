@@ -35,6 +35,13 @@ class capsule::params {
   $dns_forwareders               = $foreman_proxy::params::dns_forwarders
   $foreman_oauth_effective_user  = $foreman_proxy::params::oauth_effective_user
 
+  # Realm management options
+  $realm                         = false
+  $realm_provider                = $foreman_proxy::params::realm_provider
+  $realm_keytab                  = $foreman_proxy::params::realm_keytab
+  $realm_principal               = $foreman_proxy::params::realm_principal
+  $freeipa_remove_dns            = $foreman_proxy::params::freeipa_remove_dns
+
   $register_in_foreman = false
   $certs_tar = undef
 
