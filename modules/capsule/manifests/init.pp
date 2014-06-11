@@ -54,6 +54,19 @@
 # $dns_forwarders::                 DNS forwarders
 #                                   type:array
 #
+#
+# $realm::                          Use realm management
+#                                   type:boolean
+#
+# $realm_provider::                 Realm management provider
+#
+# $realm_keytab::                   Kerberos keytab path to authenticate realm updates
+#
+# $realm_principal::                Kerberos principal for realm updates
+#
+# $freeipa_remove_dns::             Remove DNS entries from FreeIPA when deleting hosts from realm
+#                                   type:boolean
+#
 # $register_in_foreman::            Register proxy back in Foreman
 #                                   type:boolean
 #
@@ -93,6 +106,12 @@ class capsule (
   $dns_interface                 = $capsule::params::dns_interface,
   $dns_forwarders                = $capsule::params::dns_forwarders,
 
+  $realm                         = $capsule::params::realm,
+  $realm_provider                = $capsule::params::realm_provider,
+  $realm_keytab                  = $capsule::params::realm_keytab,
+  $realm_principal               = $capsule::params::realm_principal,
+  $freeipa_remove_dns            = $capsule::params::freeipa_remove_dns,
+
   $register_in_foreman           = $capsule::params::register_in_foreman,
   $foreman_oauth_effective_user  = $capsule::params::foreman_oauth_effective_user,
   $foreman_oauth_key             = $capsule::params::foreman_oauth_key,
@@ -114,6 +133,15 @@ class capsule (
   }
 
   if $pulp {
+    apache::vhost { 'capsule':
+      servername      => $capsule_fqdn,
+      port            => 80,
+      priority        => '05',
+      docroot         => '/var/www/html',
+      options         => ['SymLinksIfOwnerMatch'],
+      custom_fragment => template('capsule/_pulp_includes.erb'),
+    }
+
     class { 'certs::apache':
       hostname => $capsule_fqdn
     }
@@ -188,6 +216,11 @@ class capsule (
       dns_reverse           => $dns_reverse,
       dns_interface         => $dns_interface,
       dns_forwarders        => $dns_forwarders,
+      realm                 => $realm,
+      realm_provider        => $realm_provider,
+      realm_keytab          => $realm_keytab,
+      realm_principal       => $realm_principal,
+      freeipa_remove_dns    => $freeipa_remove_dns,
       register_in_foreman   => $register_in_foreman,
       foreman_base_url      => $foreman_url,
       registered_proxy_url  => "https://${capsule_fqdn}:${capsule::foreman_proxy_port}",
