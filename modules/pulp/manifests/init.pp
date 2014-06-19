@@ -56,6 +56,14 @@
 #
 # $user_groups::                Additional user groups to add the qpid user to
 #
+# $proxy_url::                  URL of the proxy server
+#
+# $proxy_port::                 Port the proxy is running on
+#
+# $proxy_username::             Proxy username for authentication
+#
+# $proxy_password::             Proxy password for authentication
+#
 class pulp (
 
   $oauth_key = $pulp::params::oauth_key,
@@ -84,7 +92,12 @@ class pulp (
   $reset_cache = false,
 
   $qpid_ssl_cert_db = $pulp::params::qpid_ssl_cert_db,
-  $qpid_ssl_cert_password_file = $pulp::params::qpid_ssl_cert_password_file
+  $qpid_ssl_cert_password_file = $pulp::params::qpid_ssl_cert_password_file,
+
+  $proxy_url      = $pulp::params::proxy_url,
+  $proxy_port     = $pulp::params::proxy_port,
+  $proxy_username = $pulp::params::proxy_username,
+  $proxy_password = $pulp::params::proxy_password
 
   ) inherits pulp::params {
 

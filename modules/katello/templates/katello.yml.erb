@@ -25,7 +25,7 @@ common:
   use_ssl: true
   use_foreman: <%= scope.lookupvar("katello::params::use_foreman") %>
 
-  post_sync_url: https://localhost<%= scope.lookupvar("katello::params::deployment_url") %>/api/v2/repositories/sync_complete?token=<%= scope.lookupvar("katello::post_sync_token") %>
+  post_sync_url: https://localhost<%= scope.lookupvar("katello::params::deployment_url") %>/api/v2/repositories/sync_complete?token=<%= scope.lookupvar("post_sync_token") %>
 
   candlepin:
     url: <%= scope.lookupvar("katello::params::candlepin_url") %>
@@ -46,12 +46,12 @@ common:
     oauth_key: <%= scope.lookupvar("katello::params::oauth_key") %>
     oauth_secret: <%= scope.lookupvar("katello::params::oauth_secret") %>
 
-<%- unless scope.lookupvar("katello::params::proxy_url") == "NONE" -%>
+<%- if @proxy_url -%>
   cdn_proxy:
-    host: <%= scope.lookupvar("katello::params::proxy_url") %>
-    port: <%= scope.lookupvar("katello::params::proxy_port") unless scope.lookupvar("katello::params::proxy_port") == "NONE" %>
-    user: <%= scope.lookupvar("katello::params::proxy_user") unless scope.lookupvar("katello::params::proxy_user") == "NONE" %>
-    password: <%= scope.lookupvar("katello::params::proxy_pass") unless scope.lookupvar("katello::params::proxy_pass") == "NONE" %>
+    host: <%= @proxy_url %>
+    port: <%= @proxy_port %>
+    user: <%= @proxy_username %>
+    password: <%= @proxy_password %>
 <%- end -%>
 
   ldap_fluff_config:
