@@ -61,6 +61,30 @@ class pulp::config {
       target => $pulp::consumers_ca_cert,
   }
 
+  file {'/etc/pulp/server/plugins.conf.d/yum_importer.json':
+    ensure  => file,
+    content => template('pulp/yum_importer.json'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+  }
+
+  file {'/etc/pulp/server/plugins.conf.d/puppet_importer.json':
+    ensure  => file,
+    content => template('pulp/puppet_importer.json'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+  }
+
+  file {'/etc/pulp/server/plugins.conf.d/iso_importer.json':
+    ensure  => file,
+    content => template('pulp/iso_importer.json'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+  }
+
   if $pulp::reset_cache {
     exec {'reset_pulp_cache':
       command => 'rm -rf /var/lib/pulp/packages/*',

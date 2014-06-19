@@ -28,6 +28,14 @@
 # $use_passenger::      Whether Katello is being deployed with Passenger;
 #                       default true
 #
+# $proxy_url::          URL of the proxy server
+#
+# $proxy_port::         Port the proxy is running on
+#
+# $proxy_username::     Proxy username for authentication
+#
+# $proxy_password::     Proxy password for authentication
+#
 class katello (
 
   $user = $katello::params::user,
@@ -42,7 +50,12 @@ class katello (
   $log_dir = $katello::params::log_dir,
   $config_dir = $katello::params::config_dir,
 
-  $use_passenger = $katello::params::use_passenger
+  $use_passenger = $katello::params::use_passenger,
+
+  $proxy_url      = $katello::params::proxy_url,
+  $proxy_port     = $katello::params::proxy_port,
+  $proxy_username = $katello::params::proxy_username,
+  $proxy_password = $katello::params::proxy_password,
 
   ) inherits katello::params {
 
@@ -76,6 +89,10 @@ class katello (
     consumers_ca_cert           => $certs::ca_cert,
     consumers_ca_key            => $certs::ca_key,
     consumers_crl               => $candlepin::crl_file,
+    proxy_url                   => $proxy_url,
+    proxy_port                  => $proxy_port,
+    proxy_username              => $proxy_username,
+    proxy_password              => $proxy_password,
   } ~>
   class{ 'elasticsearch': } ~>
   Exec['foreman-rake-db:seed']

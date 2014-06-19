@@ -31,10 +31,10 @@ class katello::params {
   }
 
   # HTTP Proxy settings (currently used by pulp)
-  $proxy_url = 'NONE'
-  $proxy_port = 'NONE'
-  $proxy_user = 'NONE'
-  $proxy_pass = 'NONE'
+  $proxy_url = undef
+  $proxy_port = undef
+  $proxy_username = undef
+  $proxy_password = undef
 
   # system settings
   $user = 'foreman'

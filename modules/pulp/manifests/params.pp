@@ -26,4 +26,9 @@ class pulp::params {
   $repo_auth = true
 
   $user_groups = []
+
+  $proxy_url      = undef
+  $proxy_port     = undef
+  $proxy_username = undef
+  $proxy_password = undef
 }
