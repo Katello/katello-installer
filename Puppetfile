@@ -4,9 +4,6 @@ forge 'http://forge.puppetlabs.com'
 # The Foreman part of Puppetfile (taken from foreman-installer #
 #################################################################
 
-# Temporary for Amazon Linux support (https://github.com/puppetlabs/puppetlabs-xinetd/issues/32)
-mod 'puppetlabs/xinetd', :git => 'https://github.com/puppetlabs/puppetlabs-xinetd'
-
 # Dependencies
 mod 'puppetlabs/postgresql', :git => 'https://github.com/puppetlabs/puppetlabs-postgresql'
 mod 'puppetlabs/mysql', :git => 'https://github.com/puppetlabs/puppetlabs-mysql', :ref => '2.2.0'
