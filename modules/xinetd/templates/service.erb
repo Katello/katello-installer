@@ -28,10 +28,10 @@ service <%= @service_name %>
         per_source      = <%= @per_source %>
 <% end -%>
 <% if @log_on_success -%>
-        log_on_success += <%= @log_on_success %>
+        log_on_success <%= @log_on_success_operator %> <%= @log_on_success %>
 <% end -%>
 <% if @log_on_failure -%>
-        log_on_failure += <%= @log_on_failure %>
+        log_on_failure <%= @log_on_failure_operator %> <%= @log_on_failure %>
 <% end -%>
 <% if @cps -%>
         cps             = <%= @cps %>

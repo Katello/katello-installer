@@ -9,7 +9,9 @@ FORGE
     puppetlabs/concat (1.1.0)
       puppetlabs/stdlib (>= 4.0.0)
     puppetlabs/stdlib (4.2.2)
-    puppetlabs/vcsrepo (0.2.0)
+    puppetlabs/vcsrepo (1.0.1)
+    puppetlabs/xinetd (1.3.0)
+      puppetlabs/stdlib (>= 2.2.1)
 
 GIT
   remote: https://github.com/Katello/puppet-candlepin
@@ -92,9 +94,9 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-mongodb
   ref: master
-  sha: 2b72d860e19e51c3a0b09ca5fe9af200bd733284
+  sha: 25fd691bf7350033af0314fd00019b6842854c95
   specs:
-    puppetlabs/mongodb (0.7.0)
+    puppetlabs/mongodb (0.8.0)
       puppetlabs/apt (>= 1.0.0)
       puppetlabs/stdlib (>= 2.2.0)
 
@@ -116,14 +118,6 @@ GIT
       puppetlabs/concat (< 2.0.0, >= 1.0.0)
       puppetlabs/firewall (>= 0.0.4)
       puppetlabs/stdlib (< 5.0.0, >= 3.2.0)
-
-GIT
-  remote: https://github.com/puppetlabs/puppetlabs-xinetd
-  ref: master
-  sha: bbcebf25f059a6ace3a0b6ae5ce707a0923ac458
-  specs:
-    puppetlabs/xinetd (1.2.0)
-      puppetlabs/stdlib (>= 2.2.1)
 
 GIT
   remote: https://github.com/theforeman/puppet-concat
@@ -151,7 +145,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman
   ref: master
-  sha: 64234edfbb40bd779b71e8799532ae0440291865
+  sha: eea5c3b701a0758b0bdef90e8371f03886e48cff
   specs:
     theforeman/foreman (2.1.2)
       puppetlabs/apache (< 2.0.0, >= 1.0.0)
@@ -163,7 +157,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman_proxy
   ref: master
-  sha: 759b85177495d72e06cb28b06598897dcfec9661
+  sha: c4f150e7e7a705e32bc564289c3477e0c5bb1377
   specs:
     theforeman/foreman_proxy (1.6.1)
       puppetlabs/stdlib (>= 2.3.0)
@@ -183,7 +177,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-puppet
   ref: master
-  sha: cbf49730b55c3b54313dec1fd14855186d82ba58
+  sha: 6cab2ac62864acf063580afe6c1765e3297770a6
   specs:
     theforeman/puppet (2.1.2)
       puppetlabs/apache (< 2.0.0, >= 1.0.0)
@@ -215,7 +209,6 @@ DEPENDENCIES
   puppetlabs/mongodb (>= 0)
   puppetlabs/mysql (>= 0)
   puppetlabs/postgresql (>= 0)
-  puppetlabs/xinetd (>= 0)
   theforeman/concat_native (>= 0)
   theforeman/dhcp (>= 0)
   theforeman/dns (>= 0)
