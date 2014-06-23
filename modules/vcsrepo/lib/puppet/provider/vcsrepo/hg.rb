@@ -3,8 +3,9 @@ require File.join(File.dirname(__FILE__), '..', 'vcsrepo')
 Puppet::Type.type(:vcsrepo).provide(:hg, :parent => Puppet::Provider::Vcsrepo) do
   desc "Supports Mercurial repositories"
 
-  optional_commands :hg => 'hg',
-                    :su => 'su'
+  commands :hg => 'hg'
+  optional_commands :su => 'su'
+
   has_features :reference_tracking, :ssh_identity, :user
 
   def create
@@ -37,7 +38,7 @@ Puppet::Type.type(:vcsrepo).provide(:hg, :parent => Puppet::Provider::Vcsrepo) d
   def latest
     at_path do
       begin
-        hg_wrapper('incoming', '--branch', '.', '--newest-first', '--limit', '1')[/^changeset:\s+(?:-?\d+):(\S+)/m, 1]
+        hg_wrapper('incoming', '--branch', '.', '--newest-first', '--limit', '1', { :remote => true })[/^changeset:\s+(?:-?\d+):(\S+)/m, 1]
       rescue Puppet::ExecutionFailure
         # If there are no new changesets, return the current nodeid
         self.revision
@@ -66,7 +67,7 @@ Puppet::Type.type(:vcsrepo).provide(:hg, :parent => Puppet::Provider::Vcsrepo) d
   def revision=(desired)
     at_path do
       begin
-        hg_wrapper('pull')
+        hg_wrapper('pull', { :remote => true })
       rescue
       end
       begin
@@ -92,6 +93,7 @@ Puppet::Type.type(:vcsrepo).provide(:hg, :parent => Puppet::Provider::Vcsrepo) d
     end
     args.push(@resource.value(:source),
               @resource.value(:path))
+    args.push({ :remote => true })
     hg_wrapper(*args)
   end
 
@@ -102,10 +104,14 @@ Puppet::Type.type(:vcsrepo).provide(:hg, :parent => Puppet::Provider::Vcsrepo) d
   end
 
   def hg_wrapper(*args)
-    if @resource.value(:identity)
+    options = { :remote => false }
+    if args.length > 0 and args[-1].is_a? Hash
+      options.merge!(args.pop)
+    end
+    if options[:remote] and @resource.value(:identity)
       args += ["--ssh", "ssh -oStrictHostKeyChecking=no -oPasswordAuthentication=no -oKbdInteractiveAuthentication=no -oChallengeResponseAuthentication=no -i #{@resource.value(:identity)}"]
     end
-    if @resource.value(:user)
+    if @resource.value(:user) and @resource.value(:user) != Facter['id'].value
       args.map! { |a| if a =~ /\s/ then "'#{a}'" else a end }  # Adds quotes to arguments with whitespaces.
       su(@resource.value(:user), '-c', "hg #{args.join(' ')}")
     else

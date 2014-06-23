@@ -7,8 +7,14 @@
 #   $ensure         - optional - defaults to 'present'
 #   $log_on_success - optional - may contain any combination of
 #                       'PID', 'HOST', 'USERID', 'EXIT', 'DURATION', 'TRAFFIC'
+#   $log_on_success_operator - optional - defaults to '+='.  This is whether or
+#                              not values specified will be add, set or remove
+#                              from the default.
 #   $log_on_failure - optional - may contain any combination of
 #                       'HOST', 'USERID', 'ATTEMPT'
+#   $log_on_failure_operator - optional - defaults to '+='.  This is whether or
+#                              not values specified will be add, set or remove
+#                              from the default.
 #   $service_type   - optional - type setting in xinetd
 #                       may contain any combinarion of 'RPC', 'INTERNAL',
 #                       'TCPMUX/TCPMUXPLUS', 'UNLISTED'
@@ -56,29 +62,31 @@
 define xinetd::service (
   $port,
   $server,
-  $ensure         = present,
-  $log_on_success = undef,
-  $log_on_failure = undef,
-  $service_type   = undef,
-  $service_name   = $title,
-  $cps            = undef,
-  $disable        = 'no',
-  $flags          = undef,
-  $group          = 'root',
-  $groups         = 'yes',
-  $instances      = 'UNLIMITED',
-  $per_source     = undef,
-  $protocol       = 'tcp',
-  $server_args    = undef,
-  $socket_type    = 'stream',
-  $user           = 'root',
-  $only_from      = undef,
-  $wait           = undef,
-  $xtype          = undef,
-  $no_access      = undef,
-  $access_times   = undef,
-  $log_type       = undef,
-  $bind           = undef
+  $ensure                  = present,
+  $log_on_success          = undef,
+  $log_on_success_operator = '+=',
+  $log_on_failure          = undef,
+  $log_on_failure_operator = '+=',
+  $service_type            = undef,
+  $service_name            = $title,
+  $cps                     = undef,
+  $disable                 = 'no',
+  $flags                   = undef,
+  $group                   = 'root',
+  $groups                  = 'yes',
+  $instances               = 'UNLIMITED',
+  $per_source              = undef,
+  $protocol                = 'tcp',
+  $server_args             = undef,
+  $socket_type             = 'stream',
+  $user                    = 'root',
+  $only_from               = undef,
+  $wait                    = undef,
+  $xtype                   = undef,
+  $no_access               = undef,
+  $access_times            = undef,
+  $log_type                = undef,
+  $bind                    = undef
 ) {
 
   include xinetd
@@ -109,7 +117,9 @@ define xinetd::service (
   # - $only_from
   # - $per_source
   # - $log_on_success
+  # - $log_on_success_operator
   # - $log_on_failure
+  # - $log_on_failure_operator
   # - $cps
   # - $flags
   # - $xtype

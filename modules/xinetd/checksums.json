@@ -1,0 +1,21 @@
+{
+  "CHANGELOG": "a1c8eb460db2853b0443020ea6cbf944",
+  "Gemfile": "1d06c5fba4ddbed90b6be782b01d267e",
+  "LICENSE": "617dce6c9442191a93fe112b36271a93",
+  "README.md": "cd2612e7f6f897a1979a62adeb4de69a",
+  "Rakefile": "0428ea3759a4692c91604396c406a9c1",
+  "manifests/init.pp": "9936fbfd175f8f9a5dabd6d85a182fbc",
+  "manifests/params.pp": "5bfef82d5e9d18ec973f4e4dc879c78b",
+  "manifests/service.pp": "352f192abbc7f56b52be78513dfc123e",
+  "metadata.json": "f2898f10b1cd7a92606f8ea723ba1510",
+  "spec/classes/xinetd_init_spec.rb": "db443eb5e3d8e3f177a2e11ee3e1c1e0",
+  "spec/defines/xinetd_service_spec.rb": "1c46818681b957c758c0a58b02dd74dd",
+  "spec/spec.opts": "a600ded995d948e393fbe2320ba8e51c",
+  "spec/spec_helper.rb": "0db89c9a486df193c0e40095422e19dc",
+  "spec/spec_helper_system.rb": "a8b3b2c2614853b700179d53eb5d549b",
+  "spec/system/class_spec.rb": "b1dcb446277f3bb1916f3528acb73742",
+  "spec/system/service_spec.rb": "70e460d61848c190501cb8d9158520e7",
+  "templates/service.erb": "7282ca466b7e8249c75f191e6aac4196",
+  "templates/xinetd.conf.erb": "39a49b490f2bd5e0b133ce9a58a74b0b",
+  "tests/init.pp": "c31f20acadb59d84cc56ebe12a138a03"
+}
