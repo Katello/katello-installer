@@ -1,6 +1,12 @@
 # Pulp Master Configuration
 class pulp::config {
 
+  exec {'selinux_pulp_manage_puppet':
+    command => 'semanage boolean -m --on pulp_manage_puppet',
+    path    => '/sbin:/usr/sbin:/bin:/usr/bin',
+    onlyif  => 'getsebool pulp_manage_puppet | grep off',
+  }
+
   file {'/var/lib/pulp/packages':
     ensure => directory,
     owner  => 'apache',
