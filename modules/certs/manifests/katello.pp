@@ -1,11 +1,19 @@
 # Katello specific certs settings
-class certs::katello ($hostname = $fqdn, $deployment_url = undef){
+class certs::katello (
+  $hostname                      = $fqdn,
+  $deployment_url                = undef,
+  $candlepin_cert_rpm_alias_filename = undef
+  ){
+
+  $candlepin_cert_rpm_alias = $candlepin_cert_rpm_alias_filename ? {
+    undef   => "${$certs::default_ca_name}-consumer-latest.noarch.rpm",
+    default => $candlepin_cert_rpm_alias_filename,
+  }
 
   $katello_www_pub_dir            = '/var/www/html/pub'
   $candlepin_consumer_name        = "${$certs::default_ca_name}-consumer-${::fqdn}"
   $candlepin_consumer_summary     = "Subscription-manager consumer certificate for Katello instance ${::fqdn}"
   $candlepin_consumer_description = 'Consumer certificate and post installation script that configures rhsm.'
-
   file { $katello_www_pub_dir:
     ensure => directory,
     owner  => 'apache',
@@ -25,7 +33,7 @@ class certs::katello ($hostname = $fqdn, $deployment_url = undef){
     creates   => "${katello_www_pub_dir}/${candlepin_consumer_name}-1.0-1.noarch.rpm",
     logoutput => 'on_failure';
   } ~>
-  file { "${katello_www_pub_dir}/${$certs::default_ca_name}-consumer-latest.noarch.rpm":
+  file { "${katello_www_pub_dir}/${candlepin_cert_rpm_alias}":
     ensure  => 'link',
     target  => "${katello_www_pub_dir}/${candlepin_consumer_name}-1.0-1.noarch.rpm",
   }

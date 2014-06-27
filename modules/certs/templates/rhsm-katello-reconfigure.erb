@@ -58,7 +58,7 @@ else
 fi
 
 if grep --quiet full_refresh_on_yum $CFG; then
-  sed -i "s/full_refresh_on_yum\s*=.*$/full_refresh_on_yum = 1/g"
+  sed -i "s/full_refresh_on_yum\s*=.*$/full_refresh_on_yum = 1/g" $CFG
 else
   full_refresh_config="#config for on-premise management\nfull_refresh_on_yum = 1"
   sed -i "s/baseurl.*/&\n\n$full_refresh_config/g" $CFG

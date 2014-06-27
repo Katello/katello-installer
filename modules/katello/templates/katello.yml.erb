@@ -25,6 +25,8 @@ common:
   use_ssl: true
   use_foreman: <%= scope.lookupvar("katello::params::use_foreman") %>
 
+  consumer_cert_rpm: <%= scope.lookupvar("certs::katello::candlepin_cert_rpm_alias") %>
+
   post_sync_url: https://localhost<%= scope.lookupvar("katello::params::deployment_url") %>/api/v2/repositories/sync_complete?token=<%= scope.lookupvar("post_sync_token") %>
 
   candlepin:
