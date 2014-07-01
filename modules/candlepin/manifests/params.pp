@@ -16,6 +16,8 @@ class candlepin::params {
 
   # this comes from keystore
   $db_password = cache_data('candlepin_db_password', random_password(32))
+  $amqp_keystore_password = $::certs::candlepin::keystore_password
+  $amqp_truststore_password = $::certs::candlepin::keystore_password
 
   # where to store output from cpsetup execution
   $log_dir  = '/var/log/candlepin'
@@ -38,5 +40,7 @@ class candlepin::params {
   $thumbslug_enabled = false
 
   $deployment_url = 'candlepin'
+
+  $qpid_ssl_port = 5671
 
 }

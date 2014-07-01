@@ -66,6 +66,7 @@ class katello (
   } ~>
   class { 'katello::install': } ~>
   class { 'katello::config': } ~>
+  class { 'certs::qpid': } ~>
   class { 'certs::candlepin': } ~>
   class { 'candlepin':
     user_groups       => $katello::user_groups,
@@ -76,7 +77,6 @@ class katello (
     ca_cert           => $certs::ca_cert_stripped,
     keystore_password => $::certs::candlepin::keystore_password,
   } ~>
-  class { 'certs::qpid': } ~>
   class { 'certs::pulp_parent': } ~>
   class { 'pulp':
     oauth_key                   => $katello::oauth_key,

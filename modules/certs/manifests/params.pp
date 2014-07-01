@@ -53,11 +53,13 @@ class certs::params {
   $puppet_client_key  = '/etc/puppet/client_key.pem'
   $puppet_client_ca_cert = '/etc/puppet/client_ca.pem'
 
-  $candlepin_certs_storage          = '/etc/candlepin/certs'
-  $candlepin_ca_cert                = '/etc/candlepin/certs/candlepin-ca.crt'
-  $candlepin_ca_key                 = '/etc/candlepin/certs/candlepin-ca.key'
   $candlepin_keystore               = '/etc/pki/katello/keystore'
   $candlepin_certs_dir              = '/etc/candlepin/certs'
+  $candlepin_ca_cert                = "${candlepin_certs_dir}/candlepin-ca.crt"
+  $candlepin_ca_key                 = "${candlepin_certs_dir}/candlepin-ca.key"
+  $candlepin_amqp_store_dir         = "${candlepin_certs_dir}/amqp"
+  $candlepin_amqp_truststore        = "${candlepin_amqp_store_dir}/truststore"
+  $candlepin_amqp_keystore          = "${candlepin_amqp_store_dir}/keystore"
 
   $certs_tar              = undef
   # Settings for uploading packages to Katello

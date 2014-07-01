@@ -1,5 +1,5 @@
 FORGE
-  remote: http://forge.puppetlabs.com
+  remote: https://forgeapi.puppetlabs.com
   specs:
     puppetlabs/apache (1.0.1)
       puppetlabs/concat (>= 1.0.0)
@@ -16,7 +16,7 @@ FORGE
 GIT
   remote: https://github.com/Katello/puppet-candlepin
   ref: master
-  sha: a5bc5ea67088e205409919f4db25f55f2a12633d
+  sha: e940ba26f8d3b17028a58ac82041617633ae146e
   specs:
     katello/candlepin (0.0.1)
 
@@ -30,7 +30,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-certs
   ref: master
-  sha: 06752315baeda85f6557186afe63444f7225c0e5
+  sha: f2cfd65210ae4d96472f249d4a3254a02223740b
   specs:
     katello/certs (0.0.1)
 
@@ -51,7 +51,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello
   ref: master
-  sha: a3c6dac978e3dc4993c90876fd0ffd244d9f217f
+  sha: bbbeacb14d229326be64d4dcb44b1ec816129bc0
   specs:
     katello/katello (0.0.1)
 
@@ -73,7 +73,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-qpid
   ref: master
-  sha: 0d220ced29348006fd89574e0dd85659d068f491
+  sha: c4f2a445e7bdfd188896ce40e1fe6fdb17717b27
   specs:
     katello/qpid (0.0.1)
 

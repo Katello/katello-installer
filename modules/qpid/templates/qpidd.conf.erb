@@ -28,7 +28,7 @@
 # "qpidd --help" or "man qpidd" for more details. 
 #cluster-mechanism=ANONYMOUS 
 log-enable=error+
-
+log-to-syslog=yes
 auth=no
 require-encryption=yes
 <% if scope.lookupvar("qpid::ssl") -%>

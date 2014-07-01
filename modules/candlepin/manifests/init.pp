@@ -77,12 +77,14 @@ class candlepin (
 
   $ca_key = $candlepin::params::ca_key,
   $ca_cert = $candlepin::params::ca_crt,
-  $ca_key_password = $candlepin::params::ca_key_password
+  $ca_key_password = $candlepin::params::ca_key_password,
+  $qpid_ssl_port = $candlepin::params::qpid_ssl_port
 
   ) inherits candlepin::params {
 
   $weburl = "https://${::fqdn}/${candlepin::deployment_url}/distributors?uuid="
   $apiurl = "https://${::fqdn}/${candlepin::deployment_url}/api/distributors/"
+  $amqpurl = "tcp://${::fqdn}:${qpid_ssl_port}?ssl='true'&ssl_cert_alias='amqp-client'"
 
   class { 'candlepin::install': } ~>
   class { 'candlepin::config': } ~>
