@@ -27,7 +27,7 @@ if [0,2].include? @kafo.exit_code
   # Fortello UI?
   if module_enabled?('katello')
     say "  * <%= color('Katello', :info) %> is running at <%= color('#{@kafo.param('foreman','foreman_url').value}', :info) %>"
-    say "      Default credentials are '<%= color('admin:changeme', :info) %>'" if @kafo.param('foreman','authentication').value
+    say "      Initial credentials are <%= color('#{@kafo.param('foreman', 'admin_username').value}', :info) %> / <%= color('#{@kafo.param('foreman', 'admin_password').value}', :info) %>" if @kafo.param('foreman','authentication').value == true
   end
 
   # Capsule?
@@ -58,7 +58,7 @@ MSG
   1. Ensure that the capsule-installer is available on the system.
      The capsule-installer comes from the katello-installer package and
      should be acquired through the means that are appropriate to your deployment.
-  2. Copy <%= color("#{certs_tar}", :info) %> to the system <%= color("#{capsule_fqdn}", :info) %> 
+  2. Copy <%= color("#{certs_tar}", :info) %> to the system <%= color("#{capsule_fqdn}", :info) %>
   3. Run the following commands on the capsule (possibly with the customized
      parameters, see <%= color("capsule-installer --help", :info) %> and
      documentation for more info on setting up additional services):

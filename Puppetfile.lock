@@ -111,7 +111,7 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-postgresql
   ref: master
-  sha: 5d4ecb1b04c908fdc274c14e0e93276c8b132d2e
+  sha: 8588b4ad8ecfff281f64e93b9b17115bbe68c527
   specs:
     puppetlabs/postgresql (3.3.3)
       puppetlabs/apt (< 2.0.0, >= 1.1.0)
@@ -145,12 +145,12 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman
   ref: master
-  sha: eea5c3b701a0758b0bdef90e8371f03886e48cff
+  sha: 5534df907c17a4d9c81ea948697ebf35d773e8a0
   specs:
     theforeman/foreman (2.1.2)
       puppetlabs/apache (< 2.0.0, >= 1.0.0)
       puppetlabs/postgresql (>= 3.0.0)
-      puppetlabs/stdlib (>= 2.0.0)
+      puppetlabs/stdlib (>= 4.2.0)
       theforeman/concat_native (>= 1.3.0)
       theforeman/tftp (>= 1.4.0)
 
