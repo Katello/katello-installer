@@ -16,6 +16,11 @@ candlepin.auth.trusted.enable = false
 candlepin.enable_cert_v3=true
 candlepin.export.prefix.weburl=<%= @weburl %>
 candlepin.export.prefix.apiurl=<%= @apiurl %>
+# enable events via AMQP
+candlepin.amqp.enable=true
+candlepin.amqp.connect=<%= @amqpurl %>
+candlepin.amqp.keystore_password=<%= @amqp_keystore_password %>
+candlepin.amqp.truststore_password=<%= @amqp_truststore_password %>
 
 <% if @oauth_key != "" -%>
 module.config.katello=org.candlepin.katello.KatelloModule
