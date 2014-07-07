@@ -32,8 +32,8 @@ class certs::params {
   $city          = 'Raleigh'
   $org           = 'SomeOrg'
   $org_unit      = 'SomeOrgUnit'
-  $expiration    = '365'
-  $ca_expiration = '36500'
+  $expiration    = '7300' # 20 years
+  $ca_expiration = '36500' # 100 years
 
   $keystore_password_file = 'keystore_password-file'
   $nss_db_dir = "${pki_dir}/nssdb"
