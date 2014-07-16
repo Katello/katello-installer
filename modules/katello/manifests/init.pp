@@ -62,7 +62,7 @@ class katello (
   Class['certs'] ~>
   class { 'certs::apache': } ~>
   class { 'certs::katello':
-    deployment_url => $katello::deployment_url,
+    deployment_url => $katello::rhsm_url,
   } ~>
   class { 'katello::install': } ~>
   class { 'katello::config': } ~>
@@ -72,7 +72,7 @@ class katello (
     user_groups       => $katello::user_groups,
     oauth_key         => $katello::oauth_key,
     oauth_secret      => $katello::oauth_secret,
-    deployment_url    => 'katello',
+    deployment_url    => $katello::deployment_url,
     ca_key            => $certs::ca_key,
     ca_cert           => $certs::ca_cert_stripped,
     keystore_password => $::certs::candlepin::keystore_password,

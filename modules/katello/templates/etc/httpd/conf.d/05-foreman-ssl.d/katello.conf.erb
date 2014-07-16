@@ -13,7 +13,7 @@ Alias /pub /var/www/html/pub
   Options +FollowSymLinks +Indexes
 </Location>
 
-<LocationMatch /subscription|/katello/api>
+<LocationMatch /rhsm|/subscription|/katello/api>
   RequestHeader set SSL_CLIENT_CERT "%{SSL_CLIENT_CERT}s"
   SSLVerifyClient optional
   SSLRenegBufferSize 16777216
