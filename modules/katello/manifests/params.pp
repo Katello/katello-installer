@@ -9,6 +9,7 @@ class katello::params {
     $scl_root = ''
   }
 
+  $rhsm_url = '/rhsm'
   $deployment_url = '/katello'
 
   if file_exists('/usr/sbin/tomcat') and !file_exists('/usr/sbin/tomcat6') {
@@ -16,18 +17,6 @@ class katello::params {
   }
   else {
     $tomcat = 'tomcat6'
-  }
-
-  case $deployment_url {
-    '/katello': {
-      $deployment = 'katello'
-    }
-    '/headpin': {
-      $deployment = 'headpin'
-    }
-    default : {
-      $deployment = 'katello'
-    }
   }
 
   # HTTP Proxy settings (currently used by pulp)
@@ -55,6 +44,7 @@ class katello::params {
   $foreman_oauth_key = 'foreman'
   $oauth_token_file = 'katello_oauth_secret'
   $oauth_secret = cache_data($oauth_token_file, random_password(32))
+
   $post_sync_token = cache_data('post_sync_token', random_password(32))
 
   # Subsystems settings

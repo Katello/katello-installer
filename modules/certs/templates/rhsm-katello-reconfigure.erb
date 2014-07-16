@@ -20,8 +20,7 @@ KATELLO_SERVER=<%= @hostname %>
 PORT=443
 BASEURL=https://$KATELLO_SERVER/pulp/repos
 
-DEPLOYMENT_URL=<%= @deployment_url %>
-PREFIX=$DEPLOYMENT_URL/api
+PREFIX=<%= @deployment_url %>
 CFG=/etc/rhsm/rhsm.conf
 CFG_BACKUP=$CFG.kat-backup
 

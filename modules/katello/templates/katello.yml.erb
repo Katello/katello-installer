@@ -12,20 +12,18 @@
 # see /usr/share/katello/config.katello_defaults.yml for available options
 
 common:
-  app_mode: <%= scope.lookupvar("katello::params::deployment") %>
+  app_mode: 'katello'
 
   warden:  <%= scope.lookupvar("katello::params::auth_method") %>
   ldap_roles: <%= scope.lookupvar("katello::params::ldap_roles") %>
   validate_ldap: <%= scope.lookupvar("katello::params::validate_ldap") %>
   rest_client_timeout: 120
 
-  url_prefix: <%= scope.lookupvar("katello::params::deployment_url") %>
+  url_prefix: <%= @deployment_url %>
   host: <%= has_variable?("fqdn") ? @fqdn : hostname %>
   port:
   use_ssl: true
   use_foreman: <%= scope.lookupvar("katello::params::use_foreman") %>
-
-  consumer_cert_rpm: <%= scope.lookupvar("certs::katello::candlepin_cert_rpm_alias") %>
 
   post_sync_url: https://localhost<%= scope.lookupvar("katello::params::deployment_url") %>/api/v2/repositories/sync_complete?token=<%= scope.lookupvar("post_sync_token") %>
 
