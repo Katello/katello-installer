@@ -25,6 +25,10 @@ INVALID = %q(Output of 'hostname -f' does not seems to be valid FQDN
 
 Make sure above command gives fully qualified domain name. At least one
 dot must be present. )
+
+UPCASE = %q(The hostname contains a a capital letter.
+
+This is not supported. Please modify the hostname to be all lowercase. )
  
 
 def error_exit(message, code)
@@ -32,8 +36,12 @@ def error_exit(message, code)
   exit code
 end
 
+fqdn = Facter.value(:fqdn)
+
 # Check that facter actually has a value that matches the hostname.
 # This should always be true for facter >= 1.7
-error_exit(DIFFERENT + BASE, 1) if Facter.value(:fqdn) != `hostname -f`.chomp
+error_exit(DIFFERENT + BASE, 1) if fqdn != `hostname -f`.chomp
 # Every FQDN should have at least one dot
-error_exit(INVALID + BASE, 2) unless Facter.value(:fqdn).include?('.')
+error_exit(INVALID + BASE, 2) unless fqdn.include?('.')
+# Capital Letters are not suported.
+error_exit(UPCASE + BASE, 3) unless fqdn.downcase == fqdn
