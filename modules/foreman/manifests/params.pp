@@ -82,8 +82,12 @@ class foreman::params {
           }
         }
         default: {
-          $puppet_basedir = regsubst($::rubyversion, '^(\d+\.\d+).*$', '/usr/lib/ruby/site_ruby/\1/puppet')
-          $yumcode = regsubst($::operatingsystemrelease, '^(\d+)\..*$', 'el\1')
+          $osreleasemajor = regsubst($::operatingsystemrelease, '^(\d+)\..*$', '\1')
+          $yumcode = "el${osreleasemajor}"
+          $puppet_basedir = $osreleasemajor ? {
+            '6'     => regsubst($::rubyversion, '^(\d+\.\d+).*$', '/usr/lib/ruby/site_ruby/\1/puppet'),
+            default => '/usr/share/ruby/vendor_ruby/puppet',
+          }
           # add passenger::install::scl as EL uses SCL on Foreman 1.2+
           $passenger_scl = 'ruby193'
           $plugin_prefix = 'ruby193-rubygem-foreman_'
@@ -173,4 +177,10 @@ class foreman::params {
   $admin_first_name = undef
   $admin_last_name = undef
   $admin_email = undef
+
+  $ipa_authentication = false
+  $http_keytab = '/etc/httpd/conf/http.keytab'
+  $pam_service = 'foreman'
+  $configure_ipa_repo = false
+  $ipa_manage_sssd = true
 }
