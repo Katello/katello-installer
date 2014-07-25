@@ -1,14 +1,10 @@
 {
-    <%- if @proxy_url %>
     "proxy_host": "<%= @proxy_url %>",
-    <% end %>
     <%- if @proxy_port %>
-    "proxy_port": "<%= @proxy_port %>",
+    "proxy_port": <%= @proxy_port %>,
+    <% else %>
+    "proxy_port": null,
     <% end %>
-    <%- if @proxy_username %>
     "proxy_username": "<%= @proxy_username %>",
-    <% end %>
-    <%- if @proxy_password %>
     "proxy_password": "<%= @proxy_password %>"
-    <% end %>
 }
