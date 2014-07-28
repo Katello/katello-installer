@@ -59,7 +59,7 @@ class katello_devel::database {
 
     postgresql::server::role { $db_username:
       password_hash => $db_password,
-      createdb      => true
+      superuser     => true
     }
 
     postgresql::server::role { 'candlepin':
@@ -72,7 +72,7 @@ class katello_devel::database {
       owner    => $db_username,
     }
 
-    Postgresql::Server::Role[$db_username] -> Postgresql::Server::Database[$db_name]
+    Class['postgresql::server'] -> Postgresql::Server::Role[$db_username] -> Postgresql::Server::Database[$db_name]
 
   }
 

@@ -1,12 +1,11 @@
 # Katello development parameters
-class katello_devel::params {
-
+class katello_devel::params () inherits ::katello::params {
   $user = undef
 
   $use_passenger = false
 
-  $oauth_key    = cache_data('oauth_consumer_key', random_password(32))
-  $oauth_secret = cache_data('oauth_consumer_secret', random_password(32))
+  $oauth_key    = 'katello'
+  $oauth_secret = cache_data('katello_devel_oauth_secret', random_password(32))
 
   $db_type = 'sqlite'
 
