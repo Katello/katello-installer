@@ -64,6 +64,9 @@ class katello_devel (
   class { 'certs::katello':
     deployment_url => '/katello'
   } ~>
+  class { 'certs::qpid':
+    require => Class['qpid::install']
+  } ~>
   class { 'katello_devel::install': } ~>
   class { 'katello_devel::config': } ~>
   class { 'katello_devel::database': } ~>
@@ -75,7 +78,9 @@ class katello_devel (
     ]
   }
 
+
   Class['certs'] ~>
+  Class['certs::qpid'] ~>
   class { 'certs::candlepin': } ~>
   class { 'candlepin':
     user_groups       => $katello_devel::group,
@@ -89,9 +94,7 @@ class katello_devel (
   }
 
   Class['certs'] ~>
-  class { 'certs::qpid':
-    require => Class['qpid::install']
-  } ~>
+  Class['certs::qpid'] ~>
   class { 'certs::pulp_parent': } ~>
   class { 'pulp':
     oauth_key                   => $katello_devel::oauth_key,
