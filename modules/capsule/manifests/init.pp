@@ -187,7 +187,7 @@ class capsule (
     }
   }
 
-  $foreman_proxy = $tftp or $dhcp or $dns or $puppet or $puppetca
+  $foreman_proxy = $tftp or $dhcp or $dns or $puppet or $puppetca or $realm
 
   if $foreman_proxy {
 

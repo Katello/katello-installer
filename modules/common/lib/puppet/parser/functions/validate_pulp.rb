@@ -16,6 +16,10 @@ DOC
             "the pulp node can't be installed on a machine with Katello master"
       end
 
+      if system("(rpm -q ipa-server || rpm -q freeipa-server) &>/dev/null")
+        raise Puppet::ParseError,
+            "the pulp node can't be installed on a machine with IPA"
+      end
 
       unless system("subscription-manager identity | grep identity")
         raise Puppet::ParseError,
