@@ -46,6 +46,32 @@ describe 'apache::mod::php', :type => :class do
         :content => "LoadModule php5_module modules/libphp5.so\n"
       ) }
     end
+    context "with alternative package name" do let :pre_condition do
+        'class { "apache": }'
+      end
+      let :params do
+        { :package_name => 'php54'}
+      end
+      it { should contain_package("php54") }
+    end
+    context "with alternative path" do let :pre_condition do
+        'class { "apache": }'
+      end
+      let :params do
+        { :path => 'alternative-path'}
+      end
+      it { should contain_file("php5.load").with(
+        :content => "LoadModule php5_module alternative-path\n"
+      ) }
+    end
+    context "with alternative extensions" do let :pre_condition do
+        'class { "apache": }'
+      end
+      let :params do
+        { :extensions => ['.php','.php5']}
+      end
+      it { should contain_file("php5.conf").with_content(/AddHandler php5-script .php .php5\n/) }
+    end
     context "with specific version" do
       let :pre_condition do
         'class { "apache": }'

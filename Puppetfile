@@ -5,7 +5,8 @@ forge 'http://forge.puppetlabs.com'
 #################################################################
 
 # Dependencies
-mod 'puppetlabs/postgresql', :git => 'https://github.com/puppetlabs/puppetlabs-postgresql'
+mod 'puppetlabs/postgresql', :git => 'https://github.com/puppetlabs/puppetlabs-postgresql',
+ 			     :ref => '4345749a71b734c12a746c5cf9e358797ddb0a1a'
 mod 'puppetlabs/mysql', :git => 'https://github.com/puppetlabs/puppetlabs-mysql', :ref => '2.2.0'
 mod 'puppetlabs/firewall', :git => 'https://github.com/puppetlabs/puppetlabs-firewall', :ref => '1.0.0'
 mod 'theforeman/concat_native', :git => 'https://github.com/theforeman/puppet-concat'
