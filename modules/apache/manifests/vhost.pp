@@ -70,16 +70,6 @@
 #    docroot => '/path/to/docroot',
 #  }
 #  apache::vhost { 'site.name.fqdn':
-#    port          => '80',
-#    rewrites => [
-#      {
-#        comment       => "redirect non-SSL traffic to SSL site",
-#        rewrite_cond => ['%{HTTPS} off'],
-#        rewrite_rule => ['(.*) https://%{HTTPS_HOST}%{REQUEST_URI}']
-#      }
-#    ]
-#  }
-#  apache::vhost { 'site.name.fqdn':
 #    port            => '80',
 #    docroot         => '/path/to/other_docroot',
 #    custom_fragment => template("${module_name}/my_fragment.erb"),
@@ -94,6 +84,7 @@ define apache::vhost(
     $add_listen                  = true,
     $docroot_owner               = 'root',
     $docroot_group               = $::apache::params::root_group,
+    $docroot_mode                = undef,
     $serveradmin                 = undef,
     $ssl                         = false,
     $ssl_cert                    = $::apache::default_ssl_cert,
@@ -169,11 +160,13 @@ define apache::vhost(
     $wsgi_script_aliases         = undef,
     $custom_fragment             = undef,
     $itk                         = undef,
+    $action                      = undef,
     $fastcgi_server              = undef,
     $fastcgi_socket              = undef,
     $fastcgi_dir                 = undef,
     $additional_includes         = [],
-    $apache_version              = $::apache::apache_version
+    $apache_version              = $::apache::apache_version,
+    $suexec_user_group           = undef,
   ) {
   # The base class must be included first because it is used by parameter defaults
   if ! defined(Class['apache']) {
@@ -197,6 +190,11 @@ define apache::vhost(
   if $rewrites {
     validate_array($rewrites)
     validate_hash($rewrites[0])
+  }
+
+  if $suexec_user_group {
+    validate_re($suexec_user_group, '^\w+ \w+$',
+    "${suexec_user_group} is not supported for suexec_user_group.  Must be 'user group'.")
   }
 
   # Deprecated backwards-compatibility
@@ -250,6 +248,14 @@ define apache::vhost(
     include ::apache::mod::vhost_alias
   }
 
+  if $wsgi_daemon_process {
+    include ::apache::mod::wsgi
+  }
+
+  if $suexec_user_group {
+    include ::apache::mod::suexec
+  }
+
   # This ensures that the docroot exists
   # But enables it to be specified across multiple vhost resources
   if ! defined(File[$docroot]) {
@@ -257,6 +263,7 @@ define apache::vhost(
       ensure  => directory,
       owner   => $docroot_owner,
       group   => $docroot_group,
+      mode    => $docroot_mode,
       require => Package['httpd'],
     }
   }
@@ -343,7 +350,7 @@ define apache::vhost(
     }
   }
   if ! $ip_based {
-    if ! defined(Apache::Namevirtualhost[$nvh_addr_port]) and $ensure == 'present' {
+    if ! defined(Apache::Namevirtualhost[$nvh_addr_port]) and $ensure == 'present' and $apache_version < 2.4 {
       ::apache::namevirtualhost { $nvh_addr_port: }
     }
   }

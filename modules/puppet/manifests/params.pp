@@ -12,14 +12,18 @@ class puppet::params {
   $listen              = false
   $pluginsync          = true
   $splay               = false
+  $splaylimit          = '1800'
   $runinterval         = '1800'
   $runmode             = 'service'
   $cron_cmd            = undef
   $agent_noop          = false
   $show_diff           = false
   $configtimeout       = 120
+  $usecacheonfailure   = true
   $ca_server           = ''
+  $dns_alt_names       = []
   $classfile           = '$vardir/classes.txt'
+  $hiera_config        = '$confdir/hiera.yaml'
 
   # Need your own config templates? Specify here:
   $main_template   = 'puppet/puppet.conf.erb'
@@ -67,8 +71,10 @@ class puppet::params {
   # Static environments config, ignore if the git_repo or dynamic_environments is 'true'
   # What environments do we have
   $server_environments         = ['development', 'production']
-  # Dynamic environments config
+  # Dynamic environments config (deprecated when directory_environments is true)
   $server_dynamic_environments = false
+  # Directory environments config
+  $server_directory_environments = versioncmp($::puppetversion, '3.6.0') >= 0
   # Owner of the environments dir: for cases external service needs write
   # access to manage it.
   $server_environments_owner   = $user
@@ -79,7 +85,7 @@ class puppet::params {
   # Where remains our manifests dir
   $server_manifest_path        = "${dir}/manifests"
   # Modules in this directory would be shared across all environments
-  $server_common_modules_path  = ["${server_envs_dir}/common", '/usr/share/puppet/modules']
+  $server_common_modules_path  = ["${server_envs_dir}/common", "${dir}/modules", '/usr/share/puppet/modules']
 
   # Dynamic environments config, ignore if the git_repo is 'false'
   # Path to the repository
