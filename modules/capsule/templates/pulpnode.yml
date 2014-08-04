@@ -1,0 +1,4 @@
+---
+:enabled: true
+:pulp_url: https://localhost/pulp
+
