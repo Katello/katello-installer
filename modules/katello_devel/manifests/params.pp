@@ -16,4 +16,8 @@ class katello_devel::params () inherits ::katello::params {
   $use_rvm = true
   $rvm_ruby = '1.9.3-p448'
 
+  $initial_organization = 'Default Organization'
+  $initial_location = 'Default Location'
+  $admin_password = 'changeme'
+
 }

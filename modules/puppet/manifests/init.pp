@@ -27,9 +27,19 @@
 #                                  to sleep before each run.
 #                                  type:boolean
 #
+# $splaylimit::                    The maximum time to delay before runs.
+#                                  Defaults to being the same as the run interval.
+#                                  This setting can be a time interval in seconds
+#                                  (30 or 30s), minutes (30m), hours (6h), days (2d),
+#                                  or years (5y).
+#
 # $runinterval::                   Set up the interval (in seconds) to run
 #                                  the puppet agent.
 #                                  type:integer
+#
+# $usecacheonfailure::             Switch to enable use of cached catalog on
+#                                  failure of run.
+#                                  type: boolean
 #
 # $runmode::                       Select the mode to setup the puppet agent.
 #                                  Can be either 'cron', 'service', or 'none'.
@@ -48,9 +58,17 @@
 #                                  a string with the location of the ca_server
 #                                  or 'false'.
 #
+# $dns_alt_names::                 Use additional DNS names when generating a
+#                                  certificate.  Defaults to an empty Array.
+#                                  type:array
+#
 # $classfile::                     The file in which puppet agent stores a list
 #                                  of the classes associated with the retrieved
 #                                  configuration.
+#
+# $hiera_config::                  The hiera configuration file.
+#                                  Defaults to '$confdir/hiera.yaml'.
+#                                  type:string
 #
 # $auth_template::                 Use a custom template for the auth
 #                                  configuration.
@@ -114,6 +132,12 @@
 #                                  type:boolean
 #
 # $server_dynamic_environments::   Use $environment in the modulepath
+#                                  Deprecated when $server_directory_environments is true,
+#                                  set $server_environments to [] instead.
+#                                  type:boolean
+#
+# $server_directory_environments:: Enable directory environments, defaulting to true
+#                                  with Puppet 3.6.0 or higher
 #                                  type:boolean
 #
 # $server_environments::           Environments to setup (creates directories).
@@ -240,79 +264,85 @@
 #   }
 #
 class puppet (
-  $version                     = $puppet::params::version,
-  $user                        = $puppet::params::user,
-  $group                       = $puppet::params::group,
-  $dir                         = $puppet::params::dir,
-  $port                        = $puppet::params::port,
-  $listen                      = $puppet::params::listen,
-  $pluginsync                  = $puppet::params::pluginsync,
-  $splay                       = $puppet::params::splay,
-  $runinterval                 = $puppet::params::runinterval,
-  $runmode                     = $puppet::params::runmode,
-  $cron_cmd                    = $puppet::params::cron_cmd,
-  $agent_noop                  = $puppet::params::agent_noop,
-  $show_diff                   = $puppet::params::show_diff,
-  $configtimeout               = $puppet::params::configtimeout,
-  $ca_server                   = $puppet::params::ca_server,
-  $classfile                   = $puppet::params::classfile,
-  $main_template               = $puppet::params::main_template,
-  $agent_template              = $puppet::params::agent_template,
-  $auth_template               = $puppet::params::auth_template,
-  $nsauth_template             = $puppet::params::nsauth_template,
-  $allow_any_crl_auth          = $puppet::params::allow_any_crl_auth,
-  $client_package              = $puppet::params::client_package,
-  $agent                       = $puppet::params::agent,
-  $puppetmaster                = $puppet::params::puppetmaster,
-  $server                      = $puppet::params::server,
-  $server_user                 = $puppet::params::user,
-  $server_group                = $puppet::params::group,
-  $server_dir                  = $puppet::params::dir,
-  $server_port                 = $puppet::params::port,
-  $server_vardir               = $puppet::params::server_vardir,
-  $server_ca                   = $puppet::params::server_ca,
-  $server_reports              = $puppet::params::server_reports,
-  $server_passenger            = $puppet::params::server_passenger,
-  $server_service_fallback     = $puppet::params::server_service_fallback,
-  $server_passenger_max_pool   = $puppet::params::server_passenger_max_pool,
-  $server_httpd_service        = $puppet::params::server_httpd_service,
-  $server_external_nodes       = $puppet::params::server_external_nodes,
-  $server_template             = $puppet::params::server_template,
-  $server_config_version       = $puppet::params::server_config_version,
-  $server_git_repo             = $puppet::params::server_git_repo,
-  $server_dynamic_environments = $puppet::params::server_dynamic_environments,
-  $server_environments         = $puppet::params::server_environments,
-  $server_environments_owner   = $puppet::params::server_environments_owner,
-  $server_environments_group   = $puppet::params::server_environments_group,
-  $server_environments_mode    = $puppet::params::server_environments_mode,
-  $server_envs_dir             = $puppet::params::server_envs_dir,
-  $server_manifest_path        = $puppet::params::server_manifest_path,
-  $server_common_modules_path  = $puppet::params::server_common_modules_path,
-  $server_git_repo_path        = $puppet::params::server_git_repo_path,
-  $server_git_branch_map       = $puppet::params::server_git_branch_map,
-  $server_post_hook_content    = $puppet::params::server_post_hook_content,
-  $server_post_hook_name       = $puppet::params::server_post_hook_name,
-  $server_storeconfigs_backend = $puppet::params::server_storeconfigs_backend,
-  $server_app_root             = $puppet::params::server_app_root,
-  $server_ssl_dir              = $puppet::params::server_ssl_dir,
-  $server_package              = $puppet::params::server_package,
-  $server_certname             = $puppet::params::server_certname,
-  $server_enc_api              = $puppet::params::server_enc_api,
-  $server_report_api           = $puppet::params::server_report_api,
-  $server_ca_proxy             = $puppet::params::server_ca_proxy,
-  $server_strict_variables     = $puppet::params::server_strict_variables,
-  $server_foreman_url          = $foreman::params::foreman_url,
-  $server_foreman_ssl_ca       = $foreman::params::client_ssl_ca,
-  $server_foreman_ssl_cert     = $foreman::params::client_ssl_cert,
-  $server_foreman_ssl_key      = $foreman::params::client_ssl_key,
-  $server_facts                = $foreman::params::facts,
-  $server_puppet_home          = $foreman::params::puppet_home,
-  $server_puppet_basedir       = $foreman::params::puppet_basedir
+  $version                       = $puppet::params::version,
+  $user                          = $puppet::params::user,
+  $group                         = $puppet::params::group,
+  $dir                           = $puppet::params::dir,
+  $port                          = $puppet::params::port,
+  $listen                        = $puppet::params::listen,
+  $pluginsync                    = $puppet::params::pluginsync,
+  $splay                         = $puppet::params::splay,
+  $splaylimit                    = $puppet::params::splaylimit,
+  $runinterval                   = $puppet::params::runinterval,
+  $usecacheonfailure             = $puppet::params::usecacheonfailure,
+  $runmode                       = $puppet::params::runmode,
+  $cron_cmd                      = $puppet::params::cron_cmd,
+  $agent_noop                    = $puppet::params::agent_noop,
+  $show_diff                     = $puppet::params::show_diff,
+  $configtimeout                 = $puppet::params::configtimeout,
+  $ca_server                     = $puppet::params::ca_server,
+  $dns_alt_names                 = $puppet::params::dns_alt_names,
+  $classfile                     = $puppet::params::classfile,
+  $hiera_config                  = $puppet::params::hiera_config,
+  $main_template                 = $puppet::params::main_template,
+  $agent_template                = $puppet::params::agent_template,
+  $auth_template                 = $puppet::params::auth_template,
+  $nsauth_template               = $puppet::params::nsauth_template,
+  $allow_any_crl_auth            = $puppet::params::allow_any_crl_auth,
+  $client_package                = $puppet::params::client_package,
+  $agent                         = $puppet::params::agent,
+  $puppetmaster                  = $puppet::params::puppetmaster,
+  $server                        = $puppet::params::server,
+  $server_user                   = $puppet::params::user,
+  $server_group                  = $puppet::params::group,
+  $server_dir                    = $puppet::params::dir,
+  $server_port                   = $puppet::params::port,
+  $server_vardir                 = $puppet::params::server_vardir,
+  $server_ca                     = $puppet::params::server_ca,
+  $server_reports                = $puppet::params::server_reports,
+  $server_passenger              = $puppet::params::server_passenger,
+  $server_service_fallback       = $puppet::params::server_service_fallback,
+  $server_passenger_max_pool     = $puppet::params::server_passenger_max_pool,
+  $server_httpd_service          = $puppet::params::server_httpd_service,
+  $server_external_nodes         = $puppet::params::server_external_nodes,
+  $server_template               = $puppet::params::server_template,
+  $server_config_version         = $puppet::params::server_config_version,
+  $server_git_repo               = $puppet::params::server_git_repo,
+  $server_dynamic_environments   = $puppet::params::server_dynamic_environments,
+  $server_directory_environments = $puppet::params::server_directory_environments,
+  $server_environments           = $puppet::params::server_environments,
+  $server_environments_owner     = $puppet::params::server_environments_owner,
+  $server_environments_group     = $puppet::params::server_environments_group,
+  $server_environments_mode      = $puppet::params::server_environments_mode,
+  $server_envs_dir               = $puppet::params::server_envs_dir,
+  $server_manifest_path          = $puppet::params::server_manifest_path,
+  $server_common_modules_path    = $puppet::params::server_common_modules_path,
+  $server_git_repo_path          = $puppet::params::server_git_repo_path,
+  $server_git_branch_map         = $puppet::params::server_git_branch_map,
+  $server_post_hook_content      = $puppet::params::server_post_hook_content,
+  $server_post_hook_name         = $puppet::params::server_post_hook_name,
+  $server_storeconfigs_backend   = $puppet::params::server_storeconfigs_backend,
+  $server_app_root               = $puppet::params::server_app_root,
+  $server_ssl_dir                = $puppet::params::server_ssl_dir,
+  $server_package                = $puppet::params::server_package,
+  $server_certname               = $puppet::params::server_certname,
+  $server_enc_api                = $puppet::params::server_enc_api,
+  $server_report_api             = $puppet::params::server_report_api,
+  $server_ca_proxy               = $puppet::params::server_ca_proxy,
+  $server_strict_variables       = $puppet::params::server_strict_variables,
+  $server_foreman_url            = $foreman::params::foreman_url,
+  $server_foreman_ssl_ca         = $foreman::params::client_ssl_ca,
+  $server_foreman_ssl_cert       = $foreman::params::client_ssl_cert,
+  $server_foreman_ssl_key        = $foreman::params::client_ssl_key,
+  $server_facts                  = $foreman::params::facts,
+  $server_puppet_home            = $foreman::params::puppet_home,
+  $server_puppet_basedir         = $foreman::params::puppet_basedir
 ) inherits puppet::params {
 
   validate_bool($listen)
   validate_bool($pluginsync)
   validate_bool($splay)
+  validate_bool($usecacheonfailure)
   validate_bool($agent_noop)
   validate_bool($agent)
   validate_bool($server)
@@ -325,8 +355,11 @@ class puppet (
   validate_bool($server_strict_variables)
 
   validate_string($ca_server)
+  validate_string($hiera_config)
   validate_string($server_external_nodes)
   validate_string($server_ca_proxy)
+
+  validate_array($dns_alt_names)
 
   include ::puppet::config
   Class['puppet::config'] -> Class['puppet']

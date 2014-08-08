@@ -19,27 +19,52 @@ describe 'foreman::puppetmaster' do
         })
 
         should contain_file('/usr/lib/ruby/site_ruby/1.8/puppet/reports/foreman.rb').with({
-          :content => %r{api/reports},
           :mode    => '0644',
           :owner   => 'root',
           :group   => 'root',
+          :source  => 'puppet:///modules/foreman/foreman-report_v2.rb',
           :require => 'Exec[Create Puppet Reports dir]',
         })
       end
 
       it 'should set up enc' do
-        should contain_class('foreman::config::enc').with({
-          :foreman_url    => "https://#{facts[:fqdn]}",
-          :facts          => true,
-          :puppet_home    => '/var/lib/puppet',
-          :ssl_ca         => '/var/lib/puppet/ssl/certs/ca.pem',
-          :ssl_cert       => "/var/lib/puppet/ssl/certs/#{facts[:fqdn]}.pem",
-          :ssl_key        => "/var/lib/puppet/ssl/private_keys/#{facts[:fqdn]}.pem",
+        should contain_file('/etc/puppet/node.rb').with({
+          :mode   => '0550',
+          :owner  => 'puppet',
+          :group  => 'puppet',
+          :source => 'puppet:///modules/foreman/external_node_v2.rb',
         })
       end
 
       it 'should install json package' do
         should contain_package('rubygem-json').with_ensure('installed')
+      end
+
+      it 'should create /etc/foreman' do
+        should contain_file('/etc/foreman').
+          with_ensure('directory').
+          with({
+            :mode    => '0755',
+            :owner   => 'root',
+            :group   => 'root',
+          })
+      end
+
+      it 'should create puppet.yaml' do
+        should contain_file('/etc/foreman/puppet.yaml').
+          with_content(/^:url: "https:\/\/#{facts[:fqdn]}"$/).
+          with_content(/^:ssl_ca: "\/var\/lib\/puppet\/ssl\/certs\/ca.pem"$/).
+          with_content(/^:ssl_cert: "\/var\/lib\/puppet\/ssl\/certs\/#{facts[:fqdn]}.pem"$/).
+          with_content(/^:ssl_key: "\/var\/lib\/puppet\/ssl\/private_keys\/#{facts[:fqdn]}.pem"$/).
+          with_content(/^:user: ""$/).
+          with_content(/^:password: ""$/).
+          with_content(/^:puppetdir: "\/var\/lib\/puppet"$/).
+          with_content(/^:facts: true$/).
+          with({
+            :mode  => '0640',
+            :owner => 'root',
+            :group => 'puppet',
+          })
       end
     end
 
@@ -61,7 +86,7 @@ describe 'foreman::puppetmaster' do
       end
 
       it 'should not include enc' do
-        should_not contain_class('foreman::config::enc')
+        should_not contain_file('/etc/puppet/node.rb')
       end
     end
   end
@@ -84,10 +109,10 @@ describe 'foreman::puppetmaster' do
         })
 
         should contain_file('/usr/share/ruby/vendor_ruby/puppet/reports/foreman.rb').with({
-          :content => %r{api/reports},
           :mode    => '0644',
           :owner   => 'root',
           :group   => 'root',
+          :source  => 'puppet:///modules/foreman/foreman-report_v2.rb',
           :require => 'Exec[Create Puppet Reports dir]',
         })
       end
@@ -114,10 +139,10 @@ describe 'foreman::puppetmaster' do
         })
 
         should contain_file('/usr/share/ruby/vendor_ruby/puppet/reports/foreman.rb').with({
-          :content => %r{api/reports},
           :mode    => '0644',
           :owner   => 'root',
           :group   => 'root',
+          :source  => 'puppet:///modules/foreman/foreman-report_v2.rb',
           :require => 'Exec[Create Puppet Reports dir]',
         })
       end
@@ -145,10 +170,10 @@ describe 'foreman::puppetmaster' do
         })
 
         should contain_file('/usr/lib/ruby/site_ruby/1.8/puppet/reports/foreman.rb').with({
-          :content => %r{api/reports},
           :mode    => '0644',
           :owner   => 'root',
           :group   => 'root',
+          :source  => 'puppet:///modules/foreman/foreman-report_v2.rb',
           :require => 'Exec[Create Puppet Reports dir]',
         })
       end
@@ -175,10 +200,10 @@ describe 'foreman::puppetmaster' do
         })
 
         should contain_file('/usr/lib/ruby/vendor_ruby/puppet/reports/foreman.rb').with({
-          :content => %r{api/reports},
           :mode    => '0644',
           :owner   => 'root',
           :group   => 'root',
+          :source  => 'puppet:///modules/foreman/foreman-report_v2.rb',
           :require => 'Exec[Create Puppet Reports dir]',
         })
       end

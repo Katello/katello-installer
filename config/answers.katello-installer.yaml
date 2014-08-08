@@ -7,6 +7,8 @@ katello: true
 foreman: 
   organizations_enabled: true
   locations_enabled: true
+  initial_organization: Default Organization
+  initial_location: Default Location
   custom_repo: true
   configure_epel_repo: false
   configure_scl_repo: false

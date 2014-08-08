@@ -40,6 +40,9 @@ Puppet::Type.newtype(:vcsrepo) do
   feature :depth,
           "The provider can do shallow clones"
 
+  feature :p4config,
+          "The provider understands Perforce Configuration"
+
   ensurable do
     attr_accessor :latest
 
@@ -98,10 +101,14 @@ Puppet::Type.newtype(:vcsrepo) do
       if prov
         if prov.working_copy_exists?
           if @resource.value(:force)
-            notice "Deleting current repository before recloning"
-            prov.destroy
-            notice "Create repository from latest"
-            prov.create
+            if noop
+              notice "Noop Mode - Would have deleted repository and re-created from latest"
+            else
+              notice "Deleting current repository before recloning"
+              prov.destroy
+              notice "Create repository from latest"
+              prov.create
+            end
           end
           (@should.include?(:latest) && prov.latest?) ? :latest : :present
         elsif prov.class.feature?(:bare_repositories) and prov.bare_exists?
@@ -204,8 +211,11 @@ Puppet::Type.newtype(:vcsrepo) do
     desc "The value to be used to do a shallow clone."
   end
 
+  newparam :p4config, :required_features => [:p4config] do
+    desc "The Perforce P4CONFIG environment."
+  end
+
   autorequire(:package) do
     ['git', 'git-core']
   end
-
 end

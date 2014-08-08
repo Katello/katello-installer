@@ -10,6 +10,7 @@ class foreman_proxy::params {
   # if set to true, no repo will be added by this module, letting you to
   # set it to some custom location.
   $custom_repo = false
+  $version     = 'present'
 
   # variables
   $port = '8443'
@@ -37,7 +38,7 @@ class foreman_proxy::params {
   # Add a file to /etc/sudoers.d (true) or uses augeas (false)
   case $::operatingsystem {
     redhat,centos,Scientific: {
-      if $::operatingsystemrelease >= 6 {
+      if versioncmp($::operatingsystemrelease, '6.0') >= 0 {
         $use_sudoersd = true
       } else {
         $use_sudoersd = false
@@ -47,6 +48,10 @@ class foreman_proxy::params {
       $use_sudoersd = true
     }
   }
+
+  # puppet settings
+  $puppet_url = "https://${::fqdn}:8140"
+  $puppet_use_environment_api = undef
 
   # puppetca settings
   $puppetca          = true
@@ -181,5 +186,17 @@ class foreman_proxy::params {
   $foreman_api_package = $::osfamily ? {
     Debian  => 'ruby-apipie-bindings',
     default => 'rubygem-apipie-bindings',
+  }
+
+  case $::osfamily {
+    'RedHat': {
+      $plugin_prefix = 'rubygem-smart_proxy_'
+    }
+    'Debian': {
+      $plugin_prefix = 'ruby-smart-proxy-'
+    }
+    default: {
+      $plugin_prefix = 'smart_proxy_'
+    }
   }
 }
