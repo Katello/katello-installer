@@ -12,19 +12,21 @@ test_name "Installing Puppet and vcsrepo module" do
   end
 
   step 'Ensure we can install our module' do
-    # We ask the host to interpolate it's distmoduledir because we don't
-    # actually know it on Windows until we've let it redirect us (depending
-    # on whether we're running as a 32/64 bit process on 32/64 bit Windows
-    moduledir = on(host, "echo #{host['distmoduledir']}").stdout.chomp
-    on host, "mkdir -p #{moduledir}"
+    hosts.each do |host|
+      # We ask the host to interpolate it's distmoduledir because we don't
+      # actually know it on Windows until we've let it redirect us (depending
+      # on whether we're running as a 32/64 bit process on 32/64 bit Windows
+      moduledir = on(host, "echo #{host['distmoduledir']}").stdout.chomp
+      on host, "mkdir -p #{moduledir}"
+    end
   end
 
   step 'install module' do
     hosts.each do |host|
       proj_root = File.expand_path(File.join(File.dirname(__FILE__),'..','..'))
 
-      # This require beaker 1.12.2 I believe
-      puppet_module_install(:source => proj_root, :module_name => 'vcsrepo')
+      # This require beaker 1.15
+      copy_module_to(host, :source => proj_root, :module_name => 'vcsrepo')
 
       case fact_on(host, 'osfamily')
       when 'RedHat'

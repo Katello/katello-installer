@@ -141,9 +141,15 @@ class foreman::params {
         }
       }
     }
-    'ArchLinux': {
+    /(ArchLinux|Suse)/: {
       # Only the agent classes (cron / service) are supported for now, which
       # doesn't require any OS-specific params
+    }
+    windows: {
+      $puppet_basedir = undef
+      $yumcode = undef
+      $passenger_scl = undef
+      $plugin_prefix = undef
     }
     default: {
       fail("${::hostname}: This module does not support osfamily ${::osfamily}")
@@ -178,9 +184,18 @@ class foreman::params {
   $admin_last_name = undef
   $admin_email = undef
 
+  # Initial taxonomies
+  $initial_organization = undef
+  $initial_location = undef
+
   $ipa_authentication = false
   $http_keytab = '/etc/httpd/conf/http.keytab'
   $pam_service = 'foreman'
   $configure_ipa_repo = false
   $ipa_manage_sssd = true
+
+  # Websockets
+  $websockets_encrypt = true
+  $websockets_ssl_key = $server_ssl_key
+  $websockets_ssl_cert = $server_ssl_cert
 }

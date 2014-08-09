@@ -76,16 +76,3 @@ common:
     <%- end -%>
     provider_url: https://<%= scope.lookupvar('fqdn') -%>/signo
     logout_path: /logout
-
-  database:
-    username:
-    password:
-
-<%# bug #7991 in puppet 2.6 - need to explicitly load custom functions %>
-<% Puppet::Parser::Functions::function('katello_passencrypt') %>
-
-production:
-  database:
-    username: <%= scope.lookupvar("katello::params::db_user") %>
-    password: <%= scope.function_katello_passencrypt([scope.lookupvar("katello::params::db_pass")]) %>
-    database: <%= scope.lookupvar("katello::params::db_name") %>

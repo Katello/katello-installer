@@ -240,7 +240,9 @@ Resources:
 * [postgresql::server::database](#resource-postgresqlserverdatabase)
 * [postgresql::server::database_grant](#resource-postgresqlserverdatabasegrant)
 * [postgresql::server::pg_hba_rule](#resource-postgresqlserverpghbarule)
+* [postgresql::server::pg_ident_rule](#resource-postgresqlserverpgidentrule)
 * [postgresql::server::role](#resource-postgresqlserverrole)
+* [postgresql::server::schema](#resource-postgresqlserverschema)
 * [postgresql::server::table_grant](#resource-postgresqlservertablegrant)
 * [postgresql::server::tablespace](#resource-postgresqlservertablespace)
 * [postgresql::validate_db_connection](#resource-postgresqlvalidatedbconnection)
@@ -326,6 +328,9 @@ Path to the `psql` command.
 ####`pg_hba_conf_path`
 Path to your `pg\_hba.conf` file.
 
+####`pg_ident_conf_path`
+Path to your `pg\_ident.conf` file.
+
 ####`postgresql_conf_path`
 Path to your `postgresql.conf` file.
 
@@ -379,9 +384,6 @@ If `true` this will setup the official PostgreSQL repositories on your host. Def
 
 ###Class: postgresql::server
 The following list are options that you can set in the `config_hash` parameter of `postgresql::server`.
-
-####`ensure`
-This value default to `present`. When set to `absent` it will remove all packages, configuration and data so use this with extreme caution.
 
 ####`postgres_password`
 This value defaults to `undef`, meaning the super user account in the postgres database is a user called `postgres` and this account does not have a password. If you provide this setting, the module will set the password for the `postgres` user to your specified value.
@@ -437,6 +439,9 @@ Path to the `psql` command.
 ####`pg_hba_conf_path`
 Path to your `pg\_hba.conf` file.
 
+####`pg_ident_conf_path`
+Path to your `pg\_ident.conf` file.
+
 ####`postgresql_conf_path`
 Path to your `postgresql.conf` file.
 
@@ -471,6 +476,8 @@ This value defaults to `false`. Many distros ship with a fairly restrictive fire
 ####`manage_pg_hba_conf`
 This value defaults to `true`. Whether or not manage the pg_hba.conf. If set to `true`, puppet will overwrite this file. If set to `false`, puppet will not modify the file.
 
+####`manage_pg_ident_conf`
+This value defaults to `true`. Whether or not manage the pg_ident.conf. If set to `true`, puppet will overwrite this file. If set to `false`, puppet will not modify the file.
 
 ###Class: postgresql::client
 
@@ -496,7 +503,8 @@ The ensure parameter passed on to postgresql contrib package resource.
 Installs the postgresql postgis packages.
 
 ###Class: postgresql::lib::devel
-Installs the packages containing the development libraries for PostgreSQL.
+Installs the packages containing the development libraries for PostgreSQL and
+symlinks pg_config into `/usr/bin` (if not in `/usr/bin` or `/usr/local/bin`).
 
 ####`package_ensure`
 Override for the `ensure` parameter during package installation. Defaults to `present`.
@@ -504,6 +512,10 @@ Override for the `ensure` parameter during package installation. Defaults to `pr
 ####`package_name`
 Overrides the default package name for the distribution you are installing to. Defaults to `postgresql-devel` or `postgresql<version>-devel` depending on your distro.
 
+####`link_pg_config`
+By default, if the bin directory used by the PostgreSQL package is not `/usr/bin` or `/usr/local/bin`,
+this class will symlink `pg_config` from the package's bin dir into `/usr/bin`. Set `link_pg_config` to
+false to disable this behavior.
 
 ###Class: postgresql::lib::java
 This class installs postgresql bindings for Java (JDBC). Alter the following parameters if you have a custom version you would like to install (Note: don't forget to make sure to add any necessary yum or apt repositories if specifying a custom version):
@@ -670,6 +682,24 @@ This would create a ruleset in `pg_hba.conf` similar to:
     # Order: 150
     host  app  app  200.1.2.0/24  md5
 
+###Resource: postgresql::server::pg\_ident\_rule
+This defined type allows you to create user name maps for `pg_ident.conf`. For more details see the [PostgreSQL documentation](http://www.postgresql.org/docs/9.4/static/auth-username-maps.html).
+
+For example:
+
+    postgresql::server::pg_ident_rule{ 'Map the SSL certificate of the backup server as a replication user':
+      map_name          => 'sslrepli',
+      system_username   => 'repli1.example.com',
+      database_username => 'replication',
+    }
+
+This would create a user name map in `pg_ident.conf` similar to:
+
+    # Rule Name: Map the SSL certificate of the backup server as a replication user
+    # Description: none
+    # Order: 150
+    sslrepli	repli1.example.com	replication
+
 ####`namevar`
 A unique identifier or short description for this rule. The namevar doesn't provide any functional usage, but it is stored in the comments of the produced `pg_hba.conf` so the originating resource can be identified.
 
@@ -738,6 +768,29 @@ Specifies how many concurrent connections the role can make. Defaults to `-1` me
 ####`username`
 The username of the role to create, defaults to `namevar`.
 
+###Resource: postgresql::server::schema
+This defined type can be used to create a schema. For example:
+
+    postgresql::server::schema { 'isolated':
+      owner => 'jane',
+      db    => 'janedb',
+    }
+
+It will create the schema `jane` in the database `janedb` if neccessary,
+assigning the user `jane` ownership permissions.
+
+####`namevar`
+The schema name to create.
+
+###`db`
+Name of the database in which to create this schema. This must be passed.
+
+####`owner`
+The default owner of the schema.
+
+####`schema`
+Name of the schma. Defaults to `namevar`.
+
 
 ###Resource: postgresql::server::table\_grant
 This defined type manages grant based access privileges for users. Consult the PostgreSQL documentation for `grant` for more information.
@@ -767,7 +820,7 @@ OS user for running `psql`. Defaults to the default user for the module, usually
 ###Resource: postgresql::server::tablespace
 This defined type can be used to create a tablespace. For example:
 
-    postgresql::tablespace { 'tablespace1':
+    postgresql::server::tablespace { 'tablespace1':
       location => '/srv/space1',
     }
 
@@ -856,6 +909,11 @@ Current it is only actively tested with the following operating systems:
 
 Although patches are welcome for making it work with other OS distros, it is considered best effort.
 
+### Postgis support
+
+Postgis is currently considered an unsupported feature as it doesn't work on
+all platforms correctly.
+
 ### All versions of RHEL/Centos
 
 If you have selinux enabled you must add any custom ports you use to the postgresql_port_t context.  You can do this as follows:
@@ -863,12 +921,6 @@ If you have selinux enabled you must add any custom ports you use to the postgre
 ```
 # semanage port -a -t postgresql_port_t -p tcp $customport
 ```
-
-### RHEL7
-
-Currently the following features are unsupported:
-
-* Postgis (There is no existing postgis package for RHEL7, and it's not in EPEL7 yet.)
 
 Development
 ------------

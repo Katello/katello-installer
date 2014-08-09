@@ -7,7 +7,8 @@
 # $unattended::             Should foreman manage host provisioning as well
 #                           type:boolean
 #
-# $authentication::         Enable users authentication (default user:admin pw:changeme)
+# $authentication::         Enable user authentication. Initial credentials are set using admin_username
+#                           and admin_password.
 #                           type:boolean
 #
 # $passenger::              Configure foreman via apache and passenger
@@ -121,6 +122,10 @@
 #
 # $admin_email::            E-mail address of the initial admin user
 #
+# $initial_organization::   Name of an initial organization
+#
+# $initial_location::       Name of an initial location
+#
 # $ipa_authentication::     Enable configuration for external authentication via IPA
 #                           type:boolean
 #
@@ -135,6 +140,13 @@
 # $ipa_manage_sssd::        If ipa_authentication is true, should the installer manage SSSD? You can disable it
 #                           if you use another module for SSSD configuration
 #                           type:boolean
+#
+# $websockets_encrypt::     Whether to encrypt websocket connections
+#                           type:boolean
+#
+#
+# $websockets_ssl_key::     SSL key file to use when encrypting websocket connections
+# $websockets_ssl_cert::    SSL certificate file to use when encrypting websocket connections
 #
 class foreman (
   $foreman_url            = $foreman::params::foreman_url,
@@ -185,11 +197,16 @@ class foreman (
   $admin_first_name       = $foreman::params::admin_first_name,
   $admin_last_name        = $foreman::params::admin_last_name,
   $admin_email            = $foreman::params::admin_email,
+  $initial_organization   = $foreman::params::initial_organization,
+  $initial_location       = $foreman::params::initial_location,
   $ipa_authentication     = $foreman::params::ipa_authentication,
   $http_keytab            = $foreman::params::http_keytab,
   $pam_service            = $foreman::params::pam_service,
   $configure_ipa_repo     = $foreman::params::configure_ipa_repo,
   $ipa_manage_sssd        = $foreman::params::ipa_manage_sssd,
+  $websockets_encrypt     = $foreman::params::websockets_encrypt,
+  $websockets_ssl_key     = $foreman::params::websockets_ssl_key,
+  $websockets_ssl_cert    = $foreman::params::websockets_ssl_cert,
 ) inherits foreman::params {
   if $db_adapter == 'UNSET' {
     $db_adapter_real = $foreman::db_type ? {

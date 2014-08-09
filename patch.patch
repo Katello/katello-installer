@@ -1,0 +1,13 @@
+diff --git a/config/answers.katello-installer.yaml b/config/answers.katello-installer.yaml
+index 8cdc6c7..ab95419 100644
+--- a/config/answers.katello-installer.yaml
++++ b/config/answers.katello-installer.yaml
+@@ -7,6 +7,8 @@ katello: true
+ foreman: 
+   organizations_enabled: true
+   locations_enabled: true
++  initial_organization: Default Organization
++  initial_location: Default Location
+   custom_repo: true
+   configure_epel_repo: false
+   configure_scl_repo: false

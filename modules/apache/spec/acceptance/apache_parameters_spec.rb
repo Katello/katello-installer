@@ -286,10 +286,33 @@ describe 'apache parameters', :unless => UNSUPPORTED_PLATFORMS.include?(fact('os
     end
   end
 
+  describe 'logformats' do
+    describe 'setup' do
+      it 'applies cleanly' do
+        pp = <<-EOS
+          class { 'apache':
+            log_formats => {
+              'vhost_common'   => '%v %h %l %u %t \\\"%r\\\" %>s %b',
+              'vhost_combined' => '%v %h %l %u %t \\\"%r\\\" %>s %b \\\"%{Referer}i\\\" \\\"%{User-agent}i\\\"',
+            }
+          }
+        EOS
+        apply_manifest(pp, :catch_failures => true)
+      end
+    end
+
+    describe file($conf_file) do
+      it { should be_file }
+      it { should contain 'LogFormat "%v %h %l %u %t \"%r\" %>s %b" vhost_common' }
+      it { should contain 'LogFormat "%v %h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"" vhost_combined' }
+    end
+  end
+
+
   describe 'keepalive' do
     describe 'setup' do
       it 'applies cleanly' do
-        pp = "class { 'apache': keepalive => 'On', keepalive_timeout => '30' }"
+        pp = "class { 'apache': keepalive => 'On', keepalive_timeout => '30', max_keepalive_requests => '200' }"
         apply_manifest(pp, :catch_failures => true)
       end
     end
@@ -298,18 +321,41 @@ describe 'apache parameters', :unless => UNSUPPORTED_PLATFORMS.include?(fact('os
       it { should be_file }
       it { should contain 'KeepAlive On' }
       it { should contain 'KeepAliveTimeout 30' }
+      it { should contain 'MaxKeepAliveRequests 200' }
     end
   end
 
   describe 'logging' do
     describe 'setup' do
       it 'applies cleanly' do
-        pp = "class { 'apache': logroot => '/tmp' }"
+        pp = <<-EOS
+          if $::osfamily == 'RedHat' and $::selinux == 'true' {
+            $semanage_package = $::operatingsystemmajrelease ? {
+              '5'     => 'policycoreutils',
+              default => 'policycoreutils-python',
+            }
+
+            package { $semanage_package: ensure => installed }
+            exec { 'set_apache_defaults':
+              command => 'semanage fcontext -a -t httpd_log_t "/apache_spec(/.*)?"',
+              path    => '/bin:/usr/bin/:/sbin:/usr/sbin',
+              require => Package[$semanage_package],
+            }
+            exec { 'restorecon_apache':
+              command => 'restorecon -Rv /apache_spec',
+              path    => '/bin:/usr/bin/:/sbin:/usr/sbin',
+              before  => Service['httpd'],
+              require => Class['apache'],
+            }
+          }
+          file { '/apache_spec': ensure => directory, }
+          class { 'apache': logroot => '/apache_spec' }
+        EOS
         apply_manifest(pp, :catch_failures => true)
       end
     end
 
-    describe file("/tmp/#{$error_log}") do
+    describe file("/apache_spec/#{$error_log}") do
       it { should be_file }
     end
   end
@@ -317,8 +363,9 @@ describe 'apache parameters', :unless => UNSUPPORTED_PLATFORMS.include?(fact('os
   describe 'ports_file' do
     it 'applys cleanly' do
       pp = <<-EOS
+        file { '/apache_spec': ensure => directory, }
         class { 'apache':
-          ports_file     => '/tmp/ports_file',
+          ports_file     => '/apache_spec/ports_file',
           ip             => '10.1.1.1',
           service_ensure => stopped
         }
@@ -326,7 +373,7 @@ describe 'apache parameters', :unless => UNSUPPORTED_PLATFORMS.include?(fact('os
       apply_manifest(pp, :catch_failures => true)
     end
 
-    describe file('/tmp/ports_file') do
+    describe file('/apache_spec/ports_file') do
       it { should be_file }
       it { should contain 'Listen 10.1.1.1' }
     end

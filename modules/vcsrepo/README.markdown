@@ -13,6 +13,7 @@
     * [CVS](#cvs)
     * [Git](#git)
     * [Mercurial](#mercurial)
+    * [Perforce](#perforce)
     * [Subversion](#subversion)  
 5. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
     * [Type: vcsrepo](#type-vcsrepo)
@@ -53,11 +54,104 @@ To get started with the vcsrepo module, you must simply define the type `vcsrepo
 
 The vcsrepo module works with the following VCSs:
 
+* [Git (git)](#git)*
 * [Bazaar (bzr)](#bazaar)
 * [CVS (cvs)](#cvs)
-* [Git (git)](#git)
 * [Mercurial (hg)](#mercurial)
+* [Perforce (p4)](#perforce)
 * [Subversion (svn)](#subversion)
+
+**Note:** Git is the only VCS provider officially [supported](https://forge.puppetlabs.com/supported) by Puppet Labs.
+
+
+###Git
+
+#####To create a blank repository
+
+To create a blank repository suitable for use as a central repository,
+define `vcsrepo` without `source` or `revision`.
+
+    vcsrepo { "/path/to/repo":
+      ensure   => present,
+      provider => git,
+    }
+
+If you're defining `vcsrepo` for a central or official repository, you may want to make it a bare repository.  You do this by setting `ensure` to 'bare' rather than 'present'.
+
+    vcsrepo { "/path/to/repo":
+      ensure   => bare,
+      provider => git,
+    }
+
+#####To clone/pull a repository
+
+To get the current HEAD on the master branch,
+
+    vcsrepo { "/path/to/repo":
+      ensure   => present,
+      provider => git,
+      source   => "git://example.com/repo.git",
+    }
+
+To get a specific revision or branch (can be a commit SHA, tag, or branch name),
+
+ **SHA**
+
+    vcsrepo { "/path/to/repo":
+      ensure   => present,
+      provider => git,
+      source   => 'git://example.com/repo.git',
+      revision => '0c466b8a5a45f6cd7de82c08df2fb4ce1e920a31',
+    }
+
+**Tag**
+
+    vcsrepo { "/path/to/repo":
+      ensure   => present,
+      provider => git,
+      source   => 'git://example.com/repo.git',
+      revision => '1.1.2rc1',
+    }
+
+**Branch name**
+
+    vcsrepo { "/path/to/repo":
+      ensure   => present,
+      provider => git,
+      source   => 'git://example.com/repo.git',
+      revision => 'development',
+    }
+
+To check out a branch as a specific user,
+
+    vcsrepo { "/path/to/repo":
+      ensure   => present,
+      provider => git,
+      source   => 'git://example.com/repo.git',
+      revision => '0c466b8a5a45f6cd7de82c08df2fb4ce1e920a31',
+      user     => 'someUser',
+    }
+
+To keep the repository at the latest revision (**WARNING:** this will always overwrite local changes to the repository),
+
+    vcsrepo { "/path/to/repo":
+      ensure   => latest,
+      provider => git,
+      source   => 'git://example.com/repo.git',
+      revision => 'master',
+    }
+
+#####Sources that use SSH
+
+When your source uses SSH, such as 'username@server:…', you can manage your SSH keys with Puppet using the [require](http://docs.puppetlabs.com/references/stable/metaparameter.html#require) metaparameter in `vcsrepo` to ensure they are present.
+
+For SSH keys associated with a user, enter the username in the `user` parameter. Doing so will use that user's keys.
+
+    user => 'toto'  # will use toto's $HOME/.ssh setup
+
+#####Further Examples
+
+For more examples using Git, see `examples/git/`.
 
 ###Bazaar
 
@@ -159,95 +253,6 @@ When your source uses SSH, you can manage your SSH keys with Puppet using the [r
 
 For for more examples using CVS, see `examples/cvs/`.
 
-###Git
-
-#####To create a blank repository
-
-To create a blank repository suitable for use as a central repository,
-define `vcsrepo` without `source` or `revision`.
-
-    vcsrepo { "/path/to/repo":
-      ensure   => present,
-      provider => git,
-    }
-
-If you're defining `vcsrepo` for a central or official repository, you may want to make it a bare repository.  You do this by setting `ensure` to 'bare' rather than 'present'.
-
-    vcsrepo { "/path/to/repo":
-      ensure   => bare,
-      provider => git,
-    }
-
-#####To clone/pull a repository
-
-To get the current HEAD on the master branch,
-
-    vcsrepo { "/path/to/repo":
-      ensure   => present,
-      provider => git,
-      source   => "git://example.com/repo.git",
-    }
-
-To get a specific revision or branch (can be a commit SHA, tag, or branch name),
-
- **SHA**
-
-    vcsrepo { "/path/to/repo":
-      ensure   => present,
-      provider => git,
-      source   => 'git://example.com/repo.git',
-      revision => '0c466b8a5a45f6cd7de82c08df2fb4ce1e920a31',
-    }
-
-**Tag**
-
-    vcsrepo { "/path/to/repo":
-      ensure   => present,
-      provider => git,
-      source   => 'git://example.com/repo.git',
-      revision => '1.1.2rc1',
-    }
-
-**Branch name**
-
-    vcsrepo { "/path/to/repo":
-      ensure   => present,
-      provider => git,
-      source   => 'git://example.com/repo.git',
-      revision => 'development',
-    }
-
-To check out a branch as a specific user,
-
-    vcsrepo { "/path/to/repo":
-      ensure   => present,
-      provider => git,
-      source   => 'git://example.com/repo.git',
-      revision => '0c466b8a5a45f6cd7de82c08df2fb4ce1e920a31',
-      user     => 'someUser',
-    }
-
-To keep the repository at the latest revision (**WARNING:** this will always overwrite local changes to the repository),
-
-    vcsrepo { "/path/to/repo":
-      ensure   => latest,
-      provider => git,
-      source   => 'git://example.com/repo.git',
-      revision => 'master',
-    }
-
-#####Sources that use SSH
-
-When your source uses SSH, such as 'username@server:…', you can manage your SSH keys with Puppet using the [require](http://docs.puppetlabs.com/references/stable/metaparameter.html#require) metaparameter in `vcsrepo` to ensure they are present.
-
-For SSH keys associated with a user, enter the username in the `user` parameter. Doing so will use that user's keys.
-
-    user => 'toto'  # will use toto's $HOME/.ssh setup
-
-#####Further Examples
-
-For more examples using Git, see `examples/git/`.
-
 ###Mercurial
 
 #####To create a blank repository
@@ -306,6 +311,16 @@ To specify an SSH identity key,
       identity => "/home/user/.ssh/id_dsa,
     }
 
+To specify a username and password for HTTP Basic authentication,
+
+    vcsrepo { "/path/to/repo":
+      ensure   => latest,
+      provider => hg,
+      source   => 'http://hg.example.com/myrepo',
+      basic_auth_username => 'hgusername',
+      basic_auth_password => 'hgpassword',
+    }
+
 #####Sources that use SSH 
 
 When your source uses SSH, such as 'ssh://...', you can manage your SSH keys with Puppet using the [require](http://docs.puppetlabs.com/references/stable/metaparameter.html#require) metaparameter in `vcsrepo` to ensure they are present.
@@ -313,6 +328,71 @@ When your source uses SSH, such as 'ssh://...', you can manage your SSH keys wit
 #####Further Examples
 
 For more examples using Mercurial, see `examples/hg/`.
+
+###Perforce
+
+#####To create an empty Workspace
+
+To create an empty Workspace, define a `vcsrepo` without a `source` or `revision`.  The 
+Environment variables P4PORT, P4USER, etc... are used to define the Perforce server
+connection settings.
+
+    vcsrepo { "/path/to/repo":
+      ensure     => present,
+      provider   => p4
+    }
+
+If no `P4CLIENT` environment name is provided a workspace generated name is calculated
+based on the Digest of path and hostname.  For example:
+
+    puppet-91bc00640c4e5a17787286acbe2c021c
+
+A Perforce configuration file can be used by setting the `P4CONFIG` environment or
+defining `p4config`.  If a configuration is defined, then the environment variable for 
+`P4CLIENT` is replaced.
+ 
+    vcsrepo { "/path/to/repo":
+      ensure     => present,
+      provider   => p4,
+      p4config   => '.p4config'
+    }
+
+#####To create/update and sync a Perforce workspace
+
+To sync a depot path to head, ensure `latest`:
+
+    vcsrepo { "/path/to/repo":
+        ensure   => latest,
+        provider => p4,
+        source   => '//depot/branch/...'
+    }
+
+For a specific changelist, ensure `present` and specify a `revision`:
+
+    vcsrepo { "/path/to/repo":
+        ensure   => present,
+        provider => p4,
+        source   => '//depot/branch/...',
+        revision => '2341'
+    }
+
+You can also set `revision` to a label:
+
+    vcsrepo { "/path/to/repo":
+        ensure   => present,
+        provider => p4,
+        source   => '//depot/branch/...',
+        revision => 'my_label'
+    }
+
+#####To authenticate against the Perforce server
+
+Either set the environment variables `P4USER` and `P4PASSWD` or use a configuration file.
+For secure servers set the `P4PASSWD` with a valid ticket generated using `p4 login -p`.
+
+#####Further Examples
+
+For examples you can run, see `examples/p4/`
 
 ###Subversion
 
@@ -374,11 +454,12 @@ The vcsrepo module is slightly unusual in that it is simply a type and providers
 
 **Note**: Not all features are available with all providers.
 
+* `git`   - Supports the Git VCS. (Contains features: `bare_repositories`, `depth`, `multiple_remotes`, `reference_tracking`, `ssh_identity`, `user`.)
 * `bar`   - Supports the Bazaar VCS. (Contains features: `reference_tracking`.)
 * `cvs`   - Supports the CVS VCS. (Contains features: `cvs_rsh`, `gzip_compression`, `modules`,`reference_tracking`.)
 * `dummy` - 
-* `git`   - Supports the Git VCS. (Contains features: `bare_repositories`, `depth`, `multiple_remotes`, `reference_tracking`, `ssh_identity`, `user`.)
 * `hg`    - Supports the Mercurial VCS. (Contains features: `reference_tracking`, `ssh_identity`, `user`.)
+* `p4`    - Supports the Perforce VCS. (Contains features: `reference_tracking`, `filesystem_types`, `p4config`.)
 * `svn`   - Supports the Subversion VCS. (Contains features: `basic_auth`, `configuration`, `filesystem_types`, `reference_tracking`.)
 
 ####Features
@@ -397,6 +478,7 @@ The vcsrepo module is slightly unusual in that it is simply a type and providers
 * `reference_tracking` - The provider supports tracking revision references that can change over time (e.g. some VCS tags and branch names). (Available with `bar`, `cvs`, `git`, `hg`, `svn`.)
 * `ssh_identity` - The provider supports a configurable SSH identity file. (Available with `git` and `hg`.)
 * `user` - The provider can run as a different user. (Available with `git` and `hg`.)
+* `p4config` - The provider support setting the P4CONFIG environment. (Available with `p4`.)
 
 ####Parameters
 
@@ -414,14 +496,20 @@ The vcsrepo module is slightly unusual in that it is simply a type and providers
 * `identity` - Specifies the SSH identity file. (Requires the `ssh_identity` feature.)
 * `module` - Specifies the repository module to manage. (Requires the `modules` feature.)
 * `owner` - Specifies the user/uid that owns the repository files.
-*  `path` - Specifies the absolute path to the repository. If omitted, the value defaults to the resource's title.
+* `path` - Specifies the absolute path to the repository. If omitted, the value defaults to the resource's title.
 * `provider` - Specifies the backend to use for this vcsrepo resource. 
 * `remote` - Specifies the remote repository to track. (Requires the `multiple_remotes` feature.)
 * `revision` - Sets the revision of the repository. Values can match /^\S+$/.
 * `source` - Specifies the source URI for the repository.
 * `user` - Specifies the user to run as for repository operations.
+* `p4config` - Specifies the P4CONFIG environment used for Perforce connection configuration.
 
 ####Features and Parameters by Provider
+
+#####`git`
+**Features**: `bare_repositories`, `depth`, `multiple_remotes`, `reference_tracking`, `ssh_identity`, `user`
+
+**Parameters**: `depth`, `ensure`, `excludes`, `force`, `group`, `identity`, `owner`, `path`, `provider`, `remote`, `revision`, `source`, `user`
 
 #####`bzr`
 **Features**: `reference_tracking`
@@ -433,15 +521,15 @@ The vcsrepo module is slightly unusual in that it is simply a type and providers
 
 **Parameters**: `compression`, `cvs_rsh`, `ensure`, `excludes`, `force`, `group`, `module`, `owner`, `path`, `provider`, `revision`, `source`, `user`
 
-#####`git`
-**Features**: `bare_repositories`, `depth`, `multiple_remotes`, `reference_tracking`, `ssh_identity`, `user`
-
-**Parameters**: `depth`, `ensure`, `excludes`, `force`, `group`, `identity`, `owner`, `path`, `provider`, `remote`, `revision`, `source`, `user`
-
 #####`hg`
 **Features**: `reference_tracking`, `ssh_identity`, `user`
 
 **Parameters**: `ensure`, `excludes`, `force`, `group`, `identity`, `owner`, `path`, `provider`, `revision`, `source`, `user`
+
+#####`p4`
+**Features**: `reference_tracking`, `filesystem_types`, `p4config`
+
+**Parameters**: `ensure`, `group`, `owner`, `path`, `provider`, `revision`, `source`, `p4config`
 
 #####`svn`
 **Features**: `basic_auth`, `configuration`, `filesystem_types`, `reference_tracking`
@@ -449,6 +537,8 @@ The vcsrepo module is slightly unusual in that it is simply a type and providers
 **Parameters**: `basic_auth_password`, `basic_auth_username`, `configuration`, `ensure`, `excludes`, `force`, `fstype`, `group`, `owner`, `path`, `provider`, `revision`, `source`, `user`
         
 ##Limitations
+
+Git is the only VCS provider officially [supported](https://forge.puppetlabs.com/supported) by Puppet Labs.
 
 This module has been built on and tested against Puppet 2.7 and higher.
 

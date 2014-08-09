@@ -7,7 +7,7 @@ describe 'foreman_proxy::config' do
       :domain                 => 'example.org',
       :ipaddress_eth0         => '127.0.1.1',
       :operatingsystem        => 'RedHat',
-      :operatingsystemrelease => '6',
+      :operatingsystemrelease => '6.5',
       :osfamily               => 'RedHat',
     }
   end
@@ -51,9 +51,9 @@ describe 'foreman_proxy::config' do
         '/etc/foreman-proxy/settings.d/bmc.yml', '/etc/foreman-proxy/settings.d/realm.yml'].each do |cfile|
         should contain_file(cfile).
           with({
-            :owner   => 'foreman-proxy',
+            :owner   => 'root',
             :group   => 'foreman-proxy',
-            :mode    => '0644',
+            :mode    => '0640',
             :require => 'Class[Foreman_proxy::Install]',
             :notify  => 'Class[Foreman_proxy::Service]',
           })
@@ -115,6 +115,10 @@ describe 'foreman_proxy::config' do
         ':customrun_args: -ay -f -s',
         ':puppetssh_sudo: false',
         ':puppetssh_command: /usr/bin/puppet agent --onetime --no-usecacheonfailure',
+        ':puppet_url: https://host.example.org:8140',
+        ':puppet_ssl_ca: /var/lib/puppet/ssl/certs/ca.pem',
+        ":puppet_ssl_cert: /var/lib/puppet/ssl/certs/#{facts[:fqdn]}.pem",
+        ":puppet_ssl_key: /var/lib/puppet/ssl/private_keys/#{facts[:fqdn]}.pem",
       ]
     end
 
@@ -162,6 +166,40 @@ describe 'foreman_proxy::config' do
         :require => 'File[/etc/sudoers.d]',
       })
     end
+
+    context 'when operatingsystemrelease is 7.0.1406' do
+      let :facts do
+        {
+          :fqdn                   => 'host.example.org',
+          :domain                 => 'example.org',
+          :ipaddress_eth0         => '127.0.1.1',
+          :operatingsystem        => 'CentOS',
+          :operatingsystemrelease => '7.0.1406',
+          :osfamily               => 'RedHat',
+        }
+      end
+
+      it 'should not manage /etc/sudoers.d' do
+        should contain_file('/etc/sudoers.d').with_ensure('directory')
+      end
+    end
+
+    context 'when operatingsystemrelease is 5.10' do
+      let :facts do
+        {
+          :fqdn                   => 'host.example.org',
+          :domain                 => 'example.org',
+          :ipaddress_eth0         => '127.0.1.1',
+          :operatingsystem        => 'RedHat',
+          :operatingsystemrelease => '5.10',
+          :osfamily               => 'RedHat',
+        }
+      end
+
+      it 'should not manage /etc/sudoers.d' do
+        should_not contain_file('/etc/sudoers.d')
+      end
+    end
   end
 
   context 'with bmc' do
@@ -186,7 +224,7 @@ describe 'foreman_proxy::config' do
         :fqdn                   => 'host.example.org',
         :ipaddress              => '127.0.1.2',
         :operatingsystem        => 'RedHat',
-        :operatingsystemrelease => '6',
+        :operatingsystemrelease => '6.5',
         :osfamily               => 'RedHat',
       }
     end
@@ -211,7 +249,7 @@ describe 'foreman_proxy::config' do
         :fqdn                   => 'host.example.org',
         :ipaddress              => '127.0.1.2',
         :operatingsystem        => 'RedHat',
-        :operatingsystemrelease => '6',
+        :operatingsystemrelease => '6.5',
         :osfamily               => 'RedHat',
       }
     end
@@ -290,6 +328,20 @@ describe 'foreman_proxy::config' do
       verify_contents(subject, '/etc/foreman-proxy/settings.d/puppet.yml', [
         ':puppetssh_user: root',
         ':puppetssh_keyfile: /etc/foreman-proxy/id_rsa',
+      ])
+    end
+  end
+
+  context 'when puppet_use_environment_api set' do
+    let :pre_condition do
+      'class {"foreman_proxy":
+        puppet_use_environment_api => false,
+      }'
+    end
+
+    it 'should set puppet_use_environment_api' do
+      verify_contents(subject, '/etc/foreman-proxy/settings.d/puppet.yml', [
+        ':puppet_use_environment_api: false',
       ])
     end
   end

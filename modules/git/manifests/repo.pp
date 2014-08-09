@@ -22,7 +22,8 @@ define git::repo (
   $target,
   $bare    = false,
   $source  = false,
-  $user    = 'root'
+  $user    = 'root',
+  $workdir = '/tmp',
 ) {
 
   require git::params
@@ -45,7 +46,8 @@ define git::repo (
   exec { "git_repo_for_${name}":
     command => $cmd,
     creates => $creates,
+    cwd     => $workdir,
     require => Class['git::install'],
-    user    => $user
+    user    => $user,
   }
 }

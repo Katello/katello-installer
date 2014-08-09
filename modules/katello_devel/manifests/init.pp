@@ -4,26 +4,32 @@
 #
 # === Parameters:
 #
-# $user::               The Katello system user name
+# $user::                 The Katello system user name
 #
-# $deployment_dir::     Location to deploy Katello to in development
+# $deployment_dir::       Location to deploy Katello to in development
 #
-# $oauth_key::          The oauth key for talking to the candlepin API;
-#                       default 'katello'
+# $oauth_key::            The oauth key for talking to the candlepin API;
+#                         default 'katello'
 #
-# $oauth_secret::       The oauth secret for talking to the candlepin API;
+# $oauth_secret::         The oauth secret for talking to the candlepin API;
 #
-# $post_sync_token::    The shared secret for pulp notifying katello about
-#                       completed syncs
+# $post_sync_token::      The shared secret for pulp notifying katello about
+#                         completed syncs
 #
-# $use_passenger::      Whether to use Passenger in development;
-#                       default false
+# $use_passenger::        Whether to use Passenger in development;
+#                         default false
 #
-# $db_type::            The database type; 'postgres' or 'sqlite'
+# $db_type::              The database type; 'postgres' or 'sqlite'
 #
-# $use_rvm::            If set to true, will install and configure RVM
+# $use_rvm::              If set to true, will install and configure RVM
 #
-# $rvm_ruby::           The default Ruby version to use with RVM
+# $rvm_ruby::             The default Ruby version to use with RVM
+#
+# $initial_organization:: Initial organization to be created
+#
+# $initial_location::     Initial location to be created
+#
+# $admin_password::       Admin user password for Web application
 #
 class katello_devel (
 
@@ -42,6 +48,10 @@ class katello_devel (
   $rvm_ruby = $katello_devel::params::rvm_ruby,
 
   $use_passenger = $katello_devel::params::use_passenger,
+
+  $initial_organization = $katello_devel::params::initial_organization,
+  $initial_location = $katello_devel::params::initial_location,
+  $admin_password = $katello_devel::params::admin_password,
 
   ) inherits katello_devel::params {
 

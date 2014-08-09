@@ -7,18 +7,42 @@ describe 'apache::mod::proxy_html', :type => :class do
     ]
   end
   context "on a Debian OS" do
+    shared_examples "debian" do |loadfiles|
+      it { should contain_class("apache::params") }
+      it { should contain_apache__mod('proxy_html').with(:loadfiles => loadfiles) }
+      it { should contain_package("libapache2-mod-proxy-html") }
+    end
     let :facts do
       {
-        :osfamily               => 'Debian',
-        :operatingsystemrelease => '6',
-        :concat_basedir         => '/dne',
+        :osfamily       => 'Debian',
+        :concat_basedir => '/dne',
+        :architecture   => 'i386'
       }
     end
-    it { should contain_class("apache::params") }
-    it { should contain_apache__mod('proxy_html') }
-    it { should contain_package("libapache2-mod-proxy-html") }
+
+    context "on squeeze" do
+      let(:facts) { super().merge({ :operatingsystemrelease => '6' }) }
+      it_behaves_like "debian", ['/usr/lib/libxml2.so.2']
+    end
+    context "on wheezy" do
+      let(:facts) { super().merge({ :operatingsystemrelease => '7' }) }
+      context "i386" do
+        let(:facts) { super().merge({
+          :hardwaremodel => 'i686',
+          :architecture  => 'i386'
+        })}
+        it_behaves_like "debian", ["/usr/lib/i386-linux-gnu/libxml2.so.2"]
+      end
+      context "x64" do
+        let(:facts) { super().merge({
+          :hardwaremodel => 'x86_64',
+          :architecture  => 'amd64'
+        })}
+        it_behaves_like "debian", ["/usr/lib/x86_64-linux-gnu/libxml2.so.2"]
+      end
+    end
   end
-  context "on a RedHat OS" do
+  context "on a RedHat OS", :compile do
     let :facts do
       {
         :osfamily               => 'RedHat',
@@ -27,10 +51,10 @@ describe 'apache::mod::proxy_html', :type => :class do
       }
     end
     it { should contain_class("apache::params") }
-    it { should contain_apache__mod('proxy_html') }
+    it { should contain_apache__mod('proxy_html').with(:loadfiles => nil) }
     it { should contain_package("mod_proxy_html") }
   end
-  context "on a FreeBSD OS" do
+  context "on a FreeBSD OS", :compile do
     let :facts do
       {
         :osfamily               => 'FreeBSD',
@@ -39,7 +63,7 @@ describe 'apache::mod::proxy_html', :type => :class do
       }
     end
     it { should contain_class("apache::params") }
-    it { should contain_apache__mod('proxy_html') }
+    it { should contain_apache__mod('proxy_html').with(:loadfiles => nil) }
     it { should contain_package("www/mod_proxy_html") }
   end
 end
