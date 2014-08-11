@@ -20,8 +20,8 @@ def foreman_installed?
 end
 
 def stop_services
-  Kafo::KafoConfigure.logger.info 'Ensuring services httpd and katello-jobs are stopped.'
-  execute('service httpd stop && service katello-jobs stop')
+  Kafo::KafoConfigure.logger.info 'Ensuring services httpd and foreman-tasks are stopped.'
+  execute('service httpd stop && service foreman-tasks stop')
 end
 
 def reset_database

@@ -26,6 +26,7 @@ capsule:
 foreman::plugin::bootdisk: true
 foreman::plugin::discovery: true
 foreman::plugin::hooks: true
+foreman::plugin::tasks: true
 foreman::plugin::chef: false
 foreman::plugin::default_hostgroup: false
 foreman::plugin::puppetdb: false
