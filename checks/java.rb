@@ -4,7 +4,7 @@ JAVA_VERSION = %q(An OpenJDK version of Java greater than 1.7 should be installe
 
 OPENJDK = %q(A version of java which is not OpenJDK is installed.
 
-Please install an OpenJDK version greater than 1.7)
+Please install an OpenJDK version greater than 1.6)
  
 
 def error_exit(message, code)
