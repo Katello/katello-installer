@@ -19,6 +19,7 @@ foreman:
   server_ssl_chain: /etc/pki/katello/certs/katello-ca.crt
 capsule:
   register_in_foreman: true
+  pulp_master: true
   puppet: true
   puppetca: true
 
