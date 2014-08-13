@@ -15,6 +15,7 @@ BuildArch: noarch
 
 Requires: %{?scl_prefix}rubygem-kafo
 Requires: %{?scl_prefix}rubygem-apipie-bindings >= 0.0.6
+Requires: foreman-selinux
 
 %description
 A set of tools for installation of Katello and Katello Capsule,
