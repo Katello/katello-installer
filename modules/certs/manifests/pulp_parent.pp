@@ -58,6 +58,7 @@ class certs::pulp_parent (
       owner   => $certs::user,
       group   => $certs::group,
       mode    => '0755',
+      require => Package['pulp-server'],
     } ->
     key_bundle { "${nodes_cert_dir}/${::certs::pulp_parent::nodes_cert_name}":
       key_pair => Cert["${::certs::pulp_parent::hostname}-parent-cert"],
