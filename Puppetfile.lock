@@ -65,7 +65,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-pulp
   ref: master
-  sha: df6e3f2f5daf75bc194afc9e11cbb2ce92aafce5
+  sha: 881859bcaaadfc2a42f5e9239be8569d20dc85de
   specs:
     katello-pulp (0.0.1)
 

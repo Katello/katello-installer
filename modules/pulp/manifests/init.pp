@@ -39,7 +39,7 @@
 #
 # $default_login::              Initial login; defaults to admin
 #
-# $default_password::           Initial password; defaults to admin
+# $default_password::           Initial password; defaults to 32 character randomly generated password
 #
 # $repo_auth::                  Boolean to determine whether repos managed by
 #                               pulp will require authentication. Defaults
