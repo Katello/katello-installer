@@ -21,7 +21,7 @@ class pulp::params {
   $qpid_ssl_cert_password_file = undef
 
   $default_login = 'admin'
-  $default_password = 'admin'
+  $default_password = cache_data('pulp_password', random_password(32))
 
   $repo_auth = true
 

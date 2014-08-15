@@ -116,7 +116,7 @@ class pulp::config {
     path        => '/bin:/usr/bin',
     logoutput   => 'on_failure',
     user        => 'apache',
-    require     => File['/etc/pulp/server.conf'],
+    require     => [Service[mongodb], Service[qpidd], File['/etc/pulp/server.conf']],
   }
 
   if $pulp::consumers_crl {
