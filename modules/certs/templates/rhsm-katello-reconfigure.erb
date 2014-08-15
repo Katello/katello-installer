@@ -51,8 +51,8 @@ if test ${RHSM_VERSION[0]:-0} -gt 0 -o ${RHSM_VERSION[1]:-0} -gt 96 -o \( ${RHSM
 else
   sed -i "s/^hostname\s*=.*/hostname = $KATELLO_SERVER/g" $CFG
   sed -i "s/^port\s*=.*/port = $PORT/g" $CFG
-  sed -i "s/^prefix\s*=.*/prefix = $PREFIX/g" $CFG
-  sed -i 's/^repo_ca_cert\s*=.*/repo_ca_cert = %%(ca_cert_dir)scandlepin-local.pem/g' $CFG
+  sed -i "s|^prefix\s*=.*|prefix = $PREFIX|g" $CFG
+  sed -i 's|^repo_ca_cert\s*=.*|repo_ca_cert = %%(ca_cert_dir)scandlepin-local.pem|g' $CFG
   sed -i "s|^baseurl\s*=.*|baseurl=$BASEURL|g" $CFG
 fi
 
