@@ -123,16 +123,16 @@ class capsule (
 
   validate_present($capsule::parent_fqdn)
 
-  if $pulp_master {
+  if $pulp_master or $pulp {
     foreman_proxy::settings_file { 'pulp':
       template_path  => 'capsule/pulp.yml'
+    }
+    foreman_proxy::settings_file { 'pulpnode':
+      template_path => 'capsule/pulpnode.yml'
     }
   }
 
   if $pulp {
-    foreman_proxy::settings_file { 'pulpnode':
-      template_path => 'capsule/pulpnode.yml'
-    }
     validate_pulp($pulp)
     validate_present($pulp_oauth_secret)
   }
