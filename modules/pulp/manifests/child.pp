@@ -11,7 +11,8 @@ class pulp::child (
     $oauth_key             = 'key',
     $oauth_secret          = 'secret',
     $ssl_cert              = '/etc/pki/pulp/ssl_apache.crt',
-    $ssl_key               = '/etc/pki/pulp/ssl_apache.key'
+    $ssl_key               = '/etc/pki/pulp/ssl_apache.key',
+    $server_ca_cert        = '/etc/pki/pulp/ca.crt'
   ) {
 
   if ! $parent_fqdn { fail('$parent_fqdn has to be specified') }

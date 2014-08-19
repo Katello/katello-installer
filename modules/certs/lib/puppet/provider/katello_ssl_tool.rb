@@ -41,9 +41,16 @@ module Puppet::Provider::KatelloSslTool
       end
     end
 
+    def generate!
+      if File.exists?(update_file)
+        File.delete(update_file)
+      end
+    end
+
     def generate?
       return false unless resource[:generate]
       return true if resource[:regenerate]
+      return true if File.exists?(update_file)
       return files_to_generate.any? { |file| ! File.exist?(file) }
     end
 
@@ -105,6 +112,11 @@ module Puppet::Provider::KatelloSslTool
       return rpmfile
     end
 
+    # file that indicates that a new version of the rpm should be updated
+    def update_file
+      self.build_path("#{rpmfile_base_name}.update")
+    end
+
     def rpmfile_base_name
       resource[:name]
     end
@@ -129,7 +141,7 @@ module Puppet::Provider::KatelloSslTool
       File.join("/etc/pki/katello-certs-tools", file_name)
     end
 
-    def build_path(file_name)
+    def build_path(file_name = '')
       self.class.build_path(file_name)
     end
 
@@ -137,6 +149,15 @@ module Puppet::Provider::KatelloSslTool
       File.join("/root/ssl-build", file_name)
     end
 
+    def ca_details
+      return @ca_details if defined? @ca_details
+      if ca_resource = @resource[:ca]
+        name = ca_resource.to_hash[:name]
+        @ca_details = Puppet::Provider::KatelloSslTool::Cert.details(name)
+      else
+        raise 'Wanted to generate cert without ca specified'
+      end
+    end
   end
 
   class CertFile < Puppet::Provider

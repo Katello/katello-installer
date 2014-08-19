@@ -4,7 +4,6 @@ class certs::pulp_child (
     $generate   = $::certs::generate,
     $regenerate = $::certs::regenerate,
     $deploy     = $::certs::deploy,
-    $ca         = $::certs::default_ca
   ) {
 
   cert { "${::certs::pulp_child::hostname}-qpid-client-cert":
@@ -17,7 +16,7 @@ class certs::pulp_child (
     org           => 'PULP',
     org_unit      => $::certs::org_unit,
     expiration    => $::certs::expiration,
-    ca            => $ca,
+    ca            => $::certs::default_ca,
     generate      => $generate,
     regenerate    => $regenerate,
     deploy        => $deploy,
@@ -26,11 +25,15 @@ class certs::pulp_child (
 
   if $deploy {
     pubkey { $pulp::consumers_ca_cert:
-      key_pair => $ca,
+      key_pair => $::certs::default_ca,
     } ~>
 
     pubkey { $pulp::ssl_ca_cert:
-      key_pair => $ca
+      key_pair => $::certs::default_ca
+    }
+
+    pubkey { $pulp::child::server_ca_cert:
+      key_pair => $::certs::server_ca
     }
 
     pubkey { $pulp::child::ssl_cert:

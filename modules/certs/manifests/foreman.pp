@@ -5,10 +5,9 @@ class certs::foreman (
   $generate       = $::certs::generate,
   $regenerate     = $::certs::regenerate,
   $deploy         = $::certs::deploy,
-  $ca             = $::certs::default_ca,
   $client_cert    = $::certs::params::foreman_client_cert,
   $client_key     = $::certs::params::foreman_client_key,
-  $client_ca_cert = $::certs::params::foreman_client_ca_cert
+  $ssl_ca_cert    = $::certs::params::foreman_ssl_ca_cert
 
   ) inherits certs::params {
 
@@ -24,7 +23,7 @@ class certs::foreman (
     org           => 'FOREMAN',
     org_unit      => 'PUPPET',
     expiration    => $::certs::expiration,
-    ca            => $ca,
+    ca            => $::certs::default_ca,
     generate      => $generate,
     regenerate    => $regenerate,
     deploy        => $deploy,
@@ -40,8 +39,8 @@ class certs::foreman (
     privkey { $client_key:
       key_pair => Cert[$client_cert_name],
     } ->
-    pubkey { $client_ca_cert:
-      key_pair => $ca
+    pubkey { $ssl_ca_cert:
+      key_pair => $::certs::server_ca
     } ~>
     file { $client_key:
       ensure  => file,
@@ -50,7 +49,7 @@ class certs::foreman (
     }
 
     $foreman_config_cmd = "${::foreman::app_root}/script/foreman-config\
-      -k ssl_ca_file -v '${client_ca_cert}'\
+      -k ssl_ca_file -v '${ssl_ca_cert}'\
       -k ssl_certificate -v '${client_cert}'\
       -k ssl_priv_key -v '${client_key}'"
 

@@ -5,9 +5,6 @@ class certs::qpid (
   $generate   = $::certs::generate,
   $regenerate = $::certs::regenerate,
   $deploy     = $::certs::deploy,
-
-  $ca = $::certs::default_ca
-
   ){
 
   Exec { logoutput => 'on_failure' }
@@ -23,7 +20,7 @@ class certs::qpid (
     org           => 'pulp',
     org_unit      => $::certs::org_unit,
     expiration    => $::certs::expiration,
-    ca            => $ca,
+    ca            => $::certs::default_ca,
     generate      => $generate,
     regenerate    => $regenerate,
     deploy        => $deploy,
