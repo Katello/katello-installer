@@ -42,7 +42,7 @@ ignore-retval () {
 
 wait-for-url () {
     # we use wget first because it's able to retry from connrefused situation
-    /usr/bin/wget --timeout=1 --tries=$WAIT_MAX --retry-connrefused -qO-\
+    /usr/bin/wget --timeout=1 -4 --tries=$WAIT_MAX --retry-connrefused -qO-\
                   --no-check-certificate $1 > /dev/null
     # then we double check with curl that the service is really
     # available. wget is not able to retry from 'Unable to establish
