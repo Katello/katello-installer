@@ -8,6 +8,12 @@ module Certs
 
     newparam(:name, :namevar => true)
 
+    newparam(:custom_pubkey)
+
+    newparam(:custom_privkey)
+
+    newparam(:custom_req)
+
     newparam(:common_name)
 
     newparam(:email)
@@ -31,6 +37,20 @@ module Certs
     newparam(:deploy)
 
     newparam(:password_file)
+
+    newparam(:ca) do
+      validate do |value|
+        if value && !value.is_a?(Puppet::Resource) || value.resource_type.name != :ca
+          raise ArgumentError, "Expected Ca resource"
+        end
+      end
+    end
+
+    autorequire(:ca) do
+      if @parameters.has_key?(:ca)
+        @parameters[:ca].value.to_hash[:name]
+      end
+    end
   end
 
   FILE_COMMON_PARAMS = Proc.new do

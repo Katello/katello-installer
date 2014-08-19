@@ -14,7 +14,8 @@
 
 [main]
 node_certificate: /etc/pki/pulp/nodes/node.crt
-
+verify_ssl: True
+ca_path: <%= @server_ca_cert %>
 
 # The oauth configuration used to authenticate to this node
 # user_id - The pulp user ID

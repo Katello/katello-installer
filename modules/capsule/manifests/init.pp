@@ -175,7 +175,8 @@ class capsule (
       parent_fqdn          => $parent_fqdn,
       oauth_effective_user => $pulp_oauth_effective_user,
       oauth_key            => $pulp_oauth_key,
-      oauth_secret         => $pulp_oauth_secret
+      oauth_secret         => $pulp_oauth_secret,
+      server_ca_cert       => $certs::params::pulp_server_ca_cert,
     }
 
     class { 'certs::pulp_child':
@@ -193,7 +194,7 @@ class capsule (
       server_foreman_url          => $foreman_url,
       server_foreman_ssl_cert     => $::certs::puppet::client_cert,
       server_foreman_ssl_key      => $::certs::puppet::client_key,
-      server_foreman_ssl_ca       => $::certs::puppet::client_ca_cert,
+      server_foreman_ssl_ca       => $::certs::puppet::ssl_ca_cert,
       server_storeconfigs_backend => false,
       server_dynamic_environments => true,
       server_environments_owner   => 'apache',
@@ -245,7 +246,7 @@ class capsule (
   }
 
   if $certs_tar {
-    certs::tar_extract { $capsule::certs_tar: }
+    certs::tar_extract { $capsule::certs_tar: } -> Class['certs']
 
     if $pulp {
       Certs::Tar_extract[$certs_tar] -> Class['certs::apache']

@@ -26,7 +26,9 @@ class certs::params {
   $regenerate_ca = false
   $deploy        = true
 
-  $default_ca_name = 'katello-ca'
+  $default_ca_name = 'katello-default-ca'
+  $server_ca_name  = 'katello-server-ca'
+
   $country       = 'US'
   $state         = 'North Carolina'
   $city          = 'Raleigh'
@@ -41,17 +43,25 @@ class certs::params {
   $user = 'root'
   $group = 'root'
 
+  $server_cert      = undef
+  $server_key       = undef
+  $server_cert_req  = undef
+  $server_ca_cert   = undef
+
   $foreman_client_cert    = '/etc/foreman/client_cert.pem'
   $foreman_client_key     = '/etc/foreman/client_key.pem'
-  $foreman_client_ca_cert = '/etc/foreman/client_ca.pem'
+  # for verifying the foreman proxy https
+  $foreman_ssl_ca_cert    = '/etc/foreman/proxy_ca.pem'
 
   $foreman_proxy_cert    = '/etc/foreman-proxy/ssl_cert.pem'
   $foreman_proxy_key     = '/etc/foreman-proxy/ssl_key.pem'
+  # for verifying the foreman client certs at the proxy side
   $foreman_proxy_ca_cert = '/etc/foreman-proxy/ssl_ca.pem'
 
   $puppet_client_cert = '/etc/puppet/client_cert.pem'
   $puppet_client_key  = '/etc/puppet/client_key.pem'
-  $puppet_client_ca_cert = '/etc/puppet/client_ca.pem'
+  # for verifying the foreman https
+  $puppet_ssl_ca_cert = '/etc/puppet/ssl_ca.pem'
 
   $candlepin_keystore               = '/etc/pki/katello/keystore'
   $candlepin_certs_dir              = '/etc/candlepin/certs'
@@ -71,6 +81,8 @@ class certs::params {
   $katello_activation_key = undef
 
   $messaging_client_cert = "${pki_dir}/qpid_client_striped.crt"
+
+  $pulp_server_ca_cert   = '/etc/pki/pulp/server_ca.crt'
   # Pulp expects the node certificate to be located on this very location
   $nodes_cert_dir        = '/etc/pki/pulp/nodes'
   $nodes_cert_name       = 'node.crt'

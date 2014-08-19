@@ -50,9 +50,21 @@
 # $ca_expiration::        Ca expiration attribute for managed certificates
 #                         type: string
 #
+# $server_ca_cert::       Path to the CA that issued the ssl certificates for https
+#                         if not specified, the default CA will be used
+#
+# $server_cert::          Path to the ssl certificate for https
+#                         if not specified, the default CA will generate one
+#
+# $server_key::           Path to the ssl key for https
+#                         if not specified, the default CA will generate one
+#
+# $server_cert_req::       Path to the ssl certificate request for https
+#                         if not specified, the default CA will generate one
+#
 # $pki_dir::              The PKI directory under which to place certs
 #
-# $ssl_build_dir::       The directory where SSL keys, certs and RPMs will be generated
+# $ssl_build_dir::        The directory where SSL keys, certs and RPMs will be generated
 #
 # $user::                 The system user name who should own the certs;
 #                         default 'foreman'
@@ -62,8 +74,9 @@
 #
 # $password_file_dir::    The location to store password files
 #
-# $default_ca_name::      The name of the default CA;
-#                         default 'katello'
+# $default_ca_name::      The name of the default CA
+#
+# $server_ca_name::       The name of the server CA (used for https)
 #
 class certs (
 
@@ -83,6 +96,11 @@ class certs (
   $expiration     = $certs::params::expiration,
   $ca_expiration  = $certs::params::ca_expiration,
 
+  $server_cert     = $certs::params::server_cert,
+  $server_key      = $certs::params::server_key,
+  $server_cert_req = $certs::params::server_cert_req,
+  $server_ca_cert  = $certs::params::server_ca_cert,
+
   $pki_dir = $certs::params::pki_dir,
   $ssl_build_dir = $certs::params::ssl_build_dir,
 
@@ -91,12 +109,15 @@ class certs (
   $user   = $certs::params::user,
   $group  = $certs::params::group,
 
-  $default_ca_name = $certs::params::default_ca_name
-
+  $default_ca_name = $certs::params::default_ca_name,
+  $server_ca_name  = $certs::params::server_ca_name
   ) inherits certs::params {
 
+  if $server_cert {
+    validate_file_exists($server_cert, $server_cert_req, $server_key, $server_ca_cert)
+  }
+
   $nss_db_dir   = "${pki_dir}/nssdb"
-  $default_ca   = Ca[$default_ca_name]
 
   $ca_key = "${certs::pki_dir}/private/${default_ca_name}.key"
   $ca_cert = "${certs::pki_dir}/certs/${default_ca_name}.crt"
@@ -125,6 +146,33 @@ class certs (
     generate      => $certs::generate,
     deploy        => $certs::deploy,
     password_file => $ca_key_password_file
+  }
+
+  $default_ca = Ca[$default_ca_name]
+
+  if $certs::server_cert {
+    ca { $certs::server_ca_name:
+      ensure        => present,
+      generate      => $certs::generate,
+      deploy        => $certs::deploy,
+      custom_pubkey => $certs::server_ca_cert,
+    }
+  } else {
+    ca { $certs::server_ca_name:
+      ensure   => present,
+      generate => $certs::generate,
+      deploy   => $certs::deploy,
+      ca       => $certs::default_ca,
+    }
+  }
+  $server_ca = Ca[$certs::server_ca_name]
+
+  if $certs::generate {
+    file { "${ssl_build_dir}/KATELLO-TRUSTED-SSL-CERT":
+      ensure  => link,
+      target  => "${ssl_build_dir}/${certs::server_ca_name}.crt",
+      require => $server_ca,
+    }
   }
 
   if $deploy {

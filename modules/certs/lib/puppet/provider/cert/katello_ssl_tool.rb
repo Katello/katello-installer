@@ -4,34 +4,38 @@ require File.expand_path('../../katello_ssl_tool', __FILE__)
 Puppet::Type.type(:cert).provide(:katello_ssl_tool, :parent => Puppet::Provider::KatelloSslTool::Cert) do
 
   def generate!
-    resource[:common_name] ||= resource[:hostname]
-    purpose = resource[:purpose]
-    katello_ssl_tool("--gen-#{purpose}",
-                     '-p', "file:#{resource[:password_file]}",
-                     '--set-hostname', resource[:hostname],
-                     '--set-common-name', resource[:common_name],
-                     '--ca-cert', ca_details[:pubkey],
-                     '--ca-key', ca_details[:privkey],
-                     '--server-cert', File.basename(pubkey),
-                     '--server-cert-req', "#{File.basename(pubkey)}.req",
-                     '--server-key', File.basename(privkey),
-                     '--server-rpm', rpmfile_base_name,
-                     *common_args)
+    args = [ "--gen-#{resource[:purpose]}",
+              '--set-hostname', resource[:hostname],
+              '--server-cert', File.basename(pubkey),
+              '--server-cert-req', File.basename(req_file),
+              '--server-key', File.basename(privkey),
+              '--server-rpm', rpmfile_base_name ]
+    if resource[:custom_pubkey]
+      FileUtils.mkdir_p(build_path)
+      FileUtils.cp(resource[:custom_pubkey], build_path(File.basename(pubkey)))
+      FileUtils.cp(resource[:custom_privkey], build_path(File.basename(privkey)))
+      FileUtils.cp(resource[:custom_req], build_path(File.basename(req_file)))
+      args << '--rpm-only'
+    else
+      resource[:common_name] ||= resource[:hostname]
+      args.concat(['-p', "file:#{resource[:password_file]}",
+                   '--set-hostname', resource[:hostname],
+                   '--set-common-name', resource[:common_name],
+                   '--ca-cert', ca_details[:pubkey],
+                   '--ca-key', ca_details[:privkey]])
+      args.concat(common_args)
+    end
+    katello_ssl_tool(*args)
+    super
   end
 
   protected
 
-  def build_path(file_name)
-    self.class.build_path(File.join(resource[:hostname], file_name))
+  def req_file
+    "#{self.pubkey}.req"
   end
 
-  def ca_details
-    return @ca_details if defined? @ca_details
-    if ca_resource = @resource[:ca]
-      name = ca_resource.to_hash[:name]
-      @ca_details = Puppet::Provider::KatelloSslTool::Cert.details(name)
-    else
-      raise 'Wanted to generate cert without ca specified'
-    end
+  def build_path(file_name = '')
+    self.class.build_path(File.join(resource[:hostname], file_name))
   end
 end

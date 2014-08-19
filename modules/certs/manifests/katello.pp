@@ -6,12 +6,13 @@ class certs::katello (
   ){
 
   $candlepin_cert_rpm_alias = $candlepin_cert_rpm_alias_filename ? {
-    undef   => "${$certs::default_ca_name}-consumer-latest.noarch.rpm",
+    undef   => 'katello-ca-consumer-latest.noarch.rpm',
     default => $candlepin_cert_rpm_alias_filename,
   }
 
   $katello_www_pub_dir            = '/var/www/html/pub'
-  $candlepin_consumer_name        = "${$certs::default_ca_name}-consumer-${::fqdn}"
+  $rhsm_ca_dir                    = '/etc/rhsm/ca'
+  $candlepin_consumer_name        = "katello-ca-consumer-${::fqdn}"
   $candlepin_consumer_summary     = "Subscription-manager consumer certificate for Katello instance ${::fqdn}"
   $candlepin_consumer_description = 'Consumer certificate and post installation script that configures rhsm.'
   file { $katello_www_pub_dir:
@@ -20,22 +21,16 @@ class certs::katello (
     group  => 'apache',
     mode   => '0755',
   } ->
-  file { "${certs::ssl_build_dir}/rhsm-katello-reconfigure":
-    content => template('certs/rhsm-katello-reconfigure.erb'),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0700',
-  } ~>
-  exec { 'generate-candlepin-consumer-certificate':
-    cwd       => $katello_www_pub_dir,
-    command   => "katello-certs-gen-rpm --name '${candlepin_consumer_name}' --version 1.0 --release 1 --packager None --vendor None --group 'Applications/System' --summary '${candlepin_consumer_summary}' --description '${candlepin_consumer_description}' --requires subscription-manager --post ${certs::ssl_build_dir}/rhsm-katello-reconfigure /etc/rhsm/ca/candlepin-local.pem:644=${certs::ssl_build_dir}/${$certs::default_ca_name}.crt && /sbin/restorecon ./*rpm",
-    path      => '/usr/bin:/bin',
-    creates   => "${katello_www_pub_dir}/${candlepin_consumer_name}-1.0-1.noarch.rpm",
-    logoutput => 'on_failure';
-  } ~>
-  file { "${katello_www_pub_dir}/${candlepin_cert_rpm_alias}":
-    ensure  => 'link',
-    target  => "${katello_www_pub_dir}/${candlepin_consumer_name}-1.0-1.noarch.rpm",
+  # We need to deliver the server_ca for yum and rhsm to trust the server
+  # and the default_ca for goferd to trust the qpid
+  certs_bootstrap_rpm { $candlepin_consumer_name:
+    dir              => $katello_www_pub_dir,
+    summary          => $candlepin_consumer_summary,
+    description      => $candlepin_consumer_description,
+    files            => ["${rhsm_ca_dir}/candlepin-local.pem:644=${certs::ssl_build_dir}/${certs::default_ca_name}.crt",
+      "${rhsm_ca_dir}/katello-server-ca.pem:644 =${certs::ssl_build_dir}/${certs::server_ca_name}.crt"],
+    bootstrap_script => template('certs/rhsm-katello-reconfigure.erb'),
+    alias            => $candlepin_cert_rpm_alias,
+    subscribe        => $::certs::server_ca;
   }
-
 }
