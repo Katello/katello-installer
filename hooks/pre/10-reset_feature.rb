@@ -60,7 +60,11 @@ end
 
 def reset_elasticsearch
   Kafo::KafoConfigure.logger.info 'Dropping Elasticsearch!'
-  execute('rm -rf /var/lib/elasticsearch/*')
+  commands = [
+    'service-wait elasticsearch stop',
+    'rm -rf /var/lib/elasticsearch/*',
+  ]
+  execute(commands)
 end
 
 def execute(commands = [])
