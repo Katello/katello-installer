@@ -38,4 +38,4 @@ mod 'katello-service_wait', :git => 'https://github.com/Katello/puppet-service_w
 mod 'puppetlabs/mongodb', :git => 'https://github.com/puppetlabs/puppetlabs-mongodb'
 
 # Katello devel specific modules
-mod 'katello/katello_devel', :git => 'https://github.com/Katello/puppet-katello_devel'
+mod 'katello-katello_devel', :git => 'https://github.com/Katello/puppet-katello_devel'

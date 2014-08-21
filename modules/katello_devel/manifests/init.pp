@@ -72,7 +72,7 @@ class katello_devel (
   class { 'certs::apache': } ~>
   class { 'katello_devel::apache': } ~>
   class { 'certs::katello':
-    deployment_url => '/katello'
+    deployment_url => '/rhsm'
   } ~>
   class { 'certs::qpid':
     require => Class['qpid::install']
