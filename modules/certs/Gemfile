@@ -6,5 +6,6 @@ else
   puppetversion = ['>= 2.6']
 end
 
+gem 'rake'
 gem 'puppet',  puppetversion
-gem 'puppet-lint', '>=0.3.2'
+gem 'puppet-lint', '~> 0.3.2'

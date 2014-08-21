@@ -30,7 +30,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-certs
   ref: master
-  sha: f9da521d281b37c16c44fe9c7abcd7337fdfc8e6
+  sha: 3a9d64821481f45d153f105ccd32d92e5be59d4f
   specs:
     katello-certs (0.0.1)
 

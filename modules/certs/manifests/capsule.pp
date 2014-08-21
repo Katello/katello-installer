@@ -26,6 +26,8 @@ class certs::capsule (
   class { 'certs::apache':        hostname => $capsule_fqdn }
   class { 'certs::qpid':          hostname => $capsule_fqdn }
   class { 'certs::pulp_child':    hostname => $capsule_fqdn }
+
+  include ::pulp::install
   class { 'certs::pulp_parent':
     hostname => $parent_fqdn,
     deploy   => true,
