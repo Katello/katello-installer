@@ -30,7 +30,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-certs
   ref: master
-  sha: 3a9d64821481f45d153f105ccd32d92e5be59d4f
+  sha: d3dd35ca92dedb17f6d592125f7a8ba238b59e48
   specs:
     katello-certs (0.0.1)
 
@@ -79,7 +79,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-service_wait
   ref: master
-  sha: e165ed21a7068da8d34aaa6a8c52a9c2021e1c52
+  sha: 9b86259f9366f687487609043b02b81b591410d4
   specs:
     katello-service_wait (0.0.1)
 
