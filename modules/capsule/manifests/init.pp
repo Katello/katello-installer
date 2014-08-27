@@ -31,9 +31,22 @@
 # $tftp::                           Use TFTP
 #                                   type:boolean
 #
+# $tftp_syslinux_root::             Directory that hold syslinux files
+#
+# $tftp_syslinux_files::            Syslinux files to install on TFTP (copied from $tftp_syslinux_root)
+#                                   type:array
+#
+# $tftp_root::                      TFTP root directory
+#
+# $tftp_dirs::                      Directories to be create in $tftp_root
+#                                   type:array
+#
 # $tftp_servername::                Defines the TFTP server name to use, overrides the name in the subnet declaration
 #
 # $dhcp::                           Use DHCP
+#                                   type:boolean
+#
+# $dhcp_managed::                   DHCP is managed by Foreman proxy
 #                                   type:boolean
 #
 # $dhcp_interface::                 DHCP listen interface
@@ -44,8 +57,23 @@
 #
 # $dhcp_nameservers::               DHCP nameservers
 #
+# $dhcp_vendor::                    DHCP vendor
+#
+# $dhcp_config::                    DHCP config file path
+#
+# $dhcp_leases::                    DHCP leases file
+#
+# $dhcp_key_name::                  DHCP key name
+#
+# $dhcp_key_secret::                DHCP password
+#
 # $dns::                            Use DNS
 #                                   type:boolean
+#
+# $dns_managed::                    DNS is managed by Foreman proxy
+#                                   type:boolean
+#
+# $dns_provider::                   DNS provider
 #
 # $dns_zone::                       DNS zone name
 #
@@ -53,9 +81,18 @@
 #
 # $dns_interface::                  DNS interface
 #
+# $dns_server::                     Address of DNS server to manage
+#
+# $dns_ttl::                        DNS default TTL override
+#
+# $dns_tsig_keytab::                Kerberos keytab for DNS updates using GSS-TSIG authentication
+#
+# $dns_tsig_principal::             Kerberos principal for DNS updates using GSS-TSIG authentication
+#
 # $dns_forwarders::                 DNS forwarders
 #                                   type:array
 #
+# $virsh_network::                  Network for virsh DNS/DHCP provider
 #
 # $realm::                          Use realm management
 #                                   type:boolean
@@ -95,19 +132,37 @@ class capsule (
   $puppetca                      = $capsule::params::puppetca,
 
   $tftp                          = $capsule::params::tftp,
+  $tftp_syslinux_root            = $capsule::params::tftp_syslinux_root,
+  $tftp_syslinux_files           = $capsule::params::tftp_syslinux_files,
+  $tftp_root                     = $capsule::params::tftp_root,
+  $tftp_dirs                     = $capsule::params::tftp_dirs,
   $tftp_servername               = $capsule::params::tftp_servername,
 
   $dhcp                          = $capsule::params::dhcp,
+  $dhcp_managed                  = $capsule::params::dhcp_managed,
   $dhcp_interface                = $capsule::params::dhcp_interface,
   $dhcp_gateway                  = $capsule::params::dhcp_gateway,
   $dhcp_range                    = $capsule::params::dhcp_range,
   $dhcp_nameservers              = $capsule::params::dhcp_nameservers,
+  $dhcp_vendor                   = $capsule::params::dhcp_vendor,
+  $dhcp_config                   = $capsule::params::dhcp_config,
+  $dhcp_leases                   = $capsule::params::dhcp_leases,
+  $dhcp_key_name                 = $capsule::params::dhcp_key_name,
+  $dhcp_key_secret               = $capsule::params::dhcp_key_secret,
 
   $dns                           = $capsule::params::dns,
+  $dns_managed                   = $capsule::params::dns_managed,
+  $dns_provider                  = $capsule::params::dns_provider,
   $dns_zone                      = $capsule::params::dns_zone,
   $dns_reverse                   = $capsule::params::dns_reverse,
   $dns_interface                 = $capsule::params::dns_interface,
+  $dns_server                    = $capsule::params::dns_server,
+  $dns_ttl                       = $capsule::params::dns_ttl,
+  $dns_tsig_keytab               = $capsule::params::dns_tsig_keytab,
+  $dns_tsig_principal            = $capsule::params::dns_tsig_principal,
   $dns_forwarders                = $capsule::params::dns_forwarders,
+
+  $virsh_network                 = $capsule::params::virsh_network,
 
   $realm                         = $capsule::params::realm,
   $realm_provider                = $capsule::params::realm_provider,
@@ -119,6 +174,7 @@ class capsule (
   $foreman_oauth_effective_user  = $capsule::params::foreman_oauth_effective_user,
   $foreman_oauth_key             = $capsule::params::foreman_oauth_key,
   $foreman_oauth_secret          = $capsule::params::foreman_oauth_secret
+
   ) inherits capsule::params {
 
   validate_present($capsule::parent_fqdn)
@@ -220,17 +276,33 @@ class capsule (
       ssl_key               => $::certs::foreman_proxy::proxy_key,
       ssl_ca                => $::certs::foreman_proxy::proxy_ca_cert,
       tftp                  => $tftp,
+      tftp_syslinux_root    => $tftp_syslinux_root,
+      tftp_syslinux_files   => $tftp_syslinux_files,
+      tftp_root             => $tftp_root,
+      tftp_dirs             => tftp_dirs,
       tftp_servername       => $tftp_servername,
       dhcp                  => $dhcp,
       dhcp_interface        => $dhcp_interface,
       dhcp_gateway          => $dhcp_gateway,
       dhcp_range            => $dhcp_range,
       dhcp_nameservers      => $dhcp_nameservers,
+      dhcp_vendor           => $dhcp_vendor,
+      dhcp_config           => $dhcp_config,
+      dhcp_leases           => $dhcp_leases,
+      dhcp_key_name         => $dhcp_key_name,
+      dhcp_key_secret       => $dhcp_key_secret,
       dns                   => $dns,
+      dns_managed           => $dns_managed,
+      dns_provider          => $dns_provider,
       dns_zone              => $dns_zone,
       dns_reverse           => $dns_reverse,
       dns_interface         => $dns_interface,
+      dns_server            => $dns_server,
+      dns_ttl               => $dns_ttl,
+      dns_tsig_keytab       => $dns_tsig_keytab,
+      dns_tsig_principal    => $dns_tsig_principal,
       dns_forwarders        => $dns_forwarders,
+      virsh_network         => $virsh_network,
       realm                 => $realm,
       realm_provider        => $realm_provider,
       realm_keytab          => $realm_keytab,
