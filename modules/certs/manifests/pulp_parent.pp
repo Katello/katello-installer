@@ -71,7 +71,7 @@ class certs::pulp_parent (
       owner   => 'apache',
       group   => 'apache',
       mode    => '0640',
-    }
+    } -> Class['pulp::config']
 
   }
 
