@@ -8,10 +8,7 @@ changelog_format = %s (%ae)
 disttag = .el6
 blacklist =
 
-[katello-nightly-fedora18]
-disttag = .fc18
+[katello-nightly-rhel7]
+disttag = .el7
 blacklist =
 
-[katello-nightly-fedora19]
-disttag = .fc19
-blacklist =
