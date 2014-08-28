@@ -62,6 +62,26 @@ capsule-installer --parent-fqdn          "master.example.com"\
                   --tftp                 "true"\
 ```
 
+## Data Reset
+
+If you run into an error during the initial installation or wish to reset your installation entirely, the installer provides a reset option. To reset the database and all subsystems:
+
+```
+katello-installer --reset
+```
+
+To clear all of your on disk Pulp content:
+
+```
+katello-installer --clear-pulp-content
+```
+
+To clear all Puppet environments on disk:
+
+```
+katello-installer --clear-puppet-environments
+```
+
 ## Development Usage
 
 ```
