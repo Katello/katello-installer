@@ -24,17 +24,36 @@ class capsule::params {
   $foreman_proxy_port            = '9090'
   $tftp                          = false
   $tftp_servername               = $foreman_proxy::params::tftp_servername
+  $tftp_syslinux_files           = $foreman_proxy::params::tftp_syslinux_files
+  $tftp_root                     = $foreman_proxy::params::tftp_root
+  $tftp_dirs                     = $foreman_proxy::params::tftp_dirs
+
   $dhcp                          = false
+  $dhcp_managed                  = $foreman_proxy::params::dhcp_managed
   $dhcp_interface                = $foreman_proxy::params::dhcp_interface
   $dhcp_gateway                  = $foreman_proxy::params::dhcp_gateway
   $dhcp_range                    = $foreman_proxy::params::dhcp_range
   $dhcp_nameservers              = $foreman_proxy::params::dhcp_nameservers
+  $dhcp_vendor                   = $foreman_proxy::params::dhcp_vendor
+  $dhcp_config                   = $foreman_proxy::params::dhcp_config
+  $dhcp_leases                   = $foreman_proxy::params::dhcp_leases
+  $dhcp_key_name                 = $foreman_proxy::params::dhcp_key_name
+  $dhcp_key_secret               = $foreman_proxy::params::dhcp_key_secret
+
   $dns                           = false
+  $dns_managed                   = $foreman_proxy::params::dns_managed
+  $dns_provider                  = $foreman_proxy::params::dns_provider
   $dns_zone                      = $foreman_proxy::params::dns_zone
   $dns_reverse                   = $foreman_proxy::params::dns_reverse
   $dns_interface                 = $foreman_proxy::params::dns_interface
-  $dns_forwareders               = $foreman_proxy::params::dns_forwarders
+  $dns_server                    = $foreman_proxy::params::dns_server
+  $dns_ttl                       = $foreman_proxy::params::dns_ttl
+  $dns_tsig_keytab               = $foreman_proxy::params::dns_tsig_keytab
+  $dns_tsig_principal            = $foreman_proxy::params::dns_tsig_principal
+  $dns_forwarders                = $foreman_proxy::params::dns_forwarders
   $foreman_oauth_effective_user  = $foreman_proxy::params::oauth_effective_user
+
+  $virsh_network                 = $foreman_proxy::params::virsh_network
 
   # Realm management options
   $realm                         = false
