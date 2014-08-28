@@ -7,4 +7,13 @@ Puppet::Type.type(:service).provide :service_wait, :parent => :redhat  do
 
   defaultfor :osfamily => [:redhat]
 
+  def self.specificity
+    # The specificity determines which provider wins at the end
+    # https://github.com/puppetlabs/puppet/blob/3.4.2/lib/puppet/provider.rb#L333-L339
+    # Workaround to make sure the service-wait will be always used.
+    # The usual value for specificity is < 1000. Adding 10 000 should do
+    # the trick
+    super + 10000
+  end
+
 end
