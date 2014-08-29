@@ -30,7 +30,7 @@ Alias /pulp/exports /var/www/pub/yum/https/exports
     WSGIAccessScript /srv/pulp/repo_auth.wsgi
 
     SSLRequireSSL
-    SSLVerifyClient optional_no_ca
+    SSLVerifyClient require
     SSLVerifyDepth 2
     SSLOptions +StdEnvVars +ExportCertData +FakeBasicAuth
     Options FollowSymLinks Indexes
@@ -49,7 +49,7 @@ Alias /pulp/isos /var/www/pub/https/isos
     WSGIAccessScript /srv/pulp/repo_auth.wsgi
 
     SSLRequireSSL
-    SSLVerifyClient optional_no_ca
+    SSLVerifyClient require
     SSLVerifyDepth 2
     SSLOptions +StdEnvVars +ExportCertData +FakeBasicAuth
     Options FollowSymLinks Indexes
