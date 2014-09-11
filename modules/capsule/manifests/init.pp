@@ -279,7 +279,7 @@ class capsule (
       tftp_syslinux_root    => $tftp_syslinux_root,
       tftp_syslinux_files   => $tftp_syslinux_files,
       tftp_root             => $tftp_root,
-      tftp_dirs             => tftp_dirs,
+      tftp_dirs             => $tftp_dirs,
       tftp_servername       => $tftp_servername,
       dhcp                  => $dhcp,
       dhcp_interface        => $dhcp_interface,

@@ -23,7 +23,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-capsule
   ref: master
-  sha: a99daa4e9b2232652db7f75c6f28e53c1b40f5fc
+  sha: 9840b6ff31419ec5c2856561ef0400b677ec6bbd
   specs:
     katello-capsule (0.0.1)
 

@@ -25,6 +25,7 @@ class capsule::params {
   $tftp                          = false
   $tftp_servername               = $foreman_proxy::params::tftp_servername
   $tftp_syslinux_files           = $foreman_proxy::params::tftp_syslinux_files
+  $tftp_syslinux_root            = $foreman_proxy::params::tftp_syslinux_root
   $tftp_root                     = $foreman_proxy::params::tftp_root
   $tftp_dirs                     = $foreman_proxy::params::tftp_dirs
 
