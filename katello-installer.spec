@@ -67,6 +67,9 @@ ln -sf %{_datadir}/%{name}/bin/capsule-certs-generate %{buildroot}/%{_sbindir}/c
 %{_sbindir}/capsule-certs-generate
 
 %changelog
+* Fri Sep 12 2014 Justin Sherrill <jsherril@redhat.com> 2.1.0-1
+- bumping version to 2.1 (jsherril@redhat.com)
+
 * Fri Sep 12 2014 Justin Sherrill <jsherril@redhat.com> 2.0.0-1
 - bumping version to 2.0 (jsherril@redhat.com)
 - fixes #7386 - fixing install with capsule-tftp=true (jsherril@redhat.com)
