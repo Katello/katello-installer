@@ -67,6 +67,19 @@ ln -sf %{_datadir}/%{name}/bin/capsule-certs-generate %{buildroot}/%{_sbindir}/c
 %{_sbindir}/capsule-certs-generate
 
 %changelog
+* Fri Sep 12 2014 Justin Sherrill <jsherril@redhat.com> 2.0.0-1
+- bumping version to 2.0 (jsherril@redhat.com)
+- fixes #7386 - fixing install with capsule-tftp=true (jsherril@redhat.com)
+- fixes #7296, BZ1135127 - update pulp module (bbuckingham@redhat.com)
+- refs #7104 - update service_wait module (bbuckingham@redhat.com)
+- Fixes #7104,7239 - update certs and service_wait modules (inecas@redhat.com)
+- Fixes #7159: Add missing foreman proxy options to capsule.
+  (ericdhelms@gmail.com)
+- refs #7264 - update puppet-elasticsearch module (bbuckingham@redhat.com)
+- refs #7264 - check for java, unless installing for capsule & update
+  elasticsearch (bbuckingham@redhat.com)
+- Fixes #5219: Add option to clear Pulp data. (ericdhelms@gmail.com)
+
 * Wed Aug 27 2014 Justin Sherrill <jsherril@redhat.com> 0.0.20-1
 - Merge pull request #109 from jlsherrill/releng (jlsherrill@gmail.com)
 - Merge pull request #108 from jlsherrill/7219 (jlsherrill@gmail.com)
