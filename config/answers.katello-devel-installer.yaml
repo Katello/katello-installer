@@ -10,3 +10,4 @@ katello_devel:
   rvm: true
 capsule:
   puppet: true
+  puppetca: true
