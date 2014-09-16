@@ -6,17 +6,17 @@ class katello_devel::install {
   }
 
   vcsrepo { "${katello_devel::deployment_dir}/foreman":
-    ensure    => present,
-    provider  => git,
-    source    => 'https://github.com/theforeman/foreman.git',
-    user      => $katello_devel::user
+    ensure   => present,
+    provider => git,
+    source   => 'https://github.com/theforeman/foreman.git',
+    user     => $katello_devel::user
   }
 
   vcsrepo { "${katello_devel::deployment_dir}/katello":
-    ensure    => present,
-    provider  => git,
-    source    => 'https://github.com/Katello/katello.git',
-    user      => $katello_devel::user
+    ensure   => present,
+    provider => git,
+    source   => 'https://github.com/Katello/katello.git',
+    user     => $katello_devel::user
   }
 
 }

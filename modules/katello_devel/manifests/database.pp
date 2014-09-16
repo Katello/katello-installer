@@ -30,8 +30,8 @@ class katello_devel::database {
     }
 
     class { 'postgresql::server':
-      encoding              => 'UTF8',
-      pg_hba_conf_defaults  => false,
+      encoding             => 'UTF8',
+      pg_hba_conf_defaults => false,
     }
 
     postgresql::server::pg_hba_rule { 'local all':
