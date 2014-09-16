@@ -13,11 +13,11 @@ class katello_devel::config {
   }
 
   file { "${katello_devel::deployment_dir}/foreman/bundler.d/katello.local.rb":
-    ensure  => link,
-    target  => "${katello_devel::deployment_dir}/katello/doc/katello.local.rb",
-    owner   => $katello_devel::user,
-    group   => $katello_devel::group,
-    mode    => '0644',
+    ensure => link,
+    target => "${katello_devel::deployment_dir}/katello/doc/katello.local.rb",
+    owner  => $katello_devel::user,
+    group  => $katello_devel::group,
+    mode   => '0644',
   }
 
   file { "${katello_devel::deployment_dir}/foreman/config/settings.yaml":

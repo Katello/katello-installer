@@ -1,5 +1,5 @@
 # Katello development parameters
-class katello_devel::params () inherits ::katello::params {
+class katello_devel::params() inherits ::katello::params {
   $user = undef
 
   $use_passenger = false

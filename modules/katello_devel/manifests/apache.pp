@@ -25,5 +25,18 @@ class katello_devel::apache {
     ssl_proxyengine   => true,
   }
 
+  apache::vhost { 'katello':
+    servername      => $::fqdn,
+    serveraliases   => ['katello'],
+    docroot         => '/var/www/html',
+    port            => 80,
+    priority        => '05',
+    options         => ['SymLinksIfOwnerMatch'],
+    ssl             => false,
+    custom_fragment => template('katello/etc/httpd/conf.d/05-foreman.d/katello.conf.erb',
+                                'katello_devel/_http.conf.erb'),
+  }
+
+
   User<|title == apache|>{groups +> $katello_devel::group}
 }
