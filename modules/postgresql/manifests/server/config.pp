@@ -12,9 +12,9 @@ class postgresql::server::config {
   $pg_hba_conf_defaults       = $postgresql::server::pg_hba_conf_defaults
   $user                       = $postgresql::server::user
   $group                      = $postgresql::server::group
-  $version                    = $postgresql::server::version
+  $version                    = $postgresql::server::_version
   $manage_pg_hba_conf         = $postgresql::server::manage_pg_hba_conf
-  $manage_pg_ident_conf       = $postgresql::server::manage_pg_hba_conf
+  $manage_pg_ident_conf       = $postgresql::server::manage_pg_ident_conf
 
   if ($manage_pg_hba_conf == true) {
     # Prepare the main pg_hba file
@@ -114,7 +114,7 @@ class postgresql::server::config {
     concat { $pg_ident_conf_path:
       owner  => $user,
       group  => $group,
-      force   => true, # do not crash if there is no pg_ident_rules
+      force  => true, # do not crash if there is no pg_ident_rules
       mode   => '0640',
       warn   => true,
       notify => Class['postgresql::server::reload'],

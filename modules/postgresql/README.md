@@ -26,7 +26,7 @@ The PostgreSQL module allows you to easily manage postgres databases with Puppet
 Module Description
 -------------------
 
-PostgreSQL is a high-performance, free, open-source relational database server. The postgresql module allows you to manage PostgreSQL packages and services on several operating systems, while also supporting basic management of PostgreSQL databases and users. The module offers support for managing firewall for postgres ports on RedHat-based distros, as well as support for basic management of common security settings.
+PostgreSQL is a high-performance, free, open-source relational database server. The postgresql module allows you to manage PostgreSQL packages and services on several operating systems, while also supporting basic management of PostgreSQL databases and users. The module offers support for basic management of common security settings.
 
 Setup
 -----
@@ -35,7 +35,6 @@ Setup
 
 * package/service/configuration files for PostgreSQL
 * listened-to ports
-* system firewall (optional)
 * IP and mask (optional)
 
 **Introductory Questions**
@@ -44,7 +43,6 @@ The postgresql module offers many security configuration settings. Before gettin
 
 * Do you want/need to allow remote connections?
     * If yes, what about TCP connections?
-* Would you prefer to work around your current firewall settings or overwrite some of them?
 * How restrictive do you want the database superuser's permissions to be?
 
 Your answers to these questions will determine which of the module's parameters you'll want to specify values for.
@@ -71,7 +69,6 @@ For a more customized configuration:
       ip_mask_allow_all_users    => '0.0.0.0/0',
       listen_addresses           => '*',
       ipv4acls                   => ['hostssl all johndoe 192.168.0.0/24 cert'],
-      manage_firewall            => true,
       postgres_password          => 'TPSrep0rt!',
     }
 
@@ -235,22 +232,22 @@ Classes:
 
 Resources:
 
-* [postgresql::server::config_entry](#resource-postgresqlserverconfigentry)
+* [postgresql::server::config_entry](#resource-postgresqlserverconfig_entry)
 * [postgresql::server::db](#resource-postgresqlserverdb)
 * [postgresql::server::database](#resource-postgresqlserverdatabase)
-* [postgresql::server::database_grant](#resource-postgresqlserverdatabasegrant)
-* [postgresql::server::pg_hba_rule](#resource-postgresqlserverpghbarule)
-* [postgresql::server::pg_ident_rule](#resource-postgresqlserverpgidentrule)
+* [postgresql::server::database_grant](#resource-postgresqlserverdatabase_grant)
+* [postgresql::server::pg_hba_rule](#resource-postgresqlserverpg_hba_rule)
+* [postgresql::server::pg_ident_rule](#resource-postgresqlserver_pg_identrule)
 * [postgresql::server::role](#resource-postgresqlserverrole)
 * [postgresql::server::schema](#resource-postgresqlserverschema)
-* [postgresql::server::table_grant](#resource-postgresqlservertablegrant)
+* [postgresql::server::table_grant](#resource-postgresqlservertable_grant)
 * [postgresql::server::tablespace](#resource-postgresqlservertablespace)
-* [postgresql::validate_db_connection](#resource-postgresqlvalidatedbconnection)
+* [postgresql::validate_db_connection](#resource-postgresqlvalidate_db_connection)
 
 Functions:
 
-* [postgresql\_password](#function-postgresqlpassword)
-* [postgresql\_acls\_to\_resources\_hash](#function-postgresqlaclstoresourceshashaclarray-id-orderoffset)
+* [postgresql\_password](#function-postgresql_password)
+* [postgresql\_acls\_to\_resources\_hash](#function-postgresql_acls_to_resources_hashacl_array-id-order_offset)
 
 
 ###Class: postgresql::globals
@@ -376,9 +373,6 @@ This will set the default database locale for all databases created with this mo
 
 On Debian you'll need to ensure that the 'locales-all' package is installed for full functionality of Postgres.
 
-####`firewall_supported`
-This allows you to override the automated detection to see if your OS supports the `firewall` module.
-
 ####`manage_package_repo`
 If `true` this will setup the official PostgreSQL repositories on your host. Defaults to `false`.
 
@@ -469,9 +463,6 @@ This will set the default database locale for all databases created with this mo
 #####Debian
 
 On Debian you'll need to ensure that the 'locales-all' package is installed for full functionality of Postgres.
-
-####`manage_firewall`
-This value defaults to `false`. Many distros ship with a fairly restrictive firewall configuration which will block the port that postgres tries to listen on. If you'd like for the puppet module to open this port for you (using the [puppetlabs-firewall](http://forge.puppetlabs.com/puppetlabs/firewall) module), change this value to true. Check the documentation for `puppetlabs/firewall` to ensure the rest of the global setup is applied, to ensure things like persistence and global rules are set correctly.
 
 ####`manage_pg_hba_conf`
 This value defaults to `true`. Whether or not manage the pg_hba.conf. If set to `true`, puppet will overwrite this file. If set to `false`, puppet will not modify the file.
@@ -682,24 +673,6 @@ This would create a ruleset in `pg_hba.conf` similar to:
     # Order: 150
     host  app  app  200.1.2.0/24  md5
 
-###Resource: postgresql::server::pg\_ident\_rule
-This defined type allows you to create user name maps for `pg_ident.conf`. For more details see the [PostgreSQL documentation](http://www.postgresql.org/docs/9.4/static/auth-username-maps.html).
-
-For example:
-
-    postgresql::server::pg_ident_rule{ 'Map the SSL certificate of the backup server as a replication user':
-      map_name          => 'sslrepli',
-      system_username   => 'repli1.example.com',
-      database_username => 'replication',
-    }
-
-This would create a user name map in `pg_ident.conf` similar to:
-
-    # Rule Name: Map the SSL certificate of the backup server as a replication user
-    # Description: none
-    # Order: 150
-    sslrepli	repli1.example.com	replication
-
 ####`namevar`
 A unique identifier or short description for this rule. The namevar doesn't provide any functional usage, but it is stored in the comments of the produced `pg_hba.conf` so the originating resource can be identified.
 
@@ -726,6 +699,46 @@ For certain `auth_method` settings there are extra options that can be passed. C
 
 ####`order`
 An order for placing the rule in `pg_hba.conf`. Defaults to `150`.
+
+####`target`
+This provides the target for the rule, and is generally an internal only property. Use with caution.
+
+
+###Resource: postgresql::server::pg\_ident\_rule
+This defined type allows you to create user name maps for `pg_ident.conf`. For more details see the [PostgreSQL documentation](http://www.postgresql.org/docs/9.4/static/auth-username-maps.html).
+
+For example:
+
+    postgresql::server::pg_ident_rule{ 'Map the SSL certificate of the backup server as a replication user':
+      map_name          => 'sslrepli',
+      system_username   => 'repli1.example.com',
+      database_username => 'replication',
+    }
+
+This would create a user name map in `pg_ident.conf` similar to:
+
+    # Rule Name: Map the SSL certificate of the backup server as a replication user
+    # Description: none
+    # Order: 150
+    sslrepli	repli1.example.com	replication
+
+####`namevar`
+A unique identifier or short description for this rule. The namevar doesn't provide any functional usage, but it is stored in the comments of the produced `pg_ident.conf` so the originating resource can be identified.
+
+####`description`
+A longer description for this rule if required. Defaults to `none`. This description is placed in the comments above the rule in `pg_ident.conf`.
+
+####`map_name`
+Name of the user map, that is used to refer to this mapping in `pg_hba.conf`.
+
+####`system_username`
+Operating system user name, the user name used to connect to the database.
+
+####`database_username`
+Database user name, the user name of the the database user. The `system_username` will be mapped to this user name.
+
+####`order`
+An order for placing the mapping in pg_ident.conf. Defaults to 150.
 
 ####`target`
 This provides the target for the rule, and is generally an internal only property. Use with caution.
