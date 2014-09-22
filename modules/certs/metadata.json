@@ -1,0 +1,24 @@
+{
+  "name": "katello-certs",
+  "version": "0.1.0",
+  "author": "Katello",
+  "summary": "Deploys CA and required certs for a Foreman and Katello installation.",
+  "license": "GPLv3+",
+  "source": "https://github.com/Katello/puppet-certs.git",
+  "project_page": "https://github.com/Katello/puppet-certs",
+  "issues_url": "http://projects.theforeman.org/projects/katello/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">= 1.0.0"
+    },
+    {
+       "name": "theforeman-foreman",
+       "version_requirement": ">= 1.5.0"
+    },
+    {
+       "name": "katello-common",
+       "version_requirement": ">= 0.0.1"
+    }
+  ]
+}
