@@ -21,6 +21,14 @@ class certs::katello (
     group  => 'apache',
     mode   => '0755',
   } ->
+  # Placing the CA in the pub dir for trusting by a user in their browser
+  file { "${katello_www_pub_dir}/${certs::default_ca_name}.crt":
+    ensure => present,
+    source => "${certs::ssl_build_dir}/${certs::default_ca_name}.crt",
+    owner  => 'apache',
+    group  => 'apache',
+    mode   => '0644',
+  } ->
   # We need to deliver the server_ca for yum and rhsm to trust the server
   # and the default_ca for goferd to trust the qpid
   certs_bootstrap_rpm { $candlepin_consumer_name:
