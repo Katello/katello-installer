@@ -179,17 +179,17 @@ class certs (
 
     Ca[$default_ca_name] ~>
     pubkey { $ca_cert:
-      key_pair  => $default_ca
+      key_pair => $default_ca
     } ~>
     pubkey { $ca_cert_stripped:
-      strip     => true,
-      key_pair  => $default_ca
+      strip    => true,
+      key_pair => $default_ca
     } ~>
     file { $ca_cert:
-      ensure  => file,
-      owner   => 'root',
-      group   => $certs::group,
-      mode    => '0644',
+      ensure => file,
+      owner  => 'root',
+      group  => $certs::group,
+      mode   => '0644',
     }
 
     if $generate {
@@ -200,10 +200,10 @@ class certs (
         password_file => $ca_key_password_file
       } ~>
       file { $ca_key:
-        ensure  => file,
-        owner   => 'root',
-        group   => $certs::group,
-        mode    => '0440',
+        ensure => file,
+        owner  => 'root',
+        group  => $certs::group,
+        mode   => '0440',
       }
     }
   }

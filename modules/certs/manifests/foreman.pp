@@ -43,9 +43,9 @@ class certs::foreman (
       key_pair => $::certs::server_ca
     } ~>
     file { $client_key:
-      ensure  => file,
-      owner   => 'foreman',
-      mode    => '0400',
+      ensure => file,
+      owner  => 'foreman',
+      mode   => '0400',
     }
 
     $foreman_config_cmd = "${::foreman::app_root}/script/foreman-config\

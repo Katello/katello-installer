@@ -30,7 +30,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-certs
   ref: master
-  sha: d3dd35ca92dedb17f6d592125f7a8ba238b59e48
+  sha: c06556479354642bb071c1f62d1733ee50cf0ff2
   specs:
     katello-certs (0.0.1)
 
@@ -51,7 +51,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello
   ref: master
-  sha: c475783abb217da3e2cf7f7022d800c2d482da41
+  sha: dafdf029381c64c4ea43cf58dd9757c9228f52e8
   specs:
     katello-katello (0.0.1)
 
@@ -72,7 +72,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-qpid
   ref: master
-  sha: c4f2a445e7bdfd188896ce40e1fe6fdb17717b27
+  sha: 7f2a3487b9d904e9d489e26259865eba898f5475
   specs:
     katello-qpid (0.0.1)
 

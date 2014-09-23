@@ -46,6 +46,10 @@ common:
     oauth_key: <%= scope.lookupvar("katello::params::oauth_key") %>
     oauth_secret: <%= scope.lookupvar("katello::params::oauth_secret") %>
 
+  qpid:
+    url: <%= @qpid_url %>
+    subscriptions_queue_address: <%= @candlepin_event_queue %>
+
 <%- if @proxy_url -%>
   cdn_proxy:
     host: <%= @proxy_url %>

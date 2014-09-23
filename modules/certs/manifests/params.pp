@@ -68,8 +68,9 @@ class certs::params {
   $candlepin_ca_cert                = "${candlepin_certs_dir}/candlepin-ca.crt"
   $candlepin_ca_key                 = "${candlepin_certs_dir}/candlepin-ca.key"
   $candlepin_amqp_store_dir         = "${candlepin_certs_dir}/amqp"
-  $candlepin_amqp_truststore        = "${candlepin_amqp_store_dir}/truststore"
-  $candlepin_amqp_keystore          = "${candlepin_amqp_store_dir}/keystore"
+  $candlepin_amqp_truststore        = "${candlepin_amqp_store_dir}/candlepin.truststore"
+  $candlepin_amqp_keystore          = "${candlepin_amqp_store_dir}/candlepin.jks"
+  $candlepin_qpid_exchange          = 'event'
 
   $certs_tar              = undef
   # Settings for uploading packages to Katello
@@ -86,4 +87,6 @@ class certs::params {
   # Pulp expects the node certificate to be located on this very location
   $nodes_cert_dir        = '/etc/pki/pulp/nodes'
   $nodes_cert_name       = 'node.crt'
+
+  $qpidd_group = 'qpidd'
 }

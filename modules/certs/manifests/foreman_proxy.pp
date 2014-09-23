@@ -15,14 +15,14 @@ class certs::foreman_proxy (
 
   if $::certs::server_cert {
     cert { $proxy_cert_name:
-      ensure          => present,
-      hostname        => $::certs::foreman_proxy::hostname,
-      generate        => $generate,
-      regenerate      => $regenerate,
-      deploy          => $deploy,
-      custom_pubkey   => $::certs::server_cert,
-      custom_privkey  => $::certs::server_key,
-      custom_req      => $::certs::server_cert_req,
+      ensure         => present,
+      hostname       => $::certs::foreman_proxy::hostname,
+      generate       => $generate,
+      regenerate     => $regenerate,
+      deploy         => $deploy,
+      custom_pubkey  => $::certs::server_cert,
+      custom_privkey => $::certs::server_key,
+      custom_req     => $::certs::server_cert_req,
     }
   } else {
     # cert for ssl of foreman-proxy
@@ -59,10 +59,10 @@ class certs::foreman_proxy (
       notify   => Service['foreman-proxy'],
     } ~>
     file { $proxy_key:
-      ensure  => file,
-      owner   => 'foreman-proxy',
-      group   => $certs::group,
-      mode    => '0400'
+      ensure => file,
+      owner  => 'foreman-proxy',
+      group  => $certs::group,
+      mode   => '0400'
     } ~>
     Service['foreman-proxy']
 
