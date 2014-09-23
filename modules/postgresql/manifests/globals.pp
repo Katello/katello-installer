@@ -41,10 +41,8 @@ class postgresql::globals (
   $encoding             = undef,
   $locale               = undef,
 
-  $manage_firewall      = undef,
   $manage_pg_hba_conf   = undef,
   $manage_pg_ident_conf = undef,
-  $firewall_supported   = undef,
 
   $manage_package_repo  = undef
 ) {
@@ -85,6 +83,10 @@ class postgresql::globals (
       default => '9.2',
     },
     'FreeBSD' => '93',
+    'Suse' => $::operatingsystem ? {
+      'SLES' => '91',
+      default => undef,
+    },
     default => undef,
   }
   $globals_version = pick($version, $default_version, 'unknown')
@@ -97,6 +99,7 @@ class postgresql::globals (
     '8.4'   => '1.5',
     '9.0'   => '1.5',
     '9.1'   => '1.5',
+    '91'    => '1.5',
     '9.2'   => '2.0',
     '9.3'   => '2.1',
     default => undef,

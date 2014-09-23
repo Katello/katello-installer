@@ -2,7 +2,9 @@
 class foreman::params {
 
 # Basic configurations
-  $foreman_url  = "https://${::fqdn}"
+  $foreman_url      = "https://${::fqdn}"
+  $foreman_user     = undef
+  $foreman_password = undef
   # Should foreman act as an external node classifier (manage puppet class
   # assignments)
   $enc          = true
@@ -18,6 +20,8 @@ class foreman::params {
   $passenger    = true
   # Enclose apache configuration in <VirtualHost>...</VirtualHost>
   $use_vhost    = true
+  # Server name of the VirtualHost
+  $servername   = $::fqdn
   # force SSL (note: requires passenger)
   $ssl          = true
   #define which interface passenger should listen on, undef means all interfaces

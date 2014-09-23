@@ -35,11 +35,12 @@ def psql(psql_cmd, user = 'postgres', exit_codes = [0,1], &block)
 end
 
 unless ENV['RS_PROVISION'] == 'no' or ENV['BEAKER_provision'] == 'no'
-  if hosts.first.is_pe?
-    install_pe
-  else
-    install_puppet
-  end
+  # This will install the latest available package on el and deb based
+  # systems fail on windows and osx, and install via gem on other *nixes
+  foss_opts = { :default_action => 'gem_install' }
+
+  if default.is_pe?; then install_pe; else install_puppet( foss_opts ); end
+
   hosts.each do |host|
     shell("mkdir -p #{host['distmoduledir']}")
     if ! host.is_pe?
@@ -49,27 +50,6 @@ unless ENV['RS_PROVISION'] == 'no' or ENV['BEAKER_provision'] == 'no'
         #install_package host, 'augeas-devel'
         #install_package host, 'ruby-augeas'
       end
-    end
-    # Set up selinux if appropriate.
-    if fact('osfamily') == 'RedHat' && fact('selinux') == 'true'
-      pp = <<-EOS
-        if $::osfamily == 'RedHat' and $::selinux == 'true' {
-          $semanage_package = $::operatingsystemmajrelease ? {
-            '5'     => 'policycoreutils',
-            default => 'policycoreutils-python',
-          }
-
-          package { $semanage_package: ensure => installed }
-          exec { 'set_postgres':
-            command     => 'semanage port -a -t postgresql_port_t -p tcp 5433',
-            path        => '/bin:/usr/bin/:/sbin:/usr/sbin',
-            subscribe   => Package[$semanage_package],
-            refreshonly => true,
-          }
-        }
-      EOS
-
-      apply_manifest(pp, :catch_failures => true)
     end
   end
 end
@@ -87,6 +67,28 @@ RSpec.configure do |c|
   c.before :suite do
     # Install module and dependencies
     puppet_module_install(:source => proj_root, :module_name => 'postgresql')
+
+    # Set up selinux if appropriate.
+    if fact('osfamily') == 'RedHat' && fact('selinux') == 'true'
+      pp = <<-EOS
+        if $::osfamily == 'RedHat' and $::selinux == 'true' {
+          $semanage_package = $::operatingsystemmajrelease ? {
+            '5'     => 'policycoreutils',
+            default => 'policycoreutils-python',
+          }
+
+          package { $semanage_package: ensure => installed }
+          exec { 'set_postgres':
+            command     => 'semanage port -a -t postgresql_port_t -p tcp 5433',
+            path        => '/bin:/usr/bin/:/sbin:/usr/sbin',
+            subscribe   => Package[$semanage_package],
+          }
+        }
+      EOS
+
+      apply_manifest_on(agents, pp, :catch_failures => false)
+    end
+
     hosts.each do |host|
       on host, "/bin/touch #{default['puppetpath']}/hiera.yaml"
       on host, 'chmod 755 /root'
@@ -97,9 +99,8 @@ RSpec.configure do |c|
       end
 
       on host, puppet('module','install','puppetlabs-stdlib'), { :acceptable_exit_codes => [0,1] }
-      on host, puppet('module','install','puppetlabs-firewall'), { :acceptable_exit_codes => [0,1] }
       on host, puppet('module','install','puppetlabs-apt'), { :acceptable_exit_codes => [0,1] }
-      on host, puppet('module','install','puppetlabs-concat'), { :acceptable_exit_codes => [0,1] }
+      on host, puppet('module','install','--force','puppetlabs-concat'), { :acceptable_exit_codes => [0,1] }
     end
 
 
