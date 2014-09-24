@@ -2,10 +2,10 @@
 class katello::config {
 
   file { '/usr/share/foreman/bundler.d/katello.rb':
-    ensure  => file,
-    owner   => $katello::user,
-    group   => $katello::group,
-    mode    => '0644',
+    ensure => file,
+    owner  => $katello::user,
+    group  => $katello::group,
+    mode   => '0644',
   }
 
   file { "${katello::config_dir}/katello.yaml":
@@ -30,10 +30,10 @@ class katello::config {
   }
 
   file { "${katello::config_dir}/katello":
-    ensure  => directory,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0755',
+    ensure => directory,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0755',
   }
 
   file { "${katello::config_dir}/katello/client.conf":

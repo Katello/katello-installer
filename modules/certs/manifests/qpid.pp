@@ -44,15 +44,15 @@ class certs::qpid (
       key_pair => Cert["${::certs::qpid::hostname}-qpid-broker"]
     } ~>
     file { $client_key:
-      ensure  => file,
-      owner   => 'root',
-      group   => 'apache',
-      mode    => '0440',
+      ensure => file,
+      owner  => 'root',
+      group  => 'apache',
+      mode   => '0440',
     } ~>
     file { $::certs::nss_db_dir:
       ensure => directory,
       owner  => 'root',
-      group  => 'qpidd',
+      group  => $certs::qpidd_group,
       mode   => '0755',
     } ~>
     exec { 'generate-nss-password':
@@ -61,10 +61,10 @@ class certs::qpid (
       creates => $nss_db_password_file
     } ->
     file { $nss_db_password_file:
-      ensure  => file,
-      owner   => 'root',
-      group   => 'qpidd',
-      mode    => '0640',
+      ensure => file,
+      owner  => 'root',
+      group  => $certs::qpidd_group,
+      mode   => '0640',
     } ~>
     exec { 'create-nss-db':
       command => "certutil -N -d '${::certs::nss_db_dir}' -f '${nss_db_password_file}'",
@@ -77,9 +77,9 @@ class certs::qpid (
       refreshonly => true,
     } ~>
     file { $nssdb_files:
-      owner   => 'root',
-      group   => 'qpidd',
-      mode    => '0640',
+      owner => 'root',
+      group => $certs::qpidd_group,
+      mode  => '0640',
     } ~>
     exec { 'add-broker-cert-to-nss-db':
       command     => "certutil -A -d '${::certs::nss_db_dir}' -n 'broker' -t ',,' -a -i '${client_cert}'",

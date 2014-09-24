@@ -13,14 +13,14 @@ class certs::apache (
 
   if $::certs::server_cert {
     cert { $apache_cert_name:
-      ensure          => present,
-      hostname        => $hostname,
-      generate        => $generate,
-      deploy          => $deploy,
-      regenerate      => $regenerate,
-      custom_pubkey   => $::certs::server_cert,
-      custom_privkey  => $::certs::server_key,
-      custom_req      => $::certs::server_cert_req,
+      ensure         => present,
+      hostname       => $hostname,
+      generate       => $generate,
+      deploy         => $deploy,
+      regenerate     => $regenerate,
+      custom_pubkey  => $::certs::server_cert,
+      custom_privkey => $::certs::server_key,
+      custom_req     => $::certs::server_cert_req,
     }
   } else {
     cert { $apache_cert_name:
@@ -51,9 +51,9 @@ class certs::apache (
       notify   => Service['httpd']
     } ~>
     privkey { $apache_key:
-      ensure    => present,
-      key_pair  => Cert[$apache_cert_name],
-      notify    => Service['httpd']
+      ensure   => present,
+      key_pair => Cert[$apache_cert_name],
+      notify   => Service['httpd']
     } ->
     file { $apache_key:
       owner => $::apache::user,

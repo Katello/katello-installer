@@ -94,6 +94,11 @@ class katello (
     proxy_username              => $proxy_username,
     proxy_password              => $proxy_password,
   } ~>
+  class { 'qpid::client': } ~>
+  class { 'katello::qpid':
+    client_cert => $certs::qpid::client_cert,
+    client_key  => $certs::qpid::client_key,
+  } ~>
   class{ 'elasticsearch': } ~>
   Exec['foreman-rake-db:seed']
 

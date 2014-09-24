@@ -55,15 +55,15 @@ class certs::candlepin (
       mode    => '0440',
     } ~>
     exec { 'candlepin-generate-ssl-keystore':
-      command   => "openssl pkcs12 -export -in ${ca_cert} -inkey ${ca_key} -out ${keystore} -name tomcat -CAfile ${ca_cert} -caname root -password \"file:${password_file}\" -passin \"file:${certs::ca_key_password_file}\" ",
-      creates   => $keystore,
+      command => "openssl pkcs12 -export -in ${ca_cert} -inkey ${ca_key} -out ${keystore} -name tomcat -CAfile ${ca_cert} -caname root -password \"file:${password_file}\" -passin \"file:${certs::ca_key_password_file}\" ",
+      creates => $keystore,
     } ~>
     file { "/usr/share/${candlepin::tomcat}/conf/keystore":
-      ensure  => link,
-      target  => $keystore,
-      owner   => 'tomcat',
-      group   => $::certs::group,
-      notify  => Service[$candlepin::tomcat]
+      ensure => link,
+      target => $keystore,
+      owner  => 'tomcat',
+      group  => $::certs::group,
+      notify => Service[$candlepin::tomcat]
     }
 
     Cert[$java_client_cert_name] ~>
@@ -86,26 +86,26 @@ class certs::candlepin (
       mode   => '0750',
     } ~>
     exec { 'create candlepin qpid exchange':
-      command => "qpid-config --ssl-certificate ${client_cert} --ssl-key ${client_key} -b 'amqps://${::fqdn}:5671' add exchange topic event --durable",
-      unless  => "qpid-config --ssl-certificate ${client_cert} --ssl-key ${client_key} -b 'amqps://${::fqdn}:5671' exchanges event",
+      command => "qpid-config --ssl-certificate ${client_cert} --ssl-key ${client_key} -b 'amqps://${::fqdn}:5671' add exchange topic ${certs::candlepin_qpid_exchange} --durable",
+      unless  => "qpid-config --ssl-certificate ${client_cert} --ssl-key ${client_key} -b 'amqps://${::fqdn}:5671' exchanges ${certs::candlepin_qpid_exchange}",
       require => Service['qpidd'],
     } ~>
     exec { 'import CA into Candlepin truststore':
-      command  => "keytool -import -v -keystore ${amqp_truststore} -storepass ${keystore_password} -alias ${certs::default_ca_name} -file ${ca_cert} -noprompt",
-      creates  => $amqp_truststore,
+      command => "keytool -import -v -keystore ${amqp_truststore} -storepass ${keystore_password} -alias ${certs::default_ca_name} -file ${ca_cert} -noprompt",
+      creates => $amqp_truststore,
     } ~>
     exec { 'import client certificate into Candlepin keystore':
       # Stupid keytool doesn't allow you to import a keypair.  You can only import a cert.  Hence, we have to
       # create the store as an PKCS12 and convert to JKS.  See http://stackoverflow.com/a/8224863
-      command  => "openssl pkcs12 -export -name amqp-client -in ${client_cert} -inkey ${client_key} -out /tmp/keystore.p12 -passout file:${password_file} && keytool -importkeystore -destkeystore ${amqp_keystore} -srckeystore /tmp/keystore.p12 -srcstoretype pkcs12 -alias amqp-client -storepass ${keystore_password} -srcstorepass ${keystore_password} -noprompt && rm /tmp/keystore.p12",
-      unless   => "keytool -list -keystore ${amqp_keystore} -storepass ${keystore_password} -alias ${certs::default_ca_name}",
+      command => "openssl pkcs12 -export -name amqp-client -in ${client_cert} -inkey ${client_key} -out /tmp/keystore.p12 -passout file:${password_file} && keytool -importkeystore -destkeystore ${amqp_keystore} -srckeystore /tmp/keystore.p12 -srcstoretype pkcs12 -alias amqp-client -storepass ${keystore_password} -srcstorepass ${keystore_password} -noprompt && rm /tmp/keystore.p12",
+      unless  => "keytool -list -keystore ${amqp_keystore} -storepass ${keystore_password} -alias ${certs::default_ca_name}",
     } ~>
     file { $amqp_keystore:
-      ensure   => file,
-      owner    => 'tomcat',
-      group    => $::certs::group,
-      mode     => '0640',
-      notify   => Service[$candlepin::tomcat],
+      ensure => file,
+      owner  => 'tomcat',
+      group  => $::certs::group,
+      mode   => '0640',
+      notify => Service[$candlepin::tomcat],
     }
   }
 }

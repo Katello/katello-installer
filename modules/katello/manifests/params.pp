@@ -61,4 +61,7 @@ class katello::params {
   $validate_ldap = false
 
   $use_passenger = true
+
+  $qpid_url = "amqp:ssl:${::fqdn}:5671"
+  $candlepin_event_queue = 'katello_event_queue'
 }

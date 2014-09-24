@@ -68,9 +68,9 @@ class certs::pulp_parent (
       key_pair => Cert["${::certs::pulp_parent::hostname}-qpid-client-cert"],
     } ~>
     file { $messaging_client_cert:
-      owner   => 'apache',
-      group   => 'apache',
-      mode    => '0640',
+      owner => 'apache',
+      group => 'apache',
+      mode  => '0640',
     } -> Class['pulp::config']
 
   }
