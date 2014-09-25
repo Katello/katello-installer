@@ -61,7 +61,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello_devel
   ref: master
-  sha: fc44ea1138002f36cbca75d22d3e4a00210ee39c
+  sha: a1d7063bbb34ae48542a7704dba8725c0bab7e50
   specs:
     katello-katello_devel (0.1.0)
 
