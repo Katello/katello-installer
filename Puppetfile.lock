@@ -30,9 +30,12 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-certs
   ref: master
-  sha: c06556479354642bb071c1f62d1733ee50cf0ff2
+  sha: b5d7f802df51e7b7107f42795165bc4794d1badc
   specs:
-    katello-certs (0.0.1)
+    katello-certs (0.1.0)
+      katello-common (>= 0.0.1)
+      puppetlabs-stdlib (>= 1.0.0)
+      theforeman-foreman (>= 1.5.0)
 
 GIT
   remote: https://github.com/Katello/puppet-common
