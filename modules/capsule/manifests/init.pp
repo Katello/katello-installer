@@ -254,7 +254,8 @@ class capsule (
       server_storeconfigs_backend => false,
       server_dynamic_environments => true,
       server_environments_owner   => 'apache',
-      server_config_version       => ''
+      server_config_version       => '',
+      server_enc_api              => 'v2',
     }
   }
 
