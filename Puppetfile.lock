@@ -148,7 +148,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman
   ref: master
-  sha: 941a9e8ef537d9b5ed007806f93211f540f50798
+  sha: 0f64157746c7d51820b4b308f6a5cd0885254edc
   specs:
     theforeman-foreman (2.1.2)
       puppetlabs-apache (< 2.0.0, >= 1.0.0)
