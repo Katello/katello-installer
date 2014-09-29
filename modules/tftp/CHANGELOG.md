@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.4.3
+* Fix lint issues
+
 ## 1.4.2
 * Fix Modulefile specification for Forge compatibility
 

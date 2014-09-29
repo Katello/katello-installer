@@ -1,5 +1,5 @@
 name    'theforeman-tftp'
-version '1.4.2'
+version '1.4.3'
 source 'git://github.com/theforeman/puppet-tftp'
 author 'theforeman'
 license 'GPLv3+'
