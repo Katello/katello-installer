@@ -3,7 +3,7 @@
 %global scl_ruby /usr/bin/ruby
 
 Name: katello-installer
-Version: 2.0.1
+Version: 2.0.2
 Release: 1%{?dist}
 Summary: Puppet-based installer for the Katello and Katello Capsule
 Group: Applications/System
@@ -67,6 +67,9 @@ ln -sf %{_datadir}/%{name}/bin/capsule-certs-generate %{buildroot}/%{_sbindir}/c
 %{_sbindir}/capsule-certs-generate
 
 %changelog
+* Tue Sep 30 2014 Justin Sherrill <jsherril@redhat.com> 2.0.2-1
+- Fix #7720 - update foreman module (mhulan@redhat.com)
+
 * Tue Sep 30 2014 Justin Sherrill <jsherril@redhat.com> 2.0.1-1
 - Fix #7720 - update foreman module (mhulan@redhat.com)
 - fixes #7558 - use Katello certs for web sockets (stbenjam@redhat.com)
