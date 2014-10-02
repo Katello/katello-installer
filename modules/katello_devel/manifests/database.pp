@@ -5,13 +5,13 @@ class katello_devel::database {
   $db_username = 'katello'
 
   $db_adapter = $katello_devel::db_type ? {
-    'postgres'  => 'postgresql',
-    default     => 'sqlite3'
+    'postgres' => 'postgresql',
+    default    => 'sqlite3'
   }
 
   $db_name = $katello_devel::db_type ? {
-    'sqlite'  => 'db/katello.sqlite3',
-    default   => 'katello'
+    'sqlite' => 'db/katello.sqlite3',
+    default  => 'katello'
   }
 
   file { "${katello_devel::deployment_dir}/foreman/config/database.yml":
