@@ -13,6 +13,7 @@ define katello_devel::install::repos::yum ($repo, $gpgcheck) {
   }
   $os = $::operatingsystem ? {
     'CentOS'  => 'RHEL',
+    'OracleLinux'  => 'RHEL',
     'RHEL'    => 'RHEL',
     'Fedora'  => 'Fedora'
   }
