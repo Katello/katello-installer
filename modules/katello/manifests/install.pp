@@ -4,6 +4,7 @@ class katello::install {
   $os = $::operatingsystem ? {
     'RedHat' => 'RHEL',
     'CentOS' => 'RHEL',
+    'OracleLinux' => 'RHEL',
     default  => 'Fedora'
   }
 

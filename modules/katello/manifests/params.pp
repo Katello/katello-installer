@@ -1,7 +1,6 @@
 # Katello Default Params
 class katello::params {
-
-  if ($::operatingsystem == 'RedHat' or $::operatingsystem == 'CentOS'){
+  if ($::operatingsystem == 'RedHat' or $::operatingsystem == 'CentOS' or $::operatingsystem == 'OracleLinux') {
     $scl_prefix = 'ruby193-'
     $scl_root = '/opt/rh/ruby193/root'
   } else {
@@ -14,8 +13,7 @@ class katello::params {
 
   if file_exists('/usr/sbin/tomcat') and !file_exists('/usr/sbin/tomcat6') {
     $tomcat = 'tomcat'
-  }
-  else {
+  } else {
     $tomcat = 'tomcat6'
   }
 
@@ -29,8 +27,8 @@ class katello::params {
   $user = 'foreman'
   $group = 'foreman'
   $user_groups = 'foreman'
-  $config_dir  = '/etc/foreman/plugins'
-  $log_dir     = '/var/log/foreman/plugins'
+  $config_dir = '/etc/foreman/plugins'
+  $log_dir = '/var/log/foreman/plugins'
 
   # sysconfig settings
   $job_workers = 1
@@ -49,8 +47,8 @@ class katello::params {
 
   # Subsystems settings
   $candlepin_url = 'https://localhost:8443/candlepin'
-  $pulp_url      = subsystem_url('pulp/api/v2/')
-  $foreman_url   = subsystem_url('foreman')
+  $pulp_url = subsystem_url('pulp/api/v2/')
+  $foreman_url = subsystem_url('foreman')
 
   # database reinitialization flag
   $reset_data = 'NONE'
