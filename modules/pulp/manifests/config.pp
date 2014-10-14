@@ -30,6 +30,14 @@ class pulp::config {
     mode    => '0644',
   }
 
+  file {'/etc/httpd/conf.d/pulp_docker.conf':
+    ensure  => file,
+    content => template('pulp/etc/httpd/conf.d/pulp_docker.conf.erb'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+  }
+
   file {'/etc/httpd/conf.d/pulp_puppet.conf':
     ensure  => file,
     content => template('pulp/etc/httpd/conf.d/pulp_puppet.conf.erb'),
@@ -65,6 +73,14 @@ class pulp::config {
   file {'/etc/pki/pulp/content/pulp-global-repo.ca':
       ensure => link,
       target => $pulp::consumers_ca_cert,
+  }
+
+  file {'/etc/pulp/server/plugins.conf.d/docker_importer.json':
+    ensure  => file,
+    content => template('pulp/docker_importer.json'),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
   }
 
   file {'/etc/pulp/server/plugins.conf.d/yum_importer.json':
@@ -104,19 +120,19 @@ class pulp::config {
 
   if $pulp::reset_data {
     exec {'reset_pulp_db':
-      command     => 'rm -f /var/lib/pulp/init.flag && service-wait httpd stop && service-wait mongod stop && rm -f /var/lib/mongodb/pulp_database*&& service-wait mongod start && rm -rf /var/lib/pulp/{distributions,published,repos}/*',
-      path        => '/sbin:/usr/sbin:/bin:/usr/bin',
-      before      => Exec['migrate_pulp_db'],
+      command => 'rm -f /var/lib/pulp/init.flag && service-wait httpd stop && service-wait mongod stop && rm -f /var/lib/mongodb/pulp_database*&& service-wait mongod start && rm -rf /var/lib/pulp/{distributions,published,repos}/*',
+      path    => '/sbin:/usr/sbin:/bin:/usr/bin',
+      before  => Exec['migrate_pulp_db'],
     }
   }
 
   exec {'migrate_pulp_db':
-    command     => 'pulp-manage-db && touch /var/lib/pulp/init.flag',
-    creates     => '/var/lib/pulp/init.flag',
-    path        => '/bin:/usr/bin',
-    logoutput   => 'on_failure',
-    user        => 'apache',
-    require     => [Service[mongodb], Service[qpidd], File['/etc/pulp/server.conf']],
+    command   => 'pulp-manage-db && touch /var/lib/pulp/init.flag',
+    creates   => '/var/lib/pulp/init.flag',
+    path      => '/bin:/usr/bin',
+    logoutput => 'on_failure',
+    user      => 'apache',
+    require   => [Service[mongodb], Service[qpidd], File['/etc/pulp/server.conf']],
   }
 
   if $pulp::consumers_crl {
