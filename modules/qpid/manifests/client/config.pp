@@ -14,11 +14,11 @@ class qpid::client::config {
   }
 
   file { '/etc/qpidc.conf':
-    ensure  => link,
-    target  => '/etc/qpid/qpidc.conf',
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
+    ensure => link,
+    target => '/etc/qpid/qpidc.conf',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
   }
 
 }

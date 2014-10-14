@@ -86,9 +86,10 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-qpid
   ref: master
-  sha: 7f2a3487b9d904e9d489e26259865eba898f5475
+  sha: 0a47cfade0db4854f75fea397395f8f09dda194d
   specs:
-    katello-qpid (0.0.1)
+    katello-qpid (0.1.0)
+      puppetlabs-stdlib (>= 1.0.0)
 
 GIT
   remote: https://github.com/Katello/puppet-service_wait

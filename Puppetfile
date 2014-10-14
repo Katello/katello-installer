@@ -34,7 +34,7 @@ mod 'katello-elasticsearch', :git => 'https://github.com/Katello/puppet-elastics
 mod 'katello-katello', :git => 'https://github.com/Katello/puppet-katello'
 mod 'katello-pulp', :git => 'https://github.com/Katello/puppet-pulp'
 mod 'katello-crane', :git => 'https://github.com/Katello/puppet-crane'
-mod 'katello/qpid', :git => 'https://github.com/Katello/puppet-qpid'
+mod 'katello-qpid', :git => 'https://github.com/Katello/puppet-qpid'
 mod 'katello-service_wait', :git => 'https://github.com/Katello/puppet-service_wait'
 mod 'puppetlabs/mongodb', :git => 'https://github.com/puppetlabs/puppetlabs-mongodb'
 

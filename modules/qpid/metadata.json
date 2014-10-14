@@ -1,0 +1,16 @@
+{
+  "name": "katello-qpid",
+  "version": "0.1.0",
+  "author": "Katello",
+  "summary": "Qpid message bus configuration",
+  "license": "GPLv3+",
+  "source": "https://github.com/Katello/puppet-qpid.git",
+  "project_page": "https://github.com/Katello/puppet-qpid",
+  "issues_url": "http://projects.theforeman.org/projects/katello/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">= 1.0.0"
+    }
+  ]
+}
