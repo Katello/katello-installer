@@ -69,9 +69,23 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello
   ref: master
-  sha: dafdf029381c64c4ea43cf58dd9757c9228f52e8
+  sha: 2f79cf0d58b6863e1232b117718b2fdc24ed6152
   specs:
-    katello-katello (0.0.1)
+    katello-katello (0.1.0)
+      katello-candlepin (>= 0.1.0)
+      katello-certs (>= 0.1.0)
+      katello-common (>= 0.0.1)
+      katello-crane (>= 0.1.0)
+      katello-elasticsearch (>= 0.0.1)
+      katello-pulp (>= 0.1.0)
+      katello-qpid (>= 0.1.0)
+      puppetlabs-apache (< 2.0.0, >= 1.0.0)
+      puppetlabs-mongodb (>= 0)
+      puppetlabs-postgresql (>= 3.0.0)
+      puppetlabs-stdlib (>= 1.0.0)
+      puppetlabs-xinetd (>= 1.3.1)
+      theforeman-concat_native (>= 1.3.1)
+      theforeman-foreman (>= 1.5.0)
 
 GIT
   remote: https://github.com/Katello/puppet-katello_devel
