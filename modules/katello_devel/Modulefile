@@ -1,6 +1,0 @@
-name 'katello-katello_devel'
-version '0.1.0'
-summary 'Handles deploying Katello+Foreman for development.'
-description 'Handles deploying Katello+Foreman for development.'
-source 'git://github.com/katello/puppet-katello_devel'
-author 'katello'

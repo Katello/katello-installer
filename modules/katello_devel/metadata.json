@@ -1,0 +1,70 @@
+{
+  "name": "katello-katello_devel",
+  "version": "0.1.0",
+  "author": "Katello",
+  "summary": "Handles deploying and managing a Katello + Foreman development setup from git",
+  "license": "GPLv3+",
+  "source": "https://github.com/Katello/puppet-katello_devel.git",
+  "project_page": "https://github.com/Katello/puppet-katello_devel",
+  "issues_url": "http://projects.theforeman.org/projects/katello/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">= 1.0.0"
+    },
+    {
+       "name": "puppetlabs-apache",
+       "version_requirement": ">= 1.0.0 < 2.0.0"
+    },
+    {
+       "name": "puppetlabs-postgresql",
+       "version_requirement": ">= 3.0.0"
+    },
+    {
+       "name": "puppetlabs-mongodb"
+    },
+    {
+       "name": "puppetlabs-vcsrepo"
+    },
+    {
+       "name": "theforeman-foreman",
+       "version_requirement": ">= 1.5.0"
+    },
+    {
+       "name": "theforeman-concat_native",
+       "version_requirement": ">= 1.3.1"
+    },
+    {
+       "name": "katello-katello",
+       "version_requirement": ">= 0.1.0"
+    },
+    {
+       "name": "katello-certs",
+       "version_requirement": ">= 0.1.0"
+    },
+    {
+       "name": "katello-qpid",
+       "version_requirement": ">= 0.1.0"
+    },
+    {
+       "name": "katello-candlepin",
+       "version_requirement": ">= 0.1.0"
+    },
+    {
+       "name": "katello-pulp",
+       "version_requirement": ">= 0.1.0"
+    },
+    {
+       "name": "katello-crane",
+       "version_requirement": ">= 0.1.0"
+    },
+    {
+       "name": "katello-elasticsearch",
+       "version_requirement": ">= 0.0.1"
+    },
+    {
+       "name": "katello-common",
+       "version_requirement": ">= 0.0.1"
+    }
+  ]
+}
