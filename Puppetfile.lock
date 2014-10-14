@@ -16,9 +16,13 @@ FORGE
 GIT
   remote: https://github.com/Katello/puppet-candlepin
   ref: master
-  sha: e940ba26f8d3b17028a58ac82041617633ae146e
+  sha: c868c8ae048e4d1e0047d71b4f1728fcca9b6bbb
   specs:
-    katello-candlepin (0.0.1)
+    katello-candlepin (0.1.0)
+      puppetlabs-postgresql (>= 3.0.0)
+      puppetlabs-stdlib (>= 1.0.0)
+      theforeman-concat_native (>= 1.3.0)
+      theforeman-foreman (>= 1.5.0)
 
 GIT
   remote: https://github.com/Katello/puppet-capsule
