@@ -146,7 +146,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-concat
   ref: master
-  sha: 0f8301ea3ec1b95e839b6dbb97258316ce9ad662
+  sha: 97adae94f394202aef945fd5b3025446f53c749a
   specs:
     theforeman-concat_native (1.3.1)
 
