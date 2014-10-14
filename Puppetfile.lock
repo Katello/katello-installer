@@ -45,6 +45,17 @@ GIT
     katello-common (0.0.1)
 
 GIT
+  remote: https://github.com/Katello/puppet-crane
+  ref: master
+  sha: e440fbc6ff0290e2c1833a8d8205839a69bd9751
+  specs:
+    katello-crane (0.1.0)
+      katello-certs (>= 0.1.0)
+      katello-common (>= 0.0.1)
+      puppetlabs-apache (< 2.0.0, >= 1.0.0)
+      puppetlabs-stdlib (>= 1.0.0)
+
+GIT
   remote: https://github.com/Katello/puppet-elasticsearch
   ref: master
   sha: 0b808851dccd5ed3f4aa66d15f747b7a49427807
@@ -201,6 +212,7 @@ DEPENDENCIES
   katello-capsule (>= 0)
   katello-certs (>= 0)
   katello-common (>= 0)
+  katello-crane (>= 0)
   katello-elasticsearch (>= 0)
   katello-katello (>= 0)
   katello-katello_devel (>= 0)

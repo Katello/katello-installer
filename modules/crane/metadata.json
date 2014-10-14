@@ -1,0 +1,28 @@
+{
+  "name": "katello-crane",
+  "version": "0.1.0",
+  "author": "Katello",
+  "summary": "Configure and install Crane on a Pulp server or node.",
+  "license": "GPLv3+",
+  "source": "https://github.com/Katello/puppet-crane.git",
+  "project_page": "https://github.com/Katello/puppet-crane",
+  "issues_url": "http://projects.theforeman.org/projects/katello/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">= 1.0.0"
+    },
+    {
+       "name": "puppetlabs-apache",
+       "version_requirement": ">= 1.0.0 < 2.0.0"
+    },
+    {
+       "name": "katello-certs",
+       "version_requirement": ">= 0.1.0"
+    },
+    {
+       "name": "katello-common",
+       "version_requirement": ">= 0.0.1"
+    }
+  ]
+}
