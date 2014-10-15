@@ -109,11 +109,11 @@ class pulp (
     dbpath  => '/var/lib/mongodb',
   } ~>
   class { 'qpid':
-    ssl                     => true,
-    ssl_cert_db             => $qpid_ssl_cert_db,
-    ssl_cert_password_file  => $qpid_ssl_cert_password_file,
-    ssl_cert_name           => 'broker',
-    user_groups             => $pulp::user_groups
+    ssl                    => true,
+    ssl_cert_db            => $qpid_ssl_cert_db,
+    ssl_cert_password_file => $qpid_ssl_cert_password_file,
+    ssl_cert_name          => 'broker',
+    user_groups            => $pulp::user_groups
   } ~>
   # Make sure we install the mongodb client, used by service-wait to check
   # that the server is up.

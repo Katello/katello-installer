@@ -1,0 +1,28 @@
+{
+  "name": "katello-candlepin",
+  "version": "0.1.0",
+  "author": "Katello",
+  "summary": "Configure and install Candlepin entitlement server.",
+  "license": "GPLv3+",
+  "source": "https://github.com/Katello/puppet-candlepin.git",
+  "project_page": "https://github.com/Katello/puppet-candlepin",
+  "issues_url": "http://projects.theforeman.org/projects/katello/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">= 1.0.0"
+    },
+    {
+       "name": "puppetlabs-postgresql",
+       "version_requirement": ">= 3.0.0"
+    },
+    {
+       "name": "theforeman-foreman",
+       "version_requirement": ">= 1.5.0"
+    },
+    {
+       "name": "theforeman-concat_native",
+       "version_requirement": ">= 1.3.0"
+    }
+  ]
+}

@@ -7,10 +7,10 @@ class candlepin::config {
   }
 
   file { '/etc/candlepin':
-    ensure  => directory,
-    mode    => '0775',
-    owner   => 'root',
-    group   => 'tomcat',
+    ensure => directory,
+    mode   => '0775',
+    owner  => 'root',
+    group  => 'tomcat',
   }
 
   file { '/etc/candlepin/candlepin.conf':
@@ -22,10 +22,10 @@ class candlepin::config {
   }
 
   file { "/etc/${candlepin::tomcat}":
-    ensure  => directory,
-    mode    => '0775',
-    owner   => 'root',
-    group   => 'tomcat',
+    ensure => directory,
+    mode   => '0775',
+    owner  => 'root',
+    group  => 'tomcat',
   }
 
   file { "/etc/${candlepin::tomcat}/server.xml":
@@ -37,31 +37,31 @@ class candlepin::config {
   }
 
   file { '/var/log/candlepin':
-    ensure  => directory,
-    mode    => '0775',
-    owner   => 'tomcat',
-    group   => 'tomcat',
+    ensure => directory,
+    mode   => '0775',
+    owner  => 'tomcat',
+    group  => 'tomcat',
   }
 
   file { "/var/log/${candlepin::tomcat}":
-    ensure  => directory,
-    mode    => '0775',
-    owner   => 'root',
-    group   => 'tomcat',
+    ensure => directory,
+    mode   => '0775',
+    owner  => 'root',
+    group  => 'tomcat',
   }
 
   file { "/var/lib/${candlepin::tomcat}":
-    ensure  => directory,
-    mode    => '0775',
-    owner   => 'tomcat',
-    group   => 'tomcat',
+    ensure => directory,
+    mode   => '0775',
+    owner  => 'tomcat',
+    group  => 'tomcat',
   }
 
   file { "/var/cache/${candlepin::tomcat}":
-    ensure  => directory,
-    mode    => '0775',
-    owner   => 'tomcat',
-    group   => 'tomcat',
+    ensure => directory,
+    mode   => '0775',
+    owner  => 'tomcat',
+    group  => 'tomcat',
   }
 
 }
