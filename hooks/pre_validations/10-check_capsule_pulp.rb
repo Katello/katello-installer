@@ -13,7 +13,7 @@ if param('capsule', 'pulp') && param('capsule', 'pulp').value
     error "the pulp node can't be installed on a machine with IPA"
   end
 
-  unless system("subscription-manager identity | grep identity && ! grep -q subscription.rhn.redhat.com /etc/rhsm/rhsm.conf")
+  unless system("subscription-manager identity &>/dev/null && ! grep -q subscription.rhn.redhat.com /etc/rhsm/rhsm.conf &> /dev/null")
     error "The system has to be registered to a Katello instance before installing the node"
   end
 end
