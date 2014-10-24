@@ -4,7 +4,10 @@
 #
 class qpid::config {
 
-  user { 'qpidd':
+  group { $qpid::group:
+    ensure => present
+  } ->
+  user { $qpid::user:
     ensure => present,
     groups => [$qpid::user_groups],
   }
