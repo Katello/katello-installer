@@ -2,12 +2,13 @@
 class katello::qpid (
   $client_cert            = undef,
   $client_key             = undef,
-  $katello_user           = undef
+  $katello_user           = $katello::user
 ){
   if $katello_user == undef {
     fail('katello_user not defined')
   } else {
-    User<|title == $katello_user|>{groups +> $certs::qpidd_group}
+    Group['qpidd'] ->
+    User<|title == $katello_user|>{groups +> 'qpidd'}
   }
   exec { 'create katello entitlments queue':
     command   => "qpid-config --ssl-certificate ${katello::qpid::client_cert} --ssl-key ${katello::qpid::client_key} -b 'amqps://${::fqdn}:5671' add queue ${katello::params::candlepin_event_queue} --durable",

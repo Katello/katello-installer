@@ -9,4 +9,7 @@ class qpid::params {
 
   $user_groups = []
 
+  $user = 'qpidd'
+  $group = 'qpidd'
+
 }
