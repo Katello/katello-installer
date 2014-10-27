@@ -88,7 +88,9 @@
 
     <Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
                maxThreads="150" scheme="https" secure="true"
-               clientAuth="want" SSLProtocol="TLS"
+               clientAuth="want"
+               sslEnabledProtocol="TLSv1.2,TLSv1.1,TLSv1"
+               SSLProtocol="TLS"
                keystoreFile="conf/keystore"
                truststoreFile="conf/keystore"
                keystorePass="<%= scope.lookupvar("candlepin::keystore_password") %>"
