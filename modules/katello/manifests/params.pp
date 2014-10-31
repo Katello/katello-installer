@@ -1,7 +1,7 @@
 # Katello Default Params
 class katello::params {
 
-  if ($::operatingsystem == 'RedHat' or $::operatingsystem == 'CentOS'){
+  if ($::osfamily == 'RedHat' and $::operatingsystem != 'Fedora'){
     $scl_prefix = 'ruby193-'
     $scl_root = '/opt/rh/ruby193/root'
   } else {
