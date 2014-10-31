@@ -1,6 +1,7 @@
 # Setup and create gemset for RVM
 class katello_devel::rvm {
 
+  $install_gpg_command = "su -c 'gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3' - ${katello_devel::user}"
   $install_command = "su -c 'curl -L https://get.rvm.io | bash -s stable' - ${katello_devel::user}"
 
   package{ ['curl', 'bash']:
@@ -25,6 +26,11 @@ class katello_devel::rvm {
         "set spec[user = '${katello_devel::user}']/host_group/command/tag NOPASSWD",
     ],
     require => User[$katello_devel::user],
+  } ->
+  exec { $install_gpg_command:
+    path    => '/usr/bin:/usr/sbin:/bin',
+    timeout => 900,
+    require => [ Package['curl'], Package['bash'], User[$katello_devel::user] ],
   } ->
   exec { $install_command:
     path    => '/usr/bin:/usr/sbin:/bin',

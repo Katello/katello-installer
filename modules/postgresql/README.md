@@ -583,6 +583,9 @@ The namevar for the resource designates the name of the database.
 ####`dbname`
 The name of the database to be created. Defaults to `namevar`.
 
+####`owner`
+Name of the database user who should be set as the owner of the database. Defaults to the $user variable set in `postgresql::server` or `postgresql::globals`.
+
 ####`user`
 User to create and assign access to the database upon creation. Mandatory.
 
@@ -600,6 +603,9 @@ Grant permissions during creation. Defaults to `ALL`.
 
 ####`tablespace`
 The name of the tablespace to allocate this database to. If not specifies, it defaults to the PostgreSQL default.
+
+####`template`
+The name of the template database from which to build this database. Defaults to `template0`.
 
 ####`istemplate`
 Define database as a template. Defaults to `false`.
@@ -619,6 +625,9 @@ Name of the database user who should be set as the owner of the database. Defaul
 
 ####`tablespace`
 Tablespace for where to create this database. Defaults to the defaults defined during PostgreSQL installation.
+
+####`template`
+The name of the template database from which to build this database. Defaults to `template0`.
 
 ####`encoding`
 Override the character set during creation of the database. Defaults to the default defined during installation.
@@ -764,7 +773,7 @@ Whether to grant the ability to create new databases with this role. Defaults to
 Whether to grant the ability to create new roles with this role. Defaults to `false`.
 
 ####`login`
-Whether to grant login capability for the new role. Defaults to `false`.
+Whether to grant login capability for the new role. Defaults to `true`.
 
 ####`inherit`
 Whether to grant inherit capability for the new role. Defaults to `true`.
@@ -789,7 +798,7 @@ This defined type can be used to create a schema. For example:
       db    => 'janedb',
     }
 
-It will create the schema `jane` in the database `janedb` if neccessary,
+It will create the schema `isolated` in the database `janedb` if neccessary,
 assigning the user `jane` ownership permissions.
 
 ####`namevar`
@@ -961,7 +970,7 @@ And then run the unit tests:
 
     bundle exec rake spec
 
-The unit tests are ran in Travis-CI as well, if you want to see the results of your own tests regsiter the service hook through Travis-CI via the accounts section for your Github clone of this project.
+The unit tests are ran in Travis-CI as well, if you want to see the results of your own tests register the service hook through Travis-CI via the accounts section for your Github clone of this project.
 
 If you want to run the system tests, make sure you also have:
 

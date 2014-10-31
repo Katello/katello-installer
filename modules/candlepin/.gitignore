@@ -14,3 +14,5 @@ Gemfile.lock
 .ruby-version
 
 spec/fixtures/
+
+.project
