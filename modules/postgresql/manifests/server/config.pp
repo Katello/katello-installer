@@ -112,7 +112,19 @@ class postgresql::server::config {
       ensure  => present,
       replace => false,
     }
+
+    # The init script from the packages of the postgresql.org repository
+    # sources an alternate sysconfig file.
+    # I. e. /etc/sysconfig/pgsql/postgresql-9.3 for PostgreSQL 9.3
+    # Link to the sysconfig file set by this puppet module
+    file { "/etc/sysconfig/pgsql/postgresql-${version}":
+      ensure  => link,
+      target  => '/etc/sysconfig/pgsql/postgresql',
+      require => File[ '/etc/sysconfig/pgsql/postgresql' ],
+    }
+
   }
+
 
   if ($manage_pg_ident_conf == true) {
     concat { $pg_ident_conf_path:
@@ -122,6 +134,25 @@ class postgresql::server::config {
       mode   => '0640',
       warn   => true,
       notify => Class['postgresql::server::reload'],
+    }
+  }
+
+  if $::osfamily == 'RedHat' {
+    if $::operatingsystemrelease =~ /^7/ or $::operatingsystem == 'Fedora' {
+      file { 'systemd-override':
+        ensure  => present,
+        path    => '/etc/systemd/system/postgresql.service',
+        owner   => root,
+        group   => root,
+        content => template('postgresql/systemd-override.erb'),
+        notify  => [ Exec['restart-systemd'], Class['postgresql::server::service'] ],
+        before  => Class['postgresql::server::reload'],
+      }
+      exec { "restart-systemd":
+        command     => 'systemctl daemon-reload',
+        refreshonly => true,
+        path        => '/bin:/usr/bin:/usr/local/bin'
+      }
     }
   }
 }

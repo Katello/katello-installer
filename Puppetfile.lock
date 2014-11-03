@@ -17,7 +17,7 @@ FORGE
 GIT
   remote: https://github.com/Katello/puppet-candlepin
   ref: master
-  sha: db962f2697460464f55ea79813763389051325bd
+  sha: 51113061b2d50127386451b05387627552bcc45d
   specs:
     katello-candlepin (0.1.0)
       puppetlabs-concat (>= 1.1.1)
@@ -167,7 +167,7 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-postgresql
   ref: master
-  sha: fb719070a7f1b724edbfef16c1e08a0e73856b03
+  sha: 4f4cfb02d46fa3c4623ee1acbb02496c31934f29
   specs:
     puppetlabs-postgresql (4.0.0)
       puppetlabs-apt (< 2.0.0, >= 1.1.0)
