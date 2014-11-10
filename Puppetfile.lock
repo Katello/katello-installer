@@ -17,7 +17,7 @@ FORGE
 GIT
   remote: https://github.com/Katello/puppet-candlepin
   ref: master
-  sha: 51113061b2d50127386451b05387627552bcc45d
+  sha: 83ca083b3bec67cfefd59bb707af6989330de886
   specs:
     katello-candlepin (0.1.0)
       puppetlabs-concat (>= 1.1.1)
@@ -167,9 +167,9 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-postgresql
   ref: master
-  sha: 4f4cfb02d46fa3c4623ee1acbb02496c31934f29
+  sha: 77283979b41ab5ee0a2fce4e9cf839dd2d34dc42
   specs:
-    puppetlabs-postgresql (4.0.0)
+    puppetlabs-postgresql (4.1.0)
       puppetlabs-apt (< 2.0.0, >= 1.1.0)
       puppetlabs-concat (< 2.0.0, >= 1.1.0)
       puppetlabs-stdlib (~> 4.0)
@@ -200,9 +200,9 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman
   ref: master
-  sha: 1b656a5335252275a29e1e2b3a72bd17754d6cc4
+  sha: 5fb395db29dfb9aab373efa6e4692e0d06ea3c71
   specs:
-    theforeman-foreman (2.2.3)
+    theforeman-foreman (2.3.0)
       adrien-alternatives (< 1.0.0, >= 0.2.0)
       puppetlabs-apache (< 2.0.0, >= 1.0.0)
       puppetlabs-apt (< 2.0.0)
