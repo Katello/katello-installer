@@ -7,7 +7,7 @@ A set of tools to properly configure Katello with Foreman in production and deve
 ```
 $ yum install -y katello-installer
 
-# install Katello with Foreman and smarty proxy with Puppet and Puppetca
+# install Katello with Foreman and smart proxy with Puppet and Puppetca
 $ katello-installer
 ```
 
