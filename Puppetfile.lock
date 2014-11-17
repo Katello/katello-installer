@@ -9,7 +9,7 @@ FORGE
       puppetlabs-stdlib (>= 2.2.1)
     puppetlabs-concat (1.1.2)
       puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
-    puppetlabs-stdlib (4.3.2)
+    puppetlabs-stdlib (4.4.0)
     puppetlabs-vcsrepo (1.1.0)
     puppetlabs-xinetd (1.3.1)
       puppetlabs-stdlib (>= 2.2.1)
@@ -200,7 +200,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman
   ref: master
-  sha: 5fb395db29dfb9aab373efa6e4692e0d06ea3c71
+  sha: aa72cd99099d9b24424b51c1432742c129f29fa5
   specs:
     theforeman-foreman (2.3.0)
       adrien-alternatives (< 1.0.0, >= 0.2.0)
@@ -263,6 +263,7 @@ DEPENDENCIES
   katello-pulp (>= 0)
   katello-qpid (>= 0)
   katello-service_wait (>= 0)
+  puppetlabs-apache (= 1.1.1)
   puppetlabs-firewall (>= 0)
   puppetlabs-mongodb (>= 0)
   puppetlabs-mysql (>= 0)

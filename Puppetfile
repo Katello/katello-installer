@@ -9,6 +9,7 @@ mod 'puppetlabs/postgresql', :git => 'https://github.com/puppetlabs/puppetlabs-p
 mod 'puppetlabs/mysql', :git => 'https://github.com/puppetlabs/puppetlabs-mysql', :ref => '2.2.0'
 mod 'puppetlabs/firewall', :git => 'https://github.com/puppetlabs/puppetlabs-firewall', :ref => '1.0.0'
 mod 'puppetlabs/vcsrepo'
+mod 'puppetlabs-apache', "1.1.1"
 
 mod 'theforeman-concat_native', :git => 'https://github.com/theforeman/puppet-concat'
 mod 'theforeman/dhcp', :git => 'https://github.com/theforeman/puppet-dhcp'
