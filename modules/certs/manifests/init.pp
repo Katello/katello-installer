@@ -67,10 +67,8 @@
 # $ssl_build_dir::        The directory where SSL keys, certs and RPMs will be generated
 #
 # $user::                 The system user name who should own the certs;
-#                         default 'foreman'
 #
 # $group::                The group who should own the certs;
-#                         default 'foreman'
 #
 # $password_file_dir::    The location to store password files
 #

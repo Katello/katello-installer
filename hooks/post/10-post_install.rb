@@ -50,7 +50,7 @@ MSG
       foreman_oauth_key     = read_cache_data("oauth_consumer_key")
       foreman_oauth_secret  = read_cache_data("oauth_consumer_secret")
       katello_oauth_secret  = read_cache_data("katello_oauth_secret")
-      org                   = "ACME_Corporation"
+      org                   = @kafo.param('certs', 'org').value
       say <<MSG
 
   To finish the installation, follow these steps:

@@ -32,7 +32,7 @@ class certs::params {
   $country       = 'US'
   $state         = 'North Carolina'
   $city          = 'Raleigh'
-  $org           = 'SomeOrg'
+  $org           = 'Katello'
   $org_unit      = 'SomeOrgUnit'
   $expiration    = '7300' # 20 years
   $ca_expiration = '36500' # 100 years
