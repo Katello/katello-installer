@@ -103,10 +103,20 @@ class pulp (
 
   include ::apache
 
+  if (versioncmp($::mongodb_version, '2.6.5') >= 0) {
+    $mongodb_pidfilepath = '/var/run/mongodb/mongod.pid'
+  } else {
+    $mongodb_pidfilepath = '/var/run/mongodb/mongodb.pid'
+  }
+
+  class { 'mongodb::globals':
+    version => $::mongodb_version, # taken from the custom facts
+  }
   class { 'apache::mod::wsgi':} ~>
   class { 'mongodb':
-    logpath => '/var/lib/mongodb/mongodb.log',
-    dbpath  => '/var/lib/mongodb',
+    logpath     => '/var/lib/mongodb/mongodb.log',
+    dbpath      => '/var/lib/mongodb',
+    pidfilepath => $mongodb_pidfilepath,
   } ~>
   class { 'qpid':
     ssl                    => true,
