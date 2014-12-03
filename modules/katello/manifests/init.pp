@@ -35,7 +35,7 @@
 # $proxy_username::     Proxy username for authentication
 #
 # $proxy_password::     Proxy password for authentication
-#
+# $cdn_ssl_version::    SSL version used to communicate with the CDN. Optional. Use SSLv23 or TLSv1
 class katello (
 
   $user = $katello::params::user,
