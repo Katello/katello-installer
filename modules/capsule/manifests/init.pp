@@ -11,7 +11,7 @@
 #
 # $pulp_master::                    whether the capsule should be identified as a pulp master server
 #
-# $pulp_admin_password::            passowrd for the Pulp admin user.It should be left blank so that random password is generated
+# $pulp_admin_password::            password for the Pulp admin user. It should be left blank so that a random password is generated
 #
 # $pulp_oauth_effective_user::      User to be used for Pulp REST interaction
 #
