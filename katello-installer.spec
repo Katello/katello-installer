@@ -40,6 +40,7 @@ A set of tools for installation of Katello and a the default Capsule.
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/katello-installer/capsule-certs-generate.yaml
 %{_sbindir}/katello-installer
 %{_sbindir}/capsule-certs-generate
+%{_sbindir}/katello-certs-check
 
 %package -n capsule-installer
 Summary:   Puppet-based installer for a Katello Capsule
@@ -158,6 +159,7 @@ cp -dpR checks %{buildroot}/%{_datadir}/capsule-installer
 
 cp -dpR bin/katello-installer %{buildroot}/%{_datadir}/katello-installer/bin/katello-installer
 cp -dpR bin/capsule-certs-generate %{buildroot}/%{_datadir}/katello-installer/bin/capsule-certs-generate
+cp -dpR bin/katello-certs-check %{buildroot}/%{_datadir}/katello-installer/bin/katello-certs-check
 cp -dpR bin/katello-devel-installer %{buildroot}/%{_datadir}/katello-devel-installer/bin/katello-devel-installer
 cp -dpR bin/sam-installer %{buildroot}/%{_datadir}/sam-installer/bin/
 cp -dpR bin/capsule-installer %{buildroot}/%{_datadir}/capsule-installer/bin/capsule-installer
@@ -181,6 +183,7 @@ cp -dpR config/config_header.txt %{buildroot}/%{_sysconfdir}/sam-installer
 
 ln -sf %{_datadir}/katello-installer/bin/katello-installer %{buildroot}/%{_sbindir}/katello-installer
 ln -sf %{_datadir}/katello-installer/bin/capsule-certs-generate %{buildroot}/%{_sbindir}/capsule-certs-generate
+ln -sf %{_datadir}/katello-installer/bin/katello-certs-check %{buildroot}/%{_sbindir}/katello-certs-check
 ln -sf %{_datadir}/katello-devel-installer/bin/katello-devel-installer %{buildroot}/%{_sbindir}/katello-devel-installer
 ln -sf %{_datadir}/sam-installer/bin/sam-installer %{buildroot}/%{_sbindir}/sam-installer
 ln -sf %{_datadir}/capsule-installer/bin/capsule-installer %{buildroot}/%{_sbindir}/capsule-installer
