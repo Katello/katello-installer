@@ -1,12 +1,24 @@
 # Katello Default Params
 class katello::params {
 
-  if ($::osfamily == 'RedHat' and $::operatingsystem != 'Fedora'){
-    $scl_prefix = 'ruby193-'
-    $scl_root = '/opt/rh/ruby193/root'
-  } else {
-    $scl_prefix = ''
-    $scl_root = ''
+  case $::osfamily {
+    'RedHat': {
+      case $::operatingsystem {
+        'Fedora': {
+          $scl_prefix = ''
+          $scl_root = ''
+        }
+        default: {
+          $scl_prefix = 'ruby193-'
+          $scl_root = '/opt/rh/ruby193/root'
+        }
+      }
+
+      $package_names = ['katello', "${scl_prefix}rubygem-katello"]
+    }
+    default: {
+      fail("${::hostname}: This module does not support osfamily ${::osfamily}")
+    }
   }
 
   $rhsm_url = '/rhsm'

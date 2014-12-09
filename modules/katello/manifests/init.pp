@@ -4,19 +4,15 @@
 #
 # === Parameters:
 #
-# $user::               The Katello system user name;
-#                       default 'foreman'
+# $user::               The Katello system user name
 #
-# $group::              The Katello system user group;
-#                       default 'foreman'
+# $group::              The Katello system user group
 #
-# $user_groups::        Extra user groups the Katello user is a part of;
-#                       default 'foreman
+# $user_groups::        Extra user groups the Katello user is a part of
 #
-# $oauth_key::          The oauth key for talking to the candlepin API;
-#                       default 'katello'
+# $oauth_key::          The oauth key for talking to the candlepin API
 #
-# $oauth_secret::       The oauth secret for talking to the candlepin API;
+# $oauth_secret::       The oauth secret for talking to the candlepin API
 #
 # $post_sync_token::    The shared secret for pulp notifying katello about
 #                       completed syncs
@@ -25,8 +21,7 @@
 #
 # $config_dir::         Location for Katello config files
 #
-# $use_passenger::      Whether Katello is being deployed with Passenger;
-#                       default true
+# $use_passenger::      Whether Katello is being deployed with Passenger
 #
 # $proxy_url::          URL of the proxy server
 #
