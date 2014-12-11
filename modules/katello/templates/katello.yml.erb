@@ -13,6 +13,9 @@
 
 common:
   app_mode: 'katello'
+  <%- if @cdn_ssl_version && !@cdn_ssl_version.strip.empty?-%>
+  cdn_ssl_version: <%= @cdn_ssl_version %>
+  <%- end -%>
 
   warden:  <%= scope.lookupvar("katello::params::auth_method") %>
   ldap_roles: <%= scope.lookupvar("katello::params::ldap_roles") %>
