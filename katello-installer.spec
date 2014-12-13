@@ -80,6 +80,26 @@ Katello and Foreman from git.
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/katello-devel-installer/katello-devel-installer.yaml
 %{_sbindir}/katello-devel-installer
 
+%package -n sam-installer
+Summary:   Puppet-based installer for SAM server
+Group:	   Applications/System
+Conflicts: capsule-installer
+Conflicts: katello-installer
+Requires:  %{name} = %{version}-%{release}
+
+%description -n sam-installer
+A set of tools for installation of SAM
+
+%files -n sam-installer
+%{_datadir}/sam-installer
+%config %{_sysconfdir}/sam-installer/config_header.txt
+%dir %{_sysconfdir}/sam-installer
+%dir %{_localstatedir}/log/sam-installer
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/sam-installer/answers.sam-installer.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/sam-installer/sam-installer.yaml
+%{_sbindir}/sam-installer
+
+
 %description
 A set of tools for installation of Katello and Katello Capsule,
 including Foreman and Foreman Proxy.
@@ -95,11 +115,13 @@ sed -ri '1sX(/usr/bin/ruby|/usr/bin/env ruby)X%{scl_ruby}X' bin/*
 sed -ri 'sX\./configX%{_sysconfdir}/katello-installerXg' bin/katello-installer config/answers.katello-installer.yaml config/katello-installer.yaml
 sed -ri 'sX\./configX%{_sysconfdir}/katello-installerXg' bin/capsule-certs-generate config/capsule-certs-generate.yaml
 sed -ri 'sX\./configX%{_sysconfdir}/katello-devel-installerXg' bin/katello-devel-installer config/katello-devel-installer.yaml
+sed -ri 'sX\./configX%{_sysconfdir}/sam-installerXg' bin/sam-installer config/sam-installer.yaml
 sed -ri 'sX\./configX%{_sysconfdir}/capsule-installerXg' bin/capsule-installer config/capsule-installer.yaml
 
 sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/katello-installerXg' config/katello-installer.yaml
 sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/katello-installerXg' config/capsule-certs-generate.yaml
 sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/katello-devel-installerXg' config/katello-devel-installer.yaml
+sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/sam-installerXg' config/sam-installer.yaml
 sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/capsule-installerXg' config/capsule-installer.yaml
 
 sed -ri 'sX\:modules_dir.*$X:modules_dir: %{_datadir}/katello-installer/modulesXg' config/*
@@ -108,14 +130,18 @@ sed -ri 'sX\:hooks_dir.*$X:hooks_dir: %{_datadir}/katello-installer/hooksXg' con
 %install
 install -d -m0755 %{buildroot}%{_sysconfdir}/katello-installer
 install -d -m0755 %{buildroot}%{_sysconfdir}/katello-devel-installer
+install -d -m0755 %{buildroot}%{_sysconfdir}/sam-installer
 install -d -m0755 %{buildroot}%{_sysconfdir}/capsule-installer
+install -d -m0755 %{buildroot}%{_sysconfdir}/foreman
 
-install -d -m0755 %{buildroot}%{_localstatedir}/log/katello-installer
+install -d -m755 %{buildroot}%{_localstatedir}/log/katello-installer
 install -d -m0755 %{buildroot}%{_localstatedir}/log/katello-devel-installer
+install -d -m0755 %{buildroot}%{_localstatedir}/log/sam-installer
 install -d -m0755 %{buildroot}%{_localstatedir}/log/capsule-installer
 
 install -d -m0755 %{buildroot}/%{_datadir}/katello-installer/bin
 install -d -m0755 %{buildroot}/%{_datadir}/katello-devel-installer/bin
+install -d -m0755 %{buildroot}/%{_datadir}/sam-installer/bin
 install -d -m0755 %{buildroot}/%{_datadir}/capsule-installer/bin
 
 install -d -m0755 %{buildroot}/%{_sbindir}
@@ -124,30 +150,36 @@ cp -dpR modules hooks %{buildroot}/%{_datadir}/katello-installer
 
 cp -dpR checks %{buildroot}/%{_datadir}/katello-installer
 cp -dpR checks %{buildroot}/%{_datadir}/katello-devel-installer
+cp -dpR checks %{buildroot}/%{_datadir}/sam-installer
 cp -dpR checks %{buildroot}/%{_datadir}/capsule-installer
 
 cp -dpR bin/katello-installer %{buildroot}/%{_datadir}/katello-installer/bin/katello-installer
 cp -dpR bin/capsule-certs-generate %{buildroot}/%{_datadir}/katello-installer/bin/capsule-certs-generate
 cp -dpR bin/katello-devel-installer %{buildroot}/%{_datadir}/katello-devel-installer/bin/katello-devel-installer
+cp -dpR bin/sam-installer %{buildroot}/%{_datadir}/sam-installer/bin/
 cp -dpR bin/capsule-installer %{buildroot}/%{_datadir}/capsule-installer/bin/capsule-installer
 
 cp -dpR config/answers.katello-installer.yaml %{buildroot}/%{_sysconfdir}/katello-installer
 cp -dpR config/answers.capsule-certs-generate.yaml %{buildroot}/%{_sysconfdir}/katello-installer
 cp -dpR config/answers.katello-devel-installer.yaml %{buildroot}/%{_sysconfdir}/katello-devel-installer
+cp -dpR config/answers.sam-installer.yaml %{buildroot}/%{_sysconfdir}/sam-installer
 cp -dpR config/answers.capsule-installer.yaml %{buildroot}/%{_sysconfdir}/capsule-installer
 
 cp -dpR config/katello-installer.yaml %{buildroot}/%{_sysconfdir}/katello-installer
 cp -dpR config/capsule-certs-generate.yaml %{buildroot}/%{_sysconfdir}/katello-installer
 cp -dpR config/katello-devel-installer.yaml %{buildroot}/%{_sysconfdir}/katello-devel-installer
+cp -dpR config/sam-installer.yaml %{buildroot}/%{_sysconfdir}/sam-installer
 cp -dpR config/capsule-installer.yaml %{buildroot}/%{_sysconfdir}/capsule-installer
 
 cp -dpR config/config_header.txt %{buildroot}/%{_sysconfdir}/katello-installer
 cp -dpR config/config_header.txt %{buildroot}/%{_sysconfdir}/katello-devel-installer
 cp -dpR config/config_header.txt %{buildroot}/%{_sysconfdir}/capsule-installer
+cp -dpR config/config_header.txt %{buildroot}/%{_sysconfdir}/sam-installer
 
 ln -sf %{_datadir}/katello-installer/bin/katello-installer %{buildroot}/%{_sbindir}/katello-installer
 ln -sf %{_datadir}/katello-installer/bin/capsule-certs-generate %{buildroot}/%{_sbindir}/capsule-certs-generate
 ln -sf %{_datadir}/katello-devel-installer/bin/katello-devel-installer %{buildroot}/%{_sbindir}/katello-devel-installer
+ln -sf %{_datadir}/sam-installer/bin/sam-installer %{buildroot}/%{_sbindir}/sam-installer
 ln -sf %{_datadir}/capsule-installer/bin/capsule-installer %{buildroot}/%{_sbindir}/capsule-installer
 
 %files
