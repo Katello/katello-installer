@@ -37,6 +37,9 @@ class katello::params {
   $proxy_username = undef
   $proxy_password = undef
 
+  # cdn ssl settings
+  $cdn_ssl_version = undef
+
   # system settings
   $user = 'foreman'
   $group = 'foreman'
@@ -63,6 +66,8 @@ class katello::params {
   $candlepin_url = 'https://localhost:8443/candlepin'
   $pulp_url      = subsystem_url('pulp/api/v2/')
   $foreman_url   = subsystem_url('foreman')
+
+  $gutterball = true
 
   # database reinitialization flag
   $reset_data = 'NONE'
