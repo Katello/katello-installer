@@ -1,5 +1,5 @@
 --- 
-  :log_dir: /var/log/katello-installer
+  :log_dir: /var/log/katello-devel-installer
   :log_name: katello-devel-installer.log
   :log_level: :debug
   :no_prefix: true
