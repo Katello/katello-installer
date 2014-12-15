@@ -1,7 +1,7 @@
 .vagrant
 *.swp
 *.swo
-.*.sw?
+*.sw?
 
 .bundle
 vendor/
@@ -13,6 +13,7 @@ Gemfile.lock
 .rbenv*
 .rvmrc*
 .ruby-version
-.ruby-gemset
 
 spec/fixtures/
+
+.project

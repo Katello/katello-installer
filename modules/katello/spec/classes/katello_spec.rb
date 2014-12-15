@@ -19,6 +19,19 @@ describe 'katello' do
     it { should contain_class('katello::install') }
     it { should contain_class('katello::config') }
     it { should contain_class('katello::service') }
+
+    context 'on setting cdn-ssl-version' do
+      let :params do
+        {
+          "cdn_ssl_version" => 'TLSv1'
+        }
+      end
+
+      it 'should set up the cdn_ssl_version' do
+        should contain_file('/etc/foreman/plugins/katello.yaml').
+          with_content(/^\s*cdn_ssl_version:\s*TLSv1$/)
+      end
+    end
   end
 
   context 'on centos' do
