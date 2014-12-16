@@ -37,6 +37,9 @@ class katello::params {
   $proxy_username = undef
   $proxy_password = undef
 
+  # cdn ssl settings
+  $cdn_ssl_version = undef
+
   # system settings
   $user = 'foreman'
   $group = 'foreman'
