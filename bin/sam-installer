@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'kafo'
+
+CONFIG_FILE = './config/sam-installer.yaml'
+
+# Run Kafo
+Kafo::KafoConfigure.run
+
+Kafo::KafoConfigure.exit_code == 2 ? exit(0) : exit(Kafo::KafoConfigure.exit_code)
