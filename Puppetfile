@@ -29,6 +29,7 @@ mod 'theforeman/puppet', :git => 'https://github.com/theforeman/puppet-puppet'
 # Katello specific modules
 mod 'katello/common', :git => 'https://github.com/Katello/puppet-common'
 mod 'katello-candlepin', :git => 'https://github.com/Katello/puppet-candlepin'
+mod 'katello-gutterball', :git => 'https://github.com/Katello/puppet-gutterball'
 mod 'katello-capsule', :git => 'https://github.com/Katello/puppet-capsule'
 mod 'katello-certs', :git => 'https://github.com/Katello/puppet-certs'
 mod 'katello-elasticsearch', :git => 'https://github.com/Katello/puppet-elasticsearch'

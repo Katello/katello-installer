@@ -7,3 +7,8 @@ update_submodules_scratch
 .librarian
 .tmp
 .rpm
+
+# rvm
+.rvmrc
+.ruby-version
+.ruby-gemset

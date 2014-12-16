@@ -67,6 +67,8 @@ class katello::params {
   $pulp_url      = subsystem_url('pulp/api/v2/')
   $foreman_url   = subsystem_url('foreman')
 
+  $gutterball = true
+
   # database reinitialization flag
   $reset_data = 'NONE'
 
