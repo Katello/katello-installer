@@ -48,6 +48,10 @@
        "version_requirement": ">= 0.1.0"
     },
     {
+       "name": "katello-gutterball",
+       "version_requirement": ">= 0.1.0"
+    },
+    {
        "name": "katello-pulp",
        "version_requirement": ">= 0.1.0"
     },
