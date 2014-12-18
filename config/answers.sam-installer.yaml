@@ -20,16 +20,17 @@ foreman:
   websockets_encrypt: true
   websockets_ssl_key: /etc/pki/katello/private/katello-apache.key
   websockets_ssl_cert: /etc/pki/katello/certs/katello-apache.crt
-capsule:
-  register_in_foreman: true
-  pulp_master: true
-  puppet: true
-  puppetca: true
+  smart_proxy: false
 
 foreman::plugin::bootdisk: true
 foreman::plugin::discovery: true
 foreman::plugin::hooks: true
 foreman::plugin::tasks: true
+foreman::plugin::chef: false
+foreman::plugin::default_hostgroup: false
+foreman::plugin::puppetdb: false
+foreman::plugin::setup: false
+foreman::plugin::templates: false
 
 # Issue #4244 - Commenting these out due to the seg fault
 # caused on Ruby 1.8.7, the Katello RPM ensures these
