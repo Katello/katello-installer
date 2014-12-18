@@ -102,8 +102,8 @@ sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/katello-installerXg' c
 sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/katello-devel-installerXg' config/katello-devel-installer.yaml
 sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/capsule-installerXg' config/capsule-installer.yaml
 
-sed -ri 'sX\:modules_dir.*$X:modules_dir: %{_datadir}/katello-installerXg' config/*
-sed -ri 'sX\:hooks_dir.*$X:hooks_dir: %{_datadir}/katello-installerXg' config/*
+sed -ri 'sX\:modules_dir.*$X:modules_dir: %{_datadir}/katello-installer/modulesXg' config/*
+sed -ri 'sX\:hooks_dir.*$X:hooks_dir: %{_datadir}/katello-installer/hooksXg' config/*
 
 %install
 install -d -m0755 %{buildroot}%{_sysconfdir}/katello-installer
