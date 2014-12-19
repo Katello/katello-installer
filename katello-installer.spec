@@ -3,7 +3,7 @@
 %global scl_ruby /usr/bin/ruby
 
 Name:    katello-installer-base
-Version: 2.1.0
+Version: 2.2.0
 Release: 1%{?dist}
 Summary: Puppet-based installer for the Katello and Katello Capsule
 Group:   Applications/System
@@ -42,7 +42,7 @@ A set of tools for installation of Katello and a the default Capsule.
 %package -n capsule-installer
 Summary:   Puppet-based installer for a Katello Capsule
 Group:	   Applications/System
-Obsoletes: katello-installer < 2.1.0
+Obsoletes: katello-installer < 2.2.0
 Conflicts: katello-installer
 Conflicts: katello-devel-installer
 Requires:  %{name} = %{version}-%{release}
@@ -62,7 +62,7 @@ A set of tools for installation of a Katello Capsule
 %package -n katello-devel-installer
 Summary:   Puppet-based installer for a Katello development setup from git
 Group:	   Applications/System
-Obsoletes: katello-installer < 2.1.0
+Obsoletes: katello-installer < 2.2.0
 Conflicts: capsule-installer
 Conflicts: katello-installer
 Requires:  %{name} = %{version}-%{release}
@@ -155,6 +155,9 @@ ln -sf %{_datadir}/capsule-installer/bin/capsule-installer %{buildroot}/%{_sbind
 %doc README.*
 
 %changelog
+* Fri Dec 19 2014 David Davis <daviddavis@redhat.com> 2.2.0-1
+- new package built with tito
+
 * Fri Sep 12 2014 Justin Sherrill <jsherril@redhat.com> 2.1.0-1
 - bumping version to 2.1 (jsherril@redhat.com)
 
