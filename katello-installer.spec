@@ -28,7 +28,8 @@ Requires: %{name} = %{version}-%{release}
 A set of tools for installation of Katello and a the default Capsule.
 
 %files -n katello-installer
-%{_datadir}/katello-installer
+%{_datadir}/katello-installer/bin
+%{_datadir}/katello-installer/checks
 %config %{_sysconfdir}/katello-installer/config_header.txt
 %dir %{_sysconfdir}/katello-installer
 %dir %{_localstatedir}/log/katello-installer
@@ -51,7 +52,8 @@ Requires:  %{name} = %{version}-%{release}
 A set of tools for installation of a Katello Capsule
 
 %files -n capsule-installer
-%{_datadir}/capsule-installer
+%{_datadir}/capsule-installer/bin
+%{_datadir}/capsule-installer/checks
 %config %{_sysconfdir}/capsule-installer/config_header.txt
 %dir %{_sysconfdir}/capsule-installer
 %dir %{_localstatedir}/log/capsule-installer
@@ -72,7 +74,8 @@ A set of tools for installation of a Katello development environment using
 Katello and Foreman from git.
 
 %files -n katello-devel-installer
-%{_datadir}/katello-devel-installer
+%{_datadir}/katello-devel-installer/bin
+%{_datadir}/katello-devel-installer/checks
 %config %{_sysconfdir}/katello-devel-installer/config_header.txt
 %dir %{_sysconfdir}/katello-devel-installer
 %dir %{_localstatedir}/log/katello-devel-installer
@@ -152,6 +155,8 @@ ln -sf %{_datadir}/capsule-installer/bin/capsule-installer %{buildroot}/%{_sbind
 
 %files
 %defattr(-,root,root,-)
+%{_datadir}/katello-installer/modules
+%{_datadir}/katello-installer/hooks
 %doc README.*
 
 %changelog
