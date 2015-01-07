@@ -22,23 +22,5 @@ foreman:
   websockets_ssl_cert: /etc/pki/katello/certs/katello-apache.crt
   smart_proxy: false
 
-foreman::plugin::bootdisk: false
-foreman::plugin::discovery: false
 foreman::plugin::hooks: true
 foreman::plugin::tasks: true
-foreman::plugin::chef: false
-foreman::plugin::default_hostgroup: false
-foreman::plugin::puppetdb: false
-foreman::plugin::setup: false
-foreman::plugin::templates: false
-
-# Issue #4244 - Commenting these out due to the seg fault
-# caused on Ruby 1.8.7, the Katello RPM ensures these
-# are installed instead
-#foreman::compute::ec2: true
-#foreman::compute::gce: true
-#foreman::compute::libvirt: true
-#foreman::compute::openstack: false
-#foreman::compute::ovirt: true
-#foreman::compute::rackspace: false
-#foreman::compute::vmware: true

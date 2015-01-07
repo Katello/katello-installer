@@ -94,7 +94,8 @@ A set of tools for installation of a SAM development environment using
 Katello and Foreman from git.
 
 %files -n sam-installer
-%{_datadir}/sam-installer
+%{_datadir}/sam-installer/bin
+%{_datadir}/sam-installer/checks
 %config %{_sysconfdir}/sam-installer/config_header.txt
 %dir %{_sysconfdir}/sam-installer
 %dir %{_localstatedir}/log/sam-installer
