@@ -4,7 +4,7 @@
 
 Name:    katello-installer-base
 Version: 2.1.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Puppet-based installer for the Katello and Katello Capsule
 Group:   Applications/System
 License: GPLv3+ and ASL 2.0
@@ -159,6 +159,11 @@ ln -sf %{_datadir}/capsule-installer/bin/capsule-installer %{buildroot}/%{_sbind
 %doc README.*
 
 %changelog
+* Tue Jan 13 2015 Justin Sherrill <jsherril@redhat.com> 2.1.1-2
+- Fixes #8842: Move obsolete to allow yum upgrade. (ericdhelms@gmail.com)
+- Fixes #8843: katello-installer-base missing modules and hooks
+  (ericdhelms@gmail.com)
+
 * Fri Dec 19 2014 David Davis <daviddavis@redhat.com> 2.1.1-1
 - new package built with tito
 
