@@ -29,9 +29,16 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-capsule
   ref: master
-  sha: 59e2aa33d3ac8d7ddc56538218e50f4053173935
+  sha: e3b6486691a7c20ac4086e6fd312c32cef9dcaed
   specs:
-    katello-capsule (0.0.1)
+    katello-capsule (0.1.0)
+      katello-common (>= 0.0.1)
+      puppetlabs-apache (< 2.0.0, >= 1.0.0)
+      puppetlabs-mongodb (>= 0)
+      puppetlabs-stdlib (>= 1.0.0)
+      puppetlabs-xinetd (>= 1.3.1)
+      theforeman-foreman (>= 1.5.0)
+      theforeman-foreman_proxy (>= 1.5.0)
 
 GIT
   remote: https://github.com/Katello/puppet-certs
