@@ -11,7 +11,7 @@
 #
 # $pulp_master::                    whether the capsule should be identified as a pulp master server
 #
-# $pulp_admin_password::            passowrd for the Pulp admin user.It should be left blank so that random password is generated
+# $pulp_admin_password::            password for the Pulp admin user. It should be left blank so that a random password is generated
 #
 # $pulp_oauth_effective_user::      User to be used for Pulp REST interaction
 #
@@ -27,6 +27,11 @@
 #
 # $puppetca::                       Use puppet ca
 #                                   type:boolean
+#
+# $puppet_ca_proxy::                The actual server that handles puppet CA.
+#                                   Setting this to anything non-empty causes
+#                                   the apache vhost to set up a proxy for all
+#                                   certificates pointing to the value.
 #
 # $tftp::                           Use TFTP
 #                                   type:boolean
@@ -130,6 +135,7 @@ class capsule (
 
   $puppet                        = $capsule::params::puppet,
   $puppetca                      = $capsule::params::puppetca,
+  $puppet_ca_proxy               = $capsule::params::puppet_ca_proxy,
 
   $tftp                          = $capsule::params::tftp,
   $tftp_syslinux_root            = $capsule::params::tftp_syslinux_root,
@@ -189,7 +195,6 @@ class capsule (
   }
 
   if $pulp {
-    validate_pulp($pulp)
     validate_present($pulp_oauth_secret)
   }
 
@@ -247,6 +252,7 @@ class capsule (
     } ~>
     class { 'puppet':
       server                      => true,
+      server_ca                   => $puppetca,
       server_foreman_url          => $foreman_url,
       server_foreman_ssl_cert     => $::certs::puppet::client_cert,
       server_foreman_ssl_key      => $::certs::puppet::client_key,
@@ -256,17 +262,18 @@ class capsule (
       server_environments_owner   => 'apache',
       server_config_version       => '',
       server_enc_api              => 'v2',
+      server_ca_proxy             => $puppet_ca_proxy,
     }
   }
 
-  $foreman_proxy = $tftp or $dhcp or $dns or $puppet or $puppetca or $realm
+  $foreman_proxy = $tftp or $dhcp or $dns or $puppet or $puppetca or $realm or $pulp
 
   if $foreman_proxy {
 
     class { 'certs::foreman_proxy':
-      hostname   => $capsule_fqdn,
-      require    => Package['foreman-proxy'],
-      before     => Service['foreman-proxy'],
+      hostname => $capsule_fqdn,
+      require  => Package['foreman-proxy'],
+      before   => Service['foreman-proxy'],
     }
 
     class { 'foreman_proxy':
