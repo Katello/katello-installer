@@ -209,7 +209,7 @@ restart corresponding services.
 
 ## Filing and Fixing Issues
 
-All issues are tracked using (Redmine)[http://projects.theforeman.org/projects/katello/issues]. There are two types of issues that may arise:
+All issues are tracked using [Redmine](http://projects.theforeman.org/projects/katello/issues). There are two types of issues that may arise:
 
   * A bug within an individual module
   * A bug within the hooks or scripts of the installer
