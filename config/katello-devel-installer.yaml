@@ -1,4 +1,4 @@
---- 
+---
   :log_dir: /var/log/katello-devel-installer
   :log_name: katello-devel-installer.log
   :log_level: :debug
@@ -12,3 +12,11 @@
     - certs
     - katello_devel
   :password: l7VtnWiPeKe412o2CVBM6yVbTkKGh6L_CKx4_zBkmUE
+
+  :mapping:
+    :katello_devel::plugin::gutterball:
+      :dir_name: katello_devel
+      :manifest_name: plugin/gutterball
+    :katello_devel::plugin::foreman_gutterball:
+      :dir_name: katello_devel
+      :manifest_name: plugin/foreman_gutterball

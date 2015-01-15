@@ -11,3 +11,6 @@ katello_devel:
 capsule:
   puppet: true
   puppetca: true
+
+katello_devel::plugin::gutterball: true
+katello_devel::plugin::foreman_gutterball: true
