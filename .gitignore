@@ -7,6 +7,7 @@ update_submodules_scratch
 .librarian
 .tmp
 .rpm
+.*.sw?
 
 # rvm
 .rvmrc

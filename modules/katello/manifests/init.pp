@@ -33,8 +33,6 @@
 #
 # $cdn_ssl_version::    SSL version used to communicate with the CDN. Optional. Use SSLv23 or TLSv1
 #
-# $gutterball::         Configures gutterball
-#                       type:boolean
 class katello (
 
   $user = $katello::params::user,
@@ -56,9 +54,6 @@ class katello (
   $proxy_username = $katello::params::proxy_username,
   $proxy_password = $katello::params::proxy_password,
   $cdn_ssl_version = $katello::params::cdn_ssl_version,
-
-  $gutterball = $katello::params::gutterball
-
   ) inherits katello::params {
 
   Class['certs'] ~>
@@ -115,14 +110,6 @@ class katello (
   class { 'katello::service': }
 
   Service['httpd'] -> Exec['foreman-rake-db:seed']
-
-  if $katello::gutterball {
-    Class[ 'certs' ] ->
-    class { 'certs::gutterball': } ->
-    class { 'gutterball':
-      keystore_password => $certs::gutterball::gutterball_keystore_password,
-    }
-  }
 
   User<|title == apache|>{groups +> $user_groups}
 }
