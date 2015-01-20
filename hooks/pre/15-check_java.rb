@@ -1,9 +1,15 @@
-JAVA_VERSION = %q(An OpenJDK version of Java greater than 1.7 should be installed.  For more details on the version currently installed, run 'java -version')
+JAVA_VERSION = %q(An OpenJDK version of Java greater than 1.7 should be installed. For more
+details on the version currently installed, run 'java -version')
 
 OPENJDK = %q(A version of java which is not OpenJDK is installed.
 
-Please install an OpenJDK version greater than 1.7.  For more details on the version currently installed, run 'java -version')
- 
+Please install an OpenJDK version greater than 1.7 and make sure it
+was set as the default java using
+
+  alternatives --config java
+
+For more details on the version currently installed, run 'java -version'.)
+
 def module_enabled?(name)
   mod = @kafo.module(name)
   return false if mod.nil?
