@@ -22,7 +22,7 @@
 :answer_file: ./config/answers.capsule-certs-generate.yaml
 :installer_dir: .
 :modules_dir: "./modules"
-:hooks_dir: "./hooks"
+:hook_dirs: ["./hooks"]
 :default_values_dir: ./config
 :dont_save_answers: true
 :mapping:

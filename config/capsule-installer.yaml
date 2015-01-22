@@ -1,4 +1,4 @@
---- 
+---
   :log_dir: /var/log/capsule-installer
   :log_name: capsule-installer.log
   :log_level: :debug
@@ -7,7 +7,7 @@
   :installer_dir: "."
   :default_values_dir: "./config"
   :modules_dir: "./modules"
-  :hooks_dir: "./hooks"
+  :hook_dirs: ["./hooks"]
   :colors: true
   :order:
     - certs
