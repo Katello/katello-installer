@@ -67,4 +67,6 @@ class capsule::params {
   $register_in_foreman = false
   $certs_tar = undef
 
+  $rhsm_url = '/rhsm'
+  $rhsm_port = 443
 }

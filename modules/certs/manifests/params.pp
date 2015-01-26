@@ -57,6 +57,11 @@ class certs::params {
   # for verifying the foreman client certs at the proxy side
   $foreman_proxy_ca_cert = '/etc/foreman-proxy/ssl_ca.pem'
 
+  $foreman_proxy_foreman_ssl_cert    = '/etc/foreman-proxy/foreman_ssl_cert.pem'
+  $foreman_proxy_foreman_ssl_key     = '/etc/foreman-proxy/foreman_ssl_key.pem'
+  # for verifying the foreman https
+  $foreman_proxy_foreman_ssl_ca_cert = '/etc/foreman-proxy/foreman_ssl_ca.pem'
+
   $puppet_client_cert = '/etc/puppet/client_cert.pem'
   $puppet_client_key  = '/etc/puppet/client_key.pem'
   # for verifying the foreman https

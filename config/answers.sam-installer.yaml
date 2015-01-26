@@ -3,7 +3,9 @@ certs:
   generate: true
   deploy: true
   group: foreman
-katello: true
+katello:
+  package_names:
+    - katello-sam
 foreman:
   organizations_enabled: true
   locations_enabled: true
