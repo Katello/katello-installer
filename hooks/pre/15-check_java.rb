@@ -10,18 +10,12 @@ was set as the default java using
 
 For more details on the version currently installed, run 'java -version'.)
 
-def module_enabled?(name)
-  mod = @kafo.module(name)
-  return false if mod.nil?
-  mod.enabled?
-end
-
 def error_exit(message, code)
   $stderr.puts message
   kafo.class.exit code
 end
 
-if module_enabled?('katello')
+if Kafo::Helpers.module_enabled?(@kafo, 'katello')
   java_version_string = `/usr/bin/java -version 2>&1`
   java_version = java_version_string.split("\n")[0].split('"')[1]
 
