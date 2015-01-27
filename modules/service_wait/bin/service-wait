@@ -43,11 +43,11 @@ ignore-retval () {
 wait-for-url () {
     # we use wget first because it's able to retry from connrefused situation
     /usr/bin/wget --timeout=1 -4 --tries=$WAIT_MAX --retry-connrefused -qO-\
-                  --no-check-certificate $1 > /dev/null
+                  --no-check-certificate --no-proxy $1 > /dev/null
     # then we double check with curl that the service is really
     # available. wget is not able to retry from 'Unable to establish
     # SSL connection.' error, which happens for example with tomcat6
-    /usr/bin/curl -ks --retry $WAIT_MAX --retry-delay 1 $1 > /dev/null
+    /usr/bin/curl -ks --retry $WAIT_MAX --retry-delay 1 --noproxy '*' $1 > /dev/null
 
     if ! [ $? = '0' ]; then
         RETVAL=5
