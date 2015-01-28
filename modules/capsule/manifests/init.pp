@@ -120,6 +120,9 @@
 #
 # $foreman_oauth_secret::           OAuth secret to be used for Foreman REST interaction
 #
+# $rhsm_url::                       The URL that the RHSM API is rooted at
+#
+# $rhsm_port::                      The port that clients will point at for RHSM on the Capsule
 #
 class capsule (
   $parent_fqdn                   = $capsule::params::parent_fqdn,
@@ -179,7 +182,10 @@ class capsule (
   $register_in_foreman           = $capsule::params::register_in_foreman,
   $foreman_oauth_effective_user  = $capsule::params::foreman_oauth_effective_user,
   $foreman_oauth_key             = $capsule::params::foreman_oauth_key,
-  $foreman_oauth_secret          = $capsule::params::foreman_oauth_secret
+  $foreman_oauth_secret          = $capsule::params::foreman_oauth_secret,
+
+  $rhsm_url                      = $capsule::params::rhsm_url,
+  $rhsm_port                     = $capsule::params::rhsm_port,
 
   ) inherits capsule::params {
 
@@ -341,5 +347,10 @@ class capsule (
       Certs::Tar_extract[$certs_tar] -> Class['certs::foreman_proxy']
     }
 
+  }
+
+  class { 'certs::katello':
+    deployment_url => $capsule::rhsm_url,
+    rhsm_port      => $capsule::rhsm_port
   }
 }

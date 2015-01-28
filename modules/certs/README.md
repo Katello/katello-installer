@@ -104,5 +104,3 @@ certificates are located in `/etc/pki/katello-certs-tools/` directory
 ##Development
 
 See the CONTRIBUTING guide for steps on how to make a change and get it accepted upstream.
-
->>>>>>> Refs #6736: Updates to standard layout and basic test.

@@ -17,7 +17,7 @@
 #
 
 KATELLO_SERVER=<%= @hostname %>
-PORT=443
+PORT=<%= @rhsm_port %>
 BASEURL=https://$KATELLO_SERVER/pulp/repos
 
 PREFIX=<%= @deployment_url %>

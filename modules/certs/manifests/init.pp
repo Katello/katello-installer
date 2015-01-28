@@ -123,6 +123,8 @@ class certs (
   $ca_key_password = cache_data('ca_key_password', generate_password())
   $ca_key_password_file = "${certs::pki_dir}/private/${default_ca_name}.pwd"
 
+  $katello_server_ca_cert = "${certs::pki_dir}/certs/${server_ca_name}.crt"
+
   class { 'certs::install': } ->
   class { 'certs::config': } ->
   file { $ca_key_password_file:
@@ -184,6 +186,17 @@ class certs (
       key_pair => $default_ca
     } ~>
     file { $ca_cert:
+      ensure => file,
+      owner  => 'root',
+      group  => $certs::group,
+      mode   => '0644',
+    }
+
+    Ca[$server_ca_name] ~>
+    pubkey { $katello_server_ca_cert:
+      key_pair => $server_ca
+    } ~>
+    file { $katello_server_ca_cert:
       ensure => file,
       owner  => 'root',
       group  => $certs::group,

@@ -10,5 +10,6 @@ fixtures:
     tftp:          "git://github.com/theforeman/puppet-tftp"
     xinetd:        "git://github.com/puppetlabs/puppetlabs-xinetd.git"
     common:        "git://github.com/katello/puppet-common.git"
+    certs:         "git://github.com/katello/puppet-certs.git"
   symlinks:
     capsule: "#{source_dir}"
