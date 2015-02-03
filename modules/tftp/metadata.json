@@ -1,0 +1,76 @@
+{
+  "name": "theforeman-tftp",
+  "version": "1.5.1",
+  "author": "theforeman",
+  "summary": "TFTP server configuration",
+  "license": "GPL-3.0+",
+  "source": "git://github.com/theforeman/puppet-tftp",
+  "project_page": "https://github.com/theforeman/puppet-tftp",
+  "issues_url": "https://github.com/theforeman/puppet-tftp/issues",
+  "description": "Module for configuring a TFTP server",
+  "tags": [
+    "foreman",
+    "tftp",
+    "xinetd"
+  ],
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 2.3.0 < 5.0.0"
+    },
+    {
+      "name": "puppetlabs/xinetd",
+      "version_requirement": ">= 1.1.0 < 2.0.0"
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 2.7.0 < 4.0.0"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Fedora",
+      "operatingsystemrelease": [
+        "19"
+      ]
+    },
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "6",
+        "7",
+        "8"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "12.04",
+        "14.04"
+      ]
+    }
+  ]
+}

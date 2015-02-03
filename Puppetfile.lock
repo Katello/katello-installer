@@ -1,7 +1,7 @@
 FORGE
   remote: https://forgeapi.puppetlabs.com
   specs:
-    adrien-alternatives (0.2.0)
+    adrien-alternatives (0.3.0)
     puppetlabs-apache (1.1.1)
       puppetlabs-concat (>= 1.0.0)
       puppetlabs-stdlib (>= 2.4.0)
@@ -9,9 +9,9 @@ FORGE
       puppetlabs-stdlib (>= 2.2.1)
     puppetlabs-concat (1.1.2)
       puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
-    puppetlabs-stdlib (4.4.0)
+    puppetlabs-stdlib (4.5.1)
     puppetlabs-vcsrepo (1.1.0)
-    puppetlabs-xinetd (1.3.1)
+    puppetlabs-xinetd (1.4.0)
       puppetlabs-stdlib (>= 2.2.1)
 
 GIT
@@ -36,7 +36,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-certs
   ref: master
-  sha: a3b80e8b16e774b0e88222ebb5be8aed234a813f
+  sha: 6952cc23212f2122d6bf2860bf5daa8cc4da5a14
   specs:
     katello-certs (0.1.0)
       katello-common (>= 0.0.1)
@@ -148,7 +148,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-service_wait
   ref: master
-  sha: 2ee76690efd020ab5b37e0d5016a4b6c720e2f9d
+  sha: 9bb5e3195c928181dbeb8c436afe63bab2d9cff4
   specs:
     katello-service_wait (0.0.1)
 
@@ -180,7 +180,7 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-postgresql
   ref: master
-  sha: 67a859b97845331d6f8903047c9af2f5e69a9e52
+  sha: 881d96481c2c04cc7564d79860fbbac65e434001
   specs:
     puppetlabs-postgresql (4.1.0)
       puppetlabs-apt (< 2.0.0, >= 1.1.0)
@@ -190,9 +190,9 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-concat
   ref: master
-  sha: 35fe58d9193edfd321d8691243e1c9ffa3291229
+  sha: 8a75f42f051e6ca81b40921dfdb5b54543bf0e8f
   specs:
-    theforeman-concat_native (1.3.1)
+    theforeman-concat_native (1.3.3)
 
 GIT
   remote: https://github.com/theforeman/puppet-dhcp
@@ -259,9 +259,10 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-tftp
   ref: master
-  sha: 55387e968167d98fa523ccaac1fc5f3bf9ebc59b
+  sha: 396bd6aff78fc092a99259df444899569bc4e4c7
   specs:
-    theforeman-tftp (1.4.3)
+    theforeman-tftp (1.5.1)
+      puppetlabs-stdlib (< 5.0.0, >= 2.3.0)
       puppetlabs-xinetd (< 2.0.0, >= 1.1.0)
 
 DEPENDENCIES

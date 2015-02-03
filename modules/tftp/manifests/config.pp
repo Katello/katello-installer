@@ -9,7 +9,7 @@ class tftp::config {
       xinetd::service { 'tftp':
         port        => '69',
         server      => '/usr/sbin/in.tftpd',
-        server_args => "-v -s ${tftp::params::root} -m /etc/tftpd.map",
+        server_args => "-v -s ${tftp::root} -m /etc/tftpd.map",
         socket_type => 'dgram',
         protocol    => 'udp',
         cps         => '100 2',
@@ -23,7 +23,7 @@ class tftp::config {
         notify  => Class['xinetd']
       }
 
-      file { $tftp::params::root:
+      file { $tftp::root:
         ensure => directory,
         notify => Class['xinetd'],
       }

@@ -1,91 +1,13 @@
 {
   "name": "adrien-alternatives",
-  "version": "0.2.0",
-  "source": "https://github.com/adrienthebo/puppet-alternatives",
+  "version": "0.3.0",
   "author": "Adrien Thebo <adrien@somethingsinistral.net>",
-  "license": "Apache 2.0",
   "summary": "Maintain symbolic links determining default commands",
-  "description": "UNKNOWN",
-  "project_page": "https://github.com/adrienthebo/puppet-alternatives",
+  "license": "Apache 2.0",
+  "source": "https://github.com/puppet-community/puppet-alternatives",
+  "project_page": "https://github.com/puppet-community/puppet-alternatives",
+  "issues_url": "https://github.com/puppet-community/puppet-alternatives/issues",
   "dependencies": [
-
-  ],
-  "types": [
-    {
-      "name": "alternative_entry",
-      "doc": "",
-      "properties": [
-        {
-          "name": "ensure",
-          "doc": "The basic property that the resource should be in.  Valid values are `present`, `absent`."
-        },
-        {
-          "name": "altlink",
-          "doc": "The name of the generic symlink for this alternative entry"
-        },
-        {
-          "name": "altname",
-          "doc": "The name of symlink in the alternatives directory"
-        },
-        {
-          "name": "priority",
-          "doc": "The value of the priority of this alternative"
-        }
-      ],
-      "parameters": [
-        {
-          "name": "name",
-          "doc": "The path to the actual alternative"
-        }
-      ],
-      "providers": [
-        {
-          "name": "dpkg",
-          "doc": "Required binaries: `/usr/sbin/update-alternatives`."
-        }
-      ]
-    },
-    {
-      "name": "alternatives",
-      "doc": "",
-      "properties": [
-        {
-          "name": "path",
-          "doc": "The path of the desired source for the given alternative"
-        },
-        {
-          "name": "mode",
-          "doc": "Use the automatic option for this alternative  Valid values are `auto`, `manual`.  Requires features mode."
-        }
-      ],
-      "parameters": [
-        {
-          "name": "name",
-          "doc": "The name of the alternative."
-        }
-      ],
-      "providers": [
-        {
-          "name": "dpkg",
-          "doc": "Required binaries: `update-alternatives`.  Supported features: `mode`."
-        }
-      ]
-    }
-  ],
-  "checksums": {
-    "CHANGELOG": "d27a805807f537cd010f62c83432e415",
-    "Gemfile": "282fd6d06695a42bf4d864d9b3c40110",
-    "Gemfile.lock": "8f9d41df9b3b4ae0e79d7539c926e3d0",
-    "LICENSE": "652041dc5ffe79a9452e7ef577468f7c",
-    "Modulefile": "a8ec70ed2b13883601b07234f890e4d7",
-    "README.markdown": "7d3bdacb4205bdfd0796c380543779ee",
-    "lib/puppet/provider/alternative_entry/dpkg.rb": "194b329ca7082777ba1d9317c4525234",
-    "lib/puppet/provider/alternatives/dpkg.rb": "876eb65c37856993c7f2a85ddb765971",
-    "lib/puppet/type/alternative_entry.rb": "7bc81402e2b2fe51a8d25824b635acbf",
-    "lib/puppet/type/alternatives.rb": "d125ba1d2b5f9614e5175ed62067387e",
-    "spec/fixtures/unit/provider/alternatives/dpkg/get-selections": "4b9d2c97e297526629d5236140a8b2dd",
-    "spec/spec_helper.rb": "4dcbe64eea9d25dca06b56d557fe7fec",
-    "spec/unit/provider/alternatives/dpkg_spec.rb": "fa2bb947d4dae0a4f51ffc3607caa595",
-    "spec/unit/type/alternatives_spec.rb": "dca9510b9b164f8231ee7984bdfbbd85"
-  }
+  
+  ]
 }

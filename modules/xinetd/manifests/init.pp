@@ -28,8 +28,8 @@ class xinetd (
   }
 
   file { $confdir:
-    ensure  => directory,
-    mode    => '0755',
+    ensure => directory,
+    mode   => '0755',
   }
 
   # Template uses:
