@@ -91,6 +91,21 @@ describe 'tftp' do
     end
   end
 
+  context 'on Debian/jessie' do
+    let :facts do
+      {
+        :osfamily              => 'Debian',
+        :operatingsystem       => 'Debian',
+        :operatingsystemrelease => '8.0'
+      }
+    end
+
+    it 'should install Debian/jessie specific packages' do
+      should contain_package('pxelinux').with_ensure('installed')
+      should contain_package('syslinux-common').with_ensure('installed')
+    end
+  end
+
   context 'on Amazon Linux' do
     let :facts do
       {
@@ -142,6 +157,23 @@ describe 'tftp' do
     end
   end
 
+  context 'on RedHat with root set to /tftpboot' do
+    let :facts do {
+      :osfamily               => 'Redhat',
+      :operatingsystemrelease => '6.4',
+    } end
+
+    let :params do {
+      :root => '/tftpboot',
+    } end
+
+    it 'should set root to non-default value in xinetd config' do
+      should contain_xinetd__service('tftp').with({
+        :server_args => '-v -s /tftpboot -m /etc/tftpd.map',
+      })
+    end
+  end
+
   context 'on unsupported Linux operatingsystem' do
     let :facts do
       {
@@ -151,7 +183,7 @@ describe 'tftp' do
     end
 
     it 'should fail' do
-      expect { subject }.to raise_error(Puppet::Error, /: This module does not support operatingsystem #{facts[:operatingsystem]}/)
+      should raise_error(Puppet::Error, /: This module does not support operatingsystem #{facts[:operatingsystem]}/)
     end
   end
 
@@ -161,7 +193,7 @@ describe 'tftp' do
     end
 
     it 'should fail' do
-      expect { subject }.to raise_error(Puppet::Error, /: This module does not support osfamily #{facts[:osfamily]}/)
+      should raise_error(Puppet::Error, /: This module does not support osfamily #{facts[:osfamily]}/)
     end
   end
 end

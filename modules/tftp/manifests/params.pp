@@ -10,10 +10,16 @@ class tftp::params {
       } else {
         $root = '/srv/tftp'
       }
+      if $::operatingsystemrelease =~ /^8/ {
+        $syslinux_package = [ 'syslinux-common', 'pxelinux' ]
+      } else {
+        $syslinux_package = 'syslinux'
+      }
     }
     RedHat: {
-      $package = 'tftp-server'
-      $daemon  = false
+      $package          = 'tftp-server'
+      $daemon           = false
+      $syslinux_package = 'syslinux'
       if $::operatingsystemrelease =~ /^(4|5)/ {
         $root  = '/tftpboot/'
       } else {
@@ -23,9 +29,10 @@ class tftp::params {
     Linux: {
       case $::operatingsystem {
         Amazon: {
-          $package = 'tftp-server'
-          $daemon  = false
-          $root    = '/var/lib/tftpboot/'
+          $package          = 'tftp-server'
+          $daemon           = false
+          $root             = '/var/lib/tftpboot/'
+          $syslinux_package = 'syslinux'
         }
         default: {
           fail("${::hostname}: This module does not support operatingsystem ${::operatingsystem}")
