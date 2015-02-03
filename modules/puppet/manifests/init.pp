@@ -70,6 +70,8 @@
 #                                  Defaults to '$confdir/hiera.yaml'.
 #                                  type:string
 #
+# $syslogfacility::                Facility name to use when logging to syslog
+#
 # $auth_template::                 Use a custom template for the auth
 #                                  configuration.
 #
@@ -77,6 +79,14 @@
 #
 # $main_template::                 Use a custom template for the main puppet
 #                                  configuration.
+#
+# $use_srv_records::               Whether DNS SRV records will be used to resolve
+#                                  the Puppet master
+#                                  type:boolean
+#
+# $srv_domain::                    Search domain for SRV records
+#
+# $pluginsource::                  URL to retrieve Puppet plugins from during pluginsync
 #
 # == puppet::agent parameters
 #
@@ -116,11 +126,15 @@
 #
 # $server_reports::                List of report types to include on the puppetmaster
 #
+# $server_implementation::         Puppet master implementation, either "master" (traditional
+#                                  Ruby) or "puppetserver" (JVM-based)
+#
 # $server_passenger::              If set to true, we will configure apache with
 #                                  passenger. If set to false, we will enable the
 #                                  default puppetmaster service unless
 #                                  service_fallback is set to false. See 'Advanced
 #                                  server parameters' for more information.
+#                                  Only applicable when server_implementation is "master".
 #                                  type:boolean
 #
 # $server_external_nodes::         External nodes classifier executable
@@ -244,6 +258,11 @@
 #                                  from a the puppet CA proxy.
 #                                  type:boolean
 #
+# $auth_allowed::                  An array of authenticated nodes allowed to
+#                                  access all catalog and node endpoints.
+#                                  default to ['$1']
+#                                  type:array
+#
 # === Usage:
 #
 # * Simple usage:
@@ -282,6 +301,9 @@ class puppet (
   $configtimeout                 = $puppet::params::configtimeout,
   $ca_server                     = $puppet::params::ca_server,
   $dns_alt_names                 = $puppet::params::dns_alt_names,
+  $use_srv_records               = $puppet::params::use_srv_records,
+  $srv_domain                    = $puppet::params::srv_domain,
+  $pluginsource                  = $puppet::params::pluginsource,
   $classfile                     = $puppet::params::classfile,
   $hiera_config                  = $puppet::params::hiera_config,
   $main_template                 = $puppet::params::main_template,
@@ -289,9 +311,11 @@ class puppet (
   $auth_template                 = $puppet::params::auth_template,
   $nsauth_template               = $puppet::params::nsauth_template,
   $allow_any_crl_auth            = $puppet::params::allow_any_crl_auth,
+  $auth_allowed                  = $puppet::params::auth_allowed,
   $client_package                = $puppet::params::client_package,
   $agent                         = $puppet::params::agent,
   $puppetmaster                  = $puppet::params::puppetmaster,
+  $syslogfacility                = $puppet::params::syslogfacility,
   $server                        = $puppet::params::server,
   $server_user                   = $puppet::params::user,
   $server_group                  = $puppet::params::group,
@@ -300,6 +324,7 @@ class puppet (
   $server_vardir                 = $puppet::params::server_vardir,
   $server_ca                     = $puppet::params::server_ca,
   $server_reports                = $puppet::params::server_reports,
+  $server_implementation         = $puppet::params::server_implementation,
   $server_passenger              = $puppet::params::server_passenger,
   $server_service_fallback       = $puppet::params::server_service_fallback,
   $server_passenger_max_pool     = $puppet::params::server_passenger_max_pool,
@@ -360,6 +385,9 @@ class puppet (
   validate_string($server_ca_proxy)
 
   validate_array($dns_alt_names)
+  validate_array($auth_allowed)
+
+  validate_re($server_implementation, '^(master|puppetserver)$')
 
   include ::puppet::config
   Class['puppet::config'] -> Class['puppet']
