@@ -212,10 +212,10 @@ GIT
 
 GIT
   remote: https://github.com/theforeman/puppet-foreman
-  ref: master
-  sha: 6022e9badb0fd5f05d81dbb2da357e4d8597b128
+  ref: 2.3.2
+  sha: 2adca837d78e009f313352d375e9932a531873ef
   specs:
-    theforeman-foreman (2.3.0)
+    theforeman-foreman (2.3.2)
       adrien-alternatives (< 1.0.0, >= 0.2.0)
       puppetlabs-apache (< 2.0.0, >= 1.0.0)
       puppetlabs-apt (< 2.0.0)
@@ -246,10 +246,10 @@ GIT
 
 GIT
   remote: https://github.com/theforeman/puppet-puppet
-  ref: master
-  sha: 2397861891ef9b548ebdda83fb435731cbfca439
+  ref: 2.3.1
+  sha: f737795bf6441d0fe2c63895cb5678381740951e
   specs:
-    theforeman-puppet (2.1.2)
+    theforeman-puppet (2.3.1)
       puppetlabs-apache (< 2.0.0, >= 1.0.0)
       puppetlabs-stdlib (>= 2.0.0)
       theforeman-concat_native (>= 1.3.0)
