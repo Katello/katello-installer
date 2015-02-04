@@ -22,8 +22,14 @@ class puppet::params {
   $usecacheonfailure   = true
   $ca_server           = ''
   $dns_alt_names       = []
+  $use_srv_records     = false
+  $srv_domain          = $::domain
+  # lint:ignore:puppet_url_without_modules
+  $pluginsource        = 'puppet:///plugins'
+  # lint:endignore
   $classfile           = '$vardir/classes.txt'
   $hiera_config        = '$confdir/hiera.yaml'
+  $syslogfacility      = undef
 
   # Need your own config templates? Specify here:
   $main_template   = 'puppet/puppet.conf.erb'
@@ -33,6 +39,9 @@ class puppet::params {
 
   # Allow any to the CRL. Needed in case of puppet CA proxy
   $allow_any_crl_auth = false
+
+  # Authenticated nodes to allow
+  $auth_allowed = ['$1']
 
   # Will this host be a puppet agent ?
   $agent                     = true
@@ -45,6 +54,7 @@ class puppet::params {
   $server_vardir             = '/var/lib/puppet'
   $server_ca                 = true
   $server_reports            = 'foreman'
+  $server_implementation     = 'master'
   $server_passenger          = true
   $server_service_fallback   = true
   $server_passenger_max_pool = 12
@@ -104,10 +114,7 @@ class puppet::params {
   $server_app_root = "${dir}/rack"
   $server_ssl_dir  = "${server_vardir}/ssl"
 
-  $server_package     =  $::operatingsystem ? {
-    /(Debian|Ubuntu)/ => ['puppetmaster-common','puppetmaster'],
-    default           => ['puppet-server'],
-  }
+  $server_package     = undef
   $client_package     = $::operatingsystem ? {
     /(Debian|Ubuntu)/ => ['puppet-common','puppet'],
     default           => ['puppet'],

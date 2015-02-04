@@ -1,5 +1,40 @@
 # Changelog
 
+## 2.3.1
+* Ensure that the Puppet master runs with UTF-8 locale under Rack (GH-196)
+
+## 2.3.0
+* Add server_implementation parameter to support Puppet Server
+* Update SSL/TLS virtual host settings to latest recommendations
+* Add syslogfacility parameter
+* Add auth_allowed parameter
+* Fix missing notify when Passenger is disabled (GH-183)
+* Fix git warning shown by post-receive hook
+* Fix order of git-shell installation for user shell
+* Fix site.pp message to be clearer
+
+## 2.2.1
+* Fix relationship specification for early Puppet 2.7 releases
+
+## 2.2.0
+* Add support for directory environments, used by default on Puppet 3.6+
+    * server_dynamic_environments is deprecated when
+      server_directory_environments is enabled, set $server_environments = []
+      instead for a similar effect
+* Add puppetmaster parameter to override server setting
+* Add server_environments_group and mode parameters for ownership of
+  environments
+* Add dns_alt_names parameter to add alternative DNS names to certs
+* Add agent splaylimit and usecacheonfailure parameters
+* Add hiera_config parameter
+* Add use_srv_records, srv_domain and pluginsource parameters
+* Masterless envs can set $runmode to 'none' to disable service and cron
+* Fix SSL certificate/key filenames for uppercase hostnames (#6352)
+* Ensure foreman_proxy service is refreshed after SSL certs change
+* Fix stdin and stderr buffering in git post-receive hook
+* Add error checking to git commands in git post-receive hook
+* Typo fix in puppet.conf
+
 ## 2.1.2
 * Remove Puppet agent '--disable' lock file on Debian
 * Treat puppet-lint warnings as failures

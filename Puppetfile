@@ -18,9 +18,9 @@ mod 'theforeman-git', :git => 'https://github.com/theforeman/puppet-git'
 mod 'theforeman-tftp', :git => 'https://github.com/theforeman/puppet-tftp'
 
 # Top-level modules
-mod 'theforeman-foreman', :git => 'https://github.com/theforeman/puppet-foreman'
+mod 'theforeman-foreman', :git => 'https://github.com/theforeman/puppet-foreman', :ref => '2.3.2' #for puppet-apache  1.1.1
 mod 'theforeman-foreman_proxy', :git => 'https://github.com/theforeman/puppet-foreman_proxy'
-mod 'theforeman-puppet', :git => 'https://github.com/theforeman/puppet-puppet'
+mod 'theforeman-puppet', :git => 'https://github.com/theforeman/puppet-puppet', :ref => '2.3.1' #for puppet-apache  1.1.1
 
 ###########################################################
 # Katello part of Puppefile (taken from foreman-installer #

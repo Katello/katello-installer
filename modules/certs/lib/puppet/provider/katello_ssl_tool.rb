@@ -105,9 +105,13 @@ module Puppet::Provider::KatelloSslTool
     end
 
     def rpmfile
-      rpmfile = Dir[self.build_path("#{rpmfile_base_name}*.noarch.rpm")].max_by do |file|
+      path = self.build_path("#{rpmfile_base_name}")
+      path = path + "-[0-9].*" + "noarch.rpm"
+
+      rpmfile = Dir[path].max_by do |file|
         version_from_name(file)
       end
+
       rpmfile ||= self.build_path("#{rpmfile_base_name}.noarch.rpm")
       return rpmfile
     end
