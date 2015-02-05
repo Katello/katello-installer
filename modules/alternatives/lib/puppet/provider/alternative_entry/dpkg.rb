@@ -1,7 +1,9 @@
 Puppet::Type.type(:alternative_entry).provide(:dpkg) do
 
   confine :osfamily => 'Debian'
-  commands :update  => '/usr/sbin/update-alternatives'
+  defaultfor :operatingsystem => [:debian, :ubuntu]
+
+  commands :update => 'update-alternatives'
   
   mk_resource_methods
 
@@ -16,7 +18,11 @@ Puppet::Type.type(:alternative_entry).provide(:dpkg) do
 
   def exists?
     # we cannot fetch @resource.value(:altname) if running 'puppet resource alternative_entry'
-    output = update('--list', @resource.value(:altname) || altname)
+    begin
+      output = update('--list', @resource.value(:altname) || altname)
+    rescue
+      return false
+    end
 
     output.split(/\n/).map(&:strip).any? do |line|
       line == @resource.value(:name)

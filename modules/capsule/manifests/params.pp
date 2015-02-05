@@ -20,6 +20,7 @@ class capsule::params {
 
   $puppet                        = false
   $puppetca                      = false
+  $puppet_ca_proxy               = ''
 
   $foreman_proxy_port            = '9090'
   $tftp                          = false

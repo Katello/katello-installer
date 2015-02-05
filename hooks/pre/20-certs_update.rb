@@ -8,12 +8,6 @@ def error(message)
   exit 101
 end
 
-def module_enabled?(name)
-  mod = @kafo.module(name)
-  return false if mod.nil?
-  mod.enabled?
-end
-
 def mark_for_update(cert_name, hostname = nil)
   path = File.join(*[SSL_BUILD_DIR, hostname, cert_name].compact)
   puts "Marking certificate #{path} for update"
@@ -24,7 +18,7 @@ def mark_for_update(cert_name, hostname = nil)
   end
 end
 
-if app_value('certs_update_server_ca') && !module_enabled?('katello')
+if app_value('certs_update_server_ca') && !Kafo::Helpers.module_enabled?(@kafo, 'katello')
   error "--certs-update-server-ca needs to be used with katello-installer"
 end
 

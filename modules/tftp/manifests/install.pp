@@ -5,7 +5,7 @@ class tftp::install {
     alias  => 'tftp-server'
   }
 
-  package {'syslinux':
+  package { $tftp::params::syslinux_package:
     ensure => installed
   }
 }
