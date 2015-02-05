@@ -4,7 +4,7 @@
 
 Name:    katello-installer-base
 Version: 2.1.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Puppet-based installer for the Katello and Katello Capsule
 Group:   Applications/System
 License: GPLv3+ and ASL 2.0
@@ -159,6 +159,15 @@ ln -sf %{_datadir}/capsule-installer/bin/capsule-installer %{buildroot}/%{_sbind
 %doc README.*
 
 %changelog
+* Thu Feb 05 2015 Justin Sherrill <jsherril@redhat.com> 2.1.1-3
+- refs #6927, et al. - update capsule module (stbenjam@redhat.com)
+- Fixes #7545: Ignore system proxy settings on installation for service wait
+  commands. (ericdhelms@gmail.com)
+- fixes #8613 - support upgrades in the installer (stbenjam@redhat.com)
+- refs #9204,#9163 - updating service_wait and certs (jsherril@redhat.com)
+- refs #8999 - pegging foreman and puppet modules for apache 1.1.1
+  (jsherril@redhat.com)
+
 * Tue Jan 13 2015 Justin Sherrill <jsherril@redhat.com> 2.1.1-2
 - Fixes #8842: Move obsolete to allow yum upgrade. (ericdhelms@gmail.com)
 - Fixes #8843: katello-installer-base missing modules and hooks
