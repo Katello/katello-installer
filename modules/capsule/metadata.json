@@ -1,6 +1,6 @@
 {
   "name": "katello-capsule",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "Katello",
   "summary": "Deploys and manages a Capsule",
   "license": "GPLv3+",
@@ -25,11 +25,11 @@
     },
     {
        "name": "theforeman-foreman",
-       "version_requirement": ">= 1.5.0"
+       "version_requirement": ">= 2.3.0"
     },
     {
        "name": "theforeman-foreman_proxy",
-       "version_requirement": ">= 1.5.0"
+       "version_requirement": ">= 2.2.0"
     },
     {
        "name": "katello-common",

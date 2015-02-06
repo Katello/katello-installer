@@ -20,6 +20,12 @@ describe 'katello' do
     it { should contain_class('katello::config') }
     it { should contain_class('katello::service') }
 
+    it "should configure a qpid client" do
+      should contain_class('qpid::client').
+        with(:ssl             => true,
+             :ssl_cert_name   => 'broker')
+    end
+
     context 'on setting cdn-ssl-version' do
       let :params do
         {

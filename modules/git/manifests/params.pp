@@ -19,5 +19,6 @@
 class git::params (
   $bin = '/usr/bin/git',
   $package = 'git',
+  $package_ensure = 'installed',
 ) {
 }
