@@ -11,9 +11,9 @@ describe 'dns' do
   end
 
   describe 'with no custom parameters' do
-    it { should include_class('dns::install') }
-    it { should include_class('dns::config') }
-    it { should include_class('dns::service') }
+    it { should contain_class('dns::install') }
+    it { should contain_class('dns::config') }
+    it { should contain_class('dns::service') }
 
     it { should contain_package('dns').with_ensure('present').with_name('bind') }
 

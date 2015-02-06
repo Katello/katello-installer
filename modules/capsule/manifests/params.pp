@@ -18,11 +18,18 @@ class capsule::params {
   $pulp_oauth_key             = 'katello'
   $pulp_oauth_secret          = undef
 
+  $reverse_proxy      = false
+  $reverse_proxy_port = 8443
+
   $puppet                        = false
   $puppetca                      = false
   $puppet_ca_proxy               = ''
 
   $foreman_proxy_port            = '9090'
+
+  $foreman_proxy_http            = true
+  $foreman_proxy_http_port       = '8000'
+
   $tftp                          = false
   $tftp_servername               = $foreman_proxy::params::tftp_servername
   $tftp_syslinux_files           = $foreman_proxy::params::tftp_syslinux_files
@@ -64,9 +71,11 @@ class capsule::params {
   $realm_principal               = $foreman_proxy::params::realm_principal
   $freeipa_remove_dns            = $foreman_proxy::params::freeipa_remove_dns
 
+  # Templates proxy
+  $templates                     = false
+
   $register_in_foreman = false
   $certs_tar = undef
 
   $rhsm_url = '/rhsm'
-  $rhsm_port = 443
 }

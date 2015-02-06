@@ -97,7 +97,12 @@ class katello (
     key     => $certs::apache::apache_key,
     ca_cert => $certs::ca_cert,
   } ~>
-  class { 'qpid::client': } ~>
+  class { 'qpid::client':
+    ssl                    => true,
+    ssl_cert_name          => 'broker',
+    ssl_cert_db            => $certs::nss_db_dir,
+    ssl_cert_password_file => $certs::qpid::nss_db_password_file,
+  } ~>
   class { 'katello::qpid':
     client_cert  => $certs::qpid::client_cert,
     client_key   => $certs::qpid::client_key,

@@ -1,0 +1,10 @@
+ssl-profile {
+    name: <%= @title %>
+    cert-db: <%= @ca %>
+    cert-file: <%= @cert %>
+    key-file: <%= @key %>
+<% if @password != '' -%>
+    password: <%= @password %>
+<% end -%>
+}
+
