@@ -10,7 +10,7 @@ FORGE
     puppetlabs-concat (1.1.2)
       puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
     puppetlabs-stdlib (4.5.1)
-    puppetlabs-vcsrepo (1.1.0)
+    puppetlabs-vcsrepo (1.2.0)
     puppetlabs-xinetd (1.4.0)
       puppetlabs-stdlib (>= 2.2.1)
 
@@ -112,7 +112,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello_devel
   ref: master
-  sha: e0524c5e6dc6f7f40a501e9d307f1eea429c1fc8
+  sha: f0bdedeb1af113f937bd6b81850d18263b24bb92
   specs:
     katello-katello_devel (0.1.0)
       katello-candlepin (>= 0.1.0)
@@ -134,7 +134,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-pulp
   ref: master
-  sha: 6307cd92e12105929e027aa9503e97ca07a715d6
+  sha: d9f53d1c7be53beb12a211505d2ae3b89f5a5d4f
   specs:
     katello-pulp (0.1.0)
       katello-qpid (>= 0.1.0)
@@ -188,7 +188,7 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-postgresql
   ref: master
-  sha: fdc8180820a8f1a8e0960d67da51d486918215be
+  sha: b0f2a8f765f4bf05950e15700dfaff93f569936c
   specs:
     puppetlabs-postgresql (4.1.0)
       puppetlabs-apt (< 2.0.0, >= 1.1.0)
