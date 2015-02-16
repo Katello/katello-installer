@@ -3,9 +3,7 @@ require File.join(File.dirname(__FILE__), '..', 'vcsrepo')
 Puppet::Type.type(:vcsrepo).provide(:git, :parent => Puppet::Provider::Vcsrepo) do
   desc "Supports Git repositories"
 
-  ##TODO modify the commands below so that the su - is included
   commands :git => 'git'
-  optional_commands :su  => 'su'
 
   has_features :bare_repositories, :reference_tracking, :ssh_identity, :multiple_remotes, :user, :depth
 
@@ -281,7 +279,16 @@ Puppet::Type.type(:vcsrepo).provide(:git, :parent => Puppet::Provider::Vcsrepo) 
 
   # @!visibility private
   def set_excludes
-    at_path { open('.git/info/exclude', 'w') { |f| @resource.value(:excludes).each { |ex| f.write(ex + "\n") }}}
+    # Excludes may be an Array or a String.
+    at_path do
+      open('.git/info/exclude', 'w') do |f|
+        if @resource.value(:excludes).respond_to?(:each)
+          @resource.value(:excludes).each { |ex| f.puts ex }
+        else
+          f.puts @resource.value(:excludes)
+        end
+      end
+    end
   end
 
   # Finds the latest revision or sha of the current branch if on a branch, or
@@ -365,7 +372,7 @@ Puppet::Type.type(:vcsrepo).provide(:git, :parent => Puppet::Provider::Vcsrepo) 
         return ret
       end
     elsif @resource.value(:user) and @resource.value(:user) != Facter['id'].value
-      su(@resource.value(:user), '-c', "git #{args.join(' ')}" )
+      Puppet::Util::Execution.execute("git #{args.join(' ')}", :uid => @resource.value(:user), :failonfail => true)
     else
       git(*args)
     end

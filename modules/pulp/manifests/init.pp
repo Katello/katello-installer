@@ -50,6 +50,9 @@
 #
 # $reset_cache::                Boolean to flush the cache. Defaults to false
 #
+# $qpid_ssl::                   Enable SSL in qpid or not
+#                               type:boolean
+#
 # $qpid_ssl_cert_db             The location of the Qpid SSL cert database
 #
 # $qpid_ssl_cert_password_file  Location of the password file for the Qpid SSL cert
@@ -91,6 +94,7 @@ class pulp (
   $reset_data = false,
   $reset_cache = false,
 
+  $qpid_ssl = $pulp::params::qpid_ssl,
   $qpid_ssl_cert_db = $pulp::params::qpid_ssl_cert_db,
   $qpid_ssl_cert_password_file = $pulp::params::qpid_ssl_cert_password_file,
 
@@ -119,7 +123,7 @@ class pulp (
     pidfilepath => $mongodb_pidfilepath,
   } ~>
   class { 'qpid':
-    ssl                    => true,
+    ssl                    => $qpid_ssl,
     ssl_cert_db            => $qpid_ssl_cert_db,
     ssl_cert_password_file => $qpid_ssl_cert_password_file,
     ssl_cert_name          => 'broker',

@@ -456,7 +456,7 @@ The vcsrepo module is slightly unusual in that it is simply a type and providers
 
 * `git`   - Supports the Git VCS. (Contains features: `bare_repositories`, `depth`, `multiple_remotes`, `reference_tracking`, `ssh_identity`, `user`.)
 * `bar`   - Supports the Bazaar VCS. (Contains features: `reference_tracking`.)
-* `cvs`   - Supports the CVS VCS. (Contains features: `cvs_rsh`, `gzip_compression`, `modules`,`reference_tracking`.)
+* `cvs`   - Supports the CVS VCS. (Contains features: `cvs_rsh`, `gzip_compression`, `modules`, `reference_tracking`, `user`.)
 * `dummy` - 
 * `hg`    - Supports the Mercurial VCS. (Contains features: `reference_tracking`, `ssh_identity`, `user`.)
 * `p4`    - Supports the Perforce VCS. (Contains features: `reference_tracking`, `filesystem_types`, `p4config`.)
@@ -477,7 +477,7 @@ The vcsrepo module is slightly unusual in that it is simply a type and providers
 * `multiple_remotes` - The repository tracks multiple remote repositories. (Available with `git`.)
 * `reference_tracking` - The provider supports tracking revision references that can change over time (e.g. some VCS tags and branch names). (Available with `bar`, `cvs`, `git`, `hg`, `svn`.)
 * `ssh_identity` - The provider supports a configurable SSH identity file. (Available with `git` and `hg`.)
-* `user` - The provider can run as a different user. (Available with `git` and `hg`.)
+* `user` - The provider can run as a different user. (Available with `git`, `hg` and `cvs`.)
 * `p4config` - The provider support setting the P4CONFIG environment. (Available with `p4`.)
 
 ####Parameters
@@ -489,7 +489,7 @@ The vcsrepo module is slightly unusual in that it is simply a type and providers
 * `cvs_rsh` -  The value to be used for the CVS_RSH environment variable. (Requires the `cvs_rsh` feature.)
 * `depth` - The value to be used to do a shallow clone. (Requires the `depth` feature.)
 * `ensure` - Determines the state of the repository. Valid values are 'present', 'bare', 'absent', 'latest'.
-* `excludes` - Lists any files to be excluded from the repository.
+* `excludes` - Lists any files to be excluded from the repository. Can be an array or string.
 * `force` - Forces repository creation. Valid values are 'true' and 'false'. **WARNING** Forcing will destroy any files in the path.
 * `fstype` - Sets the filesystem type. (Requires the `filesystem_types` feature.)
 * `group` - Determines the group/gid that owns the repository files.

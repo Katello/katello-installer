@@ -1,12 +1,18 @@
 # foreman_gutterball plugin
 class katello_devel::plugin::foreman_gutterball {
   $path = "${katello_devel::deployment_dir}/foreman-gutterball"
+  $foreman_settings_path = "${katello_devel::deployment_dir}/foreman/config/settings.plugins.d"
 
   vcsrepo { $path:
     ensure   => present,
     provider => git,
     source   => 'https://github.com/Katello/foreman-gutterball.git',
     user     => $katello_devel::user
+  } ~>
+  class { 'katello::plugin::gutterball::config':
+    foreman_plugins_dir => $foreman_settings_path,
+    foreman_user        => $katello::user,
+    foreman_group       => $katello::group,
   }
 
   Class[ 'katello_devel::install' ] ->
