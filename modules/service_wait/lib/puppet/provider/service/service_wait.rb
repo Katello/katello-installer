@@ -2,12 +2,9 @@
 Puppet::Type.type(:service).provide :service_wait, :parent => :systemd do
   desc "Manages services using `service-wait` command."
 
-  commands :service => File.expand_path("../../../../../bin/service-wait", __FILE__)
+  commands :systemctl => File.expand_path("../../../../../bin/service-wait", __FILE__)
 
-  defaultfor :osfamily => [:redhat], :operatingsystemmajrelease => "7"
-  #everything but el6
-  confine :false => (Puppet[:operatingsystemrelease] =~ /^6.*/)
-  confine :osfamily => /^(RedHat|Linux)/
+  defaultfor :osfamily => :redhat, :operatingsystemmajrelease => "7"
 
   def self.specificity
    # The specificity determines which provider wins at the end

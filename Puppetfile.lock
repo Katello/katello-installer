@@ -155,7 +155,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-service_wait
   ref: master
-  sha: ee56edcdd8c21049e353711fadbd0b0bcf11fa39
+  sha: cdb706d767174aa2c225a793f68790cfe477bcf9
   specs:
     katello-service_wait (0.0.1)
 
