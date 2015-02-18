@@ -11,8 +11,16 @@
 # have received a copy of GPLv2 along with this software; if not, see
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
-SERVICE=$1
-COMMAND=$2
+VERSION_ID=`cat /etc/os-release | grep VERSION_ID`
+
+if [[ $VERSION_ID == *'7'* ]]
+then
+    COMMAND=$1
+    SERVICE=$2
+else
+    COMMAND=$2
+    SERVICE=$1
+fi
 
 PLUGINS_DIR=${PLUGINS_DIR:-"$(dirname $(readlink -f $BASH_SOURCE))/../plugins"}
 # number of attemts to check the service

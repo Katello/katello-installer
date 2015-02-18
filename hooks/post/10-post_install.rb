@@ -44,9 +44,7 @@ MSG
 
   To finish the installation, follow these steps:
 
-  1. Ensure that the capsule-installer is available on the system.
-     The capsule-installer comes from the katello-installer package and
-     should be acquired through the means that are appropriate to your deployment.
+  1. Ensure that the capsule-installer package is installed on the system.
   2. Copy <%= color("#{certs_tar}", :info) %> to the system <%= color("#{capsule_fqdn}", :info) %>
   3. Run the following commands on the capsule (possibly with the customized
      parameters, see <%= color("capsule-installer --help", :info) %> and
