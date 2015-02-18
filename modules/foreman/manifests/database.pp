@@ -22,17 +22,15 @@ class foreman::database {
 
     class { $db_class: } ~>
     foreman_config_entry { 'db_pending_migration':
-      value          => false,
-      dry            => true,
-      ignore_missing => true,
+      value => false,
+      dry   => true,
     } ~>
     foreman::rake { 'db:migrate': } ~>
     foreman_config_entry { 'db_pending_seed':
-      value          => false,
-      dry            => true,
-      ignore_missing => true,
+      value  => false,
+      dry    => true,
       # to address #7353: settings initialization race condition
-      before         => $foreman_service,
+      before => $foreman_service,
     } ~>
     foreman::rake { 'db:seed':
       environment => delete_undef_values($seed_env),
