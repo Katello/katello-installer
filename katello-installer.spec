@@ -4,7 +4,7 @@
 
 Name:    katello-installer-base
 Version: 2.1.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: Puppet-based installer for the Katello and Katello Capsule
 Group:   Applications/System
 License: GPLv3+ and ASL 2.0
@@ -159,6 +159,13 @@ ln -sf %{_datadir}/capsule-installer/bin/capsule-installer %{buildroot}/%{_sbind
 %doc README.*
 
 %changelog
+* Wed Feb 18 2015 Justin Sherrill <jsherril@redhat.com> 2.1.1-4
+- Fixes #9364: Update service wait for EL7. (ericdhelms@gmail.com)
+- refs #8679 - refer to capsule-installer pkg instead of katello-installer
+  (stbenjam@redhat.com)
+- Refs #9101 - backporting to katello 2.1 (jsherril@redhat.com)
+- fixes #9075 - hooks_dir should be hook_dirs (stbenjam@redhat.com)
+
 * Thu Feb 05 2015 Justin Sherrill <jsherril@redhat.com> 2.1.1-3
 - refs #6927, et al. - update capsule module (stbenjam@redhat.com)
 - Fixes #7545: Ignore system proxy settings on installation for service wait
