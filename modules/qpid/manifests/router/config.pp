@@ -9,6 +9,7 @@ class qpid::router::config {
                 '*header*.conf',
                 '*ssl*.conf',
                 '*connector*.conf',
+                '*link_route_pattern*.conf',
                 '*listener*.conf',
                 '*footer*.conf',
               ],

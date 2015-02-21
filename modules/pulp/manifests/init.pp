@@ -67,6 +67,9 @@
 #
 # $proxy_password::             Proxy password for authentication
 #
+# $num_workers::                Number of Pulp workers to use
+#                               defaults to number of processors and maxs at 8
+#
 class pulp (
 
   $oauth_key = $pulp::params::oauth_key,
@@ -101,7 +104,9 @@ class pulp (
   $proxy_url      = $pulp::params::proxy_url,
   $proxy_port     = $pulp::params::proxy_port,
   $proxy_username = $pulp::params::proxy_username,
-  $proxy_password = $pulp::params::proxy_password
+  $proxy_password = $pulp::params::proxy_password,
+
+  $num_workers = $pulp::params::num_workers,
 
   ) inherits pulp::params {
 

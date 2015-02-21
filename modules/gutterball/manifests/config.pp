@@ -1,5 +1,7 @@
 # Configuration for Candlepin
 class gutterball::config(
+  $amqp_broker_host = $::fqdn,
+  $amqp_broker_port = '5671',
   $dbuser = $gutterball::dbuser,
   $dbpass = $gutterball::dbpassword,
   $keystore_password = $gutterball::keystore_password_file,

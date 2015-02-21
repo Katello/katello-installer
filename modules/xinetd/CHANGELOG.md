@@ -1,3 +1,14 @@
+##2015-02-10 - Release 1.5.0
+###Summary
+This release adds some new parameters and also pins to rspec-puppet 1.x until migration.
+
+####Features
+- New parameters in `class xinetd`
+  - `package_ensure`
+  - `purge_confdir`
+- New parameter in `xinetd::service`
+  - `nice`
+
 ##2015-01-20 - Release 1.4.0
 ###Summary
 

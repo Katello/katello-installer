@@ -93,6 +93,13 @@ class certs::params {
 
   $messaging_client_cert = "${pki_dir}/qpid_client_striped.crt"
 
+  $qpid_router_server_cert = "${pki_dir}/qpid_router_server.crt"
+  $qpid_router_client_cert = "${pki_dir}/qpid_router_client.crt"
+  $qpid_router_server_key  = "${pki_dir}/qpid_router_server.key"
+  $qpid_router_client_key  = "${pki_dir}/qpid_router_client.key"
+  $qpid_router_owner       = 'qpidd'
+  $qpid_router_group       = 'root'
+
   $pulp_server_ca_cert   = '/etc/pki/pulp/server_ca.crt'
   # Pulp expects the node certificate to be located on this very location
   $nodes_cert_dir        = '/etc/pki/pulp/nodes'
