@@ -38,6 +38,7 @@
 #   $access_times   - optional
 #   $log_type       - optional
 #   $bind           - optional
+#   $nice           - optional
 #
 # Actions:
 #   setups up a xinetd service by creating a file in /etc/xinetd.d/
@@ -57,6 +58,7 @@
 #     cps         => '100 2',
 #     flags       => 'IPv4',
 #     per_source  => '11',
+#     nice        => '19',
 #   } # xinetd::service
 #
 define xinetd::service (
@@ -86,7 +88,8 @@ define xinetd::service (
   $no_access               = undef,
   $access_times            = undef,
   $log_type                = undef,
-  $bind                    = undef
+  $bind                    = undef,
+  $nice                    = undef
 ) {
 
   include xinetd
@@ -103,6 +106,12 @@ define xinetd::service (
 
   if $xtype {
     warning ('The $xtype parameter to xinetd::service is deprecated. Use the service_type parameter instead.')
+  }
+  if $nice {
+    validate_re($nice,'^-?[0-9]+$')
+    if !is_numeric($nice) or $nice < -19 or $nice > 19 {
+      fail("Invalid value for nice, ${nice}")
+    }
   }
 
   # Template uses:
@@ -130,6 +139,7 @@ define xinetd::service (
   # - $no_access
   # - $access_types
   # - $log_type
+  # - $nice
   file { "${xinetd::confdir}/${title}":
     ensure  => $ensure,
     owner   => 'root',

@@ -153,5 +153,33 @@ describe 'qpid::client::config' do
         ]
       end
     end
+
+    context 'with link route pattern' do
+      let :pre_condition do
+        'class {"qpid::router":}
+
+         qpid::router::connector { "broker":
+           addr        => "127.0.0.1",
+           port        => "5672",
+           role        => "on-demand",
+           ssl_profile => "router-ssl",
+         }
+
+         qpid::router::link_route_pattern { "broker-link":
+           connector => "broker",
+           prefix    => "unicorn.",
+         }'
+      end
+
+      it 'should have link_route_pattern fragment' do
+        content = subject.resource('concat_fragment', 'qdrouter+link_route_pattern_broker-link.conf').send(:parameters)[:content]
+        content.split("\n").reject { |c| c =~ /(^#|^$)/ }.should == [
+          'linkRoutePattern {',
+          '    prefix: unicorn.',
+          '    connector: broker',
+          '}'
+        ]
+      end
+    end
   end
 end

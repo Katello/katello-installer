@@ -24,8 +24,8 @@ class tftp (
 
   validate_absolute_path($root)
 
-  class {'tftp::install':} ->
-  class {'tftp::config':} ~>
-  class {'tftp::service':} ->
-  Class['tftp']
+  class {'::tftp::install':} ->
+  class {'::tftp::config':} ~>
+  class {'::tftp::service':} ->
+  Class['::tftp']
 }

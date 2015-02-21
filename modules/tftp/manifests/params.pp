@@ -1,7 +1,7 @@
 # TFTP defaults
 class tftp::params {
   case $::osfamily {
-    Debian: {
+    'Debian': {
       $package = 'tftpd-hpa'
       $daemon  = true
       $service = 'tftpd-hpa'
@@ -16,7 +16,7 @@ class tftp::params {
         $syslinux_package = 'syslinux'
       }
     }
-    RedHat: {
+    'RedHat': {
       $package          = 'tftp-server'
       $daemon           = false
       $syslinux_package = 'syslinux'
@@ -26,9 +26,9 @@ class tftp::params {
         $root  = '/var/lib/tftpboot/'
       }
     }
-    Linux: {
+    'Linux': {
       case $::operatingsystem {
-        Amazon: {
+        'Amazon': {
           $package          = 'tftp-server'
           $daemon           = false
           $root             = '/var/lib/tftpboot/'

@@ -11,6 +11,7 @@ describe 'concat::setup', :type => :class do
         :caller_module_name => 'Test',
         :osfamily           => 'Debian',
         :id                 => 'root',
+        :is_pe              => false,
       }
     end
 
@@ -43,7 +44,7 @@ describe 'concat::setup', :type => :class do
 
   context 'deprecated as a public class' do
     it 'should create a warning' do
-      pending('rspec-puppet support for testing warning()')
+      skip('rspec-puppet support for testing warning()')
     end
   end
 
@@ -55,6 +56,7 @@ describe 'concat::setup', :type => :class do
         :caller_module_name => 'Test',
         :osfamily           => 'Solaris',
         :id                 => 'root',
+        :is_pe              => false,
       }
     end
 
@@ -77,6 +79,7 @@ describe 'concat::setup', :type => :class do
         :caller_module_name => 'Test',
         :osfamily           => 'windows',
         :id                 => 'batman',
+        :is_pe              => false,
       }
     end
 

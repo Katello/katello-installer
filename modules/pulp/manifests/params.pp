@@ -32,4 +32,25 @@ class pulp::params {
   $proxy_port     = undef
   $proxy_username = undef
   $proxy_password = undef
+
+  $num_workers = min($::processorcount, 8)
+
+  $osreleasemajor = regsubst($::operatingsystemrelease, '^(\d+)\..*$', '\1')
+
+  case $::osfamily{
+    'RedHat': {
+      case $osreleasemajor {
+        '6': {
+          $pulp_workers_template = 'upstart_pulp_workers'
+        }
+        default: {
+          $pulp_workers_template = 'systemd_pulp_workers'
+        }
+      }
+    }
+    default: {
+      fail("${::hostname}: This module does not support osfamily ${::operatingsystem}")
+    }
+  }
+
 }

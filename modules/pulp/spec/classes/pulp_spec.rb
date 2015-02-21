@@ -5,11 +5,13 @@ describe 'pulp' do
  context 'on redhat' do
     let :facts do
       {
-        :concat_basedir             => '/tmp',
-        :operatingsystem            => 'RedHat',
-        :operatingsystemrelease     => '6.4',
-        :operatingsystemmajrelease  => '6.4',
-        :osfamily                   => 'RedHat',
+        :concat_basedir            => '/tmp',
+        :operatingsystem           => 'RedHat',
+        :operatingsystemrelease    => '6.4',
+        :operatingsystemmajrelease => '6.4',
+        :osreleasemajor            => '6',
+        :osfamily                  => 'RedHat',
+        :processorcount            => 3,
       }
     end
 

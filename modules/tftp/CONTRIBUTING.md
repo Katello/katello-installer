@@ -17,8 +17,14 @@ Checklist (and a short version for the impatient)
       description (50 characters is the soft limit, excluding ticket
       number(s)), and should skip the full stop.
 
-    - Associate the issue in the message. The first line should include
-      the issue number in the form "(#XXXX) Rest of message".
+    - If you have a [http://projects.theforeman.org/projects/puppet-foreman/issues](Redmine issue)
+      number, associate the issue in the message.  The first line should start
+      with the issue number in the form "fixes #XXXX - rest of message".
+      [More information on the Redmine style](http://projects.theforeman.org/projects/foreman/wiki/Reviewing_patches-commit_message_format).
+      Tickets are not required for our installer Puppet modules.
+
+    - If you have a GitHub issue number, associate the issue in the message.
+      End the commit message with "Fixes GH-1234" on a new line.
 
     - The body should provide a meaningful commit message, which:
 
@@ -32,9 +38,9 @@ Checklist (and a short version for the impatient)
       feature you are adding.
 
     - Make sure the test suites passes after your commit:
-      `bundle exec rspec spec/acceptance` More information on [testing](#Testing) below
+      `bundle exec rake spec` More information on [testing](#Testing) below
 
-    - When introducing a new feature, make sure it is properly
+    - When introducing a large change, make sure it is properly
       documented in the README.md
 
   * Submission:
@@ -43,17 +49,14 @@ Checklist (and a short version for the impatient)
 
       - Make sure you have a [GitHub account](https://github.com/join)
 
-      - [Create a ticket](https://tickets.puppetlabs.com/secure/CreateIssue!default.jspa), or [watch the ticket](https://tickets.puppetlabs.com/browse/) you are patching for.
-
     * Preferred method:
 
       - Fork the repository on GitHub.
 
       - Push your changes to a topic branch in your fork of the
-        repository. (the format ticket/1234-short_description_of_change is
-        usually preferred for this project).
+        repository, in a new branch.
 
-      - Submit a pull request to the repository in the puppetlabs
+      - Submit a pull request to the repository in the 'theforeman'
         organization.
 
 The long version
@@ -70,6 +73,9 @@ The long version
 
       If you are going to refactor a piece of code, please do so as a
       separate commit from your feature or bug fix changes.
+
+      If you have many commits to fix one issue, use `git rebase` or
+      `git commit --amend` to combine them into a single commit.
 
       We also really appreciate changes that include tests to make
       sure the bug is not re-introduced, and that the feature is not
@@ -168,28 +174,52 @@ and so on. rspec tests may have the same kind of dependencies as the
 module they are testing. While the module defines in its [Modulefile](./Modulefile),
 rspec tests define them in [.fixtures.yml](./fixtures.yml).
 
-Some puppet modules also come with [beaker](https://github.com/puppetlabs/beaker)
-tests. These tests spin up a virtual machine under
-[VirtualBox](https://www.virtualbox.org/)) with, controlling it with
-[Vagrant](http://www.vagrantup.com/) to actually simulate scripted test
-scenarios. In order to run these, you will need both of those tools
-installed on your system.
-
-You can run them by issuing the following command
-
-```shell
-% rake spec_clean
-% rspec spec/acceptance
-```
-
-This will now download a pre-fabricated image configured in the [default node-set](./spec/acceptance/nodesets/default.yml),
-install puppet, copy this module and install its dependencies per [spec/spec_helper_acceptance.rb](./spec/spec_helper_acceptance.rb)
-and then run all the tests under [spec/acceptance](./spec/acceptance).
-
 Writing Tests
 -------------
 
-XXX getting started writing tests.
+Our tests use [rspec-puppet](http://rspec-puppet.com/) to check that classes
+and defined types work when compiled with Puppet itself.  Ideally, we want to
+test the smallest logical units possible (i.e. a single class, not the whole
+module), which helps with speed and reduces work when changing other parts of
+the module.
+
+By writing tests we ensure that future versions of the module don't introduce
+regressions, and that we find issues sooner (in this project) rather than later
+(when used in a Foreman installation).
+
+Each class has its own file within spec/classes/, ending with "_spec.rb" and
+inside each test file is a section for each test scenario ("describe").
+
+A typical rspec-puppet test for a new class parameter would perhaps start with
+defining a set of parameters to pass into the class:
+
+    describe 'with colour parameter' do
+      let :params do
+        {:colour => 'red'}
+      end
+    end
+
+The test then has to check for the presence or absence of certain Puppet
+resources with or without certain properties and relationships.  e.g. a test
+for a service class would ensure the service resource is present, with the
+right name and the right ensure/enable properties.
+
+    describe 'with colour parameter' do
+      let :params do
+        {:colour => 'red'}
+      end
+
+      it 'should configure colour' do
+        should contain_file('/etc/service.conf').with_content('colour: red')
+      end
+    end
+
+More advanced topics:
+
+  * Use rspec-puppet-facts loops: some tests use a loop with "on_supported_os"
+    to test the class under every OS supported in metadata.json.
+  * Test presence of inter-resource require/notify relationships.
+
 
 If you have commit access to the repository
 ===========================================
@@ -208,11 +238,9 @@ review.
 Additional Resources
 ====================
 
-* [Getting additional help](http://puppetlabs.com/community/get-help)
+* [Support and contact details](http://theforeman.org/support.html)
 
-* [Writing tests](http://projects.puppetlabs.com/projects/puppet/wiki/Development_Writing_Tests)
-
-* [Patchwork](https://patchwork.puppetlabs.com)
+* [General Foreman contribution details](http://theforeman.org/contribute.html)
 
 * [General GitHub documentation](http://help.github.com/)
 

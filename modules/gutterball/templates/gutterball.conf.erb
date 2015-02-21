@@ -10,5 +10,6 @@ jpa.config.hibernate.show_sql=false
 # password comes from /etc/pki/katello/keystore_password-file
 gutterball.amqp.keystore_password=<%= keystore_password %>
 gutterball.amqp.truststore_password=<%= keystore_password %>
+gutterball.amqp.connect=amqp://guest:guest@<%= @amqp_broker_host %>/test:<%= @amqp_broker_port %>?brokerlist='tcp://<%= @amqp_broker_host %>:<%= @amqp_broker_port %>'&ssl='true'&ssl_cert_alias='gutterball'
 
 log4j.logger.org.hibernate.SQL=DEBUG
