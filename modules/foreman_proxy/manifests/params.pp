@@ -95,15 +95,33 @@ class foreman_proxy::params {
   # TFTP settings - requires optional TFTP puppet module
   $tftp           = true
   $tftp_listen_on = 'https'
-  case $::operatingsystem {
-    Debian,Ubuntu: {
-      $tftp_syslinux_root = '/usr/lib/syslinux'
+
+  # TODO: remove these on the next major version bump
+  $tftp_syslinux_root  = undef
+  $tftp_syslinux_files = undef
+
+  case $::osfamily {
+    'Debian': {
+      if  ($::operatingsystem == 'Debian') and (versioncmp($::operatingsystemrelease, '8.0') >= 0) or
+          ($::operatingsystem == 'Ubuntu') and (versioncmp($::operatingsystemrelease, '14.10') >= 0) {
+        $tftp_syslinux_filenames = ['/usr/lib/PXELINUX/pxelinux.0',
+                                    '/usr/lib/syslinux/memdisk',
+                                    '/usr/lib/syslinux/modules/bios/chain.c32',
+                                    '/usr/lib/syslinux/modules/bios/menu.c32']
+      } else {
+        $tftp_syslinux_filenames = ['/usr/lib/syslinux/chain.c32',
+                                    '/usr/lib/syslinux/menu.c32',
+                                    '/usr/lib/syslinux/memdisk',
+                                    '/usr/lib/syslinux/pxelinux.0']
+      }
     }
     default: {
-      $tftp_syslinux_root = '/usr/share/syslinux'
+      $tftp_syslinux_filenames = ['/usr/share/syslinux/chain.c32',
+                                  '/usr/share/syslinux/menu.c32',
+                                  '/usr/share/syslinux/memdisk',
+                                  '/usr/share/syslinux/pxelinux.0']
     }
   }
-  $tftp_syslinux_files = ['pxelinux.0','menu.c32','chain.c32','memdisk']
   $tftp_root           = $tftp::params::root
   $tftp_dirs           = ["${tftp_root}/pxelinux.cfg","${tftp_root}/boot"]
   $tftp_servername     = $::ipaddress_eth0 ? {
@@ -112,12 +130,13 @@ class foreman_proxy::params {
   }
 
   # DHCP settings - requires optional DHCP puppet module
-  $dhcp             = false
-  $dhcp_listen_on   = 'https'
-  $dhcp_managed     = true
-  $dhcp_interface   = 'eth0'
-  $dhcp_gateway     = '192.168.100.1'
-  $dhcp_range       = false
+  $dhcp                   = false
+  $dhcp_listen_on         = 'https'
+  $dhcp_managed           = true
+  $dhcp_interface         = 'eth0'
+  $dhcp_gateway           = '192.168.100.1'
+  $dhcp_range             = false
+  $dhcp_option_domain     = [$::domain]
   # This will use the IP of the interface in $dhcp_interface, override
   # if you need to. You can make this a comma-separated string too - it
   # will be split into an array
@@ -135,11 +154,7 @@ class foreman_proxy::params {
     }
     RedHat: {
       $dhcp_vendor = 'isc'
-      if ($::lsbmajdistrelease == 5) {
-        $dhcp_config = '/etc/dhcpd.conf'
-      } else {
-        $dhcp_config = '/etc/dhcp/dhcpd.conf'
-      }
+      $dhcp_config = '/etc/dhcp/dhcpd.conf'
       $dhcp_leases = '/var/lib/dhcpd/dhcpd.leases'
     }
     default: {
