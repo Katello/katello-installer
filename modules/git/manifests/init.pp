@@ -6,6 +6,6 @@
 class git (
   $package        = $::git::params::package,
   $package_ensure = $::git::params::package_ensure,
-) inherits git::params {
-  include git::install
+) inherits ::git::params {
+  include ::git::install
 }
