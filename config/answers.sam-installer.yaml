@@ -26,3 +26,5 @@ foreman:
 
 foreman::plugin::hooks: true
 foreman::plugin::tasks: true
+
+katello::plugin::gutterball: true
