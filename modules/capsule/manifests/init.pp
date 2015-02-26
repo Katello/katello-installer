@@ -136,6 +136,21 @@
 # $templates::                      Enable templates proxying feature
 #                                   type:boolean
 #
+# $qpid_router::                    Configure qpid dispatch router
+#                                   type:boolean
+#
+# $qpid_router_hub_addr::           Address for dispatch router hub
+#
+# $qpid_router_hub_port::           Port for dispatch router hub
+#
+# $qpid_router_agent_addr::         Listener address for goferd agents
+#
+# $qpid_router_agent_port::         Listener port for goferd agents
+#
+# $qpid_router_broker_addr::        Address of qpidd broker to connect to
+#
+# $qpid_router_broker_port::        Port of qpidd broker to connect to
+#
 class capsule (
   $parent_fqdn                   = $capsule::params::parent_fqdn,
   $certs_tar                     = $capsule::params::certs_tar,
@@ -204,7 +219,15 @@ class capsule (
   $rhsm_url                      = $capsule::params::rhsm_url,
 
   $templates                     = $capsule::params::templates,
-  ) inherits capsule::params {
+
+  $qpid_router                   = $capsule::params::qpid_router,
+  $qpid_router_hub_addr          = $capsule::params::qpid_router_hub_addr,
+  $qpid_router_hub_port          = $capsule::params::qpid_router_hub_port,
+  $qpid_router_agent_addr        = $capsule::params::qpid_router_agent_addr,
+  $qpid_router_agent_port        = $capsule::params::qpid_router_agent_port,
+  $qpid_router_broker_addr       = $capsule::params::qpid_router_broker_addr,
+  $qpid_router_broker_port       = $capsule::params::qpid_router_broker_port,
+) inherits capsule::params {
 
   validate_present($capsule::parent_fqdn)
 
@@ -319,6 +342,7 @@ class capsule (
   }
 
   if $pulp {
+
     apache::vhost { 'capsule':
       servername      => $capsule_fqdn,
       port            => 80,
@@ -337,7 +361,7 @@ class capsule (
       qpid_ssl_cert_password_file => $certs::qpid::nss_db_password_file,
       messaging_ca_cert           => $certs::ca_cert,
       messaging_client_cert       => $certs::params::messaging_client_cert,
-      messaging_url               => "ssl://${::fqdn}:5671"
+      messaging_url               => "ssl://${::fqdn}:5671",
     } ~>
     class { 'pulp::child':
       parent_fqdn          => $parent_fqdn,
@@ -350,6 +374,13 @@ class capsule (
     class { 'certs::pulp_child':
       hostname => $capsule_fqdn,
       notify   => [ Class['pulp'], Class['pulp::child'] ],
+    }
+  }
+
+
+  if $qpid_router {
+    class { 'capsule::dispatch_router':
+      require => Class['pulp'],
     }
   }
 
