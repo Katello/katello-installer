@@ -3,6 +3,16 @@ def migrate_candlepin
 end
 
 def migrate_pulp
+  # Fix pid if neccessary
+  if Kafo::Helpers.execute("grep -qe '7.[[:digit:]]' /etc/redhat-release")
+    Kafo::Helpers.execute("sed -i -e 's?/var/run/mongodb/mongodb.pid?/var/run/mongodb/mongod.pid?g' /etc/mongodb.conf")
+  end
+
+  # Start mongo if not running
+  unless Kafo::Helpers.execute('pgrep mongod')
+    Kafo::Helpers.execute('service-wait mongod start')
+  end
+
   Kafo::Helpers.execute('sudo -u apache pulp-manage-db')
 end
 

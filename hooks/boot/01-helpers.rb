@@ -17,16 +17,21 @@ class Kafo::Helpers
 
     def execute(commands)
       commands = commands.is_a?(Array) ? commands : [commands]
+      results = []
 
       commands.each do |command|
         output = `#{command} 2>&1`
 
-        if !$?.success?
-          ::Kafo::KafoConfigure.logger.error output.to_s
-        else
+        if $?.success?
           ::Kafo::KafoConfigure.logger.debug output.to_s
+          results << true
+        else
+         ::Kafo::KafoConfigure.logger.error output.to_s
+          results << false
         end
       end
+
+      !results.include? false
     end
   end
 end
