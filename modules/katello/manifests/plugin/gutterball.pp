@@ -13,5 +13,6 @@ class katello::plugin::gutterball{
     foreman_plugins_dir => $katello::config_dir,
     foreman_user        => $katello::user,
     foreman_group       => $katello::group,
+    notify              => [Service['foreman-tasks'], Class['foreman::service']],
   }
 }
