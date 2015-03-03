@@ -15,6 +15,7 @@ class katello::config {
     group   => $katello::group,
     mode    => '0644',
     before  => [Class['foreman::database'], Exec['foreman-rake-db:migrate']],
+    notify  => [Service['foreman-tasks'], Class['foreman::service']],
   }
 
   file { '/etc/sysconfig/katello':
