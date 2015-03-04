@@ -17,6 +17,9 @@
 
   # The mapping hash provides Kafo with the information to find plugin classes
   :mapping:
+    :katello::plugin::gutterball:
+      :dir_name: katello
+      :manifest_name: plugin/gutterball
     :foreman::plugin::bootdisk:
       :dir_name: foreman
       :manifest_name: plugin/bootdisk
