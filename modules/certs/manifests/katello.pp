@@ -3,6 +3,7 @@ class certs::katello (
   $hostname                      = $fqdn,
   $deployment_url                = undef,
   $rhsm_port                     = 443,
+  $server_ca_name                = $::certs::server_ca_name,
   $candlepin_cert_rpm_alias_filename = undef
   ){
 

@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.5.1
+* Improved linting, minor style fixes
+
 ## 1.5.0
 * Support for Debian 8 (Jessie) syslinux package names
 * Add root parameter to override root directory (#8942)
