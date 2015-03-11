@@ -1,0 +1,7 @@
+[puppet]
+
+# Directory where status files for in progress uploads will be stored
+upload_working_dir = <%= scope.lookupvar('pulp::admin::puppet_upload_working_dir') %>
+
+# Maximum amount of data (in bytes) sent for an upload in a single request
+upload_chunk_size = <%= scope.lookupvar('pulp::admin::puppet_upload_chunk_size') %>
