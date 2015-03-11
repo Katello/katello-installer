@@ -20,18 +20,30 @@ class Kafo::Helpers
       results = []
 
       commands.each do |command|
+        ::Kafo::KafoConfigure.logger.debug command.to_s
+
         output = `#{command} 2>&1`
 
         if $?.success?
           ::Kafo::KafoConfigure.logger.debug output.to_s
           results << true
         else
-         ::Kafo::KafoConfigure.logger.error output.to_s
+          ::Kafo::KafoConfigure.logger.error output.to_s
           results << false
         end
       end
 
       !results.include? false
+    end
+
+    def command_exists?(command)
+      `which #{command} > /dev/null 2>&1`
+      $?.success?
+    end
+
+    def service_exists?(service)
+      `ps cax | grep #{service} > /dev/null 2>&1`
+      $?.success?
     end
   end
 end
