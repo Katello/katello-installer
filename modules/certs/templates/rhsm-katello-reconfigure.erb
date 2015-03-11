@@ -17,13 +17,15 @@
 #
 
 KATELLO_SERVER=<%= @hostname %>
+KATELLO_CERT=<%= @server_ca_name %>.pem
+KATELLO_CERT_DIR=<%= @rhsm_ca_dir %>
 PORT=<%= @rhsm_port %>
 BASEURL=https://$KATELLO_SERVER/pulp/repos
 
 PREFIX=<%= @deployment_url %>
 CFG=/etc/rhsm/rhsm.conf
 CFG_BACKUP=$CFG.kat-backup
-
+CA_TRUST_ANCHORS=/etc/pki/ca-trust/source/anchors
 # Get version of RHSM
 RHSM_V="`rpm -q --queryformat='%{VERSION}' subscription-manager 2> /dev/null | tr . ' '`"
 if test $? != 0 ; then
@@ -46,13 +48,13 @@ if test ${RHSM_VERSION[0]:-0} -gt 0 -o ${RHSM_VERSION[1]:-0} -gt 96 -o \( ${RHSM
     --server.hostname="$KATELLO_SERVER" \
     --server.prefix="$PREFIX" \
     --server.port="$PORT" \
-    --rhsm.repo_ca_cert="%%(ca_cert_dir)skatello-server-ca.pem" \
+    --rhsm.repo_ca_cert="%%(ca_cert_dir)s$KATELLO_CERT" \
     --rhsm.baseurl="$BASEURL"
 else
   sed -i "s/^hostname\s*=.*/hostname = $KATELLO_SERVER/g" $CFG
   sed -i "s/^port\s*=.*/port = $PORT/g" $CFG
   sed -i "s|^prefix\s*=.*|prefix = $PREFIX|g" $CFG
-  sed -i 's|^repo_ca_cert\s*=.*|repo_ca_cert = %%(ca_cert_dir)skatello-server-ca.pem|g' $CFG
+  sed -i "s|^repo_ca_cert\s*=.*|repo_ca_cert = %%(ca_cert_dir)s$KATELLO_CERT|g" $CFG
   sed -i "s|^baseurl\s*=.*|baseurl=$BASEURL|g" $CFG
 fi
 
@@ -61,6 +63,17 @@ if grep --quiet full_refresh_on_yum $CFG; then
 else
   full_refresh_config="#config for on-premise management\nfull_refresh_on_yum = 1"
   sed -i "s/baseurl.*/&\n\n$full_refresh_config/g" $CFG
+fi
+
+# also add the katello ca cert to the system wide ca cert store
+if [ -d $CA_TRUST_ANCHORS ]; then
+  update-ca-trust enable
+  cp $KATELLO_CERT_DIR/$KATELLO_CERT $CA_TRUST_ANCHORS
+  update-ca-trust
+
+  #restart if docker service is installed
+  service docker status >/dev/null && \
+    service docker restart >/dev/null 2&>1
 fi
 
 # restart goferd if it is installed and running
