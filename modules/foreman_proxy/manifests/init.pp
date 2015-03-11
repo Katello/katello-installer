@@ -133,9 +133,13 @@
 #
 # $tftp_listen_on::             TFTP proxy to listen on https, http, or both
 #
-# $tftp_syslinux_root::         Directory that hold syslinux files
+# $tftp_syslinux_root::         Directory that hold syslinux files (deprecated, see $tftp_syslinux_filenames)
 #
-# $tftp_syslinux_files::        Syslinux files to install on TFTP (copied from $tftp_syslinux_root)
+# $tftp_syslinux_files::        Syslinux files to install on TFTP (copied from $tftp_syslinux_root,
+#                               deprecated, see $tftp_syslinux_filenames)
+#                               type:array
+#
+# $tftp_syslinux_filenames::    Syslinux files to install on TFTP (full paths)
 #                               type:array
 #
 # $tftp_root::                  TFTP root directory
@@ -152,6 +156,9 @@
 #
 # $dhcp_managed::               DHCP is managed by Foreman proxy
 #                               type:boolean
+#
+# $dhcp_option_domain::         DHCP use the dhcpd config option domain-name
+#                               type:array
 #
 # $dhcp_interface::             DHCP listen interface
 #
@@ -293,12 +300,14 @@ class foreman_proxy (
   $tftp_listen_on             = $foreman_proxy::params::tftp_listen_on,
   $tftp_syslinux_root         = $foreman_proxy::params::tftp_syslinux_root,
   $tftp_syslinux_files        = $foreman_proxy::params::tftp_syslinux_files,
+  $tftp_syslinux_filenames    = $foreman_proxy::params::tftp_syslinux_filenames,
   $tftp_root                  = $foreman_proxy::params::tftp_root,
   $tftp_dirs                  = $foreman_proxy::params::tftp_dirs,
   $tftp_servername            = $foreman_proxy::params::tftp_servername,
   $dhcp                       = $foreman_proxy::params::dhcp,
   $dhcp_listen_on             = $foreman_proxy::params::dhcp_listen_on,
   $dhcp_managed               = $foreman_proxy::params::dhcp_managed,
+  $dhcp_option_domain         = $foreman_proxy::params::dhcp_option_domain,
   $dhcp_interface             = $foreman_proxy::params::dhcp_interface,
   $dhcp_gateway               = $foreman_proxy::params::dhcp_gateway,
   $dhcp_range                 = $foreman_proxy::params::dhcp_range,
@@ -379,6 +388,7 @@ class foreman_proxy (
   # Validate dhcp params
   validate_bool($dhcp, $dhcp_managed)
   validate_listen_on($dhcp_listen_on)
+  validate_array($dhcp_option_domain)
 
   # Validate dns params
   validate_listen_on($dns_listen_on)
