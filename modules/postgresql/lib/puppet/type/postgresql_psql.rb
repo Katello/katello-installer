@@ -52,10 +52,6 @@ Puppet::Type.newtype(:postgresql_psql) do
     desc "The name of the database to execute the SQL command against."
   end
 
-  newparam(:host) do
-    desc "The host to run the PSQL against"
-  end
-
   newparam(:port) do
     desc "The port of the database server to execute the SQL command against."
   end
@@ -82,6 +78,20 @@ Puppet::Type.newtype(:postgresql_psql) do
   newparam(:cwd, :parent => Puppet::Parameter::Path) do
     desc "The working directory under which the psql command should be executed."
     defaultto("/tmp")
+  end
+
+  newparam(:environment) do
+    desc "Any additional environment variables you want to set for a
+      SQL command. Multiple environment variables should be
+      specified as an array."
+
+    validate do |values|
+      Array(values).each do |value|
+        unless value =~ /\w+=/
+          raise ArgumentError, "Invalid environment setting '#{value}'"
+        end
+      end
+    end
   end
 
   newparam(:refreshonly, :boolean => true) do
