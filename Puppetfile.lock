@@ -45,7 +45,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-certs
   ref: master
-  sha: c7ce6c2f2b574c73357e93a707d95011352f9f94
+  sha: a5255986f1491513eb6eed6d0c9d7ca20ae4693d
   specs:
     katello-certs (0.1.0)
       katello-common (>= 0.0.1)
@@ -203,7 +203,7 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-postgresql
   ref: master
-  sha: 7870b38db6e8bd623bbbf2a438e37b38de50592f
+  sha: 0db1be08c176bbbb6b8c33fc430147432f1155cb
   specs:
     puppetlabs-postgresql (4.2.0)
       puppetlabs-apt (< 2.0.0, >= 1.1.0)
