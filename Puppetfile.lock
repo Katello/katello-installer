@@ -93,7 +93,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-gutterball
   ref: master
-  sha: f2663ea0bee635dae3391997434a7cfca31532f7
+  sha: e8dc8afbc7042dfa8d44250f77de68964eb56ec3
   specs:
     katello-gutterball (0.1.0)
       puppetlabs-concat (>= 1.1.1)
@@ -105,13 +105,12 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello
   ref: master
-  sha: f9406fae03d4254262495c74740af5d276c52d5a
+  sha: 100f49cbc7c0f3b1047e9578b48306a610af3d95
   specs:
     katello-katello (0.1.0)
       katello-candlepin (>= 0.1.0)
       katello-certs (>= 0.1.0)
       katello-common (>= 0.0.1)
-      katello-crane (>= 0.1.0)
       katello-elasticsearch (>= 0.0.1)
       katello-gutterball (>= 0.1.0)
       katello-pulp (>= 0.1.0)
