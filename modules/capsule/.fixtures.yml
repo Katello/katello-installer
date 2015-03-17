@@ -12,5 +12,6 @@ fixtures:
     common:        "git://github.com/katello/puppet-common.git"
     certs:         "git://github.com/katello/puppet-certs.git"
     qpid:          "git://github.com/katello/puppet-qpid.git"
+    crane:         "git://github.com/katello/puppet-crane.git"
   symlinks:
     capsule: "#{source_dir}"

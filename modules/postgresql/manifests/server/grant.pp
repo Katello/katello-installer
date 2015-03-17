@@ -4,13 +4,19 @@ define postgresql::server::grant (
   $db,
   $privilege   = undef,
   $object_type = 'database',
-  $object_name = $db,
+  $object_name = undef,
   $psql_db     = $postgresql::server::default_database,
   $psql_user   = $postgresql::server::user,
   $port        = $postgresql::server::port
 ) {
   $group     = $postgresql::server::group
   $psql_path = $postgresql::server::psql_path
+
+  if ! $object_name {
+    $_object_name = $db
+  } else {
+    $_object_name = $object_name
+  }
 
   ## Munge the input values
   $_object_type = upcase($object_type)
@@ -75,10 +81,45 @@ define postgresql::server::grant (
       $on_db = $db
     }
     'ALL TABLES IN SCHEMA': {
-      validate_string($_privilege, 'SELECT', 'INSERT', 'UPDATE', 'REFERENCES',
-        'ALL', 'ALL PRIVILEGES')
-      $unless_function = false # There is no way to test it simply
+      validate_string($_privilege,'SELECT','INSERT','UPDATE','DELETE',
+        'TRUNCATE','REFERENCES','TRIGGER','ALL','ALL PRIVILEGES')
+      $unless_function = 'custom'
       $on_db = $db
+
+      $schema = $object_name
+
+      # Again there seems to be no easy way in plain SQL to check if ALL
+      # PRIVILEGES are granted on a table. By convention we use INSERT
+      # here to represent ALL PRIVILEGES (truly terrible).
+      $custom_privilege = $_privilege ? {
+        'ALL'            => 'INSERT',
+        'ALL PRIVILEGES' => 'INSERT',
+        default          => $_privilege,
+      }
+
+      # This checks if there is a difference between the tables in the
+      # specified schema and the tables for which the role has the specified
+      # privilege. It uses the EXCEPT clause which computes the set of rows
+      # that are in the result of the first SELECT statement but not in the
+      # result of the second one. It then counts the number of rows from this
+      # operation. If this number is zero then the role has the specified
+      # privilege for all tables in the schema and the whole query returns a
+      # single row, which satisfies the `unless` parameter of Postgresql_psql.
+      # If this number is not zero then there is at least one table for which
+      # the role does not have the specified privilege, making it necessary to
+      # execute the GRANT statement.
+      $custom_unless = "SELECT 1 FROM (
+        SELECT table_name
+        FROM information_schema.tables
+        WHERE table_schema='${schema}'
+          EXCEPT DISTINCT
+        SELECT table_name
+        FROM information_schema.role_table_grants
+        WHERE grantee='${role}'
+        AND table_schema='${schema}'
+        AND privilege_type='${custom_privilege}'
+        ) P
+        HAVING count(P.table_name) = 0"
     }
     default: {
       fail("Missing privilege validation for object type ${_object_type}")
@@ -93,18 +134,19 @@ define postgresql::server::grant (
   #   object_type => 'TABLE',
   #   object_name => [$schema, $table],
   # }
-  if is_array($object_name) {
-    $_togrant_object = join($object_name, '"."')
+  if is_array($_object_name) {
+    $_togrant_object = join($_object_name, '"."')
     # Never put double quotes into has_*_privilege function
-    $_granted_object = join($object_name, '.')
+    $_granted_object = join($_object_name, '.')
   } else {
-    $_granted_object = $object_name
-    $_togrant_object = $object_name
+    $_granted_object = $_object_name
+    $_togrant_object = $_object_name
   }
 
   $_unless = $unless_function ? {
-      false   => undef,
-      default => "SELECT 1 WHERE ${unless_function}('${role}',
+      false    => undef,
+      'custom' => $custom_unless,
+      default  => "SELECT 1 WHERE ${unless_function}('${role}',
                   '${_granted_object}', '${unless_privilege}')",
   }
 

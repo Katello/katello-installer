@@ -8,4 +8,5 @@ class qpid::router::params {
   $router_mode         = 'interior'
   $container_name      = $::fqdn
   $worker_threads      = $::processorcount
+  $router_packages     = ['qpid-dispatch-router']
 }
