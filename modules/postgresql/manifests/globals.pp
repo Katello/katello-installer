@@ -29,6 +29,7 @@ class postgresql::globals (
   $confdir              = undef,
   $bindir               = undef,
   $xlogdir              = undef,
+  $logdir               = undef,
 
   $user                 = undef,
   $group                = undef,
@@ -85,6 +86,7 @@ class postgresql::globals (
       default => '9.2',
     },
     'FreeBSD' => '93',
+    'OpenBSD' => '9.3',
     'Suse' => $::operatingsystem ? {
       'SLES' => '91',
       default => undef,
@@ -106,7 +108,6 @@ class postgresql::globals (
     '9.3'   => '2.1',
     '9.4'   => '2.1',
     '93'    => '2.1',
-    '9.4'   => '2.1',
     default => undef,
   }
   $globals_postgis_version = pick($postgis_version, $default_postgis_version)

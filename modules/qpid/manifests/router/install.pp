@@ -3,7 +3,7 @@
 # Installs Qpid router packages
 #
 class qpid::router::install {
-  package { 'qpid-dispatch-router':
+  package { $qpid::router::router_packages:
     ensure => 'installed',
   }
 }

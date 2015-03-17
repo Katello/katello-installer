@@ -11,15 +11,18 @@ class postgresql::server::passwd {
     #  without specifying a password ('ident' or 'trust' security). This is
     #  the default for pg_hba.conf.
     $escaped = postgresql_escape($postgres_password)
-    $env = "env PGPASSWORD='${postgres_password}'"
     exec { 'set_postgres_postgrespw':
       # This command works w/no password because we run it as postgres system
       # user
-      command   => "${psql_path} -c 'ALTER ROLE \"${user}\" PASSWORD ${escaped}'",
-      user      => $user,
-      group     => $group,
-      logoutput => true,
-      cwd       => '/tmp',
+      command     => "${psql_path} -c \"ALTER ROLE \\\"${user}\\\" PASSWORD \${NEWPASSWD_ESCAPED}\"",
+      user        => $user,
+      group       => $group,
+      logoutput   => true,
+      cwd         => '/tmp',
+      environment => [
+        "PGPASSWORD='${postgres_password}'",
+        "NEWPASSWD_ESCAPED='${escaped}'",
+      ],
       # With this command we're passing -h to force TCP authentication, which
       # does require a password.  We specify the password via the PGPASSWORD
       # environment variable. If the password is correct (current), this

@@ -13,7 +13,8 @@ mod 'puppetlabs-apache', "1.1.1"
 
 mod 'theforeman-concat_native', :git => 'https://github.com/theforeman/puppet-concat'
 mod 'theforeman-dhcp', :git => 'https://github.com/theforeman/puppet-dhcp'
-mod 'theforeman-dns', :git => 'https://github.com/theforeman/puppet-dns'
+# Locked to commit - can't advance to 2.0.1 nor go back to 1.4
+mod 'theforeman-dns', :git => 'https://github.com/theforeman/puppet-dns', :ref => '43bec3167ada475ed374a8d3db0c13164697129b'
 mod 'theforeman-git', :git => 'https://github.com/theforeman/puppet-git'
 mod 'theforeman-tftp', :git => 'https://github.com/theforeman/puppet-tftp'
 
