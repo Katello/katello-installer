@@ -365,7 +365,7 @@ class capsule (
       priority        => '05',
       docroot         => '/var/www/html',
       options         => ['SymLinksIfOwnerMatch'],
-      custom_fragment => template('capsule/_pulp_includes.erb'),
+      custom_fragment => template('capsule/_pulp_includes.erb', 'capsule/httpd_pub.erb')
     }
 
     class { 'certs::qpid': } ~>
