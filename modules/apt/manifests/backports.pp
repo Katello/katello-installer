@@ -58,12 +58,18 @@ class apt::backports(
   }
 
   $key = $distid ? {
-    'debian' => '46925553',
-    'ubuntu' => '437D05B5',
+    'debian' => 'A1BD8E9D78F7FE5C3E65D8AF8B48AD6246925553',
+    'ubuntu' => '630239CC130E1A7FD81A27B140976EAF437D05B5',
   }
   $repos = $distid ? {
     'debian' => 'main contrib non-free',
     'ubuntu' => 'main universe multiverse restricted',
+  }
+
+  apt::pin { 'backports':
+    before   => Apt::Source['backports'],
+    release  => "${release_real}-backports",
+    priority => $pin_priority,
   }
 
   apt::source { 'backports':
@@ -72,6 +78,5 @@ class apt::backports(
     repos      => $repos,
     key        => $key,
     key_server => 'pgp.mit.edu',
-    pin        => $pin_priority,
   }
 }
