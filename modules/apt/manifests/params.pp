@@ -25,6 +25,10 @@ class apt::params {
         }
       }
     }
+    'Cumulus Networks': {
+      $distid = 'debian'
+      $distcodename = $::lsbdistcodename
+    }
     '': {
       fail('Unable to determine lsbdistid, is lsb-release installed?')
     }
@@ -45,7 +49,8 @@ class apt::params {
         'wheezy': {
           $backports_location = 'http://ftp.debian.org/debian/'
           $legacy_origin      = false
-          $origins            = ['origin=Debian,archive=stable,label=Debian-Security']
+          $origins            = ['origin=Debian,archive=stable,label=Debian-Security',
+                                  'origin=Debian,archive=oldstable,label=Debian-Security']
         }
         default: {
           $backports_location = 'http://http.debian.net/debian/'
@@ -59,18 +64,28 @@ class apt::params {
         'lucid': {
           $backports_location = 'http://us.archive.ubuntu.com/ubuntu'
           $ppa_options        = undef
+          $ppa_package        = 'python-software-properties'
           $legacy_origin      = true
           $origins            = ['${distro_id} ${distro_codename}-security'] #lint:ignore:single_quote_string_with_variables
         }
-        'precise', 'trusty': {
+        'precise': {
           $backports_location = 'http://us.archive.ubuntu.com/ubuntu'
           $ppa_options        = '-y'
+          $ppa_package        = 'python-software-properties'
+          $legacy_origin      = true
+          $origins            = ['${distro_id}:${distro_codename}-security'] #lint:ignore:single_quote_string_with_variables
+        }
+        'trusty', 'utopic', 'vivid': {
+          $backports_location = 'http://us.archive.ubuntu.com/ubuntu'
+          $ppa_options        = '-y'
+          $ppa_package        = 'software-properties-common'
           $legacy_origin      = true
           $origins            = ['${distro_id}:${distro_codename}-security'] #lint:ignore:single_quote_string_with_variables
         }
         default: {
           $backports_location = 'http://old-releases.ubuntu.com/ubuntu'
           $ppa_options        = '-y'
+          $ppa_package        = 'python-software-properties'
           $legacy_origin      = true
           $origins            = ['${distro_id}:${distro_codename}-security'] #lint:ignore:single_quote_string_with_variables
         }
