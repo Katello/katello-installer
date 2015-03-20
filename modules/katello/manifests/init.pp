@@ -92,11 +92,6 @@ class katello (
     proxy_username              => $proxy_username,
     proxy_password              => $proxy_password,
   } ~>
-  class { 'crane':
-    cert    => $certs::apache::apache_cert,
-    key     => $certs::apache::apache_key,
-    ca_cert => $certs::ca_cert,
-  } ~>
   class { 'qpid::client':
     ssl                    => true,
     ssl_cert_name          => 'broker',
@@ -112,8 +107,6 @@ class katello (
   Exec['foreman-rake-db:seed']
 
   class { 'certs::foreman': }
-
-  class { 'katello::service': }
 
   Service['httpd'] -> Exec['foreman-rake-db:seed']
 

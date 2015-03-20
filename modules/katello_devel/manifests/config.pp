@@ -28,4 +28,11 @@ class katello_devel::config {
     mode    => '0644',
   }
 
+  file { "${katello_devel::deployment_dir}/foreman/config/settings.plugins.d":
+    ensure => directory,
+    owner  => $katello_devel::user,
+    group  => $katello_devel::group,
+    mode   => '0755',
+  }
+
 }
