@@ -11,8 +11,9 @@ class katello_devel::plugin::foreman_gutterball {
   } ~>
   class { 'katello::plugin::gutterball::config':
     foreman_plugins_dir => $foreman_settings_path,
-    foreman_user        => $katello::user,
-    foreman_group       => $katello::group,
+    foreman_user        => $katello_devel::user,
+    foreman_group       => $katello_devel::group,
+    require             => File[$foreman_settings_path],
   }
 
   Class[ 'katello_devel::install' ] ->
