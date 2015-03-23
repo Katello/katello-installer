@@ -4,6 +4,7 @@ class postgresql::server::initdb {
   $initdb_path  = $postgresql::server::initdb_path
   $datadir      = $postgresql::server::datadir
   $xlogdir      = $postgresql::server::xlogdir
+  $logdir       = $postgresql::server::logdir
   $encoding     = $postgresql::server::encoding
   $locale       = $postgresql::server::locale
   $group        = $postgresql::server::group
@@ -24,6 +25,15 @@ class postgresql::server::initdb {
       owner  => $user,
       group  => $group,
       mode   => '0700',
+    }
+  }
+
+  if($logdir) {
+    # Make sure the log directory exists, and has the correct permissions.
+    file { $logdir:
+      ensure => directory,
+      owner  => $user,
+      group  => $group,
     }
   }
 
@@ -94,7 +104,7 @@ class postgresql::server::initdb {
         SET encoding = pg_char_to_encoding('${encoding}'), datistemplate = TRUE
         WHERE datname = 'template1'",
       unless  => "SELECT datname FROM pg_database WHERE
-        datname = 'template1' AND pg_encoding_to_char(encoding) = '${encoding}'",
+        datname = 'template1' AND encoding = pg_char_to_encoding('${encoding}')",
     }
   }
 }

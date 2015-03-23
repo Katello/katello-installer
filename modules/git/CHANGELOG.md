@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.1
+* Add minimal tests, increased linting
+* Fixes to metadata quality
+
 ## 1.4.0
 * Parameterize 'git' class, add package_ensure parameter
 

@@ -37,6 +37,9 @@ class capsule::params {
   $tftp_root                     = $foreman_proxy::params::tftp_root
   $tftp_dirs                     = $foreman_proxy::params::tftp_dirs
 
+  $bmc                           = false
+  $bmc_default_provider          = 'ipmitool'
+
   $dhcp                          = false
   $dhcp_managed                  = $foreman_proxy::params::dhcp_managed
   $dhcp_interface                = $foreman_proxy::params::dhcp_interface

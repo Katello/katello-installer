@@ -5,7 +5,7 @@ FORGE
     puppetlabs-apache (1.1.1)
       puppetlabs-concat (>= 1.0.0)
       puppetlabs-stdlib (>= 2.4.0)
-    puppetlabs-apt (1.7.0)
+    puppetlabs-apt (1.8.0)
       puppetlabs-stdlib (>= 2.2.1)
     puppetlabs-concat (1.2.0)
       puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
@@ -29,10 +29,11 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-capsule
   ref: master
-  sha: 7b366e9cbd3b665bf1ad92d49942dcea75c3486d
+  sha: 3be516d064a3582f66a48eb0418ec6e8fb6ed3d3
   specs:
     katello-capsule (0.2.0)
       katello-common (>= 0.0.1)
+      katello-crane (>= 0.1.0)
       katello-qpid (>= 1.0.0)
       puppetlabs-apache (< 2.0.0, >= 1.0.0)
       puppetlabs-mongodb (>= 0)
@@ -44,7 +45,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-certs
   ref: master
-  sha: 7134f38bf24b5375a56f1d2accd3e6c7f8fd8f16
+  sha: a5255986f1491513eb6eed6d0c9d7ca20ae4693d
   specs:
     katello-certs (0.1.0)
       katello-common (>= 0.0.1)
@@ -61,7 +62,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-crane
   ref: master
-  sha: e440fbc6ff0290e2c1833a8d8205839a69bd9751
+  sha: 9c57c20fe15206af84de0de7f2d9a90cc1d3c16d
   specs:
     katello-crane (0.1.0)
       katello-certs (>= 0.1.0)
@@ -104,7 +105,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello
   ref: master
-  sha: 7b70306ef2bae1fe654cf52c1961b6ad4b16ae47
+  sha: f9406fae03d4254262495c74740af5d276c52d5a
   specs:
     katello-katello (0.1.0)
       katello-candlepin (>= 0.1.0)
@@ -147,8 +148,8 @@ GIT
 
 GIT
   remote: https://github.com/Katello/puppet-pulp
-  ref: master
-  sha: a9b916780b1e6337e449e566d033c6ae859b7dc7
+  ref: 0.1.0
+  sha: 8830272948e29899fb4456f69fb96c3929761650
   specs:
     katello-pulp (0.1.0)
       katello-qpid (>= 0.1.0)
@@ -161,11 +162,11 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-qpid
   ref: master
-  sha: 982454641a7d4ffe0af513afe2462b2f8cc9f0c4
+  sha: 179ade16d5b3317c606596762f140ead85065bd3
   specs:
-    katello-qpid (1.0.0)
-      puppetlabs-stdlib (>= 3.0.0)
-      theforeman-concat_native (>= 1.3.0)
+    katello-qpid (1.0.1)
+      puppetlabs-stdlib (< 5.0.0, >= 3.0.0)
+      theforeman-concat_native (< 2.0.0, >= 1.3.0)
 
 GIT
   remote: https://github.com/Katello/puppet-service_wait
@@ -185,7 +186,7 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-mongodb
   ref: master
-  sha: 4f5ca99fcba4339a8093d2cb329f5498866a8c8c
+  sha: e4c2f0809a7c44c1c940d50f8108d1a448d79dfb
   specs:
     puppetlabs-mongodb (0.10.0)
       puppetlabs-apt (< 2.0.0, >= 1.0.0)
@@ -202,9 +203,9 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-postgresql
   ref: master
-  sha: 9c2399be6c8997c1e8fbe4a7405b28f9bc958404
+  sha: 0438db2f017d60e65e31b3dda066cbdfb2a0c6b9
   specs:
-    puppetlabs-postgresql (4.1.0)
+    puppetlabs-postgresql (4.2.0)
       puppetlabs-apt (< 2.0.0, >= 1.1.0)
       puppetlabs-concat (< 2.0.0, >= 1.1.0)
       puppetlabs-stdlib (~> 4.0)
@@ -212,21 +213,21 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-concat
   ref: master
-  sha: 1511b30c42336c8a6cdaf39989953be833d3ac30
+  sha: c42f4d7cabce25c94308c5e3dc25d39ca69a8813
   specs:
     theforeman-concat_native (1.3.3)
 
 GIT
   remote: https://github.com/theforeman/puppet-dhcp
   ref: master
-  sha: 66a560c8cb5bdae9ad72963e596be5ef505a9d72
+  sha: 9ad45eada60638ac1adaf60780a8f7c28f093ebc
   specs:
-    theforeman-dhcp (1.5.1)
+    theforeman-dhcp (1.6.1)
       theforeman-concat_native (< 2.0.0, >= 1.3.0)
 
 GIT
   remote: https://github.com/theforeman/puppet-dns
-  ref: master
+  ref: 43bec3167ada475ed374a8d3db0c13164697129b
   sha: 43bec3167ada475ed374a8d3db0c13164697129b
   specs:
     theforeman-dns (1.4.0)
@@ -249,9 +250,9 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-git
   ref: master
-  sha: 8c05930ab2791ed10ce44f1ddad2bd956ecb75dd
+  sha: f88a629b3d81a2ae97a2946b5da8bacaef89d845
   specs:
-    theforeman-git (1.4.0)
+    theforeman-git (1.4.2)
 
 GIT
   remote: https://github.com/theforeman/puppet-puppet
@@ -268,7 +269,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-tftp
   ref: master
-  sha: 6706dafcb70c2e1403a1b1700578ef3f9dad6726
+  sha: 60fe474548f06927f89de20266732531f555e2f5
   specs:
     theforeman-tftp (1.5.1)
       puppetlabs-stdlib (< 5.0.0, >= 2.3.0)

@@ -13,7 +13,8 @@ mod 'puppetlabs-apache', "1.1.1"
 
 mod 'theforeman-concat_native', :git => 'https://github.com/theforeman/puppet-concat'
 mod 'theforeman-dhcp', :git => 'https://github.com/theforeman/puppet-dhcp'
-mod 'theforeman-dns', :git => 'https://github.com/theforeman/puppet-dns'
+# Locked to commit - can't advance to 2.0.1 nor go back to 1.4
+mod 'theforeman-dns', :git => 'https://github.com/theforeman/puppet-dns', :ref => '43bec3167ada475ed374a8d3db0c13164697129b'
 mod 'theforeman-git', :git => 'https://github.com/theforeman/puppet-git'
 mod 'theforeman-tftp', :git => 'https://github.com/theforeman/puppet-tftp'
 
@@ -34,7 +35,7 @@ mod 'katello-capsule', :git => 'https://github.com/Katello/puppet-capsule'
 mod 'katello-certs', :git => 'https://github.com/Katello/puppet-certs'
 mod 'katello-elasticsearch', :git => 'https://github.com/Katello/puppet-elasticsearch'
 mod 'katello-katello', :git => 'https://github.com/Katello/puppet-katello'
-mod 'katello-pulp', :git => 'https://github.com/Katello/puppet-pulp'
+mod 'katello-pulp', :git => 'https://github.com/Katello/puppet-pulp', :ref => '0.1.0'
 mod 'katello-crane', :git => 'https://github.com/Katello/puppet-crane'
 mod 'katello-qpid', :git => 'https://github.com/Katello/puppet-qpid'
 mod 'katello-service_wait', :git => 'https://github.com/Katello/puppet-service_wait'

@@ -17,3 +17,9 @@ app_option(
   "This option will enforce an update of all the certificates for given host",
   :default => false
 )
+app_option(
+  '--certs-skip-check',
+  :flag,
+  "This option will cause skipping the certificates sanity check. Use with caution",
+  :default => false
+)

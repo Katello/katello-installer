@@ -59,6 +59,11 @@
 #
 # $tftp_servername::                Defines the TFTP server name to use, overrides the name in the subnet declaration
 #
+# $bmc::                            Enable BMC feature
+#                                   type:boolean
+#
+# $bmc_default_provider::           BMC default provider.
+#
 # $dhcp::                           Use DHCP
 #                                   type:boolean
 #
@@ -179,6 +184,9 @@ class capsule (
   $tftp_dirs                     = $capsule::params::tftp_dirs,
   $tftp_servername               = $capsule::params::tftp_servername,
 
+  $bmc                           = $capsule::params::bmc,
+  $bmc_default_provider          = $capsule::params::bmc_default_provider,
+
   $dhcp                          = $capsule::params::dhcp,
   $dhcp_managed                  = $capsule::params::dhcp_managed,
   $dhcp_interface                = $capsule::params::dhcp_interface,
@@ -261,6 +269,12 @@ class capsule (
       listen_on     => 'https',
       template_path => 'capsule/pulpnode.yml',
     }
+
+    if $qpid_router {
+      class { 'capsule::dispatch_router':
+        require => Class['pulp'],
+      }
+    }
   }
 
   class { 'capsule::install': } ~>
@@ -292,6 +306,8 @@ class capsule (
     tftp_root             => $tftp_root,
     tftp_dirs             => $tftp_dirs,
     tftp_servername       => $tftp_servername,
+    bmc                   => $bmc,
+    bmc_default_provider  => $bmc_default_provider,
     dhcp                  => $dhcp,
     dhcp_interface        => $dhcp_interface,
     dhcp_gateway          => $dhcp_gateway,
@@ -349,7 +365,7 @@ class capsule (
       priority        => '05',
       docroot         => '/var/www/html',
       options         => ['SymLinksIfOwnerMatch'],
-      custom_fragment => template('capsule/_pulp_includes.erb'),
+      custom_fragment => template('capsule/_pulp_includes.erb', 'capsule/httpd_pub.erb')
     }
 
     class { 'certs::qpid': } ~>
@@ -369,6 +385,11 @@ class capsule (
       oauth_key            => $pulp_oauth_key,
       oauth_secret         => $pulp_oauth_secret,
       server_ca_cert       => $certs::params::pulp_server_ca_cert,
+    } ~>
+    class { 'crane':
+      cert    => $certs::apache::apache_cert,
+      key     => $certs::apache::apache_key,
+      ca_cert => $certs::server_ca_cert,
     }
 
     class { 'certs::pulp_child':
@@ -377,12 +398,6 @@ class capsule (
     }
   }
 
-
-  if $qpid_router {
-    class { 'capsule::dispatch_router':
-      require => Class['pulp'],
-    }
-  }
 
   if $puppet {
     class { 'certs::puppet':
