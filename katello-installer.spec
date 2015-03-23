@@ -4,7 +4,7 @@
 
 Name:    katello-installer-base
 Version: 2.2.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Puppet-based installer for the Katello and Katello Capsule
 Group:   Applications/System
 License: GPLv3+ and ASL 2.0
@@ -195,6 +195,21 @@ ln -sf %{_datadir}/capsule-installer/bin/capsule-installer %{buildroot}/%{_sbind
 %doc README.*
 
 %changelog
+* Mon Mar 23 2015 Eric D. Helms <ericdhelms@gmail.com> 2.2.0-3
+- Switch to ReleaseTagger for tito. (ericdhelms@gmail.com)
+- Fixes #9816: Allow access to /pub on http on Capsules.
+- fixes #9668 - update capsule module
+- Fixes #9699: Check for nssdb creation before running certutil.
+- Fixes #8609 - validate the custom certificates passed in arguments on the
+  installer
+- Fixes #9715: Lock pulp module to 0.1.0 line.
+- fixes #9602, #9633 - ensure services are in correct states during upgrade
+- Fixes #9535 - gutterball installed as part of sam-installer
+- Fixes #7716,#9483 - update katello module with the latest fixes
+- refs #8175, #7064 - isolate consumer actions, and use foreman_proxy fork
+  (stbenjam@redhat.com)
+- Updating rel-eng for 2.2 (ericdhelms@gmail.com)
+
 * Tue Feb 24 2015 Eric D. Helms <ericdhelms@gmail.com> 2.2.0-2
 - Bumping release to 2.2.0-2 (ericdhelms@gmail.com)
 - Fixes #9466 - gutterball.conf missing gutterball.amqp.connect
