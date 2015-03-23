@@ -18,13 +18,6 @@ class katello::config {
     notify  => [Service['foreman-tasks'], Class['foreman::service']],
   }
 
-  file { '/etc/sysconfig/katello':
-    content => template('katello/etc/sysconfig/katello.erb'),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-  }
-
   foreman::config::passenger::fragment{ 'katello':
     content     => template('katello/etc/httpd/conf.d/05-foreman.d/katello.conf.erb'),
     ssl_content => template('katello/etc/httpd/conf.d/05-foreman-ssl.d/katello.conf.erb'),
@@ -35,14 +28,6 @@ class katello::config {
     owner  => 'root',
     group  => 'root',
     mode   => '0755',
-  }
-
-  file { "${katello::config_dir}/katello/client.conf":
-    ensure  => file,
-    content => template('katello/client.conf.erb'),
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
   }
 
 }

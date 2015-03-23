@@ -13,7 +13,6 @@ fixtures:
     candlepin:     "git://github.com/katello/puppet-candlepin.git"
     gutterball:     "git://github.com/katello/puppet-gutterball.git"
     pulp:          "git://github.com/katello/puppet-pulp.git"
-    crane:          "git://github.com/katello/puppet-crane.git"
     elasticsearch: "git://github.com/katello/puppet-elasticsearch.git"
   symlinks:
     katello: "#{source_dir}"
