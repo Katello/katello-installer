@@ -120,7 +120,7 @@ class certs (
   $ca_key = "${certs::pki_dir}/private/${default_ca_name}.key"
   $ca_cert = "${certs::pki_dir}/certs/${default_ca_name}.crt"
   $ca_cert_stripped = "${certs::pki_dir}/certs/${default_ca_name}-stripped.crt"
-  $ca_key_password = cache_data('ca_key_password', generate_password())
+  $ca_key_password = cache_data('ca_key_password', random_password(24))
   $ca_key_password_file = "${certs::pki_dir}/private/${default_ca_name}.pwd"
 
   $katello_server_ca_cert = "${certs::pki_dir}/certs/${server_ca_name}.crt"

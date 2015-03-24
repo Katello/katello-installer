@@ -45,12 +45,12 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-certs
   ref: master
-  sha: a5255986f1491513eb6eed6d0c9d7ca20ae4693d
+  sha: cec063aad80d67afe28dd50ac8134a15338af392
   specs:
     katello-certs (0.1.0)
       katello-common (>= 0.0.1)
       puppetlabs-stdlib (>= 1.0.0)
-      theforeman-foreman (>= 1.5.0)
+      theforeman-foreman (>= 2.0.0)
 
 GIT
   remote: https://github.com/Katello/puppet-common
@@ -202,7 +202,7 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-postgresql
   ref: master
-  sha: 0438db2f017d60e65e31b3dda066cbdfb2a0c6b9
+  sha: f3a17066d17a88bb08fb167144e98a1116f78990
   specs:
     puppetlabs-postgresql (4.2.0)
       puppetlabs-apt (< 2.0.0, >= 1.1.0)

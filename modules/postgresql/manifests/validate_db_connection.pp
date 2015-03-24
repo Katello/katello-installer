@@ -40,14 +40,14 @@ define postgresql::validate_db_connection(
     undef   => undef,
     default => "PGPASSWORD=${database_password}",
   }
-  $cmd = join([$cmd_init, $cmd_host, $cmd_user, $cmd_port, $cmd_dbname])
+  $cmd = join([$cmd_init, $cmd_host, $cmd_user, $cmd_port, $cmd_dbname], ' ')
   $validate_cmd = "/usr/local/bin/validate_postgresql_connection.sh ${sleep} ${tries} '${cmd}'"
 
   # This is more of a safety valve, we add a little extra to compensate for the
   # time it takes to run each psql command.
   $timeout = (($sleep + 2) * $tries)
 
-  $exec_name = "validate postgres connection for ${database_host}/${database_name}"
+  $exec_name = "validate postgres connection for ${database_username}@${database_host}:${database_port}/${database_name}"
   exec { $exec_name:
     command     => "echo 'Unable to connect to defined database using: ${cmd}' && false",
     unless      => $validate_cmd,
