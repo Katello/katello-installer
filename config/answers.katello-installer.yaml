@@ -27,7 +27,7 @@ capsule:
   puppetca: true
 
 foreman::plugin::bootdisk: true
-foreman::plugin::discovery: false #http://projects.theforeman.org/issues/9200
+foreman::plugin::discovery: true
 foreman::plugin::hooks: true
 foreman::plugin::tasks: true
 foreman::plugin::chef: false
