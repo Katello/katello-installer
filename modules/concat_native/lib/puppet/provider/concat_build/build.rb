@@ -59,13 +59,13 @@ Puppet::Type.type(:concat_build ).provide :concat_build do
 
   # Build a consistent temp file.
   def build_file
-    if File.directory?("#{Puppet[:vardir]}/concat/fragments/#{@resource[:name]}") then
+    if File.directory?("#{Puppet[:vardir]}/concat_native/fragments/#{@resource[:name]}") then
       begin
-        FileUtils.mkdir_p("#{Puppet[:vardir]}/concat/output")
+        FileUtils.mkdir_p("#{Puppet[:vardir]}/concat_native/output")
 
-        ofh = File.open("#{Puppet[:vardir]}/concat/output/#{@resource[:name]}.new", "w+")
+        ofh = File.open("#{Puppet[:vardir]}/concat_native/output/#{@resource[:name]}.new", "w+")
         input_lines = Array.new
-        Dir.chdir("#{Puppet[:vardir]}/concat/fragments/#{@resource[:name]}") do
+        Dir.chdir("#{Puppet[:vardir]}/concat_native/fragments/#{@resource[:name]}") do
           Array(@resource[:order]).flatten.each do |pattern|
              Dir.glob(pattern).sort_by{ |k| human_sort(k) }.each do |file|
 
@@ -154,7 +154,7 @@ Puppet::Type.type(:concat_build ).provide :concat_build do
         fail Puppet::Error, e
       end
     elsif not @resource.quiet? then
-      fail Puppet::Error, "The fragments directory at '#{Puppet[:vardir]}/concat/fragments/#{@resource[:name]}' does not exist!"
+      fail Puppet::Error, "The fragments directory at '#{Puppet[:vardir]}/concat_native/fragments/#{@resource[:name]}' does not exist!"
     end
     return ofh_name
 
@@ -162,7 +162,7 @@ Puppet::Type.type(:concat_build ).provide :concat_build do
 
   def sync
     if @resource[:target] and check_onlyif then
-      orig_file = "#{Puppet[:vardir]}/concat/output/#{@resource[:name]}.new"
+      orig_file = "#{Puppet[:vardir]}/concat_native/output/#{@resource[:name]}.new"
       out_file = "#{File.dirname(orig_file)}/#{File.basename(orig_file,'.new')}.out"
 
       debug "Moving #{orig_file} to #{@resource[:target]}"

@@ -147,11 +147,18 @@ Resources:
 * [postgresql::server::extension](#resource-postgresqlserverextension)
 * [postgresql::server::pg_hba_rule](#resource-postgresqlserverpg_hba_rule)
 * [postgresql::server::pg_ident_rule](#resource-postgresqlserverpg_ident_rule)
+* [postgresql::server::recovery](#resource-postgresqlserverrecovery)
 * [postgresql::server::role](#resource-postgresqlserverrole)
 * [postgresql::server::schema](#resource-postgresqlserverschema)
 * [postgresql::server::table_grant](#resource-postgresqlservertable_grant)
 * [postgresql::server::tablespace](#resource-postgresqlservertablespace)
 * [postgresql::validate_db_connection](#resource-postgresqlvalidate_db_connection)
+
+Custom Resources:
+
+* [postgresql\_psql](#custom-resource-postgresql_psql)
+* [postgresql\_replication\_slot](#custom-resource-postgresql_replication_slot)
+* [postgresql\_conf](#custom-resource-postgresql_conf)
 
 Functions:
 
@@ -239,6 +246,9 @@ Path to your `pg\_ident.conf` file.
 
 ####`postgresql_conf_path`
 Path to your `postgresql.conf` file.
+
+####`recovery_conf_path`
+Path to your `recovery.conf` file.
 
 ####`pg_hba_conf_defaults`
 If false, disables the defaults supplied with the module for `pg\_hba.conf`. This is useful if you disagree with the defaults and wish to override them yourself. Be sure that your changes of course align with the rest of the module, as some access is required to perform basic `psql` operations for example.
@@ -359,6 +369,9 @@ Path to your `pg\_ident.conf` file.
 ####`postgresql_conf_path`
 Path to your `postgresql.conf` file.
 
+####`recovery_conf_path`
+Path to your `recovery.conf` file.
+
 ####`pg_hba_conf_defaults`
 If false, disables the defaults supplied with the module for `pg\_hba.conf`. This is useful if you di
 sagree with the defaults and wish to override them yourself. Be sure that your changes of course alig
@@ -389,6 +402,9 @@ This value defaults to `true`. Whether or not manage the pg_hba.conf. If set to 
 
 ####`manage_pg_ident_conf`
 This value defaults to `true`. Whether or not manage the pg_ident.conf. If set to `true`, puppet will overwrite this file. If set to `false`, puppet will not modify the file.
+
+####`manage_recovery_conf`
+This value defaults to `false`. Whether or not manage the recovery.conf. If set to `true`, puppet will overwrite this file. If set to `false`, puppet will not create the file.
 
 ###Class: postgresql::client
 
@@ -690,6 +706,65 @@ An order for placing the mapping in pg_ident.conf. Defaults to 150.
 ####`target`
 This provides the target for the rule, and is generally an internal only property. Use with caution.
 
+###Resource: postgresql::server::recovery
+This defined type allows you to create the content for `recovery.conf`. For more details see the [PostgreSQL documentation](http://www.postgresql.org/docs/9.4/static/recovery-config.html).
+
+For example:
+
+    postgresql::server::recovery( 'Create a recovery.conf file with the following defined parameters':
+      restore_command                => 'cp /mnt/server/archivedir/%f %p',
+      archive_cleanup_command        => undef,
+      recovery_end_command           => undef,
+      recovery_target_name           => 'daily backup 2015-01-26',
+      recovery_target_time           => '2015-02-08 22:39:00 EST',
+      recovery_target_xid            => undef,
+      recovery_target_inclusive      => true,
+      recovery_target                => 'immediate',
+      recovery_target_timeline       => 'latest',
+      pause_at_recovery_target       => true,
+      standby_mode                   => 'on',
+      primary_conninfo               => 'host=localhost port=5432',
+      primary_slot_name              => undef,
+      trigger_file                   => undef,
+      recovery_min_apply_delay       => 0,
+    }
+
+This would create a `recovery.conf` config file, similar to this:
+
+    restore_command = 'cp /mnt/server/archivedir/%f %p'
+    recovery_target_name = 'daily backup 2015-01-26'
+    recovery_target_time = '2015-02-08 22:39:00 EST'
+    recovery_target_inclusive = true
+    recovery_target = 'immediate'
+    recovery_target_timeline = 'latest'
+    pause_at_recovery_target = true
+    standby_mode = on
+    primary_conninfo = 'host=localhost port=5432'
+    recovery_min_apply_delay = 0
+
+
+Only the specified parameters will be recognize in the template! The `recovery.conf` will be only create if at least one parameter set and [manage_recovery_conf](#manage_recovery_conf) set to true.
+
+Every param value is a String set in the template with inverted comma except `recovery_target_inclusive`, `pause_at_recovery_target`, `standby_mode` and `recovery_min_apply_delay`.
+`standby_mode` is special, String ('on'/'off') and Boolean (true/false) is allowed, but the postgres documentation says it's a Boolean.
+
+A detailed description of all above listed parameters can be found in the [PostgreSQL documentation](http://www.postgresql.org/docs/9.4/static/recovery-config.html).
+
+The parameters are grouped into these three sections:
+
+
+#### [`Archive Recovery Parameters`](http://www.postgresql.org/docs/9.4/static/archive-recovery-settings.html)
+In this section the `restore_command`, `archive_cleanup_command` and `recovery_end_command` parameters are listed.
+
+#### [`Recovery Target Settings`](http://www.postgresql.org/docs/9.4/static/recovery-target-settings.html)
+In this section the `recovery_target_name`, `recovery_target_time`, `recovery_target_xid`, `recovery_target_inclusive`, `recovery_target`, `recovery_target_timeline` and `pause_at_recovery_target` parameters are listed.
+
+#### [`Standby Server Settings`](http://www.postgresql.org/docs/9.4/static/standby-settings.html)
+In this section the `standby_mode`, `primary_conninfo`, `primary_slot_name`, `trigger_file` and `recovery_min_apply_delay` parameters are listed.
+
+####`target`
+This provides the target for the rule, and is generally an internal only property. Use with caution.
+
 
 ###Resource: postgresql::server::role
 This resource creates a role or user in PostgreSQL.
@@ -845,6 +920,74 @@ Upon failure, sets the number of attempts before giving up and failing the resou
 ####`create_db_first`
 This will ensure the database is created before running the test. This only really works if your test is local. Defaults to `true`.
 
+
+### Custom Resource: postgresql\_psql
+This type allows puppet to run psql statements.
+
+#### `name`
+An arbitrary tag for your own reference; the name of the message. This is the
+namevar.
+
+#### `command`
+The SQL command to execute via psql. Required.
+
+#### `cwd`
+The working directory under which the psql command should be executed. Defaults
+to '/tmp'
+
+#### `db`
+The name of the database to execute the SQL command against.
+
+#### `environment`
+Any additional environment variables you want to set for a SQL command.
+Multiple environment variables should be specified as an array.
+
+#### `port`
+The port of the database server to execute the SQL command against.
+
+#### `psql\_group`
+The system user group account under which the psql command should be executed.
+Defaults to 'postgres'
+
+#### `psql\_path`
+The path to psql executable. Defaults to 'psql'
+
+#### `psql\_user`
+The system user account under which the psql command should be executed.
+Defaults to "postgres"
+
+#### `refreshonly`
+If 'true', then the SQL will only be executed via a notify/subscribe event.
+Valid values are true or false. Defaults to false.
+
+#### `search\_path`
+The schema search path to use when executing the SQL command
+
+#### `unless`
+An optional SQL command to execute prior to the main :command; this is
+generally intended to be used for idempotency, to check for the existence of an
+object in the database to determine whether or not the main SQL command needs
+to be executed at all.
+
+### Custom Resource: postgresql\_conf
+This type allows puppet to manage postgresql.conf parameters.
+
+#### `name`
+The postgresql parameter name to manage. This is the namevar.
+
+#### `target`
+The path to postgresql.conf. Defaults to '/etc/postgresql.conf'
+
+#### `value`
+The value to set for this parameter.
+
+### Custom Resource: postgresql\_replication\_slot
+This type allows to create and destroy replication slots
+to register warm standby replication on a Postgresql
+master server.
+
+#### `name`
+The name of the slot to create. Must be a validt replication slot name. This is the namevar.
 
 ###Function: postgresql\_password
 If you need to generate a postgres encrypted password, use `postgresql_password`. You can call it from your production manifests if you don't mind them containing the clear text versions of your passwords, or you can call it from the command line and then copy and paste the encrypted password into your manifest:
