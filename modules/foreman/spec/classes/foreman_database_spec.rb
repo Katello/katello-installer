@@ -28,7 +28,7 @@ describe 'foreman::install' do
       it { should contain_foreman__rake('db:migrate') }
       it { should contain_foreman_config_entry('db_pending_seed') }
       it { should contain_foreman__rake('db:seed') }
-      it { should contain_foreman__rake('apipie:cache') }
+      it { should contain_foreman__rake('apipie:cache:index') }
     end
 
     describe 'with seed parameters' do
