@@ -132,7 +132,7 @@ Puppet::Type.newtype(:concat_build) do
 
     munge do |value|
       if value == 'unknown' then
-        value = "#{Puppet[:vardir]}/concat/output/#{resource[:name]}.out"
+        value = "#{Puppet[:vardir]}/concat_native/output/#{resource[:name]}.out"
       end
       value
     end
@@ -214,8 +214,8 @@ Puppet::Type.newtype(:concat_build) do
     end
     # clean up the fragments directory for this build if there are no fragments
     # in the catalog
-    if resource.empty? and File.directory?("#{Puppet[:vardir]}/concat/fragments/#{self[:name]}") then
-      FileUtils.rm_rf("#{Puppet[:vardir]}/concat/fragments/#{self[:name]}")
+    if resource.empty? and File.directory?("#{Puppet[:vardir]}/concat_native/fragments/#{self[:name]}") then
+      FileUtils.rm_rf("#{Puppet[:vardir]}/concat_native/fragments/#{self[:name]}")
     end
     if self[:parent_build] then
       found_parent = false

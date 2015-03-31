@@ -23,6 +23,6 @@ module Puppet::Parser::Functions
             clientvardir = vardirfact
         end
 
-        "#{clientvardir}/concat/output/#{args.first}.out"
+        "#{clientvardir}/concat_native/output/#{args.first}.out"
     end
 end

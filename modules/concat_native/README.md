@@ -75,7 +75,7 @@ An example of this type of build is as follows:
     
     concat_build { "subtest":
       parent_build => "identifier",
-      target => "/var/lib/puppet/concat/fragments/identifier/subtest.tmp"
+      target => "/var/lib/puppet/concat_native/fragments/identifier/subtest.tmp"
     }
     
     concat_fragment { "subtest+sub1":
@@ -89,7 +89,7 @@ An example of this type of build is as follows:
 Notes
 -----
 
-Concat fragments are stored under Puppet[:vardir]/concat/fragments.
+Concat fragments are stored under Puppet[:vardir]/concat_native/fragments.
 
 Copyright
 ---------

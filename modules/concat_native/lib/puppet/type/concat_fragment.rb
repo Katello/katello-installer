@@ -97,10 +97,10 @@ Puppet::Type.newtype(:concat_fragment) do
     # Find everything that we shouldn't delete.
     catalog.resources.find_all { |r|
       (r.is_a?(Puppet::Type.type(:concat_fragment)) and r[:frag_group] == self[:frag_group] ) or
-      (r.is_a?(Puppet::Type.type(:concat_build)) and r[:target] and File.dirname(r[:target]) == "#{Puppet[:vardir]}/concat/fragments/#{self[:frag_group]}")
+      (r.is_a?(Puppet::Type.type(:concat_build)) and r[:target] and File.dirname(r[:target]) == "#{Puppet[:vardir]}/concat_native/fragments/#{self[:frag_group]}")
     }.each do |frag_res|
       if frag_res.is_a?(Puppet::Type.type(:concat_fragment)) then
-        known_resources << "#{Puppet[:vardir]}/concat/fragments/#{frag_res[:frag_group]}/#{frag_res[:frag_name]}"
+        known_resources << "#{Puppet[:vardir]}/concat_native/fragments/#{frag_res[:frag_group]}/#{frag_res[:frag_name]}"
       elsif frag_res.is_a?(Puppet::Type.type(:concat_build)) then
         known_resources << frag_res[:target]
       else
@@ -108,7 +108,7 @@ Puppet::Type.newtype(:concat_fragment) do
       end
     end
 
-    (Dir.glob("#{Puppet[:vardir]}/concat/fragments/#{self[:frag_group]}/*") - known_resources).each do |to_del|
+    (Dir.glob("#{Puppet[:vardir]}/concat_native/fragments/#{self[:frag_group]}/*") - known_resources).each do |to_del|
       debug "Deleting Unused Fragment: #{to_del}"
       FileUtils.rm(to_del)
     end
