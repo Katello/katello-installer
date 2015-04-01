@@ -7,9 +7,9 @@ FORGE
       puppetlabs-stdlib (>= 2.4.0)
     puppetlabs-apt (1.8.0)
       puppetlabs-stdlib (>= 2.2.1)
-    puppetlabs-concat (1.2.0)
+    puppetlabs-concat (1.2.1)
       puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
-    puppetlabs-stdlib (4.5.1)
+    puppetlabs-stdlib (4.6.0)
     puppetlabs-vcsrepo (1.2.0)
     puppetlabs-xinetd (1.5.0)
       puppetlabs-stdlib (>= 2.2.1)
@@ -93,7 +93,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-gutterball
   ref: master
-  sha: e8dc8afbc7042dfa8d44250f77de68964eb56ec3
+  sha: eb15f1d5c70bbdac2f0a224f91aca5e6d920d51d
   specs:
     katello-gutterball (0.1.0)
       puppetlabs-concat (>= 1.1.1)
@@ -202,7 +202,7 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-postgresql
   ref: master
-  sha: 0438db2f017d60e65e31b3dda066cbdfb2a0c6b9
+  sha: 89a781fe39e61f57eccbff82503f2b1b4cc53ae1
   specs:
     puppetlabs-postgresql (4.2.0)
       puppetlabs-apt (< 2.0.0, >= 1.1.0)
@@ -212,9 +212,9 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-concat
   ref: master
-  sha: c42f4d7cabce25c94308c5e3dc25d39ca69a8813
+  sha: e8f7fac0d35599759ca12f5c51e2176e3d0155dd
   specs:
-    theforeman-concat_native (1.3.3)
+    theforeman-concat_native (1.4.1)
 
 GIT
   remote: https://github.com/theforeman/puppet-dhcp
