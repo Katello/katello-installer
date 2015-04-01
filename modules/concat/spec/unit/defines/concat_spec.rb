@@ -29,7 +29,7 @@ describe 'concat', :type => :define do
     default_warn_message = '# This file is managed by Puppet. DO NOT EDIT.'
 
     file_defaults = {
-      :backup  => false,
+      :backup  => p[:backup],
     }
 
     let(:title) { title }
@@ -91,7 +91,7 @@ describe 'concat', :type => :define do
         }))
       end
 
-      cmd = "#{concatdir}/bin/concatfragments.sh " +
+      cmd = "#{concatdir}/bin/concatfragments.rb " +
             "-o \"#{concatdir}/#{safe_name}/fragments.concat.out\" " +
             "-d \"#{concatdir}/#{safe_name}\""
 
@@ -138,7 +138,6 @@ describe 'concat', :type => :define do
         it do
           should contain_file(file).with(file_defaults.merge({
             :ensure => 'absent',
-            :backup => false,
             :force  => true,
           }))
         end

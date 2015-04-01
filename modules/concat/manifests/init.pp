@@ -34,7 +34,7 @@
 #
 # === Actions:
 # * Creates fragment directories if it didn't exist already
-# * Executes the concatfragments.sh script to build the final file, this
+# * Executes the concatfragments.rb script to build the final file, this
 #   script will create directory/fragments.concat.   Execution happens only
 #   when:
 #   * The directory changes
@@ -141,7 +141,7 @@ define concat(
   }
 
   File {
-    backup  => false,
+    backup  => $backup,
   }
 
   # reset poisoned Exec defaults
@@ -199,7 +199,7 @@ define concat(
     $command = strip(regsubst("${script_command} -o \"${fragdir}/${concat_name}\" -d \"${fragdir}\" ${warnflag} ${forceflag} ${orderflag} ${newlineflag}", '\s+', ' ', 'G'))
 
     # make sure ruby is in the path for PE
-    if $::is_pe {
+    if defined('$is_pe') and $::is_pe {
       if $::kernel == 'windows' {
         $command_path = "${::env_windows_installdir}/bin:${::path}"
       } else {
@@ -210,7 +210,7 @@ define concat(
     }
 
     # if puppet is running as root, this exec should also run as root to allow
-    # the concatfragments.sh script to potentially be installed in path that
+    # the concatfragments.rb script to potentially be installed in path that
     # may not be accessible by a target non-root owner.
     exec { "concat_${name}":
       alias     => "concat_${fragdir}",

@@ -1,7 +1,5 @@
 #stdlib
 
-[![Build Status](https://travis-ci.org/puppetlabs/puppetlabs-stdlib.png?branch=master)](https://travis-ci.org/puppetlabs/puppetlabs-stdlib)
-
 ####Table of Contents
 
 1. [Overview](#overview)
@@ -14,7 +12,7 @@
 
 ##Overview
 
-Adds a standard library of resources for Puppet modules.    
+Adds a standard library of resources for Puppet modules.
 
 ##Module Description
 
@@ -27,22 +25,22 @@ modules. Puppet modules make heavy use of this standard library. The stdlib modu
  * Defined resource types
  * Types
  * Providers
- 
+
 > *Note:* As of version 3.7, Puppet Enterprise no longer includes the stdlib module. If you're running Puppet Enterprise, you should install the most recent release of stdlib for compatibility with Puppet modules.
 
 ##Setup
 
-Installing the stdlib module adds the functions, facts, and resources of this standard library to Puppet. 
+Installing the stdlib module adds the functions, facts, and resources of this standard library to Puppet.
 
 ##Usage
 
-After you've installed stdlib, all of its functions, facts, and resources are available for module use or development. 
+After you've installed stdlib, all of its functions, facts, and resources are available for module use or development.
 
-If you want to use a standardized set of run stages for Puppet, `include stdlib` in your manifest. 
+If you want to use a standardized set of run stages for Puppet, `include stdlib` in your manifest.
 
 ## Reference
 
-### Classes 
+### Classes
 
 #### Public Classes
 
@@ -75,11 +73,11 @@ If you want to use a standardized set of run stages for Puppet, `include stdlib`
     class { java: stage => 'runtime' }
   }
   ```
-  
+
 ### Resources
 
-* `file_line`: This resource ensures that a given line, including whitespace at the beginning and end, is contained within a file. If the line is not contained in the given file, Puppet will add the line. Multiple resources can be declared to manage multiple lines in the same file. You can also use match to replace existing lines. 
- 
+* `file_line`: This resource ensures that a given line, including whitespace at the beginning and end, is contained within a file. If the line is not contained in the given file, Puppet will add the line. Multiple resources can be declared to manage multiple lines in the same file. You can also use match to replace existing lines.
+
   ```
   file_line { 'sudo_rule':
     path => '/etc/sudoers',
@@ -90,7 +88,7 @@ If you want to use a standardized set of run stages for Puppet, `include stdlib`
     line => '%sudonopw ALL=(ALL) NOPASSWD: ALL',
   }
   ```
-  
+
   * `after`: Specify the line after which Puppet will add any new lines. (Existing lines are added in place.) Optional.
   * `ensure`: Ensures whether the resource is present. Valid values are 'present', 'absent'.
  * `line`: The line to be added to the file located by the `path` parameter.
@@ -98,35 +96,71 @@ If you want to use a standardized set of run stages for Puppet, `include stdlib`
  * `multiple`: Determine if match can change multiple lines. Valid values are 'true', 'false'. Optional.
  * `name`: An arbitrary name used as the identity of the resource.
  * `path`: The file in which Puppet will ensure the line specified by the line parameter.
-  
+
 ### Functions
 
-* `abs`: Returns the absolute value of a number; for example, '-34.56' becomes '34.56'. Takes a single integer and float value as an argument. *Type*: rvalue
+#### `abs`
 
-* `any2array`: This converts any object to an array containing that object. Empty argument lists are converted to an empty array. Arrays are left untouched. Hashes are converted to arrays of alternating keys and values. *Type*: rvalue
+Returns the absolute value of a number; for example, '-34.56' becomes '34.56'. Takes a single integer and float value as an argument. *Type*: rvalue
 
-* `base64`: Converts a string to and from base64 encoding.
+#### `any2array`
+
+This converts any object to an array containing that object. Empty argument lists are converted to an empty array. Arrays are left untouched. Hashes are converted to arrays of alternating keys and values. *Type*: rvalue
+
+#### `base64`
+
+Converts a string to and from base64 encoding.
 Requires an action ('encode', 'decode') and either a plain or base64-encoded
 string. *Type*: rvalue
 
-* `bool2num`: Converts a boolean to a number. Converts values:
+#### `basename`
+
+Returns the `basename` of a path (optionally stripping an extension). For example:
+  * ('/path/to/a/file.ext') returns 'file.ext'
+  * ('relative/path/file.ext') returns 'file.ext'
+  * ('/path/to/a/file.ext', '.ext') returns 'file'
+
+  *Type*: rvalue
+
+#### `bool2num`
+
+Converts a boolean to a number. Converts values:
   * 'false', 'f', '0', 'n', and 'no' to 0.
   * 'true', 't', '1', 'y', and 'yes' to 1.
   Requires a single boolean or string as an input. *Type*: rvalue
 
-* `capitalize`: Capitalizes the first letter of a string or array of strings.
+#### `capitalize`
+
+Capitalizes the first letter of a string or array of strings.
 Requires either a single string or an array as an input. *Type*: rvalue
 
-* `chomp`: Removes the record separator from the end of a string or an array of
+#### `ceiling`
+
+Returns the smallest integer greater than or equal to the argument.
+Takes a single numeric value as an argument. *Type*: rvalue
+
+#### `chomp`
+
+Removes the record separator from the end of a string or an array of
 strings; for example, 'hello\n' becomes 'hello'. Requires a single string or array as an input. *Type*: rvalue
 
-* `chop`: Returns a new string with the last character removed. If the string ends with '\r\n', both characters are removed. Applying `chop` to an empty string returns an empty string. If you want to merely remove record separators, then you should use the `chomp` function. Requires a string or an array of strings as input. *Type*: rvalue
+#### `chop`
 
-* `concat`: Appends the contents of array 2 onto array 1. For example, `concat(['1','2','3'],'4')` results in: ['1','2','3','4']. *Type*: rvalue
+Returns a new string with the last character removed. If the string ends with '\r\n', both characters are removed. Applying `chop` to an empty string returns an empty string. If you want to merely remove record separators, then you should use the `chomp` function. Requires a string or an array of strings as input. *Type*: rvalue
 
-* `count`: Takes an array as first argument and an optional second argument. Count the number of elements in array that matches second argument. If called with only an array, it counts the number of elements that are **not** nil/undef. *Type*: rvalue
+#### `concat`
 
-* `defined_with_params`: Takes a resource reference and an optional hash of attributes. Returns 'true' if a resource with the specified attributes has already been added to the catalog. Returns 'false' otherwise.
+Appends the contents of multiple arrays onto array 1. For example:
+  * `concat(['1','2','3'],'4')` results in: ['1','2','3','4'].
+  * `concat(['1','2','3'],'4',['5','6','7'])` results in: ['1','2','3','4','5','6','7'].
+
+#### `count`
+
+Takes an array as first argument and an optional second argument. Count the number of elements in array that matches second argument. If called with only an array, it counts the number of elements that are **not** nil/undef. *Type*: rvalue
+
+#### `defined_with_params`
+
+Takes a resource reference and an optional hash of attributes. Returns 'true' if a resource with the specified attributes has already been added to the catalog. Returns 'false' otherwise.
 
   ```
   user { 'dan':
@@ -137,31 +171,51 @@ strings; for example, 'hello\n' becomes 'hello'. Requires a single string or arr
     user { 'dan': ensure => present, }
   }
   ```
-  
+
   *Type*: rvalue
 
-* `delete`: Deletes all instances of a given element from an array, substring from a
-string, or key from a hash. For example, `delete(['a','b','c','b'], 'b')` returns ['a','c']; `delete('abracadabra', 'bra')` returns 'acada'. *Type*: rvalue
+#### `delete`
 
-* `delete_at`: Deletes a determined indexed value from an array. For example, `delete_at(['a','b','c'], 1)` returns ['a','c']. *Type*: rvalue
+Deletes all instances of a given element from an array, substring from a
+string, or key from a hash. For example, `delete(['a','b','c','b'], 'b')` returns ['a','c']; `delete('abracadabra', 'bra')` returns 'acada'. `delete({'a' => 1,'b' => 2,'c' => 3},['b','c'])` returns {'a'=> 1} *Type*: rvalue
 
-* `delete_values`: Deletes all instances of a given value from a hash. For example, `delete_values({'a'=>'A','b'=>'B','c'=>'C','B'=>'D'}, 'B')` returns {'a'=>'A','c'=>'C','B'=>'D'} *Type*: rvalue
+#### `delete_at`
 
-* `delete_undef_values`: Deletes all instances of the undef value from an array or hash. For example, `$hash = delete_undef_values({a=>'A', b=>'', c=>undef, d => false})` returns {a => 'A', b => '', d => false}. *Type*: rvalue
+Deletes a determined indexed value from an array. For example, `delete_at(['a','b','c'], 1)` returns ['a','c']. *Type*: rvalue
 
-* `difference`: Returns the difference between two arrays.
+#### `delete_values`
+
+Deletes all instances of a given value from a hash. For example, `delete_values({'a'=>'A','b'=>'B','c'=>'C','B'=>'D'}, 'B')` returns {'a'=>'A','c'=>'C','B'=>'D'} *Type*: rvalue
+
+#### `delete_undef_values`
+
+Deletes all instances of the undef value from an array or hash. For example, `$hash = delete_undef_values({a=>'A', b=>'', c=>undef, d => false})` returns {a => 'A', b => '', d => false}. *Type*: rvalue
+
+#### `difference`
+
+Returns the difference between two arrays.
 The returned array is a copy of the original array, removing any items that
 also appear in the second array. For example, `difference(["a","b","c"],["b","c","d"])` returns ["a"].
 
-* `dirname`: Returns the `dirname` of a path. For example, `dirname('/path/to/a/file.ext')` returns '/path/to/a'.
+#### `dirname`
 
-* `downcase`: Converts the case of a string or of all strings in an array to lowercase. *Type*: rvalue
+Returns the `dirname` of a path. For example, `dirname('/path/to/a/file.ext')` returns '/path/to/a'.
 
-* `empty`: Returns 'true' if the variable is empty. *Type*: rvalue
+#### `downcase`
 
-* `ensure_packages`: Takes a list of packages and only installs them if they don't already exist. It optionally takes a hash as a second parameter to be passed as the third argument to the `ensure_resource()` function. *Type*: statement
+Converts the case of a string or of all strings in an array to lowercase. *Type*: rvalue
 
-* `ensure_resource`: Takes a resource type, title, and a list of attributes that describe a resource.
+#### `empty`
+
+Returns 'true' if the variable is empty. *Type*: rvalue
+
+#### `ensure_packages`
+
+Takes a list of packages and only installs them if they don't already exist. It optionally takes a hash as a second parameter to be passed as the third argument to the `ensure_resource()` function. *Type*: statement
+
+#### `ensure_resource`
+
+Takes a resource type, title, and a list of attributes that describe a resource.
 
   ```
   user { 'dan':
@@ -181,20 +235,47 @@ also appear in the second array. For example, `difference(["a","b","c"],["b","c"
 
   *Type*: statement
 
-* `flatten`: This function flattens any deeply nested arrays and returns a single flat array as a result. For example, `flatten(['a', ['b', ['c']]])` returns ['a','b','c']. *Type*: rvalue
+#### `flatten`
 
-* `floor`: Returns the largest integer less than or equal to the argument.
+This function flattens any deeply nested arrays and returns a single flat array as a result. For example, `flatten(['a', ['b', ['c']]])` returns ['a','b','c']. *Type*: rvalue
+
+#### `floor`
+
+Returns the largest integer less than or equal to the argument.
 Takes a single numeric value as an argument. *Type*: rvalue
 
-* `fqdn_rotate`: Rotates an array a random number of times based on a node's fqdn. *Type*: rvalue
+#### `fqdn_rand_string`
 
-* `get_module_path`: Returns the absolute path of the specified module for the current environment.
+Generates a random alphanumeric string using an optionally-specified character set (default is alphanumeric), combining the `$fqdn` fact and an optional seed for repeatable randomness.
+
+*Usage:*
+```
+fqdn_rand_string(LENGTH, [CHARSET], [SEED])
+```
+*Examples:*
+```
+fqdn_rand_string(10)
+fqdn_rand_string(10, 'ABCDEF!@#$%^')
+fqdn_rand_string(10, '', 'custom seed')
+```
+
+*Type*: rvalue
+
+#### `fqdn_rotate`
+
+Rotates an array a random number of times based on a node's fqdn. *Type*: rvalue
+
+#### `get_module_path`
+
+Returns the absolute path of the specified module for the current environment.
 
   `$module_path = get_module_path('stdlib')`
 
   *Type*: rvalue
 
-* `getparam`: Takes a resource reference and the name of the parameter and
+#### `getparam`
+
+Takes a resource reference and the name of the parameter and
 returns the value of the resource's parameter. For example, the following code returns 'param_value'.
 
   *Example:*
@@ -212,7 +293,9 @@ returns the value of the resource's parameter. For example, the following code r
 
   *Type*: rvalue
 
-* `getvar`: Lookup a variable in a remote namespace.
+#### `getvar`
+
+Lookup a variable in a remote namespace.
 
   For example:
 
@@ -231,9 +314,13 @@ returns the value of the resource's parameter. For example, the following code r
 
   *Type*: rvalue
 
-* `grep`: This function searches through an array and returns any elements that match the provided regular expression. For example, `grep(['aaa','bbb','ccc','aaaddd'], 'aaa')` returns ['aaa','aaaddd']. *Type*: rvalue
+#### `grep`
 
-* `has_interface_with`: Returns boolean based on kind and value:
+This function searches through an array and returns any elements that match the provided regular expression. For example, `grep(['aaa','bbb','ccc','aaaddd'], 'aaa')` returns ['aaa','aaaddd']. *Type*: rvalue
+
+#### `has_interface_with`
+
+Returns boolean based on kind and value:
   * macaddress
   * netmask
   * ipaddress
@@ -245,7 +332,7 @@ returns the value of the resource's parameter. For example, the following code r
   has_interface_with("macaddress", "x:x:x:x:x:x")
   has_interface_with("ipaddress", "127.0.0.1")    => true
   ```
-    
+
   If no kind is given, then the presence of the interface is checked:
 
   ```
@@ -254,11 +341,17 @@ returns the value of the resource's parameter. For example, the following code r
 
   *Type*: rvalue
 
-* `has_ip_address`: Returns true if the client has the requested IP address on some interface. This function iterates through the `interfaces` fact and checks the `ipaddress_IFACE` facts, performing a simple string comparison. *Type*: rvalue
+#### `has_ip_address`
 
-* `has_ip_network`: Returns true if the client has an IP address within the requested network. This function iterates through the 'interfaces' fact and checks the 'network_IFACE' facts, performing a simple string comparision. *Type*: rvalue
+Returns true if the client has the requested IP address on some interface. This function iterates through the `interfaces` fact and checks the `ipaddress_IFACE` facts, performing a simple string comparison. *Type*: rvalue
 
-* `has_key`: Determine if a hash has a certain key value.
+#### `has_ip_network`
+
+Returns true if the client has an IP address within the requested network. This function iterates through the 'interfaces' fact and checks the 'network_IFACE' facts, performing a simple string comparision. *Type*: rvalue
+
+#### `has_key`
+
+Determine if a hash has a certain key value.
 
   *Example*:
 
@@ -271,42 +364,76 @@ returns the value of the resource's parameter. For example, the following code r
     notice('this will be printed')
   }
   ```
-  
+
   *Type*: rvalue
 
-* `hash`: This function converts an array into a hash. For example, `hash(['a',1,'b',2,'c',3])` returns {'a'=>1,'b'=>2,'c'=>3}. *Type*: rvalue
+#### `hash`
 
-* `intersection`: This function returns an array an intersection of two. For example, `intersection(["a","b","c"],["b","c","d"])` returns ["b","c"].
+This function converts an array into a hash. For example, `hash(['a',1,'b',2,'c',3])` returns {'a'=>1,'b'=>2,'c'=>3}. *Type*: rvalue
 
-* `is_array`: Returns 'true' if the variable passed to this function is an array. *Type*: rvalue
+#### `intersection`
 
-* `is_bool`: Returns 'true' if the variable passed to this function is a boolean. *Type*: rvalue
+This function returns an array an intersection of two. For example, `intersection(["a","b","c"],["b","c","d"])` returns ["b","c"].
 
-* `is_domain_name`: Returns 'true' if the string passed to this function is a syntactically correct domain name. *Type*: rvalue
+#### `is_array`
 
-* `is_float`: Returns 'true' if the variable passed to this function is a float. *Type*: rvalue
+Returns 'true' if the variable passed to this function is an array. *Type*: rvalue
 
-* `is_function_available`: This function accepts a string as an argument and determines whether the Puppet runtime has access to a function by that name. It returns 'true' if the function exists, 'false' if not. *Type*: rvalue
+#### `is_bool`
 
-* `is_hash`: Returns 'true' if the variable passed to this function is a hash. *Type*: rvalue
+Returns 'true' if the variable passed to this function is a boolean. *Type*: rvalue
 
-* `is_integer`: Returns 'true' if the variable returned to this string is an integer. *Type*: rvalue
+#### `is_domain_name`
 
-* `is_ip_address`: Returns 'true' if the string passed to this function is a valid IP address. *Type*: rvalue
+Returns 'true' if the string passed to this function is a syntactically correct domain name. *Type*: rvalue
 
-* `is_mac_address`: Returns 'true' if the string passed to this function is a valid MAC address. *Type*: rvalue
+#### `is_float`
 
-* `is_numeric`: Returns 'true' if the variable passed to this function is a number. *Type*: rvalue
+Returns 'true' if the variable passed to this function is a float. *Type*: rvalue
 
-* `is_string`: Returns 'true' if the variable passed to this function is a string. *Type*: rvalue
+#### `is_function_available`
 
-* `join`: This function joins an array into a string using a separator. For example, `join(['a','b','c'], ",")` results in: "a,b,c". *Type*: rvalue
+This function accepts a string as an argument and determines whether the Puppet runtime has access to a function by that name. It returns 'true' if the function exists, 'false' if not. *Type*: rvalue
 
-* `join_keys_to_values`: This function joins each key of a hash to that key's corresponding value with a separator. Keys and values are cast to strings. The return value is an array in which each element is one joined key/value pair. For example, `join_keys_to_values({'a'=>1,'b'=>2}, " is ")` results in ["a is 1","b is 2"]. *Type*: rvalue
+#### `is_hash`
 
-* `keys`: Returns the keys of a hash as an array. *Type*: rvalue
+Returns 'true' if the variable passed to this function is a hash. *Type*: rvalue
 
-* `loadyaml`: Load a YAML file containing an array, string, or hash, and return the data in the corresponding native data type. For example:
+#### `is_integer`
+
+Returns 'true' if the variable returned to this string is an integer. *Type*: rvalue
+
+#### `is_ip_address`
+
+Returns 'true' if the string passed to this function is a valid IP address. *Type*: rvalue
+
+#### `is_mac_address`
+
+Returns 'true' if the string passed to this function is a valid MAC address. *Type*: rvalue
+
+#### `is_numeric`
+
+Returns 'true' if the variable passed to this function is a number. *Type*: rvalue
+
+#### `is_string`
+
+Returns 'true' if the variable passed to this function is a string. *Type*: rvalue
+
+#### `join`
+
+This function joins an array into a string using a separator. For example, `join(['a','b','c'], ",")` results in: "a,b,c". *Type*: rvalue
+
+#### `join_keys_to_values`
+
+This function joins each key of a hash to that key's corresponding value with a separator. Keys and values are cast to strings. The return value is an array in which each element is one joined key/value pair. For example, `join_keys_to_values({'a'=>1,'b'=>2}, " is ")` results in ["a is 1","b is 2"]. *Type*: rvalue
+
+#### `keys`
+
+Returns the keys of a hash as an array. *Type*: rvalue
+
+#### `loadyaml`
+
+Load a YAML file containing an array, string, or hash, and return the data in the corresponding native data type. For example:
 
   ```
   $myhash = loadyaml('/etc/puppet/data/myhash.yaml')
@@ -314,16 +441,24 @@ returns the value of the resource's parameter. For example, the following code r
 
   *Type*: rvalue
 
-* `lstrip`: Strips leading spaces to the left of a string. *Type*: rvalue
+#### `lstrip`
 
-* `max`: Returns the highest value of all arguments. Requires at least one argument. *Type*: rvalue
+Strips leading spaces to the left of a string. *Type*: rvalue
 
-* `member`: This function determines if a variable is a member of an array. The variable can be either a string, array, or fixnum. For example, `member(['a','b'], 'b')` and `member(['a','b','c'], ['b','c'])` return 'true', while `member(['a','b'], 'c')`  and `member(['a','b','c'], ['c','d'])` return 'false'. *Type*: rvalue
+#### `max`
 
-* `merge`: Merges two or more hashes together and returns the resulting hash.
+Returns the highest value of all arguments. Requires at least one argument. *Type*: rvalue
+
+#### `member`
+
+This function determines if a variable is a member of an array. The variable can be either a string, array, or fixnum. For example, `member(['a','b'], 'b')` and `member(['a','b','c'], ['b','c'])` return 'true', while `member(['a','b'], 'c')`  and `member(['a','b','c'], ['c','d'])` return 'false'. *Type*: rvalue
+
+#### `merge`
+
+Merges two or more hashes together and returns the resulting hash.
 
   *Example*:
-  
+
   ```
   $hash1 = {'one' => 1, 'two' => 2}
   $hash2 = {'two' => 'dos', 'three' => 'tres'}
@@ -331,72 +466,128 @@ returns the value of the resource's parameter. For example, the following code r
   # The resulting hash is equivalent to:
   # $merged_hash =  {'one' => 1, 'two' => 'dos', 'three' => 'tres'}
   ```
-  
+
   When there is a duplicate key, the key in the rightmost hash "wins." *Type*: rvalue
 
-* `min`: Returns the lowest value of all arguments. Requires at least one argument. *Type*: rvalue
+#### `min`
 
-* `num2bool`: This function converts a number or a string representation of a number into a true boolean. Zero or anything non-numeric becomes 'false'. Numbers greater than 0 become 'true'. *Type*: rvalue
+Returns the lowest value of all arguments. Requires at least one argument. *Type*: rvalue
 
-* `parsejson`: This function accepts JSON as a string and converts into the correct Puppet structure. *Type*: rvalue
+#### `num2bool`
 
-* `parseyaml`: This function accepts YAML as a string and converts it into the correct Puppet structure. *Type*: rvalue
+This function converts a number or a string representation of a number into a true boolean. Zero or anything non-numeric becomes 'false'. Numbers greater than 0 become 'true'. *Type*: rvalue
 
-* `pick`: From a list of values, returns the first value that is not undefined or an empty string. Takes any number of arguments, and raises an error if all values are undefined or empty.
+#### `parsejson`
+
+This function accepts JSON as a string and converts into the correct Puppet structure. *Type*: rvalue
+
+#### `parseyaml`
+
+This function accepts YAML as a string and converts it into the correct Puppet structure. *Type*: rvalue
+
+#### `pick`
+
+From a list of values, returns the first value that is not undefined or an empty string. Takes any number of arguments, and raises an error if all values are undefined or empty.
 
   ```
   $real_jenkins_version = pick($::jenkins_version, '1.449')
   ```
-  
+
  *Type*: rvalue
 
-* `prefix`: This function applies a prefix to all elements in an array. For example, `prefix(['a','b','c'], 'p')` returns ['pa','pb','pc']. *Type*: rvalue
+#### `prefix`
+
+This function applies a prefix to all elements in an array or to the keys in a hash. For example, `prefix(['a','b','c'], 'p')` returns ['pa','pb','pc'], and `prefix({'a'=>'b','b'=>'c','c'=>'d'}, 'p')` returns {'pa'=>'b','pb'=>'c','pc'=>'d'}. *Type*: rvalue
 
 
-* `private`: This function sets the current class or definition as private.
-Calling the class or definition from outside the current module will fail. For example, `private()` called in class `foo::bar` outputs the following message if class is called from outside module `foo`:
+#### `assert_private`
+
+This function sets the current class or definition as private.
+Calling the class or definition from outside the current module will fail. For example, `assert_private()` called in class `foo::bar` outputs the following message if class is called from outside module `foo`:
 
   ```
   Class foo::bar is private
   ```
-  
+
   You can specify the error message you want to use:
-  
+
   ```
-  private("You're not supposed to do that!")
+  assert_private("You're not supposed to do that!")
   ```
 
   *Type*: statement
 
-* `range`: When given range in the form of '(start, stop)', `range` extrapolates a range as an array. For example, `range("0", "9")` returns [0,1,2,3,4,5,6,7,8,9]. Zero-padded strings are converted to integers automatically, so `range("00", "09")` returns [0,1,2,3,4,5,6,7,8,9].
+#### `pw_hash`
 
-  Non-integer strings are accepted; `range("a", "c")` returns ["a","b","c"], and `range("host01", "host10")` returns ["host01", "host02", ..., "host09", "host10"]. 
-  
+Hashes a password using the crypt function. Provides a hash usable on most POSIX systems.
+
+The first argument to this function is the password to hash. If it is undef or an empty string, this function returns undef.
+
+The second argument to this function is which type of hash to use. It will be converted into the appropriate crypt(3) hash specifier. Valid hash types are:
+
+|Hash type            |Specifier|
+|---------------------|---------|
+|MD5                  |1        |
+|SHA-256              |5        |
+|SHA-512 (recommended)|6        |
+
+The third argument to this function is the salt to use.
+
+Note: this uses the Puppet Master's implementation of crypt(3). If your environment contains several different operating systems, ensure that they are compatible before using this function.
+
+#### `range`
+
+When given range in the form of '(start, stop)', `range` extrapolates a range as an array. For example, `range("0", "9")` returns [0,1,2,3,4,5,6,7,8,9]. Zero-padded strings are converted to integers automatically, so `range("00", "09")` returns [0,1,2,3,4,5,6,7,8,9].
+
+  Non-integer strings are accepted; `range("a", "c")` returns ["a","b","c"], and `range("host01", "host10")` returns ["host01", "host02", ..., "host09", "host10"].
+
+  Passing a third argument will cause the generated range to step by that interval, e.g. `range("0", "9", "2")` returns ["0","2","4","6","8"]
+
   *Type*: rvalue
 
-* `reject`: This function searches through an array and rejects all elements that match the provided regular expression. For example, `reject(['aaa','bbb','ccc','aaaddd'], 'aaa')` returns ['bbb','ccc']. *Type*: rvalue
+#### `reject`
 
-* `reverse`: Reverses the order of a string or array. *Type*: rvalue
+This function searches through an array and rejects all elements that match the provided regular expression. For example, `reject(['aaa','bbb','ccc','aaaddd'], 'aaa')` returns ['bbb','ccc']. *Type*: rvalue
 
-* `rstrip`: Strips leading spaces to the right of the string.*Type*: rvalue
+#### `reverse`
 
-* `shuffle`: Randomizes the order of a string or array elements. *Type*: rvalue
+Reverses the order of a string or array. *Type*: rvalue
 
-* `size`: Returns the number of elements in a string or array. *Type*: rvalue
+#### `rstrip`
 
-* `sort`: Sorts strings and arrays lexically. *Type*: rvalue
+Strips leading spaces to the right of the string.*Type*: rvalue
 
-* `squeeze`: Returns a new string where runs of the same character that occur in this set are replaced by a single character. *Type*: rvalue
+#### `shuffle`
 
-* `str2bool`: This converts a string to a boolean. This attempts to convert strings that contain values such as '1', 't', 'y', and 'yes' to 'true' and strings that contain values such as '0', 'f', 'n', and 'no' to 'false'. *Type*: rvalue
+Randomizes the order of a string or array elements. *Type*: rvalue
 
-* `str2saltedsha512`: This converts a string to a salted-SHA512 password hash, used for OS X versions >= 10.7. Given any string, this function returns a hex version of a salted-SHA512 password hash, which can be inserted into your Puppet
+#### `size`
+
+Returns the number of elements in a string or array. *Type*: rvalue
+
+#### `sort`
+
+Sorts strings and arrays lexically. *Type*: rvalue
+
+#### `squeeze`
+
+Returns a new string where runs of the same character that occur in this set are replaced by a single character. *Type*: rvalue
+
+#### `str2bool`
+
+This converts a string to a boolean. This attempts to convert strings that contain values such as '1', 't', 'y', and 'yes' to 'true' and strings that contain values such as '0', 'f', 'n', and 'no' to 'false'. *Type*: rvalue
+
+#### `str2saltedsha512`
+
+This converts a string to a salted-SHA512 password hash, used for OS X versions >= 10.7. Given any string, this function returns a hex version of a salted-SHA512 password hash, which can be inserted into your Puppet
 manifests as a valid password attribute. *Type*: rvalue
 
-* `strftime`: This function returns formatted time. For example,  `strftime("%s")` returns the time since epoch, and `strftime("%Y=%m-%d")` returns the date. *Type*: rvalue
+#### `strftime`
+
+This function returns formatted time. For example,  `strftime("%s")` returns the time since epoch, and `strftime("%Y=%m-%d")` returns the date. *Type*: rvalue
 
   *Format:*
-  
+
     * `%a`: The abbreviated weekday name ('Sun')
     * `%A`: The  full  weekday  name ('Sunday')
     * `%b`: The abbreviated month name ('Jan')
@@ -443,53 +634,90 @@ manifests as a valid password attribute. *Type*: rvalue
     * `%Z`: Time zone name
     * `%%`: Literal '%' character
 
+#### `strip`
 
-* `strip`: This function removes leading and trailing whitespace from a string or from every string inside an array. For example, `strip("    aaa   ")` results in "aaa". *Type*: rvalue
+This function removes leading and trailing whitespace from a string or from every string inside an array. For example, `strip("    aaa   ")` results in "aaa". *Type*: rvalue
 
-* `suffix`: This function applies a suffix to all elements in an array. For example, `suffix(['a','b','c'], 'p')` returns ['ap','bp','cp']. *Type*: rvalue
+#### `suffix`
 
-* `swapcase`: This function swaps the existing case of a string. For example, `swapcase("aBcD")` results in "AbCd". *Type*: rvalue
+This function applies a suffix to all elements in an array. For example, `suffix(['a','b','c'], 'p')` returns ['ap','bp','cp']. *Type*: rvalue
 
-* `time`: This function returns the current time since epoch as an integer. For example, `time()` returns something like '1311972653'. *Type*: rvalue
+#### `swapcase`
 
-* `to_bytes`: Converts the argument into bytes, for example 4 kB becomes 4096.
+This function swaps the existing case of a string. For example, `swapcase("aBcD")` results in "AbCd". *Type*: rvalue
+
+#### `time`
+
+This function returns the current time since epoch as an integer. For example, `time()` returns something like '1311972653'. *Type*: rvalue
+
+#### `to_bytes`
+
+Converts the argument into bytes, for example 4 kB becomes 4096.
 Takes a single string value as an argument. *Type*: rvalue
 
-* `type`: Returns the type when passed a variable. Type can be a string, array, hash, float, integer, or boolean. *Type*: rvalue
+#### `type3x`
 
-* `union`: This function returns a union of two arrays. For example, `union(["a","b","c"],["b","c","d"])` returns ["a","b","c","d"].
+Returns a string description of the type when passed a value. Type can be a string, array, hash, float, integer, or boolean. This function will be removed when puppet 3 support is dropped and the new type system may be used. *Type*: rvalue
 
-* `unique`: This function removes duplicates from strings and arrays. For example, `unique("aabbcc")` returns 'abc'.
+#### `type_of`
+
+Returns the literal type when passed a value. Requires the new
+  parser. Useful for comparison of types with `<=` such as in `if
+  type_of($some_value) <= Array[String] { ... }` (which is equivalent to `if
+  $some_value =~ Array[String] { ... }`) *Type*: rvalue
+
+#### `union`
+
+This function returns a union of two arrays. For example, `union(["a","b","c"],["b","c","d"])` returns ["a","b","c","d"].
+
+#### `unique`
+
+This function removes duplicates from strings and arrays. For example, `unique("aabbcc")` returns 'abc'.
 
 You can also use this with arrays. For example, `unique(["a","a","b","b","c","c"])` returns ["a","b","c"]. *Type*: rvalue
 
-* `upcase`: Converts a string or an array of strings to uppercase. For example, `upcase("abcd")` returns 'ABCD'. *Type*: rvalue
+#### `upcase`
 
-* `uriescape`: Urlencodes a string or array of strings. Requires either a single string or an array as an input. *Type*: rvalue
+Converts an object, array or hash of objects that respond to upcase to uppercase. For example, `upcase("abcd")` returns 'ABCD'.  *Type*: rvalue
 
-* `validate_absolute_path`: Validate that the string represents an absolute path in the filesystem. This function works for Windows and Unix-style paths.
-  The following values will pass:
+#### `uriescape`
 
-  ```
-  $my_path = "C:/Program Files (x86)/Puppet Labs/Puppet"
-  validate_absolute_path($my_path)
-  $my_path2 = "/var/lib/puppet"
-  validate_absolute_path($my_path2)
-  ```
+Urlencodes a string or array of strings. Requires either a single string or an array as an input. *Type*: rvalue
 
-  The following values will fail, causing compilation to abort:
+#### `validate_absolute_path`
 
-  ```
-  validate_absolute_path(true)
-  validate_absolute_path([ 'var/lib/puppet', '/var/foo' ])
-  validate_absolute_path([ '/var/lib/puppet', 'var/foo' ])
-  $undefined = undef
-  validate_absolute_path($undefined)
-  ```
-  
-  *Type*: statement
+Validate the string represents an absolute path in the filesystem.  This function works for Windows and Unix style paths.
 
-* `validate_array`: Validate that all passed values are array data structures. Abort catalog compilation if any value fails this check. 
+    The following values will pass:
+
+    ```
+    $my_path = 'C:/Program Files (x86)/Puppet Labs/Puppet'
+    validate_absolute_path($my_path)
+    $my_path2 = '/var/lib/puppet'
+    validate_absolute_path($my_path2)
+    $my_path3 = ['C:/Program Files (x86)/Puppet Labs/Puppet','C:/Program Files/Puppet Labs/Puppet']
+    validate_absolute_path($my_path3)
+    $my_path4 = ['/var/lib/puppet','/usr/share/puppet']
+    validate_absolute_path($my_path4)
+    ```
+
+    The following values will fail, causing compilation to abort:
+
+    ```
+    validate_absolute_path(true)
+    validate_absolute_path('../var/lib/puppet')
+    validate_absolute_path('var/lib/puppet')
+    validate_absolute_path([ 'var/lib/puppet', '/var/foo' ])
+    validate_absolute_path([ '/var/lib/puppet', 'var/foo' ])
+    $undefined = undef
+    validate_absolute_path($undefined)
+    ```
+
+    *Type*: statement
+
+#### `validate_array`
+
+Validate that all passed values are array data structures. Abort catalog compilation if any value fails this check.
 
   The following values will pass:
 
@@ -509,7 +737,9 @@ You can also use this with arrays. For example, `unique(["a","a","b","b","c","c"
 
   *Type*: statement
 
-* `validate_augeas`: Performs validation of a string using an Augeas lens.
+#### `validate_augeas`
+
+Performs validation of a string using an Augeas lens.
 The first argument of this function should be the string to test, and the second argument should be the name of the Augeas lens to use. If Augeas fails to parse the string with the lens, the compilation aborts with a parse error.
 
   A third optional argument lists paths which should **not** be found in the file. The `$file` variable points to the location of the temporary file being tested in the Augeas tree.
@@ -519,13 +749,13 @@ The first argument of this function should be the string to test, and the second
   ```
   validate_augeas($passwdcontent, 'Passwd.lns', ['$file/foo'])
   ```
-  
+
   To ensure that no users use the '/bin/barsh' shell:
 
   ```
   validate_augeas($passwdcontent, 'Passwd.lns', ['$file/*[shell="/bin/barsh"]']
   ```
-  
+
   You can pass a fourth argument as the error message raised and shown to the user:
 
   ```
@@ -534,16 +764,18 @@ The first argument of this function should be the string to test, and the second
 
   *Type*: statement
 
-* `validate_bool`: Validate that all passed values are either true or false. Abort catalog compilation if any value fails this check.
+#### `validate_bool`
+
+Validate that all passed values are either true or false. Abort catalog compilation if any value fails this check.
 
   The following values will pass:
-  
+
   ```
   $iamtrue = true
   validate_bool(true)
   validate_bool(true, true, false, $iamtrue)
   ```
-  
+
   The following values will fail, causing compilation to abort:
 
   ```
@@ -555,17 +787,26 @@ The first argument of this function should be the string to test, and the second
 
   *Type*: statement
 
-* `validate_cmd`: Performs validation of a string with an external command. The first argument of this function should be the string to test, and the second argument should be the path to a test command taking a file as last argument. If the command, launched against a tempfile containing the passed string, returns a non-null value, compilation aborts with a parse error.
+#### `validate_cmd`
 
-  You can pass a third argument as the error message raised and shown to the user:
+Performs validation of a string with an external command. The first argument of this function should be a string to test, and the second argument should be a path to a test command taking a % as a placeholder for the file path (will default to the end of the command if no % placeholder given). If the command, launched against a tempfile containing the passed string, returns a non-null value, compilation will abort with a parse error.
+
+If a third argument is specified, this will be the error message raised and seen by the user.
 
   ```
+  # Defaults to end of path
   validate_cmd($sudoerscontent, '/usr/sbin/visudo -c -f', 'Visudo failed to validate sudoers content')
   ```
-  
+  ```
+  # % as file location
+  validate_cmd($haproxycontent, '/usr/sbin/haproxy -f % -c', 'Haproxy failed to validate config content')
+  ```
+
   *Type*: statement
 
-* `validate_hash`: Validates that all passed values are hash data structures. Abort catalog compilation if any value fails this check.
+#### `validate_hash`
+
+Validates that all passed values are hash data structures. Abort catalog compilation if any value fails this check.
 
   The following values will pass:
 
@@ -582,10 +823,86 @@ The first argument of this function should be the string to test, and the second
   $undefined = undef
   validate_hash($undefined)
   ```
-  
+
   *Type*: statement
 
-* `validate_re`: Performs simple validation of a string against one or more regular expressions. The first argument of this function should be the string to
+#### `validate_integer`
+
+Validate that the first argument is an integer (or an array of integers). Abort catalog compilation if any of the checks fail.
+    
+  The second argument is optional and passes a maximum. (All elements of) the first argument has to be less or equal to this max.
+
+  The third argument is optional and passes a minimum.  (All elements of) the first argument has to be greater or equal to this min.
+  If, and only if, a minimum is given, the second argument may be an empty string or undef, which will be handled to just check
+  if (all elements of) the first argument are greater or equal to the given minimum.
+
+  It will fail if the first argument is not an integer or array of integers, and if arg 2 and arg 3 are not convertable to an integer.
+
+  The following values will pass:
+
+  ```
+  validate_integer(1)
+  validate_integer(1, 2)
+  validate_integer(1, 1)
+  validate_integer(1, 2, 0)
+  validate_integer(2, 2, 2)
+  validate_integer(2, '', 0)
+  validate_integer(2, undef, 0)
+  $foo = undef
+  validate_integer(2, $foo, 0)
+  validate_integer([1,2,3,4,5], 6)
+  validate_integer([1,2,3,4,5], 6, 0)
+  ```
+
+  * Plus all of the above, but any combination of values passed as strings ('1' or "1").
+  * Plus all of the above, but with (correct) combinations of negative integer values.
+
+  The following values will fail, causing compilation to abort:
+
+  ```
+  validate_integer(true)
+  validate_integer(false)
+  validate_integer(7.0)
+  validate_integer({ 1 => 2 })
+  $foo = undef
+  validate_integer($foo)
+  validate_integer($foobaridontexist)
+
+  validate_integer(1, 0)
+  validate_integer(1, true)
+  validate_integer(1, '')
+  validate_integer(1, undef)
+  validate_integer(1, , 0)
+  validate_integer(1, 2, 3)
+  validate_integer(1, 3, 2)
+  validate_integer(1, 3, true)
+  ```
+
+  * Plus all of the above, but any combination of values passed as strings ('false' or "false").
+  * Plus all of the above, but with incorrect combinations of negative integer values.
+  * Plus all of the above, but with non-integer crap in arrays or maximum / minimum argument.
+
+  *Type*: statement
+
+#### `validate_numeric`
+
+Validate that the first argument is a numeric value (or an array of numeric values). Abort catalog compilation if any of the checks fail.
+
+  The second argument is optional and passes a maximum. (All elements of) the first argument has to be less or equal to this max.
+
+  The third argument is optional and passes a minimum.  (All elements of) the first argument has to be greater or equal to this min.
+  If, and only if, a minimum is given, the second argument may be an empty string or undef, which will be handled to just check
+  if (all elements of) the first argument are greater or equal to the given minimum.
+
+  It will fail if the first argument is not a numeric (Integer or Float) or array of numerics, and if arg 2 and arg 3 are not convertable to a numeric.
+
+  For passing and failing usage, see `validate_integer()`. It is all the same for validate_numeric, yet now floating point values are allowed, too.
+
+  *Type*: statement
+
+#### `validate_re`
+
+Performs simple validation of a string against one or more regular expressions. The first argument of this function should be the string to
 test, and the second argument should be a stringified regular expression
 (without the // delimiters) or an array of regular expressions. If none
 of the regular expressions match the string passed in, compilation aborts with a parse error.
@@ -605,33 +922,37 @@ of the regular expressions match the string passed in, compilation aborts with a
   validate_re('one', [ '^two', '^three' ])
   ```
 
-  To set the error message: 
-  
+  To set the error message:
+
   ```
   validate_re($::puppetversion, '^2.7', 'The $puppetversion fact value does not match 2.7')
   ```
 
   *Type*: statement
 
-* `validate_slength`: Validates that the first argument is a string (or an array of strings), and is less than or equal to the length of the second argument. It fails if the first argument is not a string or array of strings, or if arg 2 is not convertable to a number.
+#### `validate_slength`
+
+Validates that the first argument is a string (or an array of strings), and is less than or equal to the length of the second argument. It fails if the first argument is not a string or array of strings, or if arg 2 is not convertable to a number.
 
   The following values pass:
-  
+
   ```
   validate_slength("discombobulate",17)
   validate_slength(["discombobulate","moo"],17)
   ```
-  
+
   The following values fail:
 
   ```
   validate_slength("discombobulate",1)
   validate_slength(["discombobulate","thermometer"],5)
   ```
-  
+
   *Type*: statement
 
-* `validate_string`: Validates that all passed values are string data structures. Aborts catalog compilation if any value fails this check.
+#### `validate_string`
+
+Validates that all passed values are string data structures. Aborts catalog compilation if any value fails this check.
 
   The following values pass:
 
@@ -651,7 +972,9 @@ of the regular expressions match the string passed in, compilation aborts with a
 
   *Type*: statement
 
-* `values`: When given a hash, this function returns the values of that hash.
+#### `values`
+
+When given a hash, this function returns the values of that hash.
 
   *Examples:*
 
@@ -668,7 +991,9 @@ of the regular expressions match the string passed in, compilation aborts with a
 
   *Type*: rvalue
 
-* `values_at`: Finds value inside an array based on location. The first argument is the array you want to analyze, and the second element can be a combination of:
+#### `values_at`
+
+Finds value inside an array based on location. The first argument is the array you want to analyze, and the second element can be a combination of:
 
   * A single numeric index
   * A range in the form of 'start-stop' (eg. 4-9)
@@ -678,7 +1003,9 @@ of the regular expressions match the string passed in, compilation aborts with a
 
   *Type*: rvalue
 
-* `zip`: Takes one element from first array and merges corresponding elements from second array. This generates a sequence of n-element arrays, where n is one more than the count of arguments. For example, `zip(['1','2','3'],['4','5','6'])` results in ["1", "4"], ["2", "5"], ["3", "6"]. *Type*: rvalue
+#### `zip`
+
+Takes one element from first array and merges corresponding elements from second array. This generates a sequence of n-element arrays, where n is one more than the count of arguments. For example, `zip(['1','2','3'],['4','5','6'])` results in ["1", "4"], ["2", "5"], ["3", "6"]. *Type*: rvalue
 
 ##Limitations
 
@@ -686,7 +1013,7 @@ As of Puppet Enterprise version 3.7, the stdlib module is no longer included in 
 
 ###Version Compatibility
 
-Versions | Puppet 2.6 | Puppet 2.7 | Puppet 3.x | Puppet 4.x | 
+Versions | Puppet 2.6 | Puppet 2.7 | Puppet 3.x | Puppet 4.x |
 :---------------|:-----:|:---:|:---:|:----:
 **stdlib 2.x**  | **yes** | **yes** | no | no
 **stdlib 3.x**  | no    | **yes**  | **yes** | no

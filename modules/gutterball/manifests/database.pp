@@ -13,16 +13,18 @@ class gutterball::database{
     user     => $gutterball::dbuser,
     password => $gutterball::dbpassword,
   } ~>
+  file { '/usr/bin/gutterball-db':
+    ensure  => file,
+    content => template('gutterball/gutterball-db.erb'),
+    mode    => '0755',
+    owner   => 'root',
+    group   => 'root',
+  } ~>
   exec { 'migrate database':
       path        => ['/usr/bin', '/bin'],
-      command     => "liquibase --driver=org.postgresql.Driver \
-        --classpath=/usr/share/java/postgresql-jdbc.jar:/var/lib/${::gutterball::tomcat}/webapps/gutterball/WEB-INF/classes/ \
-        --changeLogFile=db/changelog/changelog.xml \
-        --url=jdbc:postgresql:gutterball \
-        --username=${gutterball::dbuser}\
-        --password=${gutterball::dbpassword}\
-        update",
+      command     => 'gutterball-db migrate',
       refreshonly => true
   }
+
 
 }
