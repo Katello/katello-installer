@@ -126,7 +126,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello_devel
   ref: master
-  sha: cb2548cf25dc8a928377f36f96c387e3f0ea64a4
+  sha: 4ac3134a0f1fcfe529e4e189927f1090687b74f7
   specs:
     katello-katello_devel (0.1.0)
       katello-candlepin (>= 0.1.0)
@@ -202,7 +202,7 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-postgresql
   ref: master
-  sha: 40061ba1a41fe7e333eed2890fddc99cde0a9d3d
+  sha: 8dbf982b627e0df16bc2ecc2635b5d86d0bf0f55
   specs:
     puppetlabs-postgresql (4.3.0)
       puppetlabs-apt (< 2.0.0, >= 1.8.0)

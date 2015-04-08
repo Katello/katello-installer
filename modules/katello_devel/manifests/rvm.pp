@@ -1,8 +1,7 @@
 # Setup and create gemset for RVM
 class katello_devel::rvm {
 
-  $install_gpg_command = "su -c 'gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3' - ${katello_devel::user}"
-  $install_command = "su -c 'curl -L https://get.rvm.io | bash -s stable' - ${katello_devel::user}"
+  $rvm_install = 'install_rvm.sh'
 
   package{ ['curl', 'bash']:
     ensure => present
@@ -27,21 +26,17 @@ class katello_devel::rvm {
     ],
     require => User[$katello_devel::user],
   } ->
-  exec { $install_gpg_command:
-    path    => '/usr/bin:/usr/sbin:/bin',
-    timeout => 900,
-    require => [ Package['curl'], Package['bash'], User[$katello_devel::user] ],
-  } ->
-  exec { $install_command:
+  file { "/usr/bin/${rvm_install}":
+    content => template("katello_devel/${rvm_install}.erb"),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0744'
+  } ~>
+  exec { $rvm_install:
     path    => '/usr/bin:/usr/sbin:/bin',
     creates => "/home/${katello_devel::user}/.rvm/bin/rvm",
     timeout => 900,
     require => [ Package['curl'], Package['bash'], User[$katello_devel::user] ],
-  } ->
-  exec { 'install 1.9.3':
-    path    => '/usr/bin:/usr/sbin:/bin',
-    timeout => 900,
-    command => "su -c 'rvm install 1.9.3-p448' - ${katello_devel::user}"
   }
 
 }
