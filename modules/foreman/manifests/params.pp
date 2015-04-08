@@ -10,8 +10,8 @@ class foreman::params {
   $enc          = true
   # Should foreman receive reports from puppet
   $reports      = true
-  # Should foreman recive facts from puppet
-  $facts        = true
+  # Should foreman receive facts from puppet
+  $receive_facts = true
   # should foreman manage host provisioning as well
   $unattended   = true
   # Enable users authentication (default user:admin pw:changeme)
@@ -25,7 +25,7 @@ class foreman::params {
   # force SSL (note: requires passenger)
   $ssl          = true
   #define which interface passenger should listen on, undef means all interfaces
-  $passenger_interface = ''
+  $passenger_interface = undef
   # Choose whether you want to enable locations and organizations.
   $locations_enabled     = false
   $organizations_enabled = false
@@ -40,17 +40,21 @@ class foreman::params {
 # Advanced configuration - no need to change anything here by default
   # if set to true, no repo will be added by this module, letting you to
   # set it to some custom location.
-  $custom_repo = false
-  # this can be stable, rc, or nightly
-  $repo        = 'stable'
-  $railspath   = '/usr/share'
-  $app_root    = "${railspath}/foreman"
-  $user        = 'foreman'
-  $group       = 'foreman'
-  $user_groups = ['puppet']
-  $environment = 'production'
-  $gpgcheck    = true
-  $version     = 'present'
+  $custom_repo       = false
+  # this can be stable, or nightly
+  $repo              = 'stable'
+  $railspath         = '/usr/share'
+  $app_root          = "${railspath}/foreman"
+  $plugin_config_dir = '/etc/foreman/plugins'
+  $manage_user       = true
+  $user              = 'foreman'
+  $group             = 'foreman'
+  $user_groups       = ['puppet']
+  $environment       = 'production'
+  $gpgcheck          = true
+  $version           = 'present'
+
+  $puppetmaster_timeout = 60
 
   # when undef, foreman-selinux will be installed if SELinux is enabled
   # setting to false/true will override this check (e.g. set to false on 1.1)
@@ -64,6 +68,11 @@ class foreman::params {
   # Generate and cache the password on the master once
   # In multi-puppetmaster setups, the user should specify their own
   $db_password = cache_data('db_password', random_password(32))
+  # Default database connection pool
+  $db_pool = 5
+
+  # Apipie doc generation method (1.8+ should use index only)
+  $apipie_task = 'apipie:cache:index'
 
   # OS specific paths
   case $::osfamily {
@@ -82,7 +91,7 @@ class foreman::params {
             '19': {
               $passenger_prestart = false
               $passenger_min_instances = 1
-              $passenger_start_timeout = 0
+              $passenger_start_timeout = undef
             }
             default: {
               $passenger_prestart = true
@@ -122,16 +131,20 @@ class foreman::params {
       $init_config = '/etc/default/foreman'
       $init_config_tmpl = 'foreman.default'
 
-      case $::lsbdistcodename {
-        /^(squeeze|precise)$/: {
+      $osreleasemajor = regsubst($::operatingsystemrelease, '^(\d+)\..*$', '\1')
+
+      case $osreleasemajor {
+        '12': {
+          # 12 is Ubuntu/precise here, once precise support is dropped,
+          # this should be dropped to not collide with Debian 12
           $passenger_prestart = false
-          $passenger_min_instances = 0
-          $passenger_start_timeout = 0
+          $passenger_min_instances = undef
+          $passenger_start_timeout = undef
         }
-        /^wheezy$/: {
+        '7': {
           $passenger_prestart = false
           $passenger_min_instances = 1
-          $passenger_start_timeout = 0
+          $passenger_start_timeout = undef
         }
         default: {
           $passenger_prestart = true
@@ -164,7 +177,7 @@ class foreman::params {
       # Only the agent classes (cron / service) are supported for now, which
       # doesn't require any OS-specific params
     }
-    windows: {
+    'windows': {
       $puppet_basedir = undef
       $yumcode = undef
       $passenger_ruby = undef
@@ -177,8 +190,8 @@ class foreman::params {
   }
   $puppet_home = '/var/lib/puppet'
   $puppet_user = 'puppet'
+  $puppet_group = 'puppet'
   $lower_fqdn = downcase($::fqdn)
-  $passenger_scl = undef
 
   # If CA is specified, remote Foreman host will be verified in reports/ENC scripts
   $client_ssl_ca   = "${puppet_home}/ssl/certs/ca.pem"
@@ -191,6 +204,7 @@ class foreman::params {
   $server_ssl_chain = "${puppet_home}/ssl/certs/ca.pem"
   $server_ssl_cert  = "${puppet_home}/ssl/certs/${lower_fqdn}.pem"
   $server_ssl_key   = "${puppet_home}/ssl/private_keys/${lower_fqdn}.pem"
+  $server_ssl_crl   = "${puppet_home}/ssl/ca/ca_crl.pem"
 
   # We need the REST API interface with OAuth for some REST Puppet providers
   $oauth_active = true

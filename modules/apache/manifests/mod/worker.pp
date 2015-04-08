@@ -6,6 +6,7 @@ class apache::mod::worker (
   $threadsperchild     = '25',
   $maxrequestsperchild = '0',
   $serverlimit         = '25',
+  $threadlimit         = '64',
   $apache_version      = $::apache::apache_version,
 ) {
   if defined(Class['apache::mod::event']) {
@@ -34,17 +35,18 @@ class apache::mod::worker (
   # - $threadsperchild
   # - $maxrequestsperchild
   # - $serverlimit
+  # - $threadLimit
   file { "${::apache::mod_dir}/worker.conf":
     ensure  => file,
     content => template('apache/mod/worker.conf.erb'),
     require => Exec["mkdir ${::apache::mod_dir}"],
     before  => File[$::apache::mod_dir],
-    notify  => Service['httpd'],
+    notify  => Class['apache::service'],
   }
 
   case $::osfamily {
     'redhat': {
-      if $apache_version >= 2.4 {
+      if versioncmp($apache_version, '2.4') >= 0 {
         ::apache::mpm{ 'worker':
           apache_version => $apache_version,
         }
@@ -56,13 +58,18 @@ class apache::mod::worker (
           line    => 'HTTPD=/usr/sbin/httpd.worker',
           match   => '#?HTTPD=/usr/sbin/httpd.worker',
           require => Package['httpd'],
-          notify  => Service['httpd'],
+          notify  => Class['apache::service'],
         }
       }
     }
     'debian', 'freebsd': {
       ::apache::mpm{ 'worker':
         apache_version => $apache_version,
+      }
+    }
+    'gentoo': {
+      ::portage::makeconf { 'apache2_mpms':
+        content => 'worker',
       }
     }
     default: {

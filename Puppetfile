@@ -9,7 +9,7 @@ mod 'puppetlabs-postgresql', :git => 'https://github.com/puppetlabs/puppetlabs-p
 mod 'puppetlabs-mysql', :git => 'https://github.com/puppetlabs/puppetlabs-mysql', :ref => '2.2.0'
 mod 'puppetlabs-firewall', :git => 'https://github.com/puppetlabs/puppetlabs-firewall', :ref => '1.0.0'
 mod 'puppetlabs-vcsrepo'
-mod 'puppetlabs-apache', "1.1.1"
+mod 'puppetlabs-apache'
 
 mod 'theforeman-concat_native', :git => 'https://github.com/theforeman/puppet-concat'
 mod 'theforeman-dhcp', :git => 'https://github.com/theforeman/puppet-dhcp'
@@ -18,10 +18,9 @@ mod 'theforeman-dns', :git => 'https://github.com/theforeman/puppet-dns', :ref =
 mod 'theforeman-git', :git => 'https://github.com/theforeman/puppet-git'
 mod 'theforeman-tftp', :git => 'https://github.com/theforeman/puppet-tftp'
 
-# Top-level modules - Pinning & Forking due to #7064 FIXME
-mod 'theforeman-foreman', :git => 'https://github.com/theforeman/puppet-foreman', :ref => '2.3.2'
-mod 'theforeman-foreman_proxy', :git => 'https://github.com/Katello/puppet-foreman_proxy'
-mod 'theforeman-puppet', :git => 'https://github.com/theforeman/puppet-puppet', :ref => '2.3.1'
+mod 'theforeman-foreman', :git => 'https://github.com/theforeman/puppet-foreman'
+mod 'theforeman-foreman_proxy', :git => 'https://github.com/theforeman/puppet-foreman_proxy'
+mod 'theforeman-puppet', :git => 'https://github.com/theforeman/puppet-puppet'
 
 ###########################################################
 # Katello part of Puppefile (taken from foreman-installer #

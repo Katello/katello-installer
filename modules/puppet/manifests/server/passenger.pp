@@ -20,7 +20,7 @@ class puppet::server::passenger (
   include ::apache::mod::passenger
 
   case $::operatingsystem {
-    Debian,Ubuntu: {
+    'Debian', 'Ubuntu': {
       file { '/etc/default/puppetmaster':
         content => "START=no\n",
         before  => Class['puppet::server::install'],
@@ -46,13 +46,21 @@ class puppet::server::passenger (
     'unset X-Forwarded-For',
   ]
 
-  if $puppet_ca_proxy != '' {
-    include apache::mod::proxy
-    include apache::mod::proxy_http
+  if $puppet_ca_proxy and $puppet_ca_proxy != '' {
+    include ::apache::mod::proxy
+    include ::apache::mod::proxy_http
 
     $custom_fragment = "ProxyPassMatch ^/([^/]+/certificate.*)$ ${puppet_ca_proxy}/\$1"
+    $ssl_proxyengine = true
   } else {
-    $custom_fragment = ''
+    $custom_fragment = undef
+    $ssl_proxyengine = false
+  }
+
+  $ssl_crl_check = $ssl_ca_crl ? {
+    false   => undef,
+    undef   => undef,
+    default => 'chain',
   }
 
   apache::vhost { 'puppet':
@@ -64,6 +72,7 @@ class puppet::server::passenger (
     ssl_key              => $ssl_cert_key,
     ssl_ca               => $ssl_ca_cert,
     ssl_crl              => $ssl_ca_crl,
+    ssl_crl_check        => $ssl_crl_check,
     ssl_chain            => $ssl_chain,
     ssl_protocol         => 'ALL -SSLv2 -SSLv3',
     ssl_cipher           => 'EDH+CAMELLIA:EDH+aRSA:EECDH+aRSA+AESGCM:EECDH+aRSA+SHA384:EECDH+aRSA+SHA256:EECDH:+CAMELLIA256:+AES256:+CAMELLIA128:+AES128:+SSLv3:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!DSS:!RC4:!SEED:!IDEA:!ECDSA:kEDH:CAMELLIA256-SHA:AES256-SHA:CAMELLIA128-SHA:AES128-SHA',
@@ -71,7 +80,7 @@ class puppet::server::passenger (
     ssl_verify_client    => 'optional',
     ssl_options          => '+StdEnvVars +ExportCertData',
     ssl_verify_depth     => '1',
-    ssl_proxyengine      => $puppet_ca_proxy != '',
+    ssl_proxyengine      => $ssl_proxyengine,
     custom_fragment      => $custom_fragment,
     request_headers      => $request_headers,
     options              => ['None'],

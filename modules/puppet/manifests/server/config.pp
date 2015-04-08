@@ -2,7 +2,7 @@
 class puppet::server::config inherits puppet::config {
   if $puppet::server_passenger and $::puppet::server_implementation == 'master' {
     # Anchor the passenger config inside this
-    class { 'puppet::server::passenger': } -> Class['puppet::server::config']
+    class { '::puppet::server::passenger': } -> Class['puppet::server::config']
   }
 
   # Mirror the relationship, as defined() is parse-order dependent
@@ -23,21 +23,26 @@ class puppet::server::config inherits puppet::config {
     mode  => '0640',
   }
 
-  # Include foreman components for the puppetmaster
-  # ENC script, reporting script etc.
-  class {'foreman::puppetmaster':
-    foreman_url    => $puppet::server_foreman_url,
-    facts          => $puppet::server_facts,
-    puppet_home    => $puppet::server_puppet_home,
-    puppet_basedir => $puppet::server_puppet_basedir,
-    enc_api        => $puppet::server_enc_api,
-    report_api     => $puppet::server_report_api,
-    ssl_ca         => $puppet::server_foreman_ssl_ca,
-    ssl_cert       => $puppet::server_foreman_ssl_cert,
-    ssl_key        => $puppet::server_foreman_ssl_key,
+  if $::puppet::server_foreman {
+    # Include foreman components for the puppetmaster
+    # ENC script, reporting script etc.
+    anchor { 'puppet::server::config_start': } ->
+    class {'::foreman::puppetmaster':
+      foreman_url    => $puppet::server_foreman_url,
+      receive_facts  => $puppet::server_facts,
+      puppet_home    => $puppet::vardir,
+      puppet_basedir => $puppet::server_puppet_basedir,
+      enc_api        => $puppet::server_enc_api,
+      report_api     => $puppet::server_report_api,
+      timeout        => $puppet::server_request_timeout,
+      ssl_ca         => pick($puppet::server_foreman_ssl_ca, $puppet::server::ssl_ca_cert),
+      ssl_cert       => pick($puppet::server_foreman_ssl_cert, $puppet::server::ssl_cert),
+      ssl_key        => pick($puppet::server_foreman_ssl_key, $puppet::server::ssl_cert_key),
+    } ~> anchor { 'puppet::server::config_end': }
   }
 
   $ca_server                   = $::puppet::ca_server
+  $ca_port                     = $::puppet::ca_port
   $server_storeconfigs_backend = $::puppet::server_storeconfigs_backend
   $server_external_nodes       = $::puppet::server_external_nodes
 
@@ -69,7 +74,7 @@ class puppet::server::config inherits puppet::config {
     Exec['puppet_server_config-generate_ca_cert'] ~> Service[$puppet::server_httpd_service]
   }
 
-  file { "${puppet::server_vardir}/reports":
+  file { "${puppet::vardir}/reports":
     ensure => directory,
     owner  => $puppet::server_user,
   }
@@ -87,7 +92,7 @@ class puppet::server::config inherits puppet::config {
     # need to chown the $vardir before puppet does it, or else
     # we can't write puppet.git/ on the first run
 
-    include git
+    include ::git
 
     git::repo { 'puppet_repo':
       bare    => true,
@@ -113,7 +118,7 @@ class puppet::server::config inherits puppet::config {
 
     # make sure your site.pp exists (puppet #15106, foreman #1708)
     file { "${puppet::server_manifest_path}/site.pp":
-      ensure  => present,
+      ensure  => file,
       replace => false,
       content => "# site.pp must exist (puppet #15106, foreman #1708)\n",
       mode    => '0644',
@@ -121,5 +126,16 @@ class puppet::server::config inherits puppet::config {
 
     # setup empty directories for our environments
     puppet::server::env {$puppet::server_environments: }
+  }
+
+  # PuppetDB
+  if $puppet::server_puppetdb_host {
+    class { '::puppetdb::master::config':
+      puppetdb_server             => $puppet::server_puppetdb_host,
+      puppetdb_port               => $puppet::server_puppetdb_port,
+      puppetdb_soft_write_failure => $puppet::server_puppetdb_swf,
+      manage_storeconfigs         => false,
+      restart_puppet              => false,
+    }
   }
 }

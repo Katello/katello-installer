@@ -3,7 +3,7 @@ class apache::mod::pagespeed (
   $filter_xhtml                  = false,
   $cache_path                    = '/var/cache/mod_pagespeed/',
   $log_dir                       = '/var/log/pagespeed',
-  $memache_servers               = [],
+  $memcache_servers              = [],
   $rewrite_level                 = 'CoreFilters',
   $disable_filters               = [],
   $enable_filters                = [],
@@ -32,10 +32,11 @@ class apache::mod::pagespeed (
   $allow_pagespeed_message       = [],
   $message_buffer_size           = 100000,
   $additional_configuration      = {},
+  $apache_version                = $::apache::apache_version,
 ){
 
   $_lib = $::apache::apache_version ? {
-    2.4     => 'mod_pagespeed_ap24.so',
+    '2.4'   => 'mod_pagespeed_ap24.so',
     default => undef
   }
 
@@ -49,6 +50,6 @@ class apache::mod::pagespeed (
     content => template('apache/mod/pagespeed.conf.erb'),
     require => Exec["mkdir ${::apache::mod_dir}"],
     before  => File[$::apache::mod_dir],
-    notify  => Service['httpd'],
+    notify  => Class['apache::service'],
   }
 }

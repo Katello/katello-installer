@@ -73,7 +73,23 @@ describe 'puppet::agent::service' do
       "class {'puppet': agent => true, runmode => 'foo'}"
     end
 
-    it { expect { should create_class('puppet::agent::service') }.to raise_error(Puppet::Error, /Runmode of foo not supported by puppet::agent::config!/) }
+    it { should raise_error(Puppet::Error, /Runmode of foo not supported by puppet::agent::config!/) }
+  end
+
+  describe 'with custom service_name' do
+    let :pre_condition do
+      "class {'puppet': agent => true, service_name => 'pe-puppet'}"
+    end
+
+    it do
+      should contain_service('puppet').with({
+        :ensure     => 'running',
+        :name       => 'pe-puppet',
+        :hasstatus  => 'true',
+        :enable     => 'true',
+      })
+    end
+
   end
 
 end

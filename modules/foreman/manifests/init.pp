@@ -14,9 +14,6 @@
 # $passenger::                Configure foreman via apache and passenger
 #                             type:boolean
 #
-# $passenger_scl::            Software collection name (on RHEL currently 'ruby193', undef on others)
-#                             Deprecated, specify passenger_ruby and passenger_ruby_package instead.
-#
 # $passenger_ruby::           Ruby interpreter used to run Foreman under Passenger
 #
 # $passenger_ruby_package::   Package to install to provide Passenger libraries for the active Ruby
@@ -35,12 +32,12 @@
 #                             set it to some custom location.
 #                             type:boolean
 #
-# $repo::                     This can be stable, rc, or nightly
+# $repo::                     This can be stable, nightly or a specific version i.e. 1.7
 #
 # $configure_epel_repo::      If disabled the EPEL repo will not be configured on RedHat family systems.
 #                             type:boolean
 #
-# $configure_scl_repo::       If disabled the the SCL repo will not be configured on Red Hat clone systems.
+# $configure_scl_repo::       If disabled the SCL repo will not be configured on Red Hat clone systems.
 #                             (Currently only installs repos for CentOS and Scientific)
 #                             type:boolean
 #
@@ -78,7 +75,16 @@
 #
 # $db_sslmode::               Database 'production' ssl mode
 #
+# $db_pool::                  Database 'production' size of connection pool
+#                             type:integer
+#
+# $apipie_task::              Rake task to generate API documentation.
+#                             Use 'apipie:cache' on 1.7 or older, 'apipie:cache:index' on 1.8 or newer.
+#
 # $app_root::                 Name of foreman root directory
+#
+# $manage_user::              Controls whether foreman module will manage the user on the system. (default true)
+#                             type:boolean
 #
 # $user::                     User under which foreman will run
 #
@@ -113,6 +119,8 @@
 # $server_ssl_cert::          Defines Apache mod_ssl SSLCertificateFile setting in Foreman vhost conf file.
 #
 # $server_ssl_key::           Defines Apache mod_ssl SSLCertificateKeyFile setting in Foreman vhost conf file.
+#
+# $server_ssl_crl::           Defines the Apache mod_ssl SSLCARevocationFile setting in Foreman vhost conf file.
 #
 # $oauth_active::             Enable OAuth authentication for REST API
 #                             type:boolean
@@ -165,7 +173,6 @@ class foreman (
   $unattended               = $foreman::params::unattended,
   $authentication           = $foreman::params::authentication,
   $passenger                = $foreman::params::passenger,
-  $passenger_scl            = $foreman::params::passenger_scl,
   $passenger_ruby           = $foreman::params::passenger_ruby,
   $passenger_ruby_package   = $foreman::params::passenger_ruby_package,
   $use_vhost                = $foreman::params::use_vhost,
@@ -188,7 +195,10 @@ class foreman (
   $db_username              = $foreman::params::db_username,
   $db_password              = $foreman::params::db_password,
   $db_sslmode               = 'UNSET',
+  $db_pool                  = $foreman::params::db_pool,
+  $apipie_task              = $foreman::params::apipie_task,
   $app_root                 = $foreman::params::app_root,
+  $manage_user              = $foreman::params::manage_user,
   $user                     = $foreman::params::user,
   $group                    = $foreman::params::group,
   $user_groups              = $foreman::params::user_groups,
@@ -201,6 +211,7 @@ class foreman (
   $server_ssl_chain         = $foreman::params::server_ssl_chain,
   $server_ssl_cert          = $foreman::params::server_ssl_cert,
   $server_ssl_key           = $foreman::params::server_ssl_key,
+  $server_ssl_crl           = $foreman::params::server_ssl_crl,
   $oauth_active             = $foreman::params::oauth_active,
   $oauth_map_users          = $foreman::params::oauth_map_users,
   $oauth_consumer_key       = $foreman::params::oauth_consumer_key,
@@ -237,28 +248,23 @@ class foreman (
     fail("${::hostname}: External authentication via IPA can only be enabled when passenger is used.")
   }
 
-  if $passenger_scl {
-    warning("${::hostname}: foreman::passenger_scl is deprecated; please use passenger_ruby and passenger_ruby_package")
-    $real_passenger_ruby = "/usr/bin/${passenger_scl}-ruby"
-  } else {
-    $real_passenger_ruby = $passenger_ruby
-  }
-
-  class { 'foreman::install': } ~>
-  class { 'foreman::config': } ~>
-  class { 'foreman::database': } ~>
-  class { 'foreman::service': } ->
+  class { '::foreman::install': } ~>
+  class { '::foreman::config': } ~>
+  class { '::foreman::database': } ~>
+  class { '::foreman::service': } ->
   Class['foreman'] ->
-  Foreman_smartproxy <| |>
+  Foreman_smartproxy <| base_url == $foreman_url |>
 
   # Anchor these separately so as not to break
   # the notify between main classes
   Class['foreman::install'] ~>
-  class { 'foreman::compute': } ~>
+  Package <| tag == 'foreman-compute' |> ~>
   Class['foreman::service']
 
+  # lint:ignore:spaceship_operator_without_tag
   Class['foreman::database']~>
   Foreman::Plugin <| |> ~>
   Class['foreman::service']
+  # lint:endignore
 
 }
