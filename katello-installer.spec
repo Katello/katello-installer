@@ -17,6 +17,7 @@ Obsoletes: katello-installer < 2.1.0
 Requires: %{?scl_prefix}rubygem-kafo
 Requires: %{?scl_prefix}rubygem-apipie-bindings >= 0.0.6
 Requires: foreman-selinux
+Requires: katello-selinux
 Requires: openssl
 
 %package -n katello-installer
