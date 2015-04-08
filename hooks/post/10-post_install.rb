@@ -50,7 +50,7 @@ MSG
      parameters, see <%= color("capsule-installer --help", :info) %> and
      documentation for more info on setting up additional services):
 
-  rpm -Uvh http://#{fqdn}/pub/katello-ca-consumer-latest.noarch.rpm
+  yum -y localinstall http://#{fqdn}/pub/katello-ca-consumer-latest.noarch.rpm
   subscription-manager register --org "<%= color('#{org}', :info) %>"
   capsule-installer --parent-fqdn          "<%= "#{fqdn}" %>"\\
                     --register-in-foreman  "true"\\
