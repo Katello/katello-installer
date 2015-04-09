@@ -39,7 +39,7 @@ describe 'foreman::config' do
           with({})
 
         should contain_file('/etc/foreman/settings.yaml').with({
-          'source'  => %r{/concat/output/foreman_settings.out$},
+          'source'  => %r{/concat_native/output/foreman_settings.out$},
           'require' => 'Concat_build[foreman_settings]',
           'owner'   => 'root',
           'group'   => 'foreman',
@@ -62,7 +62,7 @@ describe 'foreman::config' do
           with_content(/^FOREMAN_USER=foreman$/).
           with_content(/^FOREMAN_ENV=production/).
           with_content(/^FOREMAN_USE_PASSENGER=1$/).
-          with_ensure('present')
+          with_ensure('file')
       end
 
       it { should contain_file('/usr/share/foreman').with_ensure('directory') }
@@ -84,10 +84,12 @@ describe 'foreman::config' do
 
       it 'should contain foreman::config::passenger' do
         should contain_class('foreman::config::passenger').
-          with_listen_on_interface('').
+          with_listen_on_interface(nil).
           with_ruby('/usr/bin/ruby193-ruby').
           that_comes_before('Anchor[foreman::config_end]')
       end
+
+      it { should contain_apache__vhost('foreman').without_custom_fragment(/Alias/) }
     end
 
     describe 'without passenger' do
@@ -141,6 +143,58 @@ describe 'foreman::config' do
           with({})
       end
     end
+
+    describe 'with url ending with trailing slash' do
+      let :pre_condition do
+        "class {'foreman':
+          foreman_url => 'https://example.com/',
+        }"
+      end
+
+      it { should contain_apache__vhost('foreman').without_custom_fragment(/Alias/) }
+    end
+
+    describe 'with sub-uri' do
+      let :pre_condition do
+        "class {'foreman':
+          foreman_url => 'https://example.com/foreman',
+        }"
+      end
+
+      it { should contain_apache__vhost('foreman').with_custom_fragment(/Alias \/foreman/) }
+    end
+
+    describe 'with sub-uri ending with trailing slash' do
+      let :pre_condition do
+        "class {'foreman':
+          foreman_url => 'https://example.com/foreman/',
+        }"
+      end
+
+      it { should contain_apache__vhost('foreman').with_custom_fragment(/Alias \/foreman/) }
+    end
+
+    describe 'with sub-uri ending with more levels' do
+      let :pre_condition do
+        "class {'foreman':
+          foreman_url => 'https://example.com/apps/foreman/',
+        }"
+      end
+
+      it { should contain_apache__vhost('foreman').with_custom_fragment(/Alias \/apps\/foreman/) }
+    end
+
+    describe 'with mysql db_type' do
+      let :pre_condition do
+        "class { 'foreman':
+          db_type => 'mysql',
+        }"
+      end
+
+      it 'should configure the mysql database' do
+        should contain_file('/etc/foreman/database.yml').with_content(/adapter: mysql2/)
+      end
+    end
   end
 
   context 'on debian' do
@@ -173,7 +227,7 @@ describe 'foreman::config' do
           with({})
 
         should contain_file('/etc/foreman/settings.yaml').with({
-          'source'  => %r{/concat/output/foreman_settings.out$},
+          'source'  => %r{/concat_native/output/foreman_settings.out$},
           'require' => 'Concat_build[foreman_settings]',
           'owner'   => 'root',
           'group'   => 'foreman',
@@ -196,7 +250,7 @@ describe 'foreman::config' do
           with_content(/^FOREMAN_HOME=\/usr\/share\/foreman$/).
           with_content(/^FOREMAN_USER=foreman$/).
           with_content(/^FOREMAN_ENV=production/).
-          with_ensure('present')
+          with_ensure('file')
       end
 
       it { should contain_file('/usr/share/foreman').with_ensure('directory') }
@@ -217,8 +271,8 @@ describe 'foreman::config' do
       end
 
       it { should contain_class('foreman::config::passenger').with({
-        :listen_on_interface => '',
-        :ruby                => '',
+        :listen_on_interface => nil,
+        :ruby                => nil,
       })}
     end
   end

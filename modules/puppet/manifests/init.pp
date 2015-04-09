@@ -15,11 +15,35 @@
 #
 # $dir::                           Override the puppet directory.
 #
+# $vardir::                        Override the puppet var directory.
+#
+# $logdir::                        Override the log directory.
+#
+# $rundir::                        Override the PID directory.
+#
+# $ssldir::                        Override where SSL certificates are kept.
+#
+# $package_provider::              The provider used to install the agent.
+#                                  Defaults to chocolatey on Windows
+#                                  Defaults to undef elsewhere
+#
 # $port::                          Override the port of the master we connect to.
 #                                  type:integer
 #
 # $listen::                        Should the puppet agent listen for connections.
 #                                  type:boolean
+#
+# $listen_to::                     An array of servers allowed to initiate a puppet run.
+#                                  If $listen = true one of three things will happen:
+#                                  1) if $listen_to is not empty then this array
+#                                  will be used.
+#                                  2) if $listen_to is empty and $puppetmaster is
+#                                  defined then only $puppetmaster will be
+#                                  allowed.
+#                                  3) if $puppetmaster is not defined or empty,
+#                                  $fqdn will be used.
+#                                  type:array
+#
 # $pluginsync::                    Enable pluginsync.
 #                                  type:boolean
 #
@@ -49,6 +73,8 @@
 #
 # $show_diff::                     Show and report changed files with diff output
 #
+# $module_repository::             Use a different puppet module repository
+#
 # $configtimeout::                 How long the client should wait for the
 #                                  configuration to be retrieved before
 #                                  considering it a failure.
@@ -57,6 +83,9 @@
 # $ca_server::                     Use a different ca server. Should be either
 #                                  a string with the location of the ca_server
 #                                  or 'false'.
+#
+# $ca_port::                       Puppet CA port
+#                                  type:integer
 #
 # $dns_alt_names::                 Use additional DNS names when generating a
 #                                  certificate.  Defaults to an empty Array.
@@ -88,6 +117,11 @@
 #
 # $pluginsource::                  URL to retrieve Puppet plugins from during pluginsync
 #
+# $pluginfactsource::              URL to retrieve Puppet facts from during pluginsync
+#
+# $additional_settings::           A hash of additional main settings.
+#                                  type:hash
+#
 # == puppet::agent parameters
 #
 # $agent::                         Should a puppet agent be installed
@@ -105,6 +139,21 @@
 # $puppetmaster::                  Hostname of your puppetmaster (server
 #                                  directive in puppet.conf)
 #
+# $prerun_command::                A command which gets excuted before each Puppet run
+#
+# $postrun_command::               A command which gets excuted after each Puppet run
+#
+# $service_name::                  The name of the puppet agent service.
+#
+# $agent_restart_command:          The command which gets excuted on puppet service restart
+#
+# $agent_additional_settings::     A hash of additional agent settings.
+#                                  Example: {stringify_facts => true}
+#                                  type:hash
+#
+# $remove_lock::                   Remove the agent lock when running.
+#                                  type:boolean
+#
 # == puppet::server parameters
 #
 # $server::                        Should a puppet master be installed as well as the client
@@ -118,8 +167,6 @@
 #
 # $server_port::                   Puppet master port
 #                                  type:integer
-#
-# $server_vardir::                 Puppet data directory.
 #
 # $server_ca::                     Provide puppet CA
 #                                  type:boolean
@@ -202,6 +249,25 @@
 #                                  when accessing undeclared variables.
 #                                  type:boolean
 #
+# $server_additional_settings::    A hash of additional settings.
+#                                  Example: {trusted_node_data => true, ordering => 'manifest'}
+#                                  type:hash
+#
+# $server_rack_arguments::         Arguments passed to rack app ARGV in addition to --confdir and
+#                                  --vardir.  The default is an empty array.
+#                                  type:array
+#
+# $server_puppetdb_host::          PuppetDB host
+#
+# $server_puppetdb_port::          PuppetDB port
+#                                  type:integer
+#
+# $server_puppetdb_swf::           PuppetDB soft_write_failure
+#                                  type:boolean
+#
+# $server_parser::                 Sets the parser to use. Valid options are 'current' or 'future'.
+#                                  Defaults to 'current'.
+#
 # === Advanced server parameters:
 #
 # $server_httpd_service::          Apache/httpd service name to notify
@@ -227,6 +293,9 @@
 # $server_facts::                  Should foreman receive facts from puppet
 #                                  type:boolean
 #
+# $server_foreman::                Should foreman integration be installed
+#                                  type:boolean
+#
 # $server_foreman_url::            Foreman URL
 #
 # $server_foreman_ssl_ca::         SSL CA of the Foreman server
@@ -235,10 +304,7 @@
 #
 # $server_foreman_ssl_key::        Key for authenticating against Foreman server
 #
-#
 # $server_puppet_basedir::         Where is the puppet code base located
-#
-# $server_puppet_home::            Puppet var directory
 #
 # $server_enc_api::                What version of enc script to deploy. Valid
 #                                  values are 'v2' for latest, and 'v1'
@@ -247,6 +313,10 @@
 # $server_report_api::             What version of report processor to deploy.
 #                                  Valid values are 'v2' for latest, and 'v1'
 #                                  for Foreman =< 1.2
+#
+# $server_request_timeout::        Timeout in node.rb script for fetching
+#                                  catalog from Foreman (in seconds).
+#                                  type:integer
 #
 # $server_ca_proxy::               The actual server that handles puppet CA.
 #                                  Setting this to anything non-empty causes
@@ -287,8 +357,14 @@ class puppet (
   $user                          = $puppet::params::user,
   $group                         = $puppet::params::group,
   $dir                           = $puppet::params::dir,
+  $vardir                        = $puppet::params::vardir,
+  $logdir                        = $puppet::params::logdir,
+  $rundir                        = $puppet::params::rundir,
+  $ssldir                        = $puppet::params::ssldir,
+  $package_provider              = $puppet::params::package_provider,
   $port                          = $puppet::params::port,
   $listen                        = $puppet::params::listen,
+  $listen_to                     = $puppet::params::listen_to,
   $pluginsync                    = $puppet::params::pluginsync,
   $splay                         = $puppet::params::splay,
   $splaylimit                    = $puppet::params::splaylimit,
@@ -298,12 +374,19 @@ class puppet (
   $cron_cmd                      = $puppet::params::cron_cmd,
   $agent_noop                    = $puppet::params::agent_noop,
   $show_diff                     = $puppet::params::show_diff,
+  $module_repository             = $puppet::params::module_repository,
   $configtimeout                 = $puppet::params::configtimeout,
   $ca_server                     = $puppet::params::ca_server,
+  $ca_port                       = $puppet::params::ca_port,
+  $prerun_command                = $puppet::params::prerun_command,
+  $postrun_command               = $puppet::params::postrun_command,
   $dns_alt_names                 = $puppet::params::dns_alt_names,
   $use_srv_records               = $puppet::params::use_srv_records,
   $srv_domain                    = $puppet::params::srv_domain,
   $pluginsource                  = $puppet::params::pluginsource,
+  $pluginfactsource              = $puppet::params::pluginfactsource,
+  $additional_settings           = $puppet::params::additional_settings,
+  $agent_additional_settings     = $puppet::params::agent_additional_settings,
   $classfile                     = $puppet::params::classfile,
   $hiera_config                  = $puppet::params::hiera_config,
   $main_template                 = $puppet::params::main_template,
@@ -314,14 +397,15 @@ class puppet (
   $auth_allowed                  = $puppet::params::auth_allowed,
   $client_package                = $puppet::params::client_package,
   $agent                         = $puppet::params::agent,
+  $remove_lock                   = $puppet::params::remove_lock,
   $puppetmaster                  = $puppet::params::puppetmaster,
+  $service_name                  = $puppet::params::service_name,
   $syslogfacility                = $puppet::params::syslogfacility,
   $server                        = $puppet::params::server,
   $server_user                   = $puppet::params::user,
   $server_group                  = $puppet::params::group,
   $server_dir                    = $puppet::params::dir,
   $server_port                   = $puppet::params::port,
-  $server_vardir                 = $puppet::params::server_vardir,
   $server_ca                     = $puppet::params::server_ca,
   $server_reports                = $puppet::params::server_reports,
   $server_implementation         = $puppet::params::server_implementation,
@@ -353,15 +437,22 @@ class puppet (
   $server_certname               = $puppet::params::server_certname,
   $server_enc_api                = $puppet::params::server_enc_api,
   $server_report_api             = $puppet::params::server_report_api,
+  $server_request_timeout        = $puppet::params::server_request_timeout,
   $server_ca_proxy               = $puppet::params::server_ca_proxy,
   $server_strict_variables       = $puppet::params::server_strict_variables,
-  $server_foreman_url            = $foreman::params::foreman_url,
-  $server_foreman_ssl_ca         = $foreman::params::client_ssl_ca,
-  $server_foreman_ssl_cert       = $foreman::params::client_ssl_cert,
-  $server_foreman_ssl_key        = $foreman::params::client_ssl_key,
-  $server_facts                  = $foreman::params::facts,
-  $server_puppet_home            = $foreman::params::puppet_home,
-  $server_puppet_basedir         = $foreman::params::puppet_basedir
+  $server_additional_settings    = $puppet::params::server_additional_settings,
+  $server_rack_arguments         = $puppet::params::server_rack_arguments,
+  $server_foreman                = $puppet::params::server_foreman,
+  $server_foreman_url            = $puppet::params::server_foreman_url,
+  $server_foreman_ssl_ca         = $puppet::params::server_foreman_ssl_ca,
+  $server_foreman_ssl_cert       = $puppet::params::server_foreman_ssl_cert,
+  $server_foreman_ssl_key        = $puppet::params::server_foreman_ssl_key,
+  $server_facts                  = $puppet::params::server_facts,
+  $server_puppet_basedir         = $puppet::params::server_puppet_basedir,
+  $server_puppetdb_host          = $puppet::params::server_puppetdb_host,
+  $server_puppetdb_port          = $puppet::params::server_puppetdb_port,
+  $server_puppetdb_swf           = $puppet::params::server_puppetdb_swf,
+  $server_parser                 = $puppet::params::server_parser,
 ) inherits puppet::params {
 
   validate_bool($listen)
@@ -370,6 +461,7 @@ class puppet (
   validate_bool($usecacheonfailure)
   validate_bool($agent_noop)
   validate_bool($agent)
+  validate_bool($remove_lock)
   validate_bool($server)
   validate_bool($allow_any_crl_auth)
   validate_bool($server_ca)
@@ -378,16 +470,39 @@ class puppet (
   validate_bool($server_service_fallback)
   validate_bool($server_facts)
   validate_bool($server_strict_variables)
+  validate_bool($server_foreman)
+  validate_bool($server_puppetdb_swf)
 
-  validate_string($ca_server)
+  validate_hash($additional_settings)
+  validate_hash($agent_additional_settings)
+  validate_hash($server_additional_settings)
+
+  if $ca_server {
+    validate_string($ca_server)
+  }
   validate_string($hiera_config)
   validate_string($server_external_nodes)
-  validate_string($server_ca_proxy)
+  if $server_ca_proxy {
+    validate_string($server_ca_proxy)
+  }
+  if $server_puppetdb_host {
+    validate_string($server_puppetdb_host)
+  }
 
+  validate_string($service_name)
+
+  validate_array($listen_to)
   validate_array($dns_alt_names)
+  validate_array($server_rack_arguments)
   validate_array($auth_allowed)
 
+  validate_absolute_path($dir)
+  validate_absolute_path($vardir)
+  validate_absolute_path($logdir)
+  validate_absolute_path($rundir)
+
   validate_re($server_implementation, '^(master|puppetserver)$')
+  validate_re($server_parser, '^(current|future)$')
 
   include ::puppet::config
   Class['puppet::config'] -> Class['puppet']

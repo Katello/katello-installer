@@ -9,8 +9,11 @@ class apache::mod::passenger (
   $rails_autodetect               = undef,
   $passenger_root                 = $::apache::params::passenger_root,
   $passenger_ruby                 = $::apache::params::passenger_ruby,
+  $passenger_default_ruby         = $::apache::params::passenger_default_ruby,
   $passenger_max_pool_size        = undef,
+  $passenger_min_instances        = undef,
   $passenger_use_global_queue     = undef,
+  $passenger_app_env              = undef,
   $mod_package                    = undef,
   $mod_package_ensure             = undef,
   $mod_lib                        = undef,
@@ -47,16 +50,20 @@ class apache::mod::passenger (
     lib_path       => $_lib_path,
     id             => $_id,
     path           => $_path,
+    loadfile_name  => 'zpassenger.load',
   }
 
   # Template uses:
   # - $passenger_root
   # - $passenger_ruby
+  # - $passenger_default_ruby
   # - $passenger_max_pool_size
+  # - $passenger_min_instances
   # - $passenger_high_performance
   # - $passenger_max_requests
   # - $passenger_stat_throttle_rate
   # - $passenger_use_global_queue
+  # - $passenger_app_env
   # - $rack_autodetect
   # - $rails_autodetect
   file { 'passenger.conf':
@@ -65,6 +72,6 @@ class apache::mod::passenger (
     content => template('apache/mod/passenger.conf.erb'),
     require => Exec["mkdir ${::apache::mod_dir}"],
     before  => File[$::apache::mod_dir],
-    notify  => Service['httpd'],
+    notify  => Class['apache::service'],
   }
 }

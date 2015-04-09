@@ -11,9 +11,13 @@ describe 'apache::mod::pagespeed class', :unless => UNSUPPORTED_PLATFORMS.includ
     mod_dir      = '/etc/httpd/conf.d'
     service_name = 'httpd'
   when 'FreeBSD'
-    vhost_dir    = '/usr/local/etc/apache22/Vhosts'
-    mod_dir      = '/usr/local/etc/apache22/Modules'
-    service_name = 'apache22'
+    vhost_dir    = '/usr/local/etc/apache24/Vhosts'
+    mod_dir      = '/usr/local/etc/apache24/Modules'
+    service_name = 'apache24'
+  when 'Gentoo'
+    vhost_dir    = '/etc/apache2/vhosts.d'
+    mod_dir      = '/etc/apache2/modules.d'
+    service_name = 'apache2'
   end
 
   context "default pagespeed config" do
@@ -30,7 +34,7 @@ describe 'apache::mod::pagespeed class', :unless => UNSUPPORTED_PLATFORMS.includ
             repos       => 'main',
             include_src => false,
             before      => Class['apache'],
-          } 
+          }
         } elsif $::osfamily == 'RedHat' {
          yumrepo { 'mod-pagespeed':
           baseurl  => "http://dl.google.com/linux/mod-pagespeed/rpm/stable/$::architecture",
@@ -63,22 +67,22 @@ describe 'apache::mod::pagespeed class', :unless => UNSUPPORTED_PLATFORMS.includ
     end
 
     describe service(service_name) do
-      it { should be_enabled }
-      it { should be_running }
+      it { is_expected.to be_enabled }
+      it { is_expected.to be_running }
     end
 
     describe file("#{mod_dir}/pagespeed.conf") do
-      it { should contain "AddOutputFilterByType MOD_PAGESPEED_OUTPUT_FILTER text/html" }
-      it { should contain "ModPagespeedEnableFilters remove_comments" }
-      it { should contain "ModPagespeedDisableFilters extend_cache" }
-      it { should contain "ModPagespeedForbidFilters rewrite_javascript" }
+      it { is_expected.to contain "AddOutputFilterByType MOD_PAGESPEED_OUTPUT_FILTER text/html" }
+      it { is_expected.to contain "ModPagespeedEnableFilters remove_comments" }
+      it { is_expected.to contain "ModPagespeedDisableFilters extend_cache" }
+      it { is_expected.to contain "ModPagespeedForbidFilters rewrite_javascript" }
     end
 
     it 'should answer to pagespeed.example.com and include <head/> and be stripped of comments by mod_pagespeed' do
       shell("/usr/bin/curl pagespeed.example.com:80") do |r|
-        r.stdout.should =~ /<head\/>/
-        r.stdout.should_not =~ /<!-- comment -->/
-        r.exit_code.should == 0
+        expect(r.stdout).to match(/<head\/>/)
+        expect(r.stdout).not_to match(/<!-- comment -->/)
+        expect(r.exit_code).to eq(0)
       end
     end
   end

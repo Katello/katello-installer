@@ -12,6 +12,7 @@
 #
 class puppet::server::rack {
 
+  $server_rack_arguments = $puppet::server_rack_arguments
 
   exec {'puppet_server_rack-restart':
     command     => "/bin/touch ${puppet::server_app_root}/tmp/restart.txt",
@@ -27,6 +28,7 @@ class puppet::server::rack {
     [$puppet::server_app_root, "${puppet::server_app_root}/public", "${puppet::server_app_root}/tmp"]:
       ensure => directory,
       owner  => $puppet::server_user,
+      mode   => '0755',
   }
 
   $configru_version = $::puppetversion ? {
