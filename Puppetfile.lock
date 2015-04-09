@@ -29,7 +29,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-capsule
   ref: master
-  sha: 3be516d064a3582f66a48eb0418ec6e8fb6ed3d3
+  sha: b78e382a3f31a609919bd9d51f7c25eb66761960
   specs:
     katello-capsule (0.2.0)
       katello-common (>= 0.0.1)
@@ -202,7 +202,7 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-postgresql
   ref: master
-  sha: 40061ba1a41fe7e333eed2890fddc99cde0a9d3d
+  sha: 8dbf982b627e0df16bc2ecc2635b5d86d0bf0f55
   specs:
     puppetlabs-postgresql (4.3.0)
       puppetlabs-apt (< 2.0.0, >= 1.8.0)
