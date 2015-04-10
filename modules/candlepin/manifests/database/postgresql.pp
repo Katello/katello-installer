@@ -45,7 +45,7 @@ class candlepin::database::postgresql{
       refreshonly => true,
       before      => Service[$candlepin::tomcat],
       require     => [
-        File[$candlepin::log_dir],
+        Package['candlepin'],
         File['/etc/candlepin/candlepin.conf']
       ],
     }
