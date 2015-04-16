@@ -17,7 +17,7 @@ FORGE
 GIT
   remote: https://github.com/Katello/puppet-candlepin
   ref: master
-  sha: d19eb40f425015e41d5d6c7d86cee7f6f14c3247
+  sha: c10d17bdb8590e18627012c3dcf4a136a3e45924
   specs:
     katello-candlepin (0.1.0)
       puppetlabs-concat (>= 1.1.1)
@@ -222,7 +222,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman
   ref: master
-  sha: a8c3768c7cd716313546630ae7b355a3f096e784
+  sha: da98ce43634af1e4440c726804ba3b5357e97099
   specs:
     theforeman-foreman (3.0.1)
       adrien-alternatives (< 1.0.0, >= 0.3.0)
