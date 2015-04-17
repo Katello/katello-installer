@@ -24,7 +24,7 @@ Make sure above command gives the same output. )
 INVALID = %q(Output of 'hostname -f' does not seems to be valid FQDN
 
 Make sure above command gives fully qualified domain name. At least one
-dot must be present. )
+dot must be present and underscores are not allowed. )
 
 UPCASE = %q(The hostname contains a a capital letter.
 
@@ -43,5 +43,7 @@ fqdn = Facter.value(:fqdn)
 error_exit(DIFFERENT + BASE, 1) if fqdn != `hostname -f`.chomp
 # Every FQDN should have at least one dot
 error_exit(INVALID + BASE, 2) unless fqdn.include?('.')
+# Per https://bugzilla.redhat.com/show_bug.cgi?id=1205960 check for underscores
+error_exit(INVALID + BASE, 2) if fqdn.include?('_')
 # Capital Letters are not suported.
 error_exit(UPCASE + BASE, 3) unless fqdn.downcase == fqdn
