@@ -77,6 +77,7 @@ class katello_devel (
   class { 'katello_devel::install': } ~>
   class { 'katello_devel::config': } ~>
   class { 'katello_devel::database': } ~>
+  class { 'katello_devel::foreman_certs': } ~>
   class { 'katello_devel::setup':
     require => [
       Class['pulp'],
