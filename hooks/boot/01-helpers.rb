@@ -7,7 +7,8 @@ class Kafo::Helpers
     end
 
     def log_and_say(level, message)
-      say "<%= color('#{message}', :#{level.to_s}) %>"
+      style = level == :error ? 'bad' : level
+      say "<%= color('#{message}', :#{style}) %>"
       Kafo::KafoConfigure.logger.send(level, message)
     end
 
