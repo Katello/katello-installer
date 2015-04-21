@@ -12,42 +12,23 @@
 # see /usr/share/katello/config.katello_defaults.yml for available options
 
 common:
-  app_mode: 'katello'
   <%- if @cdn_ssl_version && !@cdn_ssl_version.strip.empty?-%>
   cdn_ssl_version: <%= @cdn_ssl_version %>
   <%- end -%>
 
-  warden:  <%= scope.lookupvar("katello::params::auth_method") %>
-  ldap_roles: <%= scope.lookupvar("katello::params::ldap_roles") %>
-  validate_ldap: <%= scope.lookupvar("katello::params::validate_ldap") %>
   rest_client_timeout: 120
 
-  url_prefix: <%= @deployment_url %>
-  host: <%= has_variable?("fqdn") ? @fqdn : hostname %>
-  port:
-  use_ssl: true
-  use_foreman: <%= scope.lookupvar("katello::params::use_foreman") %>
-
-  post_sync_url: https://localhost<%= scope.lookupvar("katello::params::deployment_url") %>/api/v2/repositories/sync_complete?token=<%= scope.lookupvar("post_sync_token") %>
+  post_sync_url: https://localhost<%= @deployment_url %>/api/v2/repositories/sync_complete?token=<%= @post_sync_token %>
 
   candlepin:
-    url: <%= scope.lookupvar("katello::params::candlepin_url") %>
+    url: <%= @candlepin_url %>
     oauth_key: <%= @oauth_key %>
     oauth_secret: <%= @oauth_secret %>
 
   pulp:
-    url: <%= scope.lookupvar("katello::params::pulp_url") %>
+    url: <%= @pulp_url %>
     oauth_key: <%= @oauth_key %>
     oauth_secret: <%= @oauth_secret %>
-
-  foreman:
-    url: <%= scope.lookupvar("katello::params::foreman_url") %>
-    oauth_key: <%= scope.lookupvar("katello::params::foreman_oauth_key") %>
-    oauth_secret: <%= scope.lookupvar("katello::params::oauth_secret") %>
-
-  cloud_forms:
-    oauth_key: <%= scope.lookupvar("katello::params::oauth_key") %>
-    oauth_secret: <%= scope.lookupvar("katello::params::oauth_secret") %>
 
   qpid:
     url: <%= @qpid_url %>
@@ -60,26 +41,3 @@ common:
     user: <%= @proxy_username %>
     password: <%= @proxy_password %>
 <%- end -%>
-
-  ldap_fluff_config:
-    host: <%= scope.lookupvar("katello::params::ldap_server") %>
-    port: <%= scope.lookupvar("katello::params::ldap_port") %>
-    encryption: <%= scope.lookupvar("katello::params::ldap_encryption") %>
-    base_dn: <%= scope.lookupvar("katello::params::ldap_users_basedn") %>
-    group_base: <%= scope.lookupvar("katello::params::ldap_groups_basedn") %>
-    server_type: <%= scope.lookupvar("katello::params::ldap_server_type") %>
-    service_user: <%= scope.lookupvar("katello::params::ldap_service_user") %>
-    service_pass: <%= scope.lookupvar("katello::params::ldap_service_pass") %>
-    anon_queries: <%= scope.lookupvar("katello::params::ldap_anon_queries") %>
-    ad_domain: <%= scope.lookupvar("katello::params::ldap_ad_domain") %>
-
-  # authentication
-  sso:
-    <%- if scope.lookupvar("katello::params::deployment") == 'katello' -%>
-    enable: true
-    <%- end -%>
-    <%- if scope.lookupvar("katello::params::deployment") == 'headpin' -%>
-    enable: false
-    <%- end -%>
-    provider_url: https://<%= scope.lookupvar('fqdn') -%>/signo
-    logout_path: /logout

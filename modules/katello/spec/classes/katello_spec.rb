@@ -18,7 +18,6 @@ describe 'katello' do
 
     it { should contain_class('katello::install') }
     it { should contain_class('katello::config') }
-    it { should contain_class('katello::service') }
 
     it "should configure a qpid client" do
       should contain_class('qpid::client').
@@ -57,7 +56,6 @@ describe 'katello' do
 
     it { should contain_class('katello::install') }
     it { should contain_class('katello::config') }
-    it { should contain_class('katello::service') }
   end
 
   context 'on oel' do
@@ -77,7 +75,6 @@ describe 'katello' do
 
     it { should contain_class('katello::install') }
     it { should contain_class('katello::config') }
-    it { should contain_class('katello::service') }
   end
 
   context 'on fedora' do
@@ -97,7 +94,6 @@ describe 'katello' do
 
     it { should contain_class('katello::install') }
     it { should contain_class('katello::config') }
-    it { should contain_class('katello::service') }
   end
 
   context 'on sl' do
@@ -117,7 +113,6 @@ describe 'katello' do
 
     it { should contain_class('katello::install') }
     it { should contain_class('katello::config') }
-    it { should contain_class('katello::service') }
   end
 
   context 'on unsupported osfamily' do

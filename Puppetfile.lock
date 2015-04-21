@@ -7,9 +7,9 @@ FORGE
       puppetlabs-stdlib (>= 2.4.0)
     puppetlabs-apt (1.8.0)
       puppetlabs-stdlib (>= 2.2.1)
-    puppetlabs-concat (1.2.0)
+    puppetlabs-concat (1.2.1)
       puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
-    puppetlabs-stdlib (4.5.1)
+    puppetlabs-stdlib (4.6.0)
     puppetlabs-vcsrepo (1.2.0)
     puppetlabs-xinetd (1.5.0)
       puppetlabs-stdlib (>= 2.2.1)
@@ -17,7 +17,7 @@ FORGE
 GIT
   remote: https://github.com/Katello/puppet-candlepin
   ref: master
-  sha: 60949d84c6dd25af72c66fabead081c945f1be1e
+  sha: c10d17bdb8590e18627012c3dcf4a136a3e45924
   specs:
     katello-candlepin (0.1.0)
       puppetlabs-concat (>= 1.1.1)
@@ -29,7 +29,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-capsule
   ref: master
-  sha: 3be516d064a3582f66a48eb0418ec6e8fb6ed3d3
+  sha: b78e382a3f31a609919bd9d51f7c25eb66761960
   specs:
     katello-capsule (0.2.0)
       katello-common (>= 0.0.1)
@@ -93,7 +93,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-gutterball
   ref: master
-  sha: f2663ea0bee635dae3391997434a7cfca31532f7
+  sha: eb15f1d5c70bbdac2f0a224f91aca5e6d920d51d
   specs:
     katello-gutterball (0.1.0)
       puppetlabs-concat (>= 1.1.1)
@@ -105,13 +105,12 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello
   ref: master
-  sha: f9406fae03d4254262495c74740af5d276c52d5a
+  sha: 100f49cbc7c0f3b1047e9578b48306a610af3d95
   specs:
     katello-katello (0.1.0)
       katello-candlepin (>= 0.1.0)
       katello-certs (>= 0.1.0)
       katello-common (>= 0.0.1)
-      katello-crane (>= 0.1.0)
       katello-elasticsearch (>= 0.0.1)
       katello-gutterball (>= 0.1.0)
       katello-pulp (>= 0.1.0)
@@ -203,7 +202,7 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-postgresql
   ref: master
-  sha: 0438db2f017d60e65e31b3dda066cbdfb2a0c6b9
+  sha: 89a781fe39e61f57eccbff82503f2b1b4cc53ae1
   specs:
     puppetlabs-postgresql (4.2.0)
       puppetlabs-apt (< 2.0.0, >= 1.1.0)
@@ -213,9 +212,9 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-concat
   ref: master
-  sha: c42f4d7cabce25c94308c5e3dc25d39ca69a8813
+  sha: e8f7fac0d35599759ca12f5c51e2176e3d0155dd
   specs:
-    theforeman-concat_native (1.3.3)
+    theforeman-concat_native (1.4.1)
 
 GIT
   remote: https://github.com/theforeman/puppet-dhcp
@@ -235,8 +234,8 @@ GIT
 
 GIT
   remote: https://github.com/theforeman/puppet-foreman
-  ref: 2.3.2
-  sha: 2adca837d78e009f313352d375e9932a531873ef
+  ref: master
+  sha: da98ce43634af1e4440c726804ba3b5357e97099
   specs:
     theforeman-foreman (2.3.2)
       adrien-alternatives (< 1.0.0, >= 0.2.0)
