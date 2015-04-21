@@ -13,7 +13,7 @@ def migrate_pulp
     Kafo::Helpers.execute('service-wait mongod start')
   end
 
-  Kafo::Helpers.execute('sudo -u apache pulp-manage-db')
+  Kafo::Helpers.execute('su - apache -s /bin/bash -c pulp-manage-db')
 end
 
 def migrate_foreman
