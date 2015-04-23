@@ -126,11 +126,6 @@ class katello_devel (
     client_cert  => $certs::qpid::client_cert,
     client_key   => $certs::qpid::client_key,
     katello_user => $user
-  } ~>
-  class { 'crane':
-    cert    => $certs::ca_cert,
-    key     => $certs::ca_key,
-    ca_cert => $certs::ca_cert,
   }
 
   class{ 'elasticsearch': }

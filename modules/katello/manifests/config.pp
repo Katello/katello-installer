@@ -1,6 +1,8 @@
 # Katello Config
 class katello::config {
 
+  $apache_version = $::apache::apache_version
+
   file { '/usr/share/foreman/bundler.d/katello.rb':
     ensure => file,
     owner  => $katello::user,

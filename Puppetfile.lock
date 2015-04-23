@@ -92,7 +92,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello
   ref: master
-  sha: 100f49cbc7c0f3b1047e9578b48306a610af3d95
+  sha: fac42b1cfc4effadbdc5c22c6c684698b5a43e53
   specs:
     katello-katello (0.1.0)
       katello-candlepin (>= 0.1.0)
@@ -113,7 +113,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello_devel
   ref: master
-  sha: b612d4aa84fd4913499ba2ecfa60bcd31acb975c
+  sha: dba9b39a5527d52dfa84d2e87ffa47ce9092947f
   specs:
     katello-katello_devel (0.1.0)
       katello-candlepin (>= 0.1.0)
@@ -222,7 +222,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman
   ref: master
-  sha: e5514f59f43439566b74e6b6a94ee942563f1477
+  sha: 015cc7268f3afaeec9d79540ee6a9c5d0900711c
   specs:
     theforeman-foreman (3.0.1)
       adrien-alternatives (< 1.0.0, >= 0.3.0)
