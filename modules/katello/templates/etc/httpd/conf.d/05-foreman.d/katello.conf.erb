@@ -8,7 +8,7 @@ Alias /pub /var/www/html/pub
 <Location /pub>
   PassengerEnabled off 
   Options +FollowSymLinks +Indexes
-<% if ( @operatingsystem == "RedHat" && operatingsystemmajrelease == "7" ) -%>
+<%- if scope.function_versioncmp([@apache_version, '2.4']) >= 0 -%>
   Require all granted
 <% else -%>
   Allow from all
@@ -21,4 +21,3 @@ Include /etc/pulp/vhosts80/*.conf
   PassengerEnabled off
   Options +FollowSymLinks +Indexes
 </Location>
-
