@@ -2,8 +2,48 @@
 
 require 'rubygems'
 require 'kafo'
+require 'yaml'
 
 CONFIG_FILE = './config/katello-installer.yaml'
+MIGRATE_DIR = './migrate'
+
+# Add --profile option on Ruby 1.8.7 due to segfaulting
+ARGV << '--profile' if RUBY_VERSION == '1.8.7'
+
+# Run migrations (add-only support at the moment)
+def migrate(yaml_file)
+  contents = YAML.load_file(yaml_file)
+  state = "#{MIGRATE_DIR}/#{File.basename(yaml_file)}/.applied"
+  applied = File.exist?(state) ? YAML.load_file(state) : []
+
+  Dir.glob("#{MIGRATE_DIR}/#{File.basename(yaml_file)}/*.yaml") do |migrate|
+    next if applied.include? migrate
+    migration = YAML.load_file(migrate)
+
+    # Deep merge of hashes
+    if migration['add']
+      contents.merge!(migration['add']) do |key, value1, value2|
+        if [value1, value2].all? { |value| value.is_a? Hash }
+          value1.merge(value2)
+        elsif [value1, value2].all? { |value| value.is_a? Array }
+          value1 + value2
+        else
+          value2
+        end
+      end
+    end
+
+    applied << migrate
+    File.open(state, 'w') { |f| f.write(applied.to_yaml) }
+  end
+
+  File.open(yaml_file, 'w') { |f| f.write(contents.to_yaml) }
+end
+
+migrate(CONFIG_FILE)
+config = YAML.load_file(CONFIG_FILE)
+
+migrate(config[:answer_file])
 
 # Run Kafo
 Kafo::KafoConfigure.run
