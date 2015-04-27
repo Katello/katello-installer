@@ -4,7 +4,7 @@
 
 Name:    katello-installer-base
 Version: 2.2.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: Puppet-based installer for the Katello and Katello Capsule
 Group:   Applications/System
 License: GPLv3+ and ASL 2.0
@@ -197,6 +197,14 @@ ln -sf %{_datadir}/capsule-installer/bin/capsule-installer %{buildroot}/%{_sbind
 %doc README.*
 
 %changelog
+* Mon Apr 27 2015 Eric D. Helms <ericdhelms@gmail.com> 2.2.0-4
+- Fixes #9988 - upgrade runs gb migrations
+- Fixes #8585: Remove unused configuration from Katello module.
+- Fixes #8777: Fix logrotate errors with Candlepin.
+- fixes #9892 - install crane on server and capsule
+- Fixes #10033: Require katello-selinux in installer base.
+- Fixes #9200: Re-enable foreman_discovery as a default.
+
 * Mon Mar 23 2015 Eric D. Helms <ericdhelms@gmail.com> 2.2.0-3
 - Switch to ReleaseTagger for tito. (ericdhelms@gmail.com)
 - Fixes #9816: Allow access to /pub on http on Capsules.
