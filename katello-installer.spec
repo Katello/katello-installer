@@ -50,6 +50,7 @@ Group:	   Applications/System
 Conflicts: katello-installer
 Conflicts: katello-devel-installer
 Requires:  %{name} = %{version}-%{release}
+Requires: katello-service
 
 %description -n capsule-installer
 A set of tools for installation of a Katello Capsule
