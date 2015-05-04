@@ -2,7 +2,7 @@ FORGE
   remote: https://forgeapi.puppetlabs.com
   specs:
     adrien-alternatives (0.3.0)
-    puppetlabs-apache (1.4.0)
+    puppetlabs-apache (1.4.1)
       puppetlabs-concat (< 2.0.0, >= 1.1.1)
       puppetlabs-stdlib (< 5.0.0, >= 2.4.0)
     puppetlabs-apt (1.8.0)
@@ -45,7 +45,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-certs
   ref: master
-  sha: cec063aad80d67afe28dd50ac8134a15338af392
+  sha: 51a777cb3420db92c5d6793702deed0afc54d1d5
   specs:
     katello-certs (0.1.0)
       katello-common (>= 0.0.1)
