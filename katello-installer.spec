@@ -36,10 +36,10 @@ A set of tools for installation of Katello and a the default Capsule.
 %config %{_sysconfdir}/katello-installer/config_header.txt
 %dir %{_sysconfdir}/katello-installer
 %dir %{_localstatedir}/log/katello-installer
+%config %attr(600, root, root) %{_sysconfdir}/katello-installer/katello-installer.yaml
+%config %attr(600, root, root) %{_sysconfdir}/katello-installer/capsule-certs-generate.yaml
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/katello-installer/answers.katello-installer.yaml
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/katello-installer/answers.capsule-certs-generate.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/katello-installer/katello-installer.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/katello-installer/capsule-certs-generate.yaml
 %{_sbindir}/katello-installer
 %{_sbindir}/capsule-certs-generate
 %{_sbindir}/katello-certs-check
@@ -126,6 +126,8 @@ sed -ri 'sX\./configX%{_sysconfdir}/katello-devel-installerXg' bin/katello-devel
 sed -ri 'sX\./configX%{_sysconfdir}/sam-installerXg' bin/sam-installer config/sam-installer.yaml
 sed -ri 'sX\./configX%{_sysconfdir}/capsule-installerXg' bin/capsule-installer config/capsule-installer.yaml
 
+sed -ri 'sX\./migrateX%{_datadir}/katello-installer/migrateXg' bin/katello-installer
+
 sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/katello-installerXg' config/katello-installer.yaml
 sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/katello-installerXg' config/capsule-certs-generate.yaml
 sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/katello-devel-installerXg' config/katello-devel-installer.yaml
@@ -153,7 +155,7 @@ install -d -m0755 %{buildroot}/%{_datadir}/capsule-installer/bin
 
 install -d -m0755 %{buildroot}/%{_sbindir}
 
-cp -dpR modules hooks %{buildroot}/%{_datadir}/katello-installer
+cp -dpR modules hooks migrate %{buildroot}/%{_datadir}/katello-installer
 
 cp -dpR checks %{buildroot}/%{_datadir}/katello-installer
 cp -dpR checks %{buildroot}/%{_datadir}/katello-devel-installer
@@ -195,11 +197,12 @@ ln -sf %{_datadir}/capsule-installer/bin/capsule-installer %{buildroot}/%{_sbind
 %defattr(-,root,root,-)
 %{_datadir}/katello-installer/modules
 %{_datadir}/katello-installer/hooks
+%{_datadir}/katello-installer/migrate
 %doc README.*
 
 %changelog
 * Tue Feb 24 2015 Eric D. Helms <ericdhelms@gmail.com> 2.3.0-1
-- 
+-
 
 * Tue Feb 24 2015 Eric D. Helms <ericdhelms@gmail.com> 2.2.0-2
 - Bumping release to 2.2.0-2 (ericdhelms@gmail.com)

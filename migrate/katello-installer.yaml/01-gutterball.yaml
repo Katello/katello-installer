@@ -1,0 +1,6 @@
+---
+add:
+  :mapping:
+    :katello::plugin::gutterball:
+      :dir_name: katello
+      :manifest_name: plugin/gutterball
