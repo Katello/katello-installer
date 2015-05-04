@@ -4,7 +4,7 @@
 
 Name:    katello-installer-base
 Version: 2.2.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 Summary: Puppet-based installer for the Katello and Katello Capsule
 Group:   Applications/System
 License: GPLv3+ and ASL 2.0
@@ -201,6 +201,14 @@ ln -sf %{_datadir}/capsule-installer/bin/capsule-installer %{buildroot}/%{_sbind
 %doc README.*
 
 %changelog
+* Mon May 04 2015 Eric D. Helms <ericdhelms@gmail.com> 2.2.0-5
+- fixes #10221 - handle services and failures better during upgrades
+- fixes #10282 - migrate 2.1 answer files to 2.2
+- Fixes #10350: Set qdrouterd certs permission to qdrouterd user
+- Fixes #10317: Check if gutterball-db exists before calling it.
+- refs #6781 - install katello-service package
+- fixes #10219 - use su instead of sudo
+
 * Mon Apr 27 2015 Eric D. Helms <ericdhelms@gmail.com> 2.2.0-4
 - Fixes #9988 - upgrade runs gb migrations
 - Fixes #8585: Remove unused configuration from Katello module.
