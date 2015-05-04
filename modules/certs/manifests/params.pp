@@ -97,7 +97,7 @@ class certs::params {
   $qpid_router_client_cert = "${pki_dir}/qpid_router_client.crt"
   $qpid_router_server_key  = "${pki_dir}/qpid_router_server.key"
   $qpid_router_client_key  = "${pki_dir}/qpid_router_client.key"
-  $qpid_router_owner       = 'qpidd'
+  $qpid_router_owner       = 'qdrouterd'
   $qpid_router_group       = 'root'
 
   $pulp_server_ca_cert   = '/etc/pki/pulp/server_ca.crt'
