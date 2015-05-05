@@ -7,9 +7,6 @@ require 'yaml'
 CONFIG_FILE = './config/katello-installer.yaml'
 MIGRATE_DIR = './migrate'
 
-# Add --profile option on Ruby 1.8.7 due to segfaulting
-ARGV << '--profile' if RUBY_VERSION == '1.8.7'
-
 # Run migrations (add-only support at the moment)
 def migrate(yaml_file)
   contents = YAML.load_file(yaml_file)
