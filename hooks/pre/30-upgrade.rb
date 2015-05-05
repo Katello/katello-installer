@@ -13,7 +13,11 @@ def migrate_candlepin
 end
 
 def migrate_gutterball
-  Kafo::Helpers.execute("/usr/bin/gutterball-db migrate") if File.exist?('/usr/bin/gutterball-db')
+  if File.exist?('/usr/bin/gutterball-db')
+    Kafo::Helpers.execute("/usr/bin/gutterball-db migrate")
+  else
+    true
+  end
 end
 
 def migrate_pulp
