@@ -116,6 +116,9 @@ class puppet::params {
   $server_certname            = $::clientcert
   $server_strict_variables    = false
   $server_rack_arguments      = []
+  $server_http                = false
+  $server_http_port           = 8139
+  $server_http_allow          = []
 
   # Need a new master template for the server?
   $server_template = 'puppet/server/puppet.conf.erb'
@@ -171,6 +174,7 @@ class puppet::params {
   $server_ssl_dir  = "${vardir}/ssl"
 
   $server_package     = undef
+  $server_version     = undef
   $client_package     = $::operatingsystem ? {
     /(Debian|Ubuntu)/ => ['puppet-common','puppet'],
     default           => ['puppet'],

@@ -171,6 +171,19 @@
 # $server_ca::                     Provide puppet CA
 #                                  type:boolean
 #
+# $server_http::                   Should the puppet master listen on HTTP as well as HTTPS.
+#                                  Useful for load balancer or reverse proxy scenarios. Note that
+#                                  the HTTP puppet master denies access from all clients by default,
+#                                  allowed clients must be specified with $server_http_allow.
+#                                  type:boolean
+#
+# $server_http_port::              Puppet master HTTP port; defaults to 8139.
+#                                  type:integer
+#
+# $server_http_allow::             Array of allowed clients for the HTTP puppet master. Passed
+#                                  to Apache's 'Allow' directive.
+#                                  type:array
+#
 # $server_reports::                List of report types to include on the puppetmaster
 #
 # $server_implementation::         Puppet master implementation, either "master" (traditional
@@ -242,6 +255,8 @@
 # $server_ssl_dir::                SSL directory
 #
 # $server_package::                Custom package name for puppet master
+#
+# $server_version::                Custom package version for puppet master
 #
 # $server_certname::               The name to use when handling certificates.
 #
@@ -407,6 +422,9 @@ class puppet (
   $server_dir                    = $puppet::params::dir,
   $server_port                   = $puppet::params::port,
   $server_ca                     = $puppet::params::server_ca,
+  $server_http                   = $puppet::params::server_http,
+  $server_http_port              = $puppet::params::server_http_port,
+  $server_http_allow             = $puppet::params::server_http_allow,
   $server_reports                = $puppet::params::server_reports,
   $server_implementation         = $puppet::params::server_implementation,
   $server_passenger              = $puppet::params::server_passenger,
@@ -434,6 +452,7 @@ class puppet (
   $server_app_root               = $puppet::params::server_app_root,
   $server_ssl_dir                = $puppet::params::server_ssl_dir,
   $server_package                = $puppet::params::server_package,
+  $server_version                = $puppet::params::server_version,
   $server_certname               = $puppet::params::server_certname,
   $server_enc_api                = $puppet::params::server_enc_api,
   $server_report_api             = $puppet::params::server_report_api,
@@ -465,6 +484,7 @@ class puppet (
   validate_bool($server)
   validate_bool($allow_any_crl_auth)
   validate_bool($server_ca)
+  validate_bool($server_http)
   validate_bool($server_passenger)
   validate_bool($server_git_repo)
   validate_bool($server_service_fallback)
@@ -487,6 +507,10 @@ class puppet (
   }
   if $server_puppetdb_host {
     validate_string($server_puppetdb_host)
+  }
+  
+  if $server_http {
+    validate_array($server_http_allow)
   }
 
   validate_string($service_name)

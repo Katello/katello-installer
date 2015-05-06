@@ -21,7 +21,10 @@ any options that are not explicitly supported.
 The module helps configure Puppet environments using directory environments on
 Puppet 3.6+ and config environments on older versions.  These are set up under
 /etc/puppet/environments/ - change `server_environments` to define the list to
-create, or use `puppet::server::env` for more control.
+create, or use `puppet::server::env` for more control. When using directory
+environments with R10K you need to set the `server_environments` parameter to an
+empty array ie. `[]` to prevent `r10k deploy environments` from reporting an
+error caused by the creation of top level environment directory(s). 
 
 ## Git repo support
 
@@ -96,6 +99,15 @@ wrapper classes or even your ENC (if it supports param classes). For example:
       server_reports        => 'store',
       server_external_nodes => '',
     }
+    
+    # The same example as above but overriding `server_environments` for R10K
+    class { '::puppet':
+      server                => true,
+      server_foreman        => false,
+      server_reports        => 'store',
+      server_external_nodes => '',
+      server_environments   => [],
+    }
 
     # Want to integrate with an existing PuppetDB?
     class { '::puppet':
@@ -116,6 +128,32 @@ as per the examples above, and the execute _puppet apply_ e.g:
     class { '::puppet': server => true }
     EOF
     puppet apply install.pp --modulepath /path_to/extracted_tarball
+
+# Advanced scenarios
+
+An HTTP (non-SSL) puppetmaster instance can be set up (standalone or in addition to
+the SSL instance) by setting the `server_http` parameter to `true`. This is useful for
+reverse proxy or load balancer scenarios where the proxy/load balancer takes care of SSL
+termination. The HTTP puppetmaster instance expects the `X-Client-Verify`, `X-SSL-Client-DN`
+and `X-SSL-Subject` HTTP headers to have been set on the front end server.
+
+The listening port can be configured by setting `server_http_port` (which defaults to 8139).
+
+By default, this HTTP instance accepts no connection (`deny all` in the `<Directory>`
+snippet). Allowed hosts can be configured by setting the `server_http_allow` parameter
+(which expects an array).
+
+** Note that running an HTTP puppetmaster is a huge security risk when improperly
+configured. Allowed hosts should be tightly controlled; anyone with access to an allowed
+host can access all client catalogues and client certificates. **
+
+    # Configure an HTTP puppetmaster vhost in addition to the standard SSL vhost
+    class { '::puppet':
+      server               => true,
+      server_http          => true,
+      server_http_port     => 8130, # default: 8139
+      server_http_allow    => ['10.20.30.1', 'puppetbalancer.my.corp'],
+    }
 
 # Contributing
 
