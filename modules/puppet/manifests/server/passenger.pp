@@ -13,7 +13,10 @@ class puppet::server::passenger (
   $ssl_chain          = $::puppet::server::ssl_chain,
   $ssl_dir            = $::puppet::server_ssl_dir,
   $puppet_ca_proxy    = $::puppet::server_ca_proxy,
-  $user               = $::puppet::server_user
+  $user               = $::puppet::server_user,
+  $http               = $::puppet::server_http,
+  $http_port          = $::puppet::server_http_port,
+  $http_allow         = $::puppet::server_http_allow,
 ) {
   include ::puppet::server::rack
   include ::apache
@@ -31,11 +34,13 @@ class puppet::server::passenger (
     }
   }
 
+  $directory = {
+    'path'              => "${app_root}/public/",
+    'passenger_enabled' => 'On',
+  }
+  
   $directories = [
-    {
-      'path'              => "${app_root}/public/",
-      'passenger_enabled' => 'On',
-    },
+    $directory,
   ]
 
   # The following client headers allow the same configuration to work with Pound.
@@ -87,4 +92,38 @@ class puppet::server::passenger (
     require              => Class['::puppet::server::rack'],
   }
 
+  if $http {
+    # Order, deny and allow cannot be configured for Apache >= 2.4 using the Puppetlabs/Apache
+    # module, but they can be set to false. So, set to false and configure manually via custom fragments.
+    # We can't get rid of the 'Order allow,deny' directive and we need to support all Apache versions.
+    # Best we can do is reverse the Order directive and add our own 'Deny from all' for good measure.
+    $directories_http = [
+      merge($directory, {
+        'order'           => false,
+        'deny'            => false,
+        'allow'           => false,
+        'custom_fragment' => join([
+            'Order deny,allow',
+            'Deny from all',
+            inline_template("<%- if @http_allow and Array(@http_allow).join(' ') != '' -%>Allow from <%= @http_allow.join(' ') %><%- end -%>"),
+          ], "\n")
+      }),
+    ]
+    
+    apache::vhost { 'puppet-http':
+      docroot         => "${app_root}/public/",
+      directories     => $directories_http,
+      port            => $http_port,
+      custom_fragment => join([
+          $custom_fragment ? {
+            undef   => '',
+            default => $custom_fragment
+          },
+          'SetEnvIf X-Client-Verify "(.*)" SSL_CLIENT_VERIFY=$1',
+          'SetEnvIf X-SSL-Client-DN "(.*)" SSL_CLIENT_S_DN=$1',
+        ], "\n"),
+      options         => ['None'],
+      require         => Class['::puppet::server::rack'],
+    }
+  }
 }

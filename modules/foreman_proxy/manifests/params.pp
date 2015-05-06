@@ -96,6 +96,7 @@ class foreman_proxy::params {
         $tftp_syslinux_filenames = ['/usr/lib/PXELINUX/pxelinux.0',
                                     '/usr/lib/syslinux/memdisk',
                                     '/usr/lib/syslinux/modules/bios/chain.c32',
+                                    '/usr/lib/syslinux/modules/bios/ldlinux.c32',
                                     '/usr/lib/syslinux/modules/bios/menu.c32']
       } else {
         $tftp_syslinux_filenames = ['/usr/lib/syslinux/chain.c32',
@@ -113,10 +114,7 @@ class foreman_proxy::params {
   }
   $tftp_root           = $tftp::params::root
   $tftp_dirs           = ["${tftp_root}/pxelinux.cfg","${tftp_root}/boot"]
-  $tftp_servername     = $::ipaddress_eth0 ? {
-    undef   => $::ipaddress,
-    default => $::ipaddress_eth0,
-  }
+  $tftp_servername     = undef
 
   # DHCP settings - requires optional DHCP puppet module
   $dhcp                   = false
