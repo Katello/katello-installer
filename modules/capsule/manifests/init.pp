@@ -256,6 +256,29 @@ class capsule (
     false => '443'
   }
 
+  class { 'capsule::install': } ~>
+  class { 'certs::foreman_proxy':
+    hostname => $capsule_fqdn,
+    require  => Package['foreman-proxy'],
+    before   => Service['foreman-proxy'],
+  } ~>
+  class { 'certs::katello':
+    deployment_url => $capsule::rhsm_url,
+    rhsm_port      => $capsule::rhsm_port
+  }
+
+  if $pulp or $reverse_proxy_real {
+    class { 'certs::apache':
+      hostname => $capsule_fqdn
+    } ~>
+    Class['certs::foreman_proxy'] ~>
+    class { 'capsule::reverse_proxy':
+      path => '/',
+      url  => "${foreman_url}/",
+      port => $capsule::reverse_proxy_port
+    }
+  }
+
   if $pulp_master or $pulp {
     foreman_proxy::settings_file { 'pulp':
       enabled       => $pulp_master,
@@ -282,17 +305,6 @@ class capsule (
       ca_cert => $certs::server_ca_cert,
       require => Class['certs::apache'],
     }
-  }
-
-  class { 'capsule::install': } ~>
-  class { 'certs::foreman_proxy':
-    hostname => $capsule_fqdn,
-    require  => Package['foreman-proxy'],
-    before   => Service['foreman-proxy'],
-  } ~>
-  class { 'certs::katello':
-    deployment_url => $capsule::rhsm_url,
-    rhsm_port      => $capsule::rhsm_port
   }
 
   class { 'foreman_proxy':
@@ -350,18 +362,6 @@ class capsule (
     oauth_consumer_key    => $foreman_oauth_key,
     oauth_consumer_secret => $foreman_oauth_secret,
     templates             => $templates,
-  }
-
-  if $pulp or $reverse_proxy_real {
-    class { 'certs::apache':
-      hostname => $capsule_fqdn
-    } ~>
-    Class['certs::foreman_proxy'] ~>
-    class { 'capsule::reverse_proxy':
-      path => '/',
-      url  => "${foreman_url}/",
-      port => $capsule::reverse_proxy_port
-    }
   }
 
   if $pulp {
