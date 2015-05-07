@@ -4,7 +4,7 @@
 
 Name:    katello-installer-base
 Version: 2.2.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: Puppet-based installer for the Katello and Katello Capsule
 Group:   Applications/System
 License: GPLv3+ and ASL 2.0
@@ -201,6 +201,12 @@ ln -sf %{_datadir}/capsule-installer/bin/capsule-installer %{buildroot}/%{_sbind
 %doc README.*
 
 %changelog
+* Thu May 07 2015 Eric D. Helms <ericdhelms@gmail.com> 2.2.0-6
+- fixes #10387 - backporting capsule module to fix bad certs on capsule
+  (jsherril@redhat.com)
+- Refs #10317: Allow upgrade to continue if not migrating gutterball.
+- Remove --profile from cherry-pick. (ericdhelms@gmail.com)
+
 * Mon May 04 2015 Eric D. Helms <ericdhelms@gmail.com> 2.2.0-5
 - fixes #10221 - handle services and failures better during upgrades
 - fixes #10282 - migrate 2.1 answer files to 2.2
