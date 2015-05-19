@@ -67,10 +67,8 @@
 # $ssl_build_dir::        The directory where SSL keys, certs and RPMs will be generated
 #
 # $user::                 The system user name who should own the certs;
-#                         default 'foreman'
 #
 # $group::                The group who should own the certs;
-#                         default 'foreman'
 #
 # $password_file_dir::    The location to store password files
 #
@@ -122,8 +120,10 @@ class certs (
   $ca_key = "${certs::pki_dir}/private/${default_ca_name}.key"
   $ca_cert = "${certs::pki_dir}/certs/${default_ca_name}.crt"
   $ca_cert_stripped = "${certs::pki_dir}/certs/${default_ca_name}-stripped.crt"
-  $ca_key_password = cache_data('ca_key_password', generate_password())
+  $ca_key_password = cache_data('ca_key_password', random_password(24))
   $ca_key_password_file = "${certs::pki_dir}/private/${default_ca_name}.pwd"
+
+  $katello_server_ca_cert = "${certs::pki_dir}/certs/${server_ca_name}.crt"
 
   class { 'certs::install': } ->
   class { 'certs::config': } ->
@@ -186,6 +186,17 @@ class certs (
       key_pair => $default_ca
     } ~>
     file { $ca_cert:
+      ensure => file,
+      owner  => 'root',
+      group  => $certs::group,
+      mode   => '0644',
+    }
+
+    Ca[$server_ca_name] ~>
+    pubkey { $katello_server_ca_cert:
+      key_pair => $server_ca
+    } ~>
+    file { $katello_server_ca_cert:
       ensure => file,
       owner  => 'root',
       group  => $certs::group,

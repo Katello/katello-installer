@@ -10,8 +10,10 @@ class postgresql::server (
 
   $service_ensure             = $postgresql::params::service_ensure,
   $service_enable             = $postgresql::params::service_enable,
+  $service_manage             = $postgresql::params::service_manage,
   $service_name               = $postgresql::params::service_name,
   $service_provider           = $postgresql::params::service_provider,
+  $service_reload             = $postgresql::params::service_reload,
   $service_status             = $postgresql::params::service_status,
   $default_database           = $postgresql::params::default_database,
 
@@ -28,9 +30,11 @@ class postgresql::server (
   $pg_hba_conf_path           = $postgresql::params::pg_hba_conf_path,
   $pg_ident_conf_path         = $postgresql::params::pg_ident_conf_path,
   $postgresql_conf_path       = $postgresql::params::postgresql_conf_path,
+  $recovery_conf_path         = $postgresql::params::recovery_conf_path,
 
   $datadir                    = $postgresql::params::datadir,
   $xlogdir                    = $postgresql::params::xlogdir,
+  $logdir                     = $postgresql::params::logdir,
 
   $pg_hba_conf_defaults       = $postgresql::params::pg_hba_conf_defaults,
 
@@ -44,6 +48,7 @@ class postgresql::server (
 
   $manage_pg_hba_conf         = $postgresql::params::manage_pg_hba_conf,
   $manage_pg_ident_conf       = $postgresql::params::manage_pg_ident_conf,
+  $manage_recovery_conf       = $postgresql::params::manage_recovery_conf,
 
   #Deprecated
   $version                    = undef,

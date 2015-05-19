@@ -4,19 +4,15 @@
 #
 # === Parameters:
 #
-# $user::               The Katello system user name;
-#                       default 'foreman'
+# $user::               The Katello system user name
 #
-# $group::              The Katello system user group;
-#                       default 'foreman'
+# $group::              The Katello system user group
 #
-# $user_groups::        Extra user groups the Katello user is a part of;
-#                       default 'foreman
+# $user_groups::        Extra user groups the Katello user is a part of
 #
-# $oauth_key::          The oauth key for talking to the candlepin API;
-#                       default 'katello'
+# $oauth_key::          The oauth key for talking to the candlepin API
 #
-# $oauth_secret::       The oauth secret for talking to the candlepin API;
+# $oauth_secret::       The oauth secret for talking to the candlepin API
 #
 # $post_sync_token::    The shared secret for pulp notifying katello about
 #                       completed syncs
@@ -25,8 +21,7 @@
 #
 # $config_dir::         Location for Katello config files
 #
-# $use_passenger::      Whether Katello is being deployed with Passenger;
-#                       default true
+# $use_passenger::      Whether Katello is being deployed with Passenger
 #
 # $proxy_url::          URL of the proxy server
 #
@@ -35,6 +30,10 @@
 # $proxy_username::     Proxy username for authentication
 #
 # $proxy_password::     Proxy password for authentication
+#
+# $cdn_ssl_version::    SSL version used to communicate with the CDN. Optional. Use SSLv23 or TLSv1
+#
+# $package_names::      Packages that this module ensures are present instead of the default: katello and ${scl_prefix}rubygem-katello
 #
 class katello (
 
@@ -56,14 +55,13 @@ class katello (
   $proxy_port     = $katello::params::proxy_port,
   $proxy_username = $katello::params::proxy_username,
   $proxy_password = $katello::params::proxy_password,
+  $cdn_ssl_version = $katello::params::cdn_ssl_version,
 
+  $package_names = $katello::params::package_names,
   ) inherits katello::params {
 
   Class['certs'] ~>
   class { 'certs::apache': } ~>
-  class { 'certs::katello':
-    deployment_url => $katello::rhsm_url,
-  } ~>
   class { 'katello::install': } ~>
   class { 'katello::config': } ~>
   class { 'certs::qpid': } ~>
@@ -94,12 +92,12 @@ class katello (
     proxy_username              => $proxy_username,
     proxy_password              => $proxy_password,
   } ~>
-  class { 'crane':
-    cert    => $certs::apache::apache_cert,
-    key     => $certs::apache::apache_key,
-    ca_cert => $certs::ca_cert,
+  class { 'qpid::client':
+    ssl                    => true,
+    ssl_cert_name          => 'broker',
+    ssl_cert_db            => $certs::nss_db_dir,
+    ssl_cert_password_file => $certs::qpid::nss_db_password_file,
   } ~>
-  class { 'qpid::client': } ~>
   class { 'katello::qpid':
     client_cert  => $certs::qpid::client_cert,
     client_key   => $certs::qpid::client_key,
@@ -109,8 +107,6 @@ class katello (
   Exec['foreman-rake-db:seed']
 
   class { 'certs::foreman': }
-
-  class { 'katello::service': }
 
   Service['httpd'] -> Exec['foreman-rake-db:seed']
 

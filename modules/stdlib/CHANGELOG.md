@@ -1,3 +1,75 @@
+##2015-04-14 - Supported Release 4.6.0
+###Summary
+
+Adds functions and function argument abilities, and improves compatibility with the new puppet parser
+
+####Features
+- MODULES-444: `concat()` can now take more than two arrays
+- `basename()` added to have Ruby File.basename functionality
+- `delete()` can now take an array of items to remove
+- `prefix()` can now take a hash
+- `upcase()` can now take a hash or array of upcaseable things
+- `validate_absolute_path()` can now take an array
+- `validate_cmd()` can now use % in the command to embed the validation file argument in the string
+- MODULES-1473: deprecate `type()` function in favor of `type3x()`
+- MODULES-1473: Add `type_of()` to give better time information on future parser
+- Deprecate `private()` for `assert_private()` due to future parser
+- Adds `ceiling()` to take the ceiling of a number
+- Adds `fqdn_rand_string()` to generate random string based on fqdn
+- Adds `pw_hash()` to generate password hashes
+- Adds `validate_integer()`
+- Adds `validate_numeric()` (like `validate_integer()` but also accepts floats)
+
+####Bugfixes
+- Fix seeding of `fqdn_rotate()`
+- `ensure_resource()` is more verbose on debug mode
+- Stricter argument checking for `dirname()`
+- Fix `is_domain_name()` to better match RFC
+- Fix `uriescape()` when called with array
+- Fix `file_line` resource when using the `after` attribute with `match`
+
+##2015-01-14 - Supported Release 4.5.1
+###Summary
+
+This release changes the temporary facter_dot_d cache locations outside of the /tmp directory due to a possible security vunerability. CVE-2015-1029
+
+####Bugfixes
+- Facter_dot_d cache will now be stored in puppet libdir instead of tmp
+
+##2014-12-15 - Supported Release 4.5.0
+###Summary
+
+This release improves functionality of the member function and adds improved future parser support.
+
+####Features
+- MODULES-1329: Update member() to allow the variable to be an array.
+- Sync .travis.yml, Gemfile, Rakefile, and CONTRIBUTING.md via modulesync
+
+####Bugfixes
+- Fix range() to work with numeric ranges with the future parser
+- Accurately express SLES support in metadata.json (was missing 10SP4 and 12)
+- Don't require `line` to match the `match` parameter
+
+##2014-11-10 - Supported Release 4.4.0
+###Summary
+This release has an overhauled readme, new private manifest function, and fixes many future parser bugs.
+
+####Features
+- All new shiny README
+- New `private()` function for making private manifests (yay!)
+
+####Bugfixes
+- Code reuse in `bool2num()` and `zip()`
+- Fix many functions to handle `generate()` no longer returning a string on new puppets
+- `concat()` no longer modifies the first argument (whoops)
+- strict variable support for `getvar()`, `member()`, `values_at`, and `has_interface_with()`
+- `to_bytes()` handles PB and EB now
+- Fix `tempfile` ruby requirement for `validate_augeas()` and `validate_cmd()`
+- Fix `validate_cmd()` for windows
+- Correct `validate_string()` docs to reflect non-handling of `undef`
+- Fix `file_line` matching on older rubies
+
+
 ##2014-07-15 - Supported Release 4.3.2
 ###Summary
 

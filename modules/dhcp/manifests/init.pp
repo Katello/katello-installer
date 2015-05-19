@@ -1,17 +1,19 @@
 class dhcp (
-  $dnsdomain    = $dhcp::params::dnsdomain,
-  $nameservers  = ['8.8.8.8', '8.8.4.4'],
-  $interfaces   = undef,
-  $interface    = 'NOTSET',
-  $dnskeyname   = 'rndc-key',
-  $dnsupdatekey = undef,
-  $pxeserver    = undef,
-  $pxefilename  = undef,
-  $logfacility  = 'local7',
-  $dhcp_monitor = true,
-  $dhcp_dir    = $dhcp::params::dhcp_dir,
-  $packagename = $dhcp::params::packagename,
-  $servicename = $dhcp::params::servicename,
+  $dnsdomain          = $dhcp::params::dnsdomain,
+  $nameservers        = ['8.8.8.8', '8.8.4.4'],
+  $interfaces         = undef,
+  $interface          = 'NOTSET',
+  $default_lease_time = 43200,
+  $max_lease_time     = 86400,
+  $dnskeyname         = 'rndc-key',
+  $dnsupdatekey       = undef,
+  $pxeserver          = undef,
+  $pxefilename        = undef,
+  $logfacility        = 'local7',
+  $dhcp_monitor       = true,
+  $dhcp_dir           = $dhcp::params::dhcp_dir,
+  $packagename        = $dhcp::params::packagename,
+  $servicename        = $dhcp::params::servicename,
 ) inherits dhcp::params {
 
   # Incase people set interface instead of interfaces work around
@@ -26,7 +28,7 @@ class dhcp (
   }
 
   $package_provider = $::operatingsystem ? {
-    darwin  => 'macports',
+    'darwin'  => 'macports',
     default => undef,
   }
 
@@ -44,7 +46,7 @@ class dhcp (
   case $::osfamily {
     'Debian': {
       file{ '/etc/default/isc-dhcp-server':
-        ensure  => present,
+        ensure  => file,
         owner   => 'root',
         group   => 'root',
         mode    => '0644',
@@ -55,7 +57,7 @@ class dhcp (
     }
     'RedHat': {
       file{ '/etc/sysconfig/dhcpd':
-        ensure  => present,
+        ensure  => file,
         owner   => 'root',
         group   => 'root',
         mode    => '0644',

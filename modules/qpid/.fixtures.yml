@@ -1,5 +1,6 @@
 fixtures:
   repositories:
-    stdlib: "git://github.com/puppetlabs/puppetlabs-stdlib.git"
+    stdlib: 'git://github.com/puppetlabs/puppetlabs-stdlib.git'
+    concat_native: 'git://github.com/theforeman/puppet-concat'
   symlinks:
     qpid: "#{source_dir}"

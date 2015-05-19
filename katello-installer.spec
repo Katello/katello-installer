@@ -2,20 +2,111 @@
 %undefine scl_prefix
 %global scl_ruby /usr/bin/ruby
 
-Name: katello-installer
-Version: 2.1.0
+Name:    katello-installer-base
+Version: 2.3.0
 Release: 1%{?dist}
 Summary: Puppet-based installer for the Katello and Katello Capsule
-Group: Applications/System
+Group:   Applications/System
 License: GPLv3+ and ASL 2.0
-URL: http://katello.org
+URL:     http://katello.org
 Source0: %{name}-%{version}.tar.gz
 
 BuildArch: noarch
+Obsoletes: katello-installer < 2.1.0
 
 Requires: %{?scl_prefix}rubygem-kafo
 Requires: %{?scl_prefix}rubygem-apipie-bindings >= 0.0.6
 Requires: foreman-selinux
+Requires: katello-selinux
+Requires: openssl
+
+%package -n katello-installer
+Summary: Puppet-based installer for Katello Server
+Group:	 Applications/System
+Conflicts: capsule-installer
+Conflicts: katello-devel-installer
+Requires: %{name} = %{version}-%{release}
+
+%description -n katello-installer
+A set of tools for installation of Katello and a the default Capsule.
+
+%files -n katello-installer
+%{_datadir}/katello-installer/bin
+%{_datadir}/katello-installer/checks
+%config %{_sysconfdir}/katello-installer/config_header.txt
+%dir %{_sysconfdir}/katello-installer
+%dir %{_localstatedir}/log/katello-installer
+%config %attr(600, root, root) %{_sysconfdir}/katello-installer/katello-installer.yaml
+%config %attr(600, root, root) %{_sysconfdir}/katello-installer/capsule-certs-generate.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/katello-installer/answers.katello-installer.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/katello-installer/answers.capsule-certs-generate.yaml
+%{_sbindir}/katello-installer
+%{_sbindir}/capsule-certs-generate
+%{_sbindir}/katello-certs-check
+
+%package -n capsule-installer
+Summary:   Puppet-based installer for a Katello Capsule
+Group:	   Applications/System
+Conflicts: katello-installer
+Conflicts: katello-devel-installer
+Requires:  %{name} = %{version}-%{release}
+Requires: katello-service
+
+%description -n capsule-installer
+A set of tools for installation of a Katello Capsule
+
+%files -n capsule-installer
+%{_datadir}/capsule-installer/bin
+%{_datadir}/capsule-installer/checks
+%config %{_sysconfdir}/capsule-installer/config_header.txt
+%dir %{_sysconfdir}/capsule-installer
+%dir %{_localstatedir}/log/capsule-installer
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/capsule-installer/answers.capsule-installer.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/capsule-installer/capsule-installer.yaml
+%{_sbindir}/capsule-installer
+
+%package -n katello-devel-installer
+Summary:   Puppet-based installer for a Katello development setup from git
+Group:	   Applications/System
+Conflicts: capsule-installer
+Conflicts: katello-installer
+Requires:  %{name} = %{version}-%{release}
+
+%description -n katello-devel-installer
+A set of tools for installation of a Katello development environment using
+Katello and Foreman from git.
+
+%files -n katello-devel-installer
+%{_datadir}/katello-devel-installer/bin
+%{_datadir}/katello-devel-installer/checks
+%config %{_sysconfdir}/katello-devel-installer/config_header.txt
+%dir %{_sysconfdir}/katello-devel-installer
+%dir %{_localstatedir}/log/katello-devel-installer
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/katello-devel-installer/answers.katello-devel-installer.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/katello-devel-installer/katello-devel-installer.yaml
+%{_sbindir}/katello-devel-installer
+
+%package -n sam-installer
+Summary:   Puppet-based installer for a SAM development setup from git
+Group:	   Applications/System
+Conflicts: capsule-installer
+Conflicts: katello-installer
+Requires:  %{name} = %{version}-%{release}
+
+%description -n sam-installer
+A set of tools for installation of a SAM development environment using
+Katello and Foreman from git.
+
+%files -n sam-installer
+%{_datadir}/sam-installer/bin
+%{_datadir}/sam-installer/checks
+%config %{_sysconfdir}/sam-installer/config_header.txt
+%dir %{_sysconfdir}/sam-installer
+%dir %{_localstatedir}/log/sam-installer
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/sam-installer/answers.sam-installer.yaml
+%config(noreplace) %attr(600, root, root) %{_sysconfdir}/sam-installer/sam-installer.yaml
+%{_sbindir}/sam-installer
+
 
 %description
 A set of tools for installation of Katello and Katello Capsule,
@@ -29,44 +120,174 @@ including Foreman and Foreman Proxy.
 sed -ri '1sX(/usr/bin/ruby|/usr/bin/env ruby)X%{scl_ruby}X' bin/*
 
 #configure the paths
-sed -ri 'sX\./configX%{_sysconfdir}/%{name}Xg' bin/* config/*
-sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/%{name}Xg' config/*
-sed -ri 'sX\:modules_dir.*$X:modules_dir: %{_datadir}/%{name}/modulesXg' config/*
-sed -ri 'sX\:hooks_dir.*$X:hooks_dir: %{_datadir}/%{name}/hooksXg' config/*
+sed -ri 'sX\./configX%{_sysconfdir}/katello-installerXg' bin/katello-installer config/answers.katello-installer.yaml config/katello-installer.yaml
+sed -ri 'sX\./configX%{_sysconfdir}/katello-installerXg' bin/capsule-certs-generate config/capsule-certs-generate.yaml
+sed -ri 'sX\./configX%{_sysconfdir}/katello-devel-installerXg' bin/katello-devel-installer config/katello-devel-installer.yaml
+sed -ri 'sX\./configX%{_sysconfdir}/sam-installerXg' bin/sam-installer config/sam-installer.yaml
+sed -ri 'sX\./configX%{_sysconfdir}/capsule-installerXg' bin/capsule-installer config/capsule-installer.yaml
+
+sed -ri 'sX\./migrateX%{_datadir}/katello-installer/migrateXg' bin/katello-installer
+
+sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/katello-installerXg' config/katello-installer.yaml
+sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/katello-installerXg' config/capsule-certs-generate.yaml
+sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/katello-devel-installerXg' config/katello-devel-installer.yaml
+sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/sam-installerXg' config/sam-installer.yaml
+sed -ri 'sX\:installer_dir.*$X:installer_dir: %{_datadir}/capsule-installerXg' config/capsule-installer.yaml
+
+sed -ri 'sX\:modules_dir.*$X:modules_dir: %{_datadir}/katello-installer/modulesXg' config/*
+sed -ri 'sX\:hook_dirs.*$X:hook_dirs: \["%{_datadir}/katello-installer/hooks"\]Xg' config/*
 
 %install
-install -d -m0755 %{buildroot}%{_sysconfdir}/%{name}
-install -d -m0755 %{buildroot}%{_localstatedir}/log/%{name}
-install -d -m0755 %{buildroot}/%{_datadir}/%{name}
+install -d -m0755 %{buildroot}%{_sysconfdir}/katello-installer
+install -d -m0755 %{buildroot}%{_sysconfdir}/katello-devel-installer
+install -d -m0755 %{buildroot}%{_sysconfdir}/sam-installer
+install -d -m0755 %{buildroot}%{_sysconfdir}/capsule-installer
+
+install -d -m0755 %{buildroot}%{_localstatedir}/log/katello-installer
+install -d -m0755 %{buildroot}%{_localstatedir}/log/katello-devel-installer
+install -d -m0755 %{buildroot}%{_localstatedir}/log/sam-installer
+install -d -m0755 %{buildroot}%{_localstatedir}/log/capsule-installer
+
+install -d -m0755 %{buildroot}/%{_datadir}/katello-installer/bin
+install -d -m0755 %{buildroot}/%{_datadir}/katello-devel-installer/bin
+install -d -m0755 %{buildroot}/%{_datadir}/sam-installer/bin
+install -d -m0755 %{buildroot}/%{_datadir}/capsule-installer/bin
+
 install -d -m0755 %{buildroot}/%{_sbindir}
-cp -dpR bin modules hooks checks %{buildroot}/%{_datadir}/%{name}
-cp -dpR config/* %{buildroot}/%{_sysconfdir}/%{name}
-ln -sf %{_datadir}/%{name}/bin/katello-installer %{buildroot}/%{_sbindir}/katello-installer
-ln -sf %{_datadir}/%{name}/bin/katello-devel-installer %{buildroot}/%{_sbindir}/katello-devel-installer
-ln -sf %{_datadir}/%{name}/bin/capsule-installer %{buildroot}/%{_sbindir}/capsule-installer
-ln -sf %{_datadir}/%{name}/bin/capsule-certs-generate %{buildroot}/%{_sbindir}/capsule-certs-generate
+
+cp -dpR modules hooks migrate %{buildroot}/%{_datadir}/katello-installer
+
+cp -dpR checks %{buildroot}/%{_datadir}/katello-installer
+cp -dpR checks %{buildroot}/%{_datadir}/katello-devel-installer
+cp -dpR checks %{buildroot}/%{_datadir}/sam-installer
+cp -dpR checks %{buildroot}/%{_datadir}/capsule-installer
+
+cp -dpR bin/katello-installer %{buildroot}/%{_datadir}/katello-installer/bin/katello-installer
+cp -dpR bin/capsule-certs-generate %{buildroot}/%{_datadir}/katello-installer/bin/capsule-certs-generate
+cp -dpR bin/katello-certs-check %{buildroot}/%{_datadir}/katello-installer/bin/katello-certs-check
+cp -dpR bin/katello-devel-installer %{buildroot}/%{_datadir}/katello-devel-installer/bin/katello-devel-installer
+cp -dpR bin/sam-installer %{buildroot}/%{_datadir}/sam-installer/bin/
+cp -dpR bin/capsule-installer %{buildroot}/%{_datadir}/capsule-installer/bin/capsule-installer
+
+cp -dpR config/answers.katello-installer.yaml %{buildroot}/%{_sysconfdir}/katello-installer
+cp -dpR config/answers.capsule-certs-generate.yaml %{buildroot}/%{_sysconfdir}/katello-installer
+cp -dpR config/answers.katello-devel-installer.yaml %{buildroot}/%{_sysconfdir}/katello-devel-installer
+cp -dpR config/answers.sam-installer.yaml %{buildroot}/%{_sysconfdir}/sam-installer
+cp -dpR config/answers.capsule-installer.yaml %{buildroot}/%{_sysconfdir}/capsule-installer
+
+cp -dpR config/katello-installer.yaml %{buildroot}/%{_sysconfdir}/katello-installer
+cp -dpR config/capsule-certs-generate.yaml %{buildroot}/%{_sysconfdir}/katello-installer
+cp -dpR config/katello-devel-installer.yaml %{buildroot}/%{_sysconfdir}/katello-devel-installer
+cp -dpR config/sam-installer.yaml %{buildroot}/%{_sysconfdir}/sam-installer
+cp -dpR config/capsule-installer.yaml %{buildroot}/%{_sysconfdir}/capsule-installer
+
+cp -dpR config/config_header.txt %{buildroot}/%{_sysconfdir}/katello-installer
+cp -dpR config/config_header.txt %{buildroot}/%{_sysconfdir}/katello-devel-installer
+cp -dpR config/config_header.txt %{buildroot}/%{_sysconfdir}/capsule-installer
+cp -dpR config/config_header.txt %{buildroot}/%{_sysconfdir}/sam-installer
+
+ln -sf %{_datadir}/katello-installer/bin/katello-installer %{buildroot}/%{_sbindir}/katello-installer
+ln -sf %{_datadir}/katello-installer/bin/capsule-certs-generate %{buildroot}/%{_sbindir}/capsule-certs-generate
+ln -sf %{_datadir}/katello-installer/bin/katello-certs-check %{buildroot}/%{_sbindir}/katello-certs-check
+ln -sf %{_datadir}/katello-devel-installer/bin/katello-devel-installer %{buildroot}/%{_sbindir}/katello-devel-installer
+ln -sf %{_datadir}/sam-installer/bin/sam-installer %{buildroot}/%{_sbindir}/sam-installer
+ln -sf %{_datadir}/capsule-installer/bin/capsule-installer %{buildroot}/%{_sbindir}/capsule-installer
 
 %files
 %defattr(-,root,root,-)
+%{_datadir}/katello-installer/modules
+%{_datadir}/katello-installer/hooks
+%{_datadir}/katello-installer/migrate
 %doc README.*
-%{_datadir}/%{name}
-%dir %{_sysconfdir}/%{name}
-%dir %{_localstatedir}/log/%{name}
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.katello-installer.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.katello-devel-installer.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.capsule-certs-generate.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/answers.capsule-installer.yaml
-%config %{_sysconfdir}/%{name}/config_header.txt
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello-installer.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/katello-devel-installer.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/capsule-certs-generate.yaml
-%config(noreplace) %attr(600, root, root) %{_sysconfdir}/%{name}/capsule-installer.yaml
-%{_sbindir}/katello-installer
-%{_sbindir}/katello-devel-installer
-%{_sbindir}/capsule-installer
-%{_sbindir}/capsule-certs-generate
 
 %changelog
+* Tue Feb 24 2015 Eric D. Helms <ericdhelms@gmail.com> 2.3.0-1
+-
+
+* Tue Feb 24 2015 Eric D. Helms <ericdhelms@gmail.com> 2.2.0-2
+- Bumping release to 2.2.0-2 (ericdhelms@gmail.com)
+- Fixes #9466 - gutterball.conf missing gutterball.amqp.connect
+  (dtsang@redhat.com)
+- Fixes #9364: Update service wait for EL7. (ericdhelms@gmail.com)
+- Merge pull request #176 from stbenjam/8769 (stephen@bitbin.de)
+- refs #8679 - refer to capsule-installer pkg instead of katello-installer
+  (stbenjam@redhat.com)
+- fixes #9254,#9060,#8175 - updating katello_devel and qpid modules
+  (jsherril@redhat.com)
+- fixes #7745, #8756, #8755, #8991 - rhsm and templates isolation
+  (stbenjam@redhat.com)
+- Merge pull request #170 from ehelms/refs-9200 (eric.d.helms@gmail.com)
+- refs #9204,#9163 - updating service_wait and certs (jsherril@redhat.com)
+- refs #8999 - pegging foreman and puppet modules for apache 1.1.1
+  (jsherril@redhat.com)
+- Refs #9200: Disable discovery for nightlies. (ericdhelms@gmail.com)
+- Merge pull request #167 from dustints/katello_package_config
+  (dtsang@redhat.com)
+- Ref #9055,#8756,#7745: configable pkg dependecies and capsule client cert
+  bundle (dtsang@redhat.com)
+- Fixes #7545: Ignore system proxy settings on installation for service wait
+  commands. (ericdhelms@gmail.com)
+- Merge pull request #147 from stbenjam/migrate (stephen@bitbin.de)
+- fixes #9075 - hooks_dir should be hook_dirs (stbenjam@redhat.com)
+- fixes #8613 - support upgrades in the installer (stbenjam@redhat.com)
+- Merge pull request #160 from lzap/java-check (eric.d.helms@gmail.com)
+- address comments (dtsang@redhat.com)
+- refs #8213 - add sam-installer (dtsang@redhat.com)
+- Merge pull request #164 from dustints/foreman_gutterball (dtsang@redhat.com)
+- Merge pull request #161 from stbenjam/puppetfile (stephen@bitbin.de)
+- Fixes #9024 - Improved java check error messages (lzap+git@redhat.com)
+- fixes #9020 - make Puppetfile consistent with dashes (stbenjam@redhat.com)
+- Merge pull request #162 from stbenjam/6927 (stephen@bitbin.de)
+- Fixes #8849 - installs foreman_gutterball (dtsang@redhat.com)
+- Fix link in Readme (ichimonji10@gmail.com)
+- refs #6927, et al. - update capsule module (stbenjam@redhat.com)
+- Fixes #8842: Move obsolete to allow yum upgrade. (ericdhelms@gmail.com)
+- Fixes #8843: katello-installer-base missing modules and hooks
+  (ericdhelms@gmail.com)
+
+* Tue Feb 24 2015 Eric D. Helms <ericdhelms@gmail.com>
+- Fixes #9466 - gutterball.conf missing gutterball.amqp.connect
+  (dtsang@redhat.com)
+- Fixes #9364: Update service wait for EL7. (ericdhelms@gmail.com)
+- Merge pull request #176 from stbenjam/8769 (stephen@bitbin.de)
+- refs #8679 - refer to capsule-installer pkg instead of katello-installer
+  (stbenjam@redhat.com)
+- fixes #9254,#9060,#8175 - updating katello_devel and qpid modules
+  (jsherril@redhat.com)
+- fixes #7745, #8756, #8755, #8991 - rhsm and templates isolation
+  (stbenjam@redhat.com)
+- Merge pull request #170 from ehelms/refs-9200 (eric.d.helms@gmail.com)
+- refs #9204,#9163 - updating service_wait and certs (jsherril@redhat.com)
+- refs #8999 - pegging foreman and puppet modules for apache 1.1.1
+  (jsherril@redhat.com)
+- Refs #9200: Disable discovery for nightlies. (ericdhelms@gmail.com)
+- Merge pull request #167 from dustints/katello_package_config
+  (dtsang@redhat.com)
+- Ref #9055,#8756,#7745: configable pkg dependecies and capsule client cert
+  bundle (dtsang@redhat.com)
+- Fixes #7545: Ignore system proxy settings on installation for service wait
+  commands. (ericdhelms@gmail.com)
+- Merge pull request #147 from stbenjam/migrate (stephen@bitbin.de)
+- fixes #9075 - hooks_dir should be hook_dirs (stbenjam@redhat.com)
+- fixes #8613 - support upgrades in the installer (stbenjam@redhat.com)
+- Merge pull request #160 from lzap/java-check (eric.d.helms@gmail.com)
+- address comments (dtsang@redhat.com)
+- refs #8213 - add sam-installer (dtsang@redhat.com)
+- Merge pull request #164 from dustints/foreman_gutterball (dtsang@redhat.com)
+- Merge pull request #161 from stbenjam/puppetfile (stephen@bitbin.de)
+- Fixes #9024 - Improved java check error messages (lzap+git@redhat.com)
+- fixes #9020 - make Puppetfile consistent with dashes (stbenjam@redhat.com)
+- Merge pull request #162 from stbenjam/6927 (stephen@bitbin.de)
+- Fixes #8849 - installs foreman_gutterball (dtsang@redhat.com)
+- Fix link in Readme (ichimonji10@gmail.com)
+- refs #6927, et al. - update capsule module (stbenjam@redhat.com)
+- Fixes #8842: Move obsolete to allow yum upgrade. (ericdhelms@gmail.com)
+- Fixes #8843: katello-installer-base missing modules and hooks
+  (ericdhelms@gmail.com)
+
+* Fri Dec 19 2014 David Davis <daviddavis@redhat.com> 2.2.0-1
+- new package built with tito
+
 * Fri Sep 12 2014 Justin Sherrill <jsherril@redhat.com> 2.1.0-1
 - bumping version to 2.1 (jsherril@redhat.com)
 

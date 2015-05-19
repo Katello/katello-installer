@@ -18,16 +18,27 @@ class capsule::params {
   $pulp_oauth_key             = 'katello'
   $pulp_oauth_secret          = undef
 
+  $reverse_proxy      = false
+  $reverse_proxy_port = 8443
+
   $puppet                        = false
   $puppetca                      = false
+  $puppet_ca_proxy               = ''
 
   $foreman_proxy_port            = '9090'
+
+  $foreman_proxy_http            = true
+  $foreman_proxy_http_port       = '8000'
+
   $tftp                          = false
   $tftp_servername               = $foreman_proxy::params::tftp_servername
   $tftp_syslinux_files           = $foreman_proxy::params::tftp_syslinux_files
   $tftp_syslinux_root            = $foreman_proxy::params::tftp_syslinux_root
   $tftp_root                     = $foreman_proxy::params::tftp_root
   $tftp_dirs                     = $foreman_proxy::params::tftp_dirs
+
+  $bmc                           = false
+  $bmc_default_provider          = 'ipmitool'
 
   $dhcp                          = false
   $dhcp_managed                  = $foreman_proxy::params::dhcp_managed
@@ -63,7 +74,19 @@ class capsule::params {
   $realm_principal               = $foreman_proxy::params::realm_principal
   $freeipa_remove_dns            = $foreman_proxy::params::freeipa_remove_dns
 
+  # Templates proxy
+  $templates                     = false
+
   $register_in_foreman = false
   $certs_tar = undef
 
+  $rhsm_url = '/rhsm'
+
+  $qpid_router             = true
+  $qpid_router_hub_addr    = '0.0.0.0'
+  $qpid_router_agent_addr  = '0.0.0.0'
+  $qpid_router_broker_addr = $::fqdn
+  $qpid_router_hub_port    = 5646
+  $qpid_router_agent_port  = 5647
+  $qpid_router_broker_port = 5671
 }

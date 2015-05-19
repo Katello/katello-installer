@@ -13,7 +13,7 @@ define apache::mpm (
   $_path = "${lib_path}/${_lib}"
   $_id   = "mpm_${mpm}_module"
 
-  if $apache_version >= 2.4 {
+  if versioncmp($apache_version, '2.4') >= 0 {
     file { "${mod_dir}/${mpm}.load":
       ensure  => file,
       path    => "${mod_dir}/${mpm}.load",
@@ -23,7 +23,7 @@ define apache::mpm (
         Exec["mkdir ${mod_dir}"],
       ],
       before  => File[$mod_dir],
-      notify  => Service['httpd'],
+      notify  => Class['apache::service'],
     }
   }
 
@@ -34,20 +34,27 @@ define apache::mpm (
         target  => "${::apache::mod_dir}/${mpm}.conf",
         require => Exec["mkdir ${::apache::mod_enable_dir}"],
         before  => File[$::apache::mod_enable_dir],
-        notify  => Service['httpd'],
+        notify  => Class['apache::service'],
       }
 
-      if $apache_version >= 2.4 {
+      if versioncmp($apache_version, '2.4') >= 0 {
         file { "${::apache::mod_enable_dir}/${mpm}.load":
           ensure  => link,
           target  => "${::apache::mod_dir}/${mpm}.load",
           require => Exec["mkdir ${::apache::mod_enable_dir}"],
           before  => File[$::apache::mod_enable_dir],
-          notify  => Service['httpd'],
+          notify  => Class['apache::service'],
+        }
+
+        if $mpm == 'itk' {
+            file { "${lib_path}/mod_mpm_itk.so":
+              ensure => link,
+              target => "${lib_path}/mpm_itk.so"
+            }
         }
       }
 
-      if $apache_version < 2.4 {
+      if versioncmp($apache_version, '2.4') < 0 {
         package { "apache2-mpm-${mpm}":
           ensure => present,
         }

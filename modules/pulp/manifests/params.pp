@@ -17,8 +17,9 @@ class pulp::params {
 
   $consumers_crl = undef
 
-  $qpid_ssl_cert_db = undef
-  $qpid_ssl_cert_password_file = undef
+  $qpid_ssl = true
+  $qpid_ssl_cert_db = '/etc/pki/example/nssdb'
+  $qpid_ssl_cert_password_file = '/etc/pki/example/nssdb/nss_db_password-file'
 
   $default_login = 'admin'
   $default_password = cache_data('pulp_password', random_password(32))
@@ -31,4 +32,25 @@ class pulp::params {
   $proxy_port     = undef
   $proxy_username = undef
   $proxy_password = undef
+
+  $num_workers = min($::processorcount, 8)
+
+  $osreleasemajor = regsubst($::operatingsystemrelease, '^(\d+)\..*$', '\1')
+
+  case $::osfamily{
+    'RedHat': {
+      case $osreleasemajor {
+        '6': {
+          $pulp_workers_template = 'upstart_pulp_workers'
+        }
+        default: {
+          $pulp_workers_template = 'systemd_pulp_workers'
+        }
+      }
+    }
+    default: {
+      fail("${::hostname}: This module does not support osfamily ${::operatingsystem}")
+    }
+  }
+
 }

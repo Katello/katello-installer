@@ -7,7 +7,9 @@ describe 'apache::mod::proxy_html class', :unless => UNSUPPORTED_PLATFORMS.inclu
   when 'RedHat'
     service_name = 'httpd'
   when 'FreeBSD'
-    service_name = 'apache22'
+    service_name = 'apache24'
+  when 'Gentoo'
+    service_name = 'apache2'
   end
 
   context "default proxy_html config" do
@@ -32,8 +34,8 @@ describe 'apache::mod::proxy_html class', :unless => UNSUPPORTED_PLATFORMS.inclu
     end
 
     describe service(service_name) do
-      it { should be_enabled }
-      it { should be_running }
+      it { is_expected.to be_enabled }
+      it { is_expected.to be_running }
     end
   end
 end

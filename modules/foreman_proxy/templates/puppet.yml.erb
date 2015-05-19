@@ -1,6 +1,6 @@
 ---
 # Puppet management
-:enabled: <%= scope.lookupvar("foreman_proxy::puppetrun") %>
+:enabled: <%= @module_enabled %>
 :puppet_conf: <%= scope.lookupvar("foreman_proxy::puppetdir") %>/puppet.conf
 # valid providers:
 #   puppetrun   (for puppetrun/kick, deprecated in Puppet 3)
@@ -8,7 +8,7 @@
 #   puppetssh   (run puppet over ssh)
 #   salt        (uses salt puppet.run)
 #   customrun   (calls a custom command with args)
-<% if scope.lookupvar("foreman_proxy::puppetrun_provider") != '' -%>
+<% unless [nil, :undefined, :undef, ''].include?(scope.lookupvar("foreman_proxy::puppetrun_provider")) -%>
 :puppet_provider: <%= scope.lookupvar("foreman_proxy::puppetrun_provider") %>
 <% else -%>
 #:puppet_provider: puppetrun
@@ -25,6 +25,10 @@
 :puppetssh_sudo: <%= scope.lookupvar("foreman_proxy::puppetssh_sudo") %>
 # the command which will be sent to the host
 :puppetssh_command: <%= scope.lookupvar("foreman_proxy::puppetssh_command") %>
+# wait for the command to finish (and capture exit code), or detach process and return 0
+# Note: enabling this option causes the Foreman web UI to be blocked when executing puppetrun,
+# with timeout from the Browser and/or Foreman's REST client after 60 seconds.
+:puppetssh_wait: <%= scope.lookupvar("foreman_proxy::puppetssh_wait") %>
 # With which user should the proxy connect
 <% if scope.lookupvar("foreman_proxy::puppetrun_provider") == 'puppetssh' -%>
 :puppetssh_user: <%= scope.lookupvar("foreman_proxy::puppetssh_user") %>

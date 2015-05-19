@@ -9,12 +9,16 @@ class postgresql::server::config {
   $pg_hba_conf_path           = $postgresql::server::pg_hba_conf_path
   $pg_ident_conf_path         = $postgresql::server::pg_ident_conf_path
   $postgresql_conf_path       = $postgresql::server::postgresql_conf_path
+  $recovery_conf_path         = $postgresql::server::recovery_conf_path
   $pg_hba_conf_defaults       = $postgresql::server::pg_hba_conf_defaults
   $user                       = $postgresql::server::user
   $group                      = $postgresql::server::group
   $version                    = $postgresql::server::_version
   $manage_pg_hba_conf         = $postgresql::server::manage_pg_hba_conf
   $manage_pg_ident_conf       = $postgresql::server::manage_pg_ident_conf
+  $manage_recovery_conf       = $postgresql::server::manage_recovery_conf
+  $datadir                    = $postgresql::server::datadir
+  $logdir                     = $postgresql::server::logdir
 
   if ($manage_pg_hba_conf == true) {
     # Prepare the main pg_hba file
@@ -100,6 +104,15 @@ class postgresql::server::config {
   postgresql::server::config_entry { 'port':
     value => $port,
   }
+  postgresql::server::config_entry { 'data_directory':
+    value => $datadir,
+  }
+  if $logdir {
+    postgresql::server::config_entry { 'log_directory':
+      value => $logdir,
+    }
+
+  }
 
   # RedHat-based systems hardcode some PG* variables in the init script, and need to be overriden
   # in /etc/sysconfig/pgsql/postgresql. Create a blank file so we can manage it with augeas later.
@@ -108,7 +121,19 @@ class postgresql::server::config {
       ensure  => present,
       replace => false,
     }
+
+    # The init script from the packages of the postgresql.org repository
+    # sources an alternate sysconfig file.
+    # I. e. /etc/sysconfig/pgsql/postgresql-9.3 for PostgreSQL 9.3
+    # Link to the sysconfig file set by this puppet module
+    file { "/etc/sysconfig/pgsql/postgresql-${version}":
+      ensure  => link,
+      target  => '/etc/sysconfig/pgsql/postgresql',
+      require => File[ '/etc/sysconfig/pgsql/postgresql' ],
+    }
+
   }
+
 
   if ($manage_pg_ident_conf == true) {
     concat { $pg_ident_conf_path:
@@ -118,6 +143,36 @@ class postgresql::server::config {
       mode   => '0640',
       warn   => true,
       notify => Class['postgresql::server::reload'],
+    }
+  }
+
+  if ($manage_recovery_conf == true) {
+    concat { $recovery_conf_path:
+      owner  => $user,
+      group  => $group,
+      force  => true, # do not crash if there is no recovery conf file
+      mode   => '0640',
+      warn   => true,
+      notify => Class['postgresql::server::reload'],
+    }
+  }
+
+  if $::osfamily == 'RedHat' {
+    if $::operatingsystemrelease =~ /^7/ or $::operatingsystem == 'Fedora' {
+      file { 'systemd-override':
+        ensure  => present,
+        path    => '/etc/systemd/system/postgresql.service',
+        owner   => root,
+        group   => root,
+        content => template('postgresql/systemd-override.erb'),
+        notify  => [ Exec['restart-systemd'], Class['postgresql::server::service'] ],
+        before  => Class['postgresql::server::reload'],
+      }
+      exec { 'restart-systemd':
+        command     => 'systemctl daemon-reload',
+        refreshonly => true,
+        path        => '/bin:/usr/bin:/usr/local/bin'
+      }
     }
   }
 }

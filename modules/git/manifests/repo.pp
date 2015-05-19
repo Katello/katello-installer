@@ -29,12 +29,12 @@ define git::repo (
   require git::params
 
   if $source {
-    $cmd = "${git::params::bin} clone ${source} ${target} --recursive"
+    $cmd = "${::git::params::bin} clone ${source} ${target} --recursive"
   } else {
     if $bare {
-      $cmd = "${git::params::bin} init --bare ${target}"
+      $cmd = "${::git::params::bin} init --bare ${target}"
     } else {
-      $cmd = "${git::params::bin} init ${target}"
+      $cmd = "${::git::params::bin} init ${target}"
     }
   }
 

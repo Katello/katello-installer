@@ -6,6 +6,8 @@ class katello_devel::apache {
   include ::apache::mod::proxy
   include ::apache::mod::proxy_http
 
+  $apache_version = $::apache::apache_version
+
   apache::vhost { 'katello-ssl':
     servername        => $::fqdn,
     serveraliases     => ['katello'],

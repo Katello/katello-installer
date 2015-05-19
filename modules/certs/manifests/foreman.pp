@@ -48,7 +48,7 @@ class certs::foreman (
       mode   => '0400',
     }
 
-    $foreman_config_cmd = "${::foreman::app_root}/script/foreman-config\
+    $foreman_config_cmd = "${::foreman::app_root}/script/foreman-rake config --\
       -k ssl_ca_file -v '${ssl_ca_cert}'\
       -k ssl_certificate -v '${client_cert}'\
       -k ssl_priv_key -v '${client_key}'"

@@ -11,8 +11,16 @@
 # have received a copy of GPLv2 along with this software; if not, see
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt.
 
-SERVICE=$1
-COMMAND=$2
+VERSION_ID=`cat /etc/os-release | grep VERSION_ID`
+
+if [[ $VERSION_ID == *'7'* ]]
+then
+    COMMAND=$1
+    SERVICE=$2
+else
+    COMMAND=$2
+    SERVICE=$1
+fi
 
 PLUGINS_DIR=${PLUGINS_DIR:-"$(dirname $(readlink -f $BASH_SOURCE))/../plugins"}
 # number of attemts to check the service
@@ -43,11 +51,11 @@ ignore-retval () {
 wait-for-url () {
     # we use wget first because it's able to retry from connrefused situation
     /usr/bin/wget --timeout=1 -4 --tries=$WAIT_MAX --retry-connrefused -qO-\
-                  --no-check-certificate $1 > /dev/null
+                  --no-check-certificate --no-proxy $1 > /dev/null
     # then we double check with curl that the service is really
     # available. wget is not able to retry from 'Unable to establish
     # SSL connection.' error, which happens for example with tomcat6
-    /usr/bin/curl -ks --retry $WAIT_MAX --retry-delay 1 $1 > /dev/null
+    /usr/bin/curl -ks --retry $WAIT_MAX --retry-delay 1 --noproxy '*' $1 > /dev/null
 
     if ! [ $? = '0' ]; then
         RETVAL=5

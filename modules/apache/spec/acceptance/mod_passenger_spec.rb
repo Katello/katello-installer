@@ -5,10 +5,43 @@ describe 'apache::mod::passenger class', :unless => UNSUPPORTED_PLATFORMS.includ
   when 'Debian'
     service_name = 'apache2'
     mod_dir = '/etc/apache2/mods-available/'
-    conf_file = "#{mod_dir}passenger_extra.conf"
-    load_file = "#{mod_dir}passenger.load"
-    passenger_root = '/usr'
-    passenger_ruby = '/usr/bin/ruby'
+    conf_file = "#{mod_dir}passenger.conf"
+    load_file = "#{mod_dir}zpassenger.load"
+
+    case fact('operatingsystem')
+    when 'Ubuntu'
+      case fact('lsbdistrelease')
+      when '10.04'
+        passenger_root = '/usr'
+        passenger_ruby = '/usr/bin/ruby'
+      when '12.04'
+        passenger_root = '/usr'
+        passenger_ruby = '/usr/bin/ruby'
+      when '14.04'
+        passenger_root         = '/usr/lib/ruby/vendor_ruby/phusion_passenger/locations.ini'
+        passenger_ruby         = '/usr/bin/ruby'
+        passenger_default_ruby = '/usr/bin/ruby'
+      else
+        # This may or may not work on Ubuntu releases other than the above
+        passenger_root = '/usr'
+        passenger_ruby = '/usr/bin/ruby'
+      end
+    when 'Debian'
+      case fact('lsbdistcodename')
+      when 'wheezy'
+        passenger_root = '/usr'
+        passenger_ruby = '/usr/bin/ruby'
+      when 'jessie'
+        passenger_root         = '/usr/lib/ruby/vendor_ruby/phusion_passenger/locations.ini'
+        passenger_ruby         = '/usr/bin/ruby'
+        passenger_default_ruby = '/usr/bin/ruby'
+      else
+        # This may or may not work on Debian releases other than the above
+        passenger_root = '/usr'
+        passenger_ruby = '/usr/bin/ruby'
+      end
+    end
+
     passenger_module_path = '/usr/lib/apache2/modules/mod_passenger.so'
     rackapp_user = 'www-data'
     rackapp_group = 'www-data'
@@ -16,7 +49,7 @@ describe 'apache::mod::passenger class', :unless => UNSUPPORTED_PLATFORMS.includ
     service_name = 'httpd'
     mod_dir = '/etc/httpd/conf.d/'
     conf_file = "#{mod_dir}passenger.conf"
-    load_file = "#{mod_dir}passenger.load"
+    load_file = "#{mod_dir}zpassenger.load"
     # sometimes installs as 3.0.12, sometimes as 3.0.19 - so just check for the stable part
     passenger_root = '/usr/lib/ruby/gems/1.8/gems/passenger-3.0.1'
     passenger_ruby = '/usr/bin/ruby'
@@ -66,29 +99,65 @@ describe 'apache::mod::passenger class', :unless => UNSUPPORTED_PLATFORMS.includ
       end
 
       describe service(service_name) do
-        it { should be_enabled }
-        it { should be_running }
+        it { is_expected.to be_enabled }
+        it { is_expected.to be_running }
       end
 
       describe file(conf_file) do
-        # passenger_extra.conf only contains directives if overridden from the class params
-        it { should_not contain "PassengerRoot \"#{passenger_root}\"" }
-        it { should_not contain "PassengerRuby \"#{passenger_ruby}\"" }
+        it { is_expected.to contain "PassengerRoot \"#{passenger_root}\"" }
+
+        case fact('operatingsystem')
+        when 'Ubuntu'
+          case fact('lsbdistrelease')
+          when '10.04'
+            it { is_expected.to contain "PassengerRuby \"#{passenger_ruby}\"" }
+            it { is_expected.not_to contain "/PassengerDefaultRuby/" }
+          when '12.04'
+            it { is_expected.to contain "PassengerRuby \"#{passenger_ruby}\"" }
+            it { is_expected.not_to contain "/PassengerDefaultRuby/" }
+          when '14.04'
+            it { is_expected.to contain "PassengerDefaultRuby \"#{passenger_ruby}\"" }
+            it { is_expected.not_to contain "/PassengerRuby/" }
+          else
+            # This may or may not work on Ubuntu releases other than the above
+            it { is_expected.to contain "PassengerRuby \"#{passenger_ruby}\"" }
+            it { is_expected.not_to contain "/PassengerDefaultRuby/" }
+          end
+        when 'Debian'
+          case fact('lsbdistcodename')
+          when 'wheezy'
+            it { is_expected.to contain "PassengerRuby \"#{passenger_ruby}\"" }
+            it { is_expected.not_to contain "/PassengerDefaultRuby/" }
+          when 'jessie'
+            it { is_expected.to contain "PassengerDefaultRuby \"#{passenger_ruby}\"" }
+            it { is_expected.not_to contain "/PassengerRuby/" }
+          else
+            # This may or may not work on Debian releases other than the above
+            it { is_expected.to contain "PassengerRuby \"#{passenger_ruby}\"" }
+            it { is_expected.not_to contain "/PassengerDefaultRuby/" }
+          end
+        end
       end
 
       describe file(load_file) do
-        it { should contain "LoadModule passenger_module #{passenger_module_path}" }
+        it { is_expected.to contain "LoadModule passenger_module #{passenger_module_path}" }
       end
 
       it 'should output status via passenger-memory-stats' do
-        shell("/usr/sbin/passenger-memory-stats") do |r|
-          r.stdout.should =~ /Apache processes/
-          r.stdout.should =~ /Nginx processes/
-          r.stdout.should =~ /Passenger processes/
-          r.stdout.should =~ /### Processes: [0-9]+/
-          r.stdout.should =~ /### Total private dirty RSS: [0-9\.]+ MB/
+        shell("PATH=/usr/bin:$PATH /usr/sbin/passenger-memory-stats") do |r|
+          expect(r.stdout).to match(/Apache processes/)
+          expect(r.stdout).to match(/Nginx processes/)
+          expect(r.stdout).to match(/Passenger processes/)
 
-          r.exit_code.should == 0
+          # passenger-memory-stats output on newer Debian/Ubuntu verions do not contain
+          # these two lines
+          unless ((fact('operatingsystem') == 'Ubuntu' && fact('operatingsystemrelease') == '14.04') or
+                 (fact('operatingsystem') == 'Debian' && fact('operatingsystemrelease') == '8.0'))
+            expect(r.stdout).to match(/### Processes: [0-9]+/)
+            expect(r.stdout).to match(/### Total private dirty RSS: [0-9\.]+ MB/)
+          end
+
+          expect(r.exit_code).to eq(0)
         end
       end
 
@@ -97,30 +166,30 @@ describe 'apache::mod::passenger class', :unless => UNSUPPORTED_PLATFORMS.includ
       unless fact('operatingsystem') == 'Ubuntu' && fact('operatingsystemrelease') == '12.04'
         it 'should output status via passenger-status' do
           # xml output not available on ubunutu <= 10.04, so sticking with default pool output
-          shell("/usr/sbin/passenger-status") do |r|
+          shell("PATH=/usr/bin:$PATH /usr/sbin/passenger-status") do |r|
             # spacing may vary
-            r.stdout.should =~ /[\-]+ General information [\-]+/
+            expect(r.stdout).to match(/[\-]+ General information [\-]+/)
             if fact('operatingsystem') == 'Ubuntu' && fact('operatingsystemrelease') == '14.04'
-              r.stdout.should =~ /Max pool size[ ]+: [0-9]+/
-              r.stdout.should =~ /Processes[ ]+: [0-9]+/
-              r.stdout.should =~ /Requests in top-level queue[ ]+: [0-9]+/
+              expect(r.stdout).to match(/Max pool size[ ]+: [0-9]+/)
+              expect(r.stdout).to match(/Processes[ ]+: [0-9]+/)
+              expect(r.stdout).to match(/Requests in top-level queue[ ]+: [0-9]+/)
             else
-              r.stdout.should =~ /max[ ]+= [0-9]+/
-              r.stdout.should =~ /count[ ]+= [0-9]+/
-              r.stdout.should =~ /active[ ]+= [0-9]+/
-              r.stdout.should =~ /inactive[ ]+= [0-9]+/
-              r.stdout.should =~ /Waiting on global queue: [0-9]+/
+              expect(r.stdout).to match(/max[ ]+= [0-9]+/)
+              expect(r.stdout).to match(/count[ ]+= [0-9]+/)
+              expect(r.stdout).to match(/active[ ]+= [0-9]+/)
+              expect(r.stdout).to match(/inactive[ ]+= [0-9]+/)
+              expect(r.stdout).to match(/Waiting on global queue: [0-9]+/)
             end
 
-            r.exit_code.should == 0
+            expect(r.exit_code).to eq(0)
           end
         end
       end
 
       it 'should answer to passenger.example.com' do
         shell("/usr/bin/curl passenger.example.com:80") do |r|
-          r.stdout.should =~ /^hello <b>world<\/b>$/
-          r.exit_code.should == 0
+          expect(r.stdout).to match(/^hello <b>world<\/b>$/)
+          expect(r.exit_code).to eq(0)
         end
       end
 
@@ -130,7 +199,7 @@ describe 'apache::mod::passenger class', :unless => UNSUPPORTED_PLATFORMS.includ
     # no fedora 18 passenger package yet, and rhel5 packages only exist for ruby 1.8.5
     unless (fact('operatingsystem') == 'Fedora' and fact('operatingsystemrelease').to_f >= 18) or (fact('osfamily') == 'RedHat' and fact('operatingsystemmajrelease') == '5' and fact('rubyversion') != '1.8.5')
 
-      if fact('operatingsystem') == 'RedHat' and fact('operatingsystemmajrelease') == '7'
+      if fact('osfamily') == 'RedHat' and fact('operatingsystemmajrelease') == '7'
         pending('test passenger - RHEL7 packages don\'t exist')
       else
         context "default passenger config" do
@@ -186,29 +255,29 @@ describe 'apache::mod::passenger class', :unless => UNSUPPORTED_PLATFORMS.includ
           end
 
           describe service(service_name) do
-            it { should be_enabled }
-            it { should be_running }
+            it { is_expected.to be_enabled }
+            it { is_expected.to be_running }
           end
 
           describe file(conf_file) do
-            it { should contain "PassengerRoot #{passenger_root}" }
-            it { should contain "PassengerRuby #{passenger_ruby}" }
-            it { should contain "PassengerTempDir #{passenger_tempdir}" }
+            it { is_expected.to contain "PassengerRoot #{passenger_root}" }
+            it { is_expected.to contain "PassengerRuby #{passenger_ruby}" }
+            it { is_expected.to contain "PassengerTempDir #{passenger_tempdir}" }
           end
 
           describe file(load_file) do
-            it { should contain "LoadModule passenger_module #{passenger_module_path}" }
+            it { is_expected.to contain "LoadModule passenger_module #{passenger_module_path}" }
           end
 
           it 'should output status via passenger-memory-stats' do
-            shell("/usr/bin/passenger-memory-stats") do |r|
-              r.stdout.should =~ /Apache processes/
-              r.stdout.should =~ /Nginx processes/
-              r.stdout.should =~ /Passenger processes/
-              r.stdout.should =~ /### Processes: [0-9]+/
-              r.stdout.should =~ /### Total private dirty RSS: [0-9\.]+ MB/
+            shell("/usr/bin/passenger-memory-stats", :pty => true) do |r|
+              expect(r.stdout).to match(/Apache processes/)
+              expect(r.stdout).to match(/Nginx processes/)
+              expect(r.stdout).to match(/Passenger processes/)
+              expect(r.stdout).to match(/### Processes: [0-9]+/)
+              expect(r.stdout).to match(/### Total private dirty RSS: [0-9\.]+ MB/)
 
-              r.exit_code.should == 0
+              expect(r.exit_code).to eq(0)
             end
           end
 

@@ -16,12 +16,15 @@ class postgresql::globals (
   $service_status       = undef,
   $default_database     = undef,
 
+  $validcon_script_path = undef,
+
   $initdb_path          = undef,
   $createdb_path        = undef,
   $psql_path            = undef,
   $pg_hba_conf_path     = undef,
   $pg_ident_conf_path   = undef,
   $postgresql_conf_path = undef,
+  $recovery_conf_path   = undef,
 
   $pg_hba_conf_defaults = undef,
 
@@ -29,6 +32,7 @@ class postgresql::globals (
   $confdir              = undef,
   $bindir               = undef,
   $xlogdir              = undef,
+  $logdir               = undef,
 
   $user                 = undef,
   $group                = undef,
@@ -43,6 +47,7 @@ class postgresql::globals (
 
   $manage_pg_hba_conf   = undef,
   $manage_pg_ident_conf = undef,
+  $manage_recovery_conf = undef,
 
   $manage_package_repo  = undef
 ) {
@@ -51,6 +56,7 @@ class postgresql::globals (
   $default_version = $::osfamily ? {
     /^(RedHat|Linux)/ => $::operatingsystem ? {
       'Fedora' => $::operatingsystemrelease ? {
+        /^(21)$/ => '9.3',
         /^(18|19|20)$/ => '9.2',
         /^(17)$/ => '9.1',
         default => undef,
@@ -67,10 +73,11 @@ class postgresql::globals (
       'Debian' => $::operatingsystemrelease ? {
         /^6\./ => '8.4',
         /^(wheezy|7\.)/ => '9.1',
-        /^(jessie|8\.)/ => '9.3',
+        /^(jessie|8\.)/ => '9.4',
         default => undef,
       },
       'Ubuntu' => $::operatingsystemrelease ? {
+        /^(14.10)$/ => '9.4',
         /^(14.04)$/ => '9.3',
         /^(11.10|12.04|12.10|13.04|13.10)$/ => '9.1',
         /^(10.04|10.10|11.04)$/ => '8.4',
@@ -83,6 +90,7 @@ class postgresql::globals (
       default => '9.2',
     },
     'FreeBSD' => '93',
+    'OpenBSD' => '9.3',
     'Suse' => $::operatingsystem ? {
       'SLES' => '91',
       default => undef,
@@ -102,17 +110,16 @@ class postgresql::globals (
     '91'    => '1.5',
     '9.2'   => '2.0',
     '9.3'   => '2.1',
+    '9.4'   => '2.1',
+    '93'    => '2.1',
     default => undef,
   }
   $globals_postgis_version = pick($postgis_version, $default_postgis_version)
 
   # Setup of the repo only makes sense globally, so we are doing this here.
   if($manage_package_repo) {
-    # Workaround the lack of RHEL7 repositories for now.
-    if ! ($::operatingsystem == 'RedHat' and $::operatingsystemrelease =~ /^7/) {
-      class { 'postgresql::repo':
-        version => $globals_version
-      }
+    class { 'postgresql::repo':
+      version => $globals_version
     }
   }
 }

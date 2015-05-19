@@ -57,7 +57,7 @@ class certs::apache (
     } ->
     file { $apache_key:
       owner => $::apache::user,
-      group => $::foreman::group,
+      group => $::certs::group,
       mode  => '0440',
     } ->
     Service['httpd']

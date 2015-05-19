@@ -7,7 +7,7 @@ A set of tools to properly configure Katello with Foreman in production and deve
 ```
 $ yum install -y katello-installer
 
-# install Katello with Foreman and smarty proxy with Puppet and Puppetca
+# install Katello with Foreman and smart proxy with Puppet and Puppetca
 $ katello-installer
 ```
 
@@ -114,12 +114,26 @@ subscription-manager etc.).
 
 #### Custom Server Certificates
 
+Katello-installer runs a validation script for passed input
+certificate files. One can run it manually as follows:
+
+```
+katello-certs-check -c ~/path/to/server.crt\
+                    -r ~/path/to/server.crt.req\
+                    -k ~/path/to/server.key\
+                    -b ~/path/to/cacert.crt
+```
+
+The check is performed also as part of the installer script. In case
+the script marked the certs as invalid incorrectly, one can skip this
+check by passing `--certs-skip-check` to the installer.
+
 **When running katello-installer for the first time:**
 
 ```
 katello-installer --certs-server-cert ~/path/to/server.crt\
                   --certs-server-cert-req ~/path/to/server.crt.req\
-                  --certs-server-key ~/path/to/server.crt.req\
+                  --certs-server-key ~/path/to/server.key\
                   --certs-server-ca-cert ~/path/to/cacert.crt
 ```
 
@@ -209,7 +223,7 @@ restart corresponding services.
 
 ## Filing and Fixing Issues
 
-All issues are tracked using (Redmine)[http://projects.theforeman.org/projects/katello/issues]. There are two types of issues that may arise:
+All issues are tracked using [Redmine](http://projects.theforeman.org/projects/katello/issues). There are two types of issues that may arise:
 
   * A bug within an individual module
   * A bug within the hooks or scripts of the installer

@@ -34,12 +34,7 @@ Puppet::Type.newtype(:postgresql_psql) do
 
     # Return true if a matching row is found
     def matches(value)
-      if Puppet::PUPPETVERSION.to_f < 4
-        output, status = provider.run_unless_sql_command(value)
-      else
-        output = provider.run_unless_sql_command(value)
-        status = output.exitcode
-      end
+      output, status = provider.run_unless_sql_command(value)
       self.fail("Error evaluating 'unless' clause, returned #{status}: '#{output}'") unless status == 0
 
       result_count = output.strip.to_i
@@ -78,6 +73,20 @@ Puppet::Type.newtype(:postgresql_psql) do
   newparam(:cwd, :parent => Puppet::Parameter::Path) do
     desc "The working directory under which the psql command should be executed."
     defaultto("/tmp")
+  end
+
+  newparam(:environment) do
+    desc "Any additional environment variables you want to set for a
+      SQL command. Multiple environment variables should be
+      specified as an array."
+
+    validate do |values|
+      Array(values).each do |value|
+        unless value =~ /\w+=/
+          raise ArgumentError, "Invalid environment setting '#{value}'"
+        end
+      end
+    end
   end
 
   newparam(:refreshonly, :boolean => true) do

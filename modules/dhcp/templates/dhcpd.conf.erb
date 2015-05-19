@@ -1,8 +1,8 @@
 # dhcpd.conf
 omapi-port 7911;
 
-default-lease-time 600;
-max-lease-time 7200;
+default-lease-time <%= @default_lease_time %>;
+max-lease-time <%= @max_lease_time %>;
 
 <% if has_variable?( 'dnsupdatekey' ) and @dnsupdatekey -%>
 ddns-updates on;
@@ -22,7 +22,9 @@ zone <%= dom %>. {
 ddns-update-style none;
 <% end -%>
 
+<% unless @dnsdomain.nil? || @dnsdomain.empty? -%>
 option domain-name "<%= @dnsdomain.first %>";
+<% end -%>
 option domain-name-servers <%= @nameservers.join( ', ') %>;
 
 allow booting;

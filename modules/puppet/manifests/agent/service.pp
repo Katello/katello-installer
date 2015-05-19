@@ -4,20 +4,24 @@ class puppet::agent::service {
   case $::puppet::runmode {
     'service': {
       service {'puppet':
-        ensure    => running,
-        name      => $puppet::params::service_name,
-        hasstatus => true,
-        enable    => true,
+        ensure     => running,
+        name       => $puppet::service_name,
+        hasstatus  => true,
+        hasrestart => $puppet::agent_restart_command != undef,
+        enable     => true,
+        restart    => $puppet::agent_restart_command,
       }
 
-      cron { 'puppet':
-        ensure => absent,
+      if $::osfamily != 'windows' {
+        cron { 'puppet':
+          ensure => absent,
+        }
       }
     }
     'cron': {
       service {'puppet':
         ensure    => stopped,
-        name      => $puppet::params::service_name,
+        name      => $puppet::service_name,
         hasstatus => true,
         enable    => false,
       }
@@ -27,25 +31,30 @@ class puppet::agent::service {
         default => $puppet::cron_cmd,
       }
 
-      $times = ip_to_cron($puppet::runinterval)
-
-      cron { 'puppet':
-        command => $command,
-        user    => root,
-        hour    => $times[0],
-        minute  => $times[1],
+      if $::osfamily == 'windows' {
+        fail("Currently we don't support setting cron on windows.")
+      } else {
+        $times = ip_to_cron($puppet::runinterval)
+        cron { 'puppet':
+          command => $command,
+          user    => root,
+          hour    => $times[0],
+          minute  => $times[1],
+        }
       }
     }
     'none': {
       service { 'puppet':
         ensure    => stopped,
-        name      => $puppet::params::service_name,
+        name      => $puppet::service_name,
         hasstatus => true,
         enable    => false,
       }
 
-      cron { 'puppet':
-        ensure => absent,
+      if $::osfamily != 'windows' {
+        cron { 'puppet':
+          ensure => absent,
+        }
       }
     }
     default: {

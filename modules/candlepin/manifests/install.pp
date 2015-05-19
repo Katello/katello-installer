@@ -2,7 +2,9 @@
 class candlepin::install {
 
   package { ['candlepin', "candlepin-${candlepin::tomcat}"]:
-    ensure => 'installed'
+    ensure => $candlepin::version
   }
+
+  ensure_packages(['wget'])
 
 }

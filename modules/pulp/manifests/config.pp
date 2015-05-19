@@ -107,6 +107,14 @@ class pulp::config {
     mode    => '0644',
   }
 
+  file { '/etc/default/pulp_workers':
+    ensure  => file,
+    content => template("pulp/${pulp::pulp_workers_template}"),
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0644',
+  }
+
   if $pulp::reset_cache {
     exec {'reset_pulp_cache':
       command => 'rm -rf /var/lib/pulp/packages/*',

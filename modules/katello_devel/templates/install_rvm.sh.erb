@@ -1,0 +1,19 @@
+#!/bin/bash
+
+USER=<%= @user %>
+
+SERVERS=(
+    hkp://pgp.mit.edu
+    hkp://keys.gnupg.net
+)
+
+for server in "${SERVERS[@]}"
+do
+    su -c "gpg --keyserver ${server} --recv-keys D39DC0E3" - $USER
+    success=$?
+
+    if [ "$success" == "0" ]; then
+        break
+    fi
+done
+su -c 'curl -L https://get.rvm.io | bash -s stable --ruby=<%= @rvm_ruby %> --gems=bundler' - $USER

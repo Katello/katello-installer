@@ -4,7 +4,7 @@ case fact('osfamily')
 when 'Debian'
   service_name = 'apache2'
 when 'FreeBSD'
-  service_name = 'apache22'
+  service_name = 'apache24'
 else
   # Not implemented yet
   service_name = :skip
@@ -27,7 +27,7 @@ describe 'apache::mod::itk class', :unless => UNSUPPORTED_PLATFORMS.include?(fac
   end
 
   describe service(service_name) do
-    it { should be_running }
-    it { should be_enabled }
+    it { is_expected.to be_running }
+    it { is_expected.to be_enabled }
   end
 end

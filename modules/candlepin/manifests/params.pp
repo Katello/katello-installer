@@ -11,8 +11,12 @@ class candlepin::params {
     }
   }
 
+  $manage_db = true
+  $db_type = 'postgresql'
+  $db_host = 'localhost'
   $db_user = 'candlepin'
   $db_name = 'candlepin'
+  $db_port = undef
 
   # this comes from keystore
   $db_password = cache_data('candlepin_db_password', random_password(32))
@@ -42,5 +46,11 @@ class candlepin::params {
   $deployment_url = 'candlepin'
 
   $qpid_ssl_port = 5671
+
+  $version = 'installed'
+  $run_init = true
+  $adapter_module = 'org.candlepin.katello.KatelloModule'
+  $amq_enable = true
+  $enable_hbm2ddl_validate = true
 
 }

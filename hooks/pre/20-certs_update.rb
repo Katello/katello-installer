@@ -1,17 +1,12 @@
 require 'fileutils'
 
 SSL_BUILD_DIR = '/root/ssl-build/'
+CHECK_SCRIPT  = File.expand_path('../../../bin/katello-certs-check', __FILE__)
 
 def error(message)
   logger.error message
   say message
   exit 101
-end
-
-def module_enabled?(name)
-  mod = @kafo.module(name)
-  return false if mod.nil?
-  mod.enabled?
 end
 
 def mark_for_update(cert_name, hostname = nil)
@@ -24,7 +19,12 @@ def mark_for_update(cert_name, hostname = nil)
   end
 end
 
-if app_value('certs_update_server_ca') && !module_enabled?('katello')
+ca_file   = param('certs', 'server_ca_cert').value
+cert_file = param('certs', 'server_cert').value
+key_file  = param('certs', 'server_key').value
+req_file  = param('certs', 'server_cert_req').value
+
+if app_value('certs_update_server_ca') && !Kafo::Helpers.module_enabled?(@kafo, 'katello')
   error "--certs-update-server-ca needs to be used with katello-installer"
 end
 
@@ -51,4 +51,14 @@ end
 
 if app_value('certs_update_server_ca')
   mark_for_update('katello-server-ca')
+end
+
+if !app_value('certs_skip_check') &&
+       cert_file.to_s != "" &&
+       (app_value('certs_update_server_ca') || app_value('certs_update_server'))
+  check_cmd = %{#{CHECK_SCRIPT} -c "#{cert_file}" -r "#{req_file}" -k "#{key_file}" -b "#{ca_file}"}
+  output = `#{check_cmd} 2>&1`
+  unless $?.success?
+    error "Command '#{check_cmd}' exited with #{$?.exitstatus}:\n #{output}"
+  end
 end

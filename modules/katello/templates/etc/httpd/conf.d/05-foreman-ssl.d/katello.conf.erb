@@ -14,7 +14,10 @@ Alias /pub /var/www/html/pub
 </Location>
 
 <LocationMatch /rhsm|/subscription|/katello/api>
-  RequestHeader set SSL_CLIENT_CERT "%{SSL_CLIENT_CERT}s"
+  # if ssl_client_certa is present set the header, otherwise don't override
+  # a reverse proxy may already be sending the cert through this header
+  SetEnvIf SSL_CLIENT_CERT "^..*" client_cert_present=1
+  RequestHeader set SSL_CLIENT_CERT "%{SSL_CLIENT_CERT}s" env=!client_cert_present
   SSLVerifyClient optional
   SSLRenegBufferSize 16777216
   SSLVerifyDepth 2

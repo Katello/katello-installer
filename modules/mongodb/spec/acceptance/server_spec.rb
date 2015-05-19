@@ -35,7 +35,12 @@ describe 'mongodb::server class' do
           puts "XXX uninstalls mongodb because changing the port with tengen doesn't work because they have a crappy init script"
           pp = <<-EOS
             class {'mongodb::globals': manage_package_repo => #{tengen}, }
-            -> class { 'mongodb::server': ensure => absent, }
+            -> class { 'mongodb::server':
+                 ensure => absent,
+                 package_ensure => absent,
+                 service_ensure => stopped,
+                 service_enable => false
+               }
             -> class { 'mongodb::client': ensure => absent, }
           EOS
           apply_manifest(pp, :catch_failures => true)
@@ -54,25 +59,26 @@ describe 'mongodb::server class' do
       end
 
       describe package(package_name) do
-        it { should be_installed }
+        it { is_expected.to be_installed }
       end
 
       describe file(config_file) do
-        it { should be_file }
+        it { is_expected.to be_file }
       end
 
       describe service(service_name) do
-         it { should be_enabled }
-         it { should be_running }
+         it { is_expected.to be_enabled }
+         it { is_expected.to be_running }
       end
 
       describe port(27017) do
-        it { should be_listening }
+        it { is_expected.to be_listening }
       end
 
       describe command(client_name) do
-        it do
-          should return_exit_status 0
+        describe '#exit_status' do
+          subject { super().exit_status }
+          it { is_expected.to eq 0 }
         end
       end
     end
@@ -90,7 +96,7 @@ describe 'mongodb::server class' do
       end
 
       describe port(27018) do
-        it { should be_listening }
+        it { is_expected.to be_listening }
       end
     end
 
@@ -98,7 +104,12 @@ describe 'mongodb::server class' do
       it 'uninstalls mongodb' do
         pp = <<-EOS
           class {'mongodb::globals': manage_package_repo => #{tengen}, }
-          -> class { 'mongodb::server': ensure => absent, }
+          -> class { 'mongodb::server':
+               ensure => absent,
+               package_ensure => absent,
+               service_ensure => stopped,
+               service_enable => false
+             }
           -> class { 'mongodb::client': ensure => absent, }
         EOS
         apply_manifest(pp, :catch_failures => true)

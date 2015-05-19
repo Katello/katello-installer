@@ -1,11 +1,12 @@
 fixtures:
   repositories:
+    alternatives:     'git://github.com/adrienthebo/puppet-alternatives'
     apache:           'git://github.com/puppetlabs/puppetlabs-apache'
+    apt:              'git://github.com/puppetlabs/puppetlabs-apt'
     concat:           'git://github.com/puppetlabs/puppetlabs-concat'
     concat_native:    'git://github.com/theforeman/puppet-concat'
-    mysql:
-      repo:           'git://github.com/puppetlabs/puppetlabs-mysql'
-      ref:            '52fb70ebdeb74f66bedc54196c0884c2b84699f3'
+    file_concat:      'git://github.com/electrical/puppet-lib-file_concat'
+    mysql:            'git://github.com/puppetlabs/puppetlabs-mysql'
     postgresql:       'git://github.com/puppetlabs/puppetlabs-postgresql'
     puppet:           'git://github.com/theforeman/puppet-puppet'
     stdlib:           'git://github.com/puppetlabs/puppetlabs-stdlib'

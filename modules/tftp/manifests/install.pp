@@ -1,11 +1,11 @@
 # Install TFTP
 class tftp::install {
-  package { $tftp::params::package:
+  package { $::tftp::params::package:
     ensure => installed,
-    alias  => 'tftp-server'
+    alias  => 'tftp-server',
   }
 
-  package {'syslinux':
-    ensure => installed
+  package { $::tftp::params::syslinux_package:
+    ensure => installed,
   }
 }

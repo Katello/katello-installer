@@ -1,6 +1,8 @@
+# Installs foreman-tasks plugin
 class foreman::plugin::tasks {
   case $::osfamily {
     'RedHat': {
+      $service = 'foreman-tasks'
       case $::operatingsystem {
         'fedora': {
           $package = 'rubygem-foreman-tasks'
@@ -9,6 +11,10 @@ class foreman::plugin::tasks {
           $package = 'ruby193-rubygem-foreman-tasks'
         }
       }
+    }
+    'Debian': {
+      $package = 'ruby-foreman-tasks'
+      $service = 'ruby-foreman-tasks'
     }
     default: {
       fail("${::hostname}: foreman-tasks does not support osfamily ${::osfamily}")
@@ -20,6 +26,7 @@ class foreman::plugin::tasks {
   } ~>
   service { 'foreman-tasks':
     ensure => running,
-    enable => true
+    enable => true,
+    name   => $service,
   }
 }

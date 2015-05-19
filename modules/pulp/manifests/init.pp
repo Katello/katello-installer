@@ -50,6 +50,9 @@
 #
 # $reset_cache::                Boolean to flush the cache. Defaults to false
 #
+# $qpid_ssl::                   Enable SSL in qpid or not
+#                               type:boolean
+#
 # $qpid_ssl_cert_db             The location of the Qpid SSL cert database
 #
 # $qpid_ssl_cert_password_file  Location of the password file for the Qpid SSL cert
@@ -63,6 +66,9 @@
 # $proxy_username::             Proxy username for authentication
 #
 # $proxy_password::             Proxy password for authentication
+#
+# $num_workers::                Number of Pulp workers to use
+#                               defaults to number of processors and maxs at 8
 #
 class pulp (
 
@@ -91,25 +97,38 @@ class pulp (
   $reset_data = false,
   $reset_cache = false,
 
+  $qpid_ssl = $pulp::params::qpid_ssl,
   $qpid_ssl_cert_db = $pulp::params::qpid_ssl_cert_db,
   $qpid_ssl_cert_password_file = $pulp::params::qpid_ssl_cert_password_file,
 
   $proxy_url      = $pulp::params::proxy_url,
   $proxy_port     = $pulp::params::proxy_port,
   $proxy_username = $pulp::params::proxy_username,
-  $proxy_password = $pulp::params::proxy_password
+  $proxy_password = $pulp::params::proxy_password,
+
+  $num_workers = $pulp::params::num_workers,
 
   ) inherits pulp::params {
 
   include ::apache
 
+  if (versioncmp($::mongodb_version, '2.6.5') >= 0) {
+    $mongodb_pidfilepath = '/var/run/mongodb/mongod.pid'
+  } else {
+    $mongodb_pidfilepath = '/var/run/mongodb/mongodb.pid'
+  }
+
+  class { 'mongodb::globals':
+    version => $::mongodb_version, # taken from the custom facts
+  }
   class { 'apache::mod::wsgi':} ~>
   class { 'mongodb':
-    logpath => '/var/lib/mongodb/mongodb.log',
-    dbpath  => '/var/lib/mongodb',
+    logpath     => '/var/lib/mongodb/mongodb.log',
+    dbpath      => '/var/lib/mongodb',
+    pidfilepath => $mongodb_pidfilepath,
   } ~>
   class { 'qpid':
-    ssl                    => true,
+    ssl                    => $qpid_ssl,
     ssl_cert_db            => $qpid_ssl_cert_db,
     ssl_cert_password_file => $qpid_ssl_cert_password_file,
     ssl_cert_name          => 'broker',

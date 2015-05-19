@@ -39,9 +39,9 @@ class dns::config {
     creates => $dns::rndckeypath,
   } ->
   file { $dns::rndckeypath:
-    owner   => 'root',
-    group   => $dns::params::group,
-    mode    => '0640',
+    owner => 'root',
+    group => $dns::params::group,
+    mode  => '0640',
   }
 }
 
