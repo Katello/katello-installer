@@ -201,6 +201,10 @@ ln -sf %{_datadir}/capsule-installer/bin/capsule-installer %{buildroot}/%{_sbind
 %doc README.*
 
 %changelog
+* Thu May 28 2015 Eric D. Helms <ericdhelms@gmail.com> 2.2.1-0
+- Bump version to 2.2.1 (ericdhelms@gmail.com)
+- fixes #10512 - add 2.2 upgrade rake tasks to upgrade hook
+
 * Thu May 07 2015 Eric D. Helms <ericdhelms@gmail.com> 2.2.0-6
 - fixes #10387 - backporting capsule module to fix bad certs on capsule
   (jsherril@redhat.com)
