@@ -66,8 +66,8 @@ class qpid (
     validate_absolute_path($ssl_cert_db, $ssl_cert_password_file)
   }
 
-  class { 'qpid::install': } ~>
-  class { 'qpid::config': } ~>
-  class { 'qpid::service': } ->
+  class { '::qpid::install': } ~>
+  class { '::qpid::config': } ~>
+  class { '::qpid::service': } ->
   Class['qpid']
 }

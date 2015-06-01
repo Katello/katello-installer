@@ -1,6 +1,6 @@
 linkRoutePattern {
     prefix: <%= @prefix %>
-<% if @connector != '' -%>
+<% unless [nil, :undefined, :undef, ''].include?(@connector) -%>
     connector: <%= @connector %>
 <% end -%>
 }

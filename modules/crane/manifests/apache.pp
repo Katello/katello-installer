@@ -11,7 +11,7 @@ class crane::apache {
     docroot             => '/usr/share/crane/',
     wsgi_script_aliases =>
                           {
-                            '/' => '/usr/share/crane/crane.wsgi'
+                            '/' => '/usr/share/crane/crane.wsgi',
                           },
     port                => $crane::port,
     priority            => '03',

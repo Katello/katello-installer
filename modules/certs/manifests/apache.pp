@@ -48,12 +48,12 @@ class certs::apache (
     pubkey { $apache_cert:
       ensure   => present,
       key_pair => Cert[$apache_cert_name],
-      notify   => Service['httpd']
+      notify   => Service['httpd'],
     } ~>
     privkey { $apache_key:
       ensure   => present,
       key_pair => Cert[$apache_cert_name],
-      notify   => Service['httpd']
+      notify   => Service['httpd'],
     } ->
     file { $apache_key:
       owner => $::apache::user,

@@ -10,7 +10,7 @@
 #
 define qpid::router::link_route_pattern(
   $prefix    = 'queue.',
-  $connector = '',
+  $connector = undef,
 ){
 
   concat_fragment {"qdrouter+link_route_pattern_${name}.conf":

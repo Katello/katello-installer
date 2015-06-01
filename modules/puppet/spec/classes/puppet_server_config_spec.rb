@@ -8,6 +8,7 @@ describe 'puppet::server::config' do
     :rubyversion            => '1.9.3',
     :operatingsystemrelease => '6.5',
     :osfamily               => 'RedHat',
+    :puppetversion          => Puppet.version,
   } end
   let(:facts) { default_facts }
 
@@ -33,11 +34,19 @@ describe 'puppet::server::config' do
         :before  => /Exec\[puppet_server_config-generate_ca_cert\]/
       })
 
+      puppetcacmd = Puppet.version >= '3' ? '/usr/bin/puppet cert' : '/usr/sbin/puppetca'
       should contain_exec('puppet_server_config-generate_ca_cert').with({
         :creates => "/var/lib/puppet/ssl/certs/#{facts[:fqdn]}.pem",
-        :command => "/usr/sbin/puppetca --generate #{facts[:fqdn]}",
-        :require => /File\[\/etc\/puppet\/puppet\.conf\]/,
+        :command => "#{puppetcacmd} --generate #{facts[:fqdn]}",
+        :require => /Concat\[\/etc\/puppet\/puppet\.conf\]/,
       }).that_notifies('Service[httpd]')
+    end
+
+    context 'on Puppet 3.4+', :if => (Puppet.version >= '3.4.0') do
+      it 'should set sane umask on execs' do
+        should contain_exec('puppet_server_config-create_ssl_dir').with_umask('0022')
+        should contain_exec('puppet_server_config-generate_ca_cert').with_umask('0022')
+      end
     end
 
     it 'should set up the ENC' do
@@ -51,10 +60,25 @@ describe 'puppet::server::config' do
     end
 
     it 'should set up the environments' do
-      should contain_file('/etc/puppet/environments').with_ensure('directory')
+      should contain_file('/etc/puppet/environments').with({
+        :ensure => 'directory',
+        :owner => 'puppet',
+        :group => nil,
+        :mode => '0755',
+      })
       should contain_file('/usr/share/puppet').with_ensure('directory')
-      should contain_file('/etc/puppet/environments/common').with_ensure('directory')
-      should contain_file('/usr/share/puppet/modules').with_ensure('directory')
+      should contain_file('/etc/puppet/environments/common').with({
+        :ensure => 'directory',
+        :owner => 'puppet',
+        :group => nil,
+        :mode => '0755',
+      })
+      should contain_file('/usr/share/puppet/modules').with({
+        :ensure => 'directory',
+        :owner => 'puppet',
+        :group => nil,
+        :mode => '0755',
+      })
 
       should contain_file('/etc/puppet/manifests/site.pp').with({
         :ensure  => 'file',
@@ -67,9 +91,7 @@ describe 'puppet::server::config' do
     end
 
     it 'should configure puppet' do
-      should contain_concat_build('puppet.conf')
-
-      should contain_concat_fragment('puppet.conf+10-main').
+      should contain_concat__fragment('puppet.conf+10-main').
         with_content(/^\s+logdir\s+= \/var\/log\/puppet$/).
         with_content(/^\s+rundir\s+= \/var\/run\/puppet$/).
         with_content(/^\s+ssldir\s+= \$vardir\/ssl$/).
@@ -78,12 +100,12 @@ describe 'puppet::server::config' do
         with_content(/^\s+autosign\s+= \$confdir\/autosign.conf { mode = 664 }$/).
         with({}) # So we can use a trailing dot on each with_content line
 
-      should contain_concat_fragment('puppet.conf+20-agent').
+      should contain_concat__fragment('puppet.conf+20-agent').
         with_content(/^\s+configtimeout\s+= 120$/).
         with_content(/^\s+classfile\s+= \$vardir\/classes.txt/).
         with({}) # So we can use a trailing dot on each with_content line
 
-      should contain_concat_fragment('puppet.conf+30-master').
+      should contain_concat__fragment('puppet.conf+30-master').
         with_content(/^\s+reports\s+= foreman$/).
         with_content(/^\s+external_nodes\s+= \/etc\/puppet\/node.rb$/).
         with_content(/^\s+node_terminus\s+= exec$/).
@@ -92,7 +114,7 @@ describe 'puppet::server::config' do
         with_content(/^\s+parser\s+=\s+current$/).
         with({}) # So we can use a trailing dot on each with_content line
 
-      should contain_file('/etc/puppet/puppet.conf')
+      should contain_concat('/etc/puppet/puppet.conf')
 
       should_not contain_file('/etc/puppet/puppet.conf').with_content(/storeconfigs/)
     end
@@ -113,11 +135,11 @@ describe 'puppet::server::config' do
     end
 
     it 'should store reports' do
-      should contain_concat_fragment('puppet.conf+30-master').with_content(/^\s+reports\s+= store$/)
+      should contain_concat__fragment('puppet.conf+30-master').with_content(/^\s+reports\s+= store$/)
     end
 
     it 'should contain an empty external_nodes' do
-      should contain_concat_fragment('puppet.conf+30-master').with_content(/^\s+external_nodes\s+=\s+$/)
+      should contain_concat__fragment('puppet.conf+30-master').with_content(/^\s+external_nodes\s+=\s+$/)
     end
   end
 
@@ -130,7 +152,7 @@ describe 'puppet::server::config' do
     end
 
     it 'should not contain external_nodes' do
-      should contain_concat_fragment('puppet.conf+30-master').
+      should contain_concat__fragment('puppet.conf+30-master').
         with_content(/^\s+external_nodes\s+= $/).
         with_content(/^\s+node_terminus\s+= plain$/).
         with({})
@@ -186,9 +208,9 @@ describe 'puppet::server::config' do
       end
 
       it 'should configure puppet.conf' do
-        should_not contain_concat_fragment('puppet.conf+30-master').with_content(%r{^\s+config_version\s+=$})
+        should_not contain_concat__fragment('puppet.conf+30-master').with_content(%r{^\s+config_version\s+=$})
 
-        should contain_concat_fragment('puppet.conf+10-main').
+        should contain_concat__fragment('puppet.conf+10-main').
           with_content(%r{^\s+environmentpath\s+= /etc/puppet/environments$})
       end
     end
@@ -203,7 +225,7 @@ describe 'puppet::server::config' do
       end
 
       it 'should configure puppet.conf' do
-        should contain_concat_fragment('puppet.conf+30-master').
+        should contain_concat__fragment('puppet.conf+30-master').
           with_content(%r{^\s+manifest\s+= /etc/puppet/environments/\$environment/manifests/site.pp\n\s+modulepath\s+= /etc/puppet/environments/\$environment/modules$}).
           with_content(%r{^\s+config_version\s+= git --git-dir /etc/puppet/environments/\$environment/.git describe --all --long$})
       end
@@ -229,7 +251,7 @@ describe 'puppet::server::config' do
       end
 
       it 'should configure puppet.conf' do
-        should contain_concat_fragment('puppet.conf+10-main').
+        should contain_concat__fragment('puppet.conf+10-main').
           with_content(%r{^\s+environmentpath\s+= /etc/puppet/environments\n\s+basemodulepath\s+= /etc/puppet/environments/common:/etc/puppet/modules:/usr/share/puppet/modules$})
       end
 
@@ -255,7 +277,7 @@ describe 'puppet::server::config' do
       end
 
       it 'should configure puppet.conf' do
-        should contain_concat_fragment('puppet.conf+30-master').
+        should contain_concat__fragment('puppet.conf+30-master').
           with_content(%r{^\s+manifest\s+= /etc/puppet/environments/\$environment/manifests/site.pp\n\s+modulepath\s+= /etc/puppet/environments/\$environment/modules$})
       end
 
@@ -327,7 +349,7 @@ describe 'puppet::server::config' do
     end
 
     it 'should configure puppet.conf' do
-      should contain_concat_fragment('puppet.conf+30-master').
+      should contain_concat__fragment('puppet.conf+30-master').
         with_content(/^\s+stringify_facts\s+= true$/).
         with({}) # So we can use a trailing dot on each with_content line
     end
@@ -340,18 +362,16 @@ describe 'puppet::server::config' do
        }"
     end
 
-    context 'on old Puppet' do
-      let(:facts) { default_facts.merge(:puppetversion => '3.5.3') }
+    context 'on old Puppet', :if => (Puppet.version < '3.6.0') do
       it 'should be disabled' do
-        should contain_concat_fragment('puppet.conf+30-master').
+        should contain_concat__fragment('puppet.conf+30-master').
           without_content(%r{^\s+environmentpath\s+=$})
       end
     end
 
-    context 'on Puppet 3.6.0+' do
-      let(:facts) { default_facts.merge(:puppetversion => '3.6.0') }
+    context 'on Puppet 3.6.0+', :if => (Puppet.version >= '3.6.0') do
       it 'should be enabled' do
-        should contain_concat_fragment('puppet.conf+10-main').
+        should contain_concat__fragment('puppet.conf+10-main').
           with_content(%r{^\s+environmentpath\s+= /etc/puppet/environments$})
       end
     end
@@ -366,8 +386,22 @@ describe 'puppet::server::config' do
     end
 
     it 'should configure future parser' do
-      should contain_concat_fragment('puppet.conf+30-master').
+      should contain_concat__fragment('puppet.conf+30-master').
         with_content(/^\s+parser\s+=\s+future$/)
+    end
+  end
+
+  describe 'with server_environment_timeout set' do
+    let :pre_condition do
+      "class {'puppet':
+        server => true,
+        server_environment_timeout => '10m',
+      }"
+    end
+
+    it 'should configure environment_timeout accordingly' do
+      should contain_concat__fragment('puppet.conf+30-master').
+        with_content(/^\s+environment_timeout\s+=\s+10m$/)
     end
   end
 end

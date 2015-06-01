@@ -7,15 +7,21 @@ class puppet::config(
   $ca_port            = $::puppet::ca_port,
   $dns_alt_names      = $::puppet::dns_alt_names,
   $hiera_config       = $::puppet::hiera_config,
+  $listen_to          = $::puppet::listen_to,
   $main_template      = $::puppet::main_template,
-  $nsauth_template    = $::puppet::nsauth_template,
-  $puppet_dir         = $::puppet::dir,
-  $syslogfacility     = $::puppet::syslogfacility,
   $module_repository  = $::puppet::module_repository,
+  $nsauth_template    = $::puppet::nsauth_template,
+  $pluginsource       = $::puppet::pluginsource,
+  $puppet_dir         = $::puppet::dir,
+  $puppetmaster       = $::puppet::puppetmaster,
+  $syslogfacility     = $::puppet::syslogfacility,
+  $srv_domain         = $::puppet::srv_domain,
+  $use_srv_records    = $::puppet::use_srv_records,
 ) {
-  concat_build { 'puppet.conf': }
-  concat_fragment { 'puppet.conf+10-main':
+  concat::fragment { 'puppet.conf+10-main':
+    target  => "${puppet_dir}/puppet.conf",
     content => template($main_template),
+    order   => '10',
   }
 
   file { $puppet_dir:
@@ -23,19 +29,14 @@ class puppet::config(
   } ->
   case $::osfamily {
     'Windows': {
-      file { "${puppet_dir}/puppet.conf":
-        source  => concat_output('puppet.conf'),
-        require => Concat_build['puppet.conf'],
-      }
+      concat { "${puppet_dir}/puppet.conf": }
     }
 
     default: {
-      file { "${puppet_dir}/puppet.conf":
-        source  => concat_output('puppet.conf'),
-        require => Concat_build['puppet.conf'],
-        owner   => 'root',
-        group   => $::puppet::params::root_group,
-        mode    => '0644',
+      concat { "${puppet_dir}/puppet.conf":
+        owner => 'root',
+        group => $::puppet::params::root_group,
+        mode  => '0644',
       }
     }
   } ~>

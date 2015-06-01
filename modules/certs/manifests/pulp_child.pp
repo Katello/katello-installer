@@ -29,11 +29,11 @@ class certs::pulp_child (
     } ~>
 
     pubkey { $pulp::ssl_ca_cert:
-      key_pair => $::certs::default_ca
+      key_pair => $::certs::default_ca,
     }
 
     pubkey { $pulp::child::server_ca_cert:
-      key_pair => $::certs::server_ca
+      key_pair => $::certs::server_ca,
     }
 
     pubkey { $pulp::child::ssl_cert:

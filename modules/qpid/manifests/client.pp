@@ -13,7 +13,7 @@ class qpid::client(
   $client_packages         = $qpid::client::params::client_packages,
 ) inherits qpid::client::params {
 
-  class { 'qpid::client::install': } ~>
-  class { 'qpid::client::config': }
+  class { '::qpid::client::install': } ~>
+  class { '::qpid::client::config': }
 
 }

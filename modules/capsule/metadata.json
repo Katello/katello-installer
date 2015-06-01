@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "author": "Katello",
   "summary": "Deploys and manages a Capsule",
-  "license": "GPLv3+",
+  "license": "GPL-3.0+",
   "source": "https://github.com/Katello/puppet-capsule.git",
   "project_page": "https://github.com/Katello/puppet-capsule",
   "issues_url": "http://projects.theforeman.org/projects/katello/issues",

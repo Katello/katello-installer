@@ -5,10 +5,10 @@
 class capsule::dispatch_router (
 ) {
 
-  class { 'qpid::router': }
+  class { '::qpid::router': }
 
   # SSL Certificate Configuration
-  class { 'certs::qpid_router':
+  class { '::certs::qpid_router':
     require => Class['qpid::router::install'],
   } ~>
   qpid::router::ssl_profile { 'client':

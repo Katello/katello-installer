@@ -45,6 +45,9 @@ describe 'capsule' do
 
     it { should contain_class('crane').with( {'key' => '/etc/pki/katello/private/katello-apache.key',
                                               'cert' => '/etc/pki/katello/certs/katello-apache.crt'} ) }
+
+    it { should contain_pulp__child__fragment('gpg_key_proxy').with({
+           :ssl_content => %r{ProxyPass /katello/api/repositories/}} ) }
   end
 
 end

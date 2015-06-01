@@ -1,7 +1,7 @@
 # Default params for capsule settings
 class capsule::params {
 
-  include foreman_proxy::params
+  include ::foreman_proxy::params
 
   # when not specified, we expect all in one installation
   $parent_fqdn                = $::fqdn
@@ -23,7 +23,7 @@ class capsule::params {
 
   $puppet                        = false
   $puppetca                      = false
-  $puppet_ca_proxy               = ''
+  $puppet_ca_proxy               = undef
 
   $foreman_proxy_port            = '9090'
 

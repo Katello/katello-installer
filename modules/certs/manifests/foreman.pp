@@ -40,7 +40,7 @@ class certs::foreman (
       key_pair => Cert[$client_cert_name],
     } ->
     pubkey { $ssl_ca_cert:
-      key_pair => $::certs::server_ca
+      key_pair => $::certs::server_ca,
     } ~>
     file { $client_key:
       ensure => file,
@@ -59,7 +59,7 @@ class certs::foreman (
       command     => $foreman_config_cmd,
       unless      => "${foreman_config_cmd} --dry-run",
       user        => $::foreman::user,
-      require     => Class['foreman::service']
+      require     => Class['foreman::service'],
     }
 
   }

@@ -8,6 +8,17 @@ Fragment Pattern.
 The concept is based on ideas that R.I. Pienaar describes on his [Building
 files from fragments in Puppet](http://www.devco.net/archives/2010/02/19/building_files_from_fragments_with_puppet.php) page.
 
+Deprecation warning
+-------------------
+
+This module is deprecated in favour of [puppetlabs-concat](https://forge.puppetlabs.com/puppetlabs/concat)
+2.0.0 or higher.
+
+It used to be a better alternative than the 1.x series by being implemented as
+a native type instead of shell scripts, but 2.x rewrote concat as native types.
+theforeman modules will be updated to use puppetlabs-concat and this module
+will not be maintained.
+
 Installation
 ------------
 

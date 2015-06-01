@@ -41,7 +41,7 @@ class certs::puppet (
       key_pair => Cert[$puppet_client_cert_name],
     } ->
     pubkey { $ssl_ca_cert:
-      key_pair => $::certs::server_ca
+      key_pair => $::certs::server_ca,
     } ~>
     file { $client_key:
       ensure => file,

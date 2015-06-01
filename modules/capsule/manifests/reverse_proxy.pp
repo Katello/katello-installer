@@ -43,6 +43,6 @@ class capsule::reverse_proxy (
     custom_fragment   => "
       SSLProxyCACertificateFile ${::certs::katello_server_ca_cert}
       SSLProxyMachineCertificateFile ${certs::foreman_proxy::foreman_proxy_ssl_client_bundle}
-    "
+    ",
   }
 }

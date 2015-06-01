@@ -24,9 +24,7 @@ describe 'foreman::config' do
       end
 
       it 'should set up the config' do
-        should contain_concat_build('foreman_settings').with_order(['*.yaml'])
-
-        should contain_concat_fragment('foreman_settings+01-header.yaml').
+        should contain_concat__fragment('foreman_settings+01-header.yaml').
           with_content(/^:unattended:\s*true$/).
           with_content(/^:login:\s*true$/).
           with_content(/^:require_ssl:\s*true$/).
@@ -36,11 +34,10 @@ describe 'foreman::config' do
           with_content(/^:oauth_map_users:\s*false$/).
           with_content(/^:oauth_consumer_key:\s*\w+$/).
           with_content(/^:oauth_consumer_secret:\s*\w+$/).
+          with_content(/^:websockets_encrypt:\s*on$/).
           with({})
 
-        should contain_file('/etc/foreman/settings.yaml').with({
-          'source'  => %r{/concat_native/output/foreman_settings.out$},
-          'require' => 'Concat_build[foreman_settings]',
+        should contain_concat('/etc/foreman/settings.yaml').with({
           'owner'   => 'root',
           'group'   => 'foreman',
           'mode'    => '0640',
@@ -130,7 +127,7 @@ describe 'foreman::config' do
       end
 
       it 'should have changed parameters' do
-        should contain_concat_fragment('foreman_settings+01-header.yaml').
+        should contain_concat__fragment('foreman_settings+01-header.yaml').
           with_content(/^:unattended:\s*false$/).
           with_content(/^:login:\s*false$/).
           with_content(/^:require_ssl:\s*false$/).
@@ -212,9 +209,7 @@ describe 'foreman::config' do
       end
 
       it 'should set up settings.yaml' do
-        should contain_concat_build('foreman_settings').with_order(['*.yaml'])
-
-        should contain_concat_fragment('foreman_settings+01-header.yaml').
+        should contain_concat__fragment('foreman_settings+01-header.yaml').
           with_content(/^:unattended:\s*true$/).
           with_content(/^:login:\s*true$/).
           with_content(/^:require_ssl:\s*true$/).
@@ -226,9 +221,7 @@ describe 'foreman::config' do
           with_content(/^:oauth_consumer_secret:\s*\w+$/).
           with({})
 
-        should contain_file('/etc/foreman/settings.yaml').with({
-          'source'  => %r{/concat_native/output/foreman_settings.out$},
-          'require' => 'Concat_build[foreman_settings]',
+        should contain_concat('/etc/foreman/settings.yaml').with({
           'owner'   => 'root',
           'group'   => 'foreman',
           'mode'    => '0640',

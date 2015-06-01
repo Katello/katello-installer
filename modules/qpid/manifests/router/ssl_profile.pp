@@ -18,7 +18,7 @@ define qpid::router::ssl_profile(
   $ca,
   $cert,
   $key,
-  $password      = '',
+  $password      = undef,
 ) {
 
   validate_absolute_path($ca, $cert, $key)

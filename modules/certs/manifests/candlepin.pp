@@ -18,7 +18,7 @@ class certs::candlepin (
 
   Exec {
     logoutput => 'on_failure',
-    path      => ['/bin/', '/usr/bin']
+    path      => ['/bin/', '/usr/bin'],
   }
 
   $java_client_cert_name= 'java-client'
@@ -63,15 +63,15 @@ class certs::candlepin (
       target => $keystore,
       owner  => 'tomcat',
       group  => $::certs::group,
-      notify => Service[$candlepin::tomcat]
+      notify => Service[$candlepin::tomcat],
     }
 
     Cert[$java_client_cert_name] ~>
     pubkey { $client_cert:
-      key_pair => Cert[$java_client_cert_name]
+      key_pair => Cert[$java_client_cert_name],
     } ~>
     privkey { $client_key:
-      key_pair => Cert[$java_client_cert_name]
+      key_pair => Cert[$java_client_cert_name],
     } ~>
     exec { 'candlepin-add-client-cert-to-nss-db':
       command     => "certutil -A -d '${::certs::nss_db_dir}' -n 'amqp-client' -t ',,' -a -i '${client_cert}'",

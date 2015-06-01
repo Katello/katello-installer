@@ -3,7 +3,7 @@ ssl-profile {
     cert-db: <%= @ca %>
     cert-file: <%= @cert %>
     key-file: <%= @key %>
-<% if @password != '' -%>
+<% unless [nil, :undefined, :undef, ''].include?(@password) -%>
     password: <%= @password %>
 <% end -%>
 }

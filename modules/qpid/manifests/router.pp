@@ -21,8 +21,8 @@ class qpid::router(
   $router_packages         = $qpid::router::params::router_packages,
 ) inherits qpid::router::params {
 
-  class { 'qpid::router::install': } ->
-  class { 'qpid::router::config': } ~>
-  class { 'qpid::router::service': }
+  class { '::qpid::router::install': } ->
+  class { '::qpid::router::config': } ~>
+  class { '::qpid::router::service': }
 
 }

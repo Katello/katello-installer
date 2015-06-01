@@ -18,8 +18,8 @@ define qpid::router::connector(
   $addr        = '0.0.0.0',
   $port        = 5672,
   $sasl_mech   = 'ANONYMOUS',
-  $role        = '',
-  $ssl_profile = '',
+  $role        = undef,
+  $ssl_profile = undef,
 ){
 
   concat_fragment {"qdrouter+connector_${name}.conf":

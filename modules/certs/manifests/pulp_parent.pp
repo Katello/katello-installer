@@ -12,7 +12,7 @@ class certs::pulp_parent (
   $messaging_ca_cert     = $certs::ca_cert,
   $messaging_client_cert = $certs::params::messaging_client_cert
 
-  ) inherits pulp::params {
+  ) inherits pulp::params { # lint:ignore:inherits_across_namespaces
 
   # cert for nodes authenitcation
   cert { "${::certs::pulp_parent::hostname}-parent-cert":
