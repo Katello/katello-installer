@@ -145,7 +145,9 @@
 #
 # $service_name::                  The name of the puppet agent service.
 #
-# $agent_restart_command:          The command which gets excuted on puppet service restart
+# $agent_restart_command::         The command which gets excuted on puppet service restart
+#
+# $environment::                   Default environment of the Puppet agent
 #
 # $agent_additional_settings::     A hash of additional agent settings.
 #                                  Example: {stringify_facts => true}
@@ -333,6 +335,8 @@
 #                                  catalog from Foreman (in seconds).
 #                                  type:integer
 #
+# $server_environment_timeout::    Timeout for cached compiled catalogs (10s, 5m, ...)
+#
 # $server_ca_proxy::               The actual server that handles puppet CA.
 #                                  Setting this to anything non-empty causes
 #                                  the apache vhost to set up a proxy for all
@@ -402,6 +406,7 @@ class puppet (
   $pluginfactsource              = $puppet::params::pluginfactsource,
   $additional_settings           = $puppet::params::additional_settings,
   $agent_additional_settings     = $puppet::params::agent_additional_settings,
+  $agent_restart_command         = $puppet::params::agent_restart_command,
   $classfile                     = $puppet::params::classfile,
   $hiera_config                  = $puppet::params::hiera_config,
   $main_template                 = $puppet::params::main_template,
@@ -416,6 +421,7 @@ class puppet (
   $puppetmaster                  = $puppet::params::puppetmaster,
   $service_name                  = $puppet::params::service_name,
   $syslogfacility                = $puppet::params::syslogfacility,
+  $environment                   = $puppet::params::environment,
   $server                        = $puppet::params::server,
   $server_user                   = $puppet::params::user,
   $server_group                  = $puppet::params::group,
@@ -472,6 +478,7 @@ class puppet (
   $server_puppetdb_port          = $puppet::params::server_puppetdb_port,
   $server_puppetdb_swf           = $puppet::params::server_puppetdb_swf,
   $server_parser                 = $puppet::params::server_parser,
+  $server_environment_timeout    = $puppet::params::server_environment_timeout,
 ) inherits puppet::params {
 
   validate_bool($listen)
@@ -527,6 +534,10 @@ class puppet (
 
   validate_re($server_implementation, '^(master|puppetserver)$')
   validate_re($server_parser, '^(current|future)$')
+
+  if $server_environment_timeout {
+    validate_re($server_environment_timeout, '^(unlimited|0|[0-9]+[smh]{1})$')
+  }
 
   include ::puppet::config
   Class['puppet::config'] -> Class['puppet']

@@ -38,10 +38,10 @@ class certs::qpid (
     Package['httpd'] -> Package['qpid-cpp-server'] ->
     Cert[$qpid_cert_name] ~>
     pubkey { $client_cert:
-      key_pair => Cert["${::certs::qpid::hostname}-qpid-broker"]
+      key_pair => Cert["${::certs::qpid::hostname}-qpid-broker"],
     } ~>
     privkey { $client_key:
-      key_pair => Cert["${::certs::qpid::hostname}-qpid-broker"]
+      key_pair => Cert["${::certs::qpid::hostname}-qpid-broker"],
     } ~>
     file { $client_key:
       ensure => file,
@@ -58,7 +58,7 @@ class certs::qpid (
     exec { 'generate-nss-password':
       command => "openssl rand -base64 24 > ${nss_db_password_file}",
       path    => '/usr/bin',
-      creates => $nss_db_password_file
+      creates => $nss_db_password_file,
     } ->
     file { $nss_db_password_file:
       ensure => file,

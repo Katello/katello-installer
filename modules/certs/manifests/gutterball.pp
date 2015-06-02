@@ -46,10 +46,10 @@ class certs::gutterball(
     } ->
     Cert[$keypair] ~>
     privkey { $key:
-      key_pair => Cert[$keypair]
+      key_pair => Cert[$keypair],
     } ~>
     pubkey { $cert:
-      key_pair => Cert[$keypair]
+      key_pair => Cert[$keypair],
     } ->
     file { $password_file:
       ensure  => file,
@@ -80,7 +80,7 @@ class certs::gutterball(
       keystore       => $amqp_truststore,
       password       => $gutterball_keystore_password,
       keystore_alias => $keystore_alias,
-      file           => $ca
+      file           => $ca,
     } ~>
     certs::ssltools::keytool::import_keypair{ 'import client certificate into gutterball keystore':
       keystore_alias    => $keystore_alias,
@@ -88,7 +88,7 @@ class certs::gutterball(
       keystore_password => $gutterball_keystore_password,
       cert              => $cert,
       key               => $key,
-      tmp_password_file => $password_file
+      tmp_password_file => $password_file,
     } ~>
     file { $amqp_keystore:
       ensure => file,

@@ -2,10 +2,10 @@ listener {
     addr: <%= @addr %>
     port: <%= @port %>
     sasl-mechanisms: <%= @sasl_mech %>
-<% if @role != '' -%>
+<% unless [nil, :undefined, :undef, ''].include?(@role) -%>
     role: <%= @role %>
 <% end -%>
-<% if @ssl_profile != '' -%>
+<% unless [nil, :undefined, :undef, ''].include?(@ssl_profile) -%>
     ssl-profile: <%= @ssl_profile %>
 <% end -%>
 }

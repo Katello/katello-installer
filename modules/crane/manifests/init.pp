@@ -17,9 +17,9 @@ class crane (
 
   ) inherits crane::params {
 
-  class { 'crane::install': } ~>
-  class { 'crane::apache': } ~>
-  class { 'crane::config': } ~>
+  class { '::crane::install': } ~>
+  class { '::crane::apache': } ~>
+  class { '::crane::config': } ~>
   Service['httpd']
   ->
   Class['crane']

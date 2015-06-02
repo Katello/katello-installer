@@ -1,42 +1,19 @@
+# This file is managed centrally by modulesync
+#   https://github.com/theforeman/foreman-installer-modulesync
+
 require 'puppetlabs_spec_helper/rake_tasks'
 require 'puppet-lint/tasks/puppet-lint'
-require 'puppet-syntax/tasks/puppet-syntax'
 
-# These two gems aren't always present, for instance
-# on Travis with --without development
+# blacksmith isn't always present, e.g. on Travis with --without development
 begin
   require 'puppet_blacksmith/rake_tasks'
+  Blacksmith::RakeTask.new do |t|
+    t.tag_pattern = "%s"
+  end
 rescue LoadError
 end
 
-PuppetLint.configuration.send("disable_80chars")
-PuppetLint.configuration.log_format = "%{path}:%{linenumber}:%{check}:%{KIND}:%{message}"
-PuppetLint.configuration.fail_on_warnings = true
+PuppetLint.configuration.ignore_paths = ["spec/**/*.pp", "pkg/**/*.pp", "vendor/**/*.pp"]
+PuppetLint.configuration.log_format = '%{path}:%{linenumber}:%{KIND}: %{message}'
 
-# Forsake support for Puppet 2.6.2 for the benefit of cleaner code.
-# http://puppet-lint.com/checks/class_parameter_defaults/
-PuppetLint.configuration.send('disable_class_parameter_defaults')
-# http://puppet-lint.com/checks/class_inherits_from_params_class/
-PuppetLint.configuration.send('disable_class_inherits_from_params_class')
-# http://puppet-lint.com/checks/autoloader_layout/
-PuppetLint.configuration.send('disable_autoloader_layout')
-
-exclude_paths = [
-  "pkg/**/*",
-  "vendor/**/*",
-  "spec/**/*",
-]
-PuppetLint.configuration.ignore_paths = exclude_paths
-PuppetSyntax.exclude_paths = exclude_paths
-
-desc "Run acceptance tests"
-RSpec::Core::RakeTask.new(:acceptance) do |t|
-  t.pattern = 'spec/acceptance'
-end
-
-desc "Run syntax, lint, and spec tests."
-task :test => [
-  :syntax,
-  :lint,
-  :spec,
-]
+task :default => [:validate, :lint, :spec]

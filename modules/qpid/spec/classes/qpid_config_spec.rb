@@ -17,7 +17,7 @@ describe 'qpid::config' do
       end
 
       it 'should create configuration file' do
-        content = subject.resource('file', '/etc/qpid/qpidd.conf').send(:parameters)[:content]
+        content = catalogue.resource('file', '/etc/qpid/qpidd.conf').send(:parameters)[:content]
         content.split("\n").reject { |c| c =~ /(^#|^$)/ }.should == [
           'log-enable=error+',
           'log-to-syslog=yes',
@@ -38,7 +38,7 @@ describe 'qpid::config' do
         end
 
         it 'should create configuration file' do
-          content = subject.resource('file', '/etc/qpid/qpidd.conf').send(:parameters)[:content]
+          content = catalogue.resource('file', '/etc/qpid/qpidd.conf').send(:parameters)[:content]
           content.split("\n").reject { |c| c =~ /(^#|^$)/ }.should == [
             'log-enable=error+',
             'log-to-syslog=yes',

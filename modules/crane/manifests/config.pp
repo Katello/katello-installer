@@ -5,6 +5,6 @@ class crane::config {
     mode    => '0644',
     owner   => 'root',
     group   => 'root',
-    content => template('crane/crane.conf.erb')
+    content => template('crane/crane.conf.erb'),
   }
 }

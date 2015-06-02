@@ -125,14 +125,14 @@ class certs (
 
   $katello_server_ca_cert = "${certs::pki_dir}/certs/${server_ca_name}.crt"
 
-  class { 'certs::install': } ->
-  class { 'certs::config': } ->
+  class { '::certs::install': } ->
+  class { '::certs::config': } ->
   file { $ca_key_password_file:
     ensure  => file,
     content => $ca_key_password,
     owner   => 'root',
     group   => 'root',
-    mode    => '0400'
+    mode    => '0400',
   } ~>
   ca { $default_ca_name:
     ensure        => present,
@@ -145,7 +145,7 @@ class certs (
     expiration    => $certs::ca_expiration,
     generate      => $certs::generate,
     deploy        => $certs::deploy,
-    password_file => $ca_key_password_file
+    password_file => $ca_key_password_file,
   }
 
   $default_ca = Ca[$default_ca_name]
@@ -179,11 +179,11 @@ class certs (
 
     Ca[$default_ca_name] ~>
     pubkey { $ca_cert:
-      key_pair => $default_ca
+      key_pair => $default_ca,
     } ~>
     pubkey { $ca_cert_stripped:
       strip    => true,
-      key_pair => $default_ca
+      key_pair => $default_ca,
     } ~>
     file { $ca_cert:
       ensure => file,
@@ -194,7 +194,7 @@ class certs (
 
     Ca[$server_ca_name] ~>
     pubkey { $katello_server_ca_cert:
-      key_pair => $server_ca
+      key_pair => $server_ca,
     } ~>
     file { $katello_server_ca_cert:
       ensure => file,
@@ -208,7 +208,7 @@ class certs (
       privkey { $ca_key:
         key_pair      => $default_ca,
         unprotect     => true,
-        password_file => $ca_key_password_file
+        password_file => $ca_key_password_file,
       } ~>
       file { $ca_key:
         ensure => file,

@@ -1,0 +1,25 @@
+HOSTS:
+  w2012:
+    roles:
+    - agent
+    - default
+    platform: windows-2012-x86_64
+    template: win-2012-x86_64
+    hypervisor: vcloud
+  debian-7-i386-master:
+    roles:
+    - master
+    - database
+    - dashboard
+    platform: debian-7-i386
+    template: debian-7-i386
+    hypervisor: vcloud
+CONFIG:
+  type: foss
+  ssh:
+    keys: "~/.ssh/id_rsa-acceptance"
+  datastore: instance0
+  folder: Delivery/Quality Assurance/Enterprise/Dynamic
+  resourcepool: delivery/Quality Assurance/Enterprise/Dynamic
+  pooling_api: http://vcloud.delivery.puppetlabs.net/
+

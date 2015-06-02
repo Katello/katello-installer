@@ -3,6 +3,6 @@ define certs::ssltools::keytool::import_ca($keystore, $password, $keystore_alias
   exec { $title:
     command => "keytool -import -v -keystore ${keystore} -storepass ${password} -alias ${keystore_alias} -file ${file} -noprompt",
     creates => $keystore,
-    path    => ['/bin/', '/usr/bin']
+    path    => ['/bin/', '/usr/bin'],
   }
 }

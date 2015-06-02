@@ -256,26 +256,26 @@ class capsule (
     false => '443'
   }
 
-  class { 'capsule::install': } ~>
-  class { 'certs::foreman_proxy':
+  class { '::capsule::install': } ~>
+  class { '::certs::foreman_proxy':
     hostname => $capsule_fqdn,
     require  => Package['foreman-proxy'],
     before   => Service['foreman-proxy'],
   } ~>
-  class { 'certs::katello':
+  class { '::certs::katello':
     deployment_url => $capsule::rhsm_url,
-    rhsm_port      => $capsule::rhsm_port
+    rhsm_port      => $capsule::rhsm_port,
   }
 
   if $pulp or $reverse_proxy_real {
-    class { 'certs::apache':
-      hostname => $capsule_fqdn
+    class { '::certs::apache':
+      hostname => $capsule_fqdn,
     } ~>
     Class['certs::foreman_proxy'] ~>
-    class { 'capsule::reverse_proxy':
+    class { '::capsule::reverse_proxy':
       path => '/',
       url  => "${foreman_url}/",
-      port => $capsule::reverse_proxy_port
+      port => $capsule::reverse_proxy_port,
     }
   }
 
@@ -294,12 +294,12 @@ class capsule (
     }
 
     if $qpid_router {
-      class { 'capsule::dispatch_router':
+      class { '::capsule::dispatch_router':
         require => Class['pulp'],
       }
     }
 
-    class { 'crane':
+    class { '::crane':
       cert    => $certs::apache::apache_cert,
       key     => $certs::apache::apache_key,
       ca_cert => $certs::server_ca_cert,
@@ -307,7 +307,7 @@ class capsule (
     }
   }
 
-  class { 'foreman_proxy':
+  class { '::foreman_proxy':
     custom_repo           => true,
     http                  => $foreman_proxy_http,
     http_port             => $foreman_proxy_http_port,
@@ -372,11 +372,11 @@ class capsule (
       priority        => '05',
       docroot         => '/var/www/html',
       options         => ['SymLinksIfOwnerMatch'],
-      custom_fragment => template('capsule/_pulp_includes.erb', 'capsule/httpd_pub.erb')
+      custom_fragment => template('capsule/_pulp_includes.erb', 'capsule/httpd_pub.erb'),
     }
 
-    class { 'certs::qpid': } ~>
-    class { 'pulp':
+    class { '::certs::qpid': } ~>
+    class { '::pulp':
       default_password            => $pulp_admin_password,
       oauth_key                   => $pulp_oauth_key,
       oauth_secret                => $pulp_oauth_secret,
@@ -386,7 +386,7 @@ class capsule (
       messaging_client_cert       => $certs::params::messaging_client_cert,
       messaging_url               => "ssl://${::fqdn}:5671",
     } ~>
-    class { 'pulp::child':
+    class { '::pulp::child':
       parent_fqdn          => $parent_fqdn,
       oauth_effective_user => $pulp_oauth_effective_user,
       oauth_key            => $pulp_oauth_key,
@@ -394,17 +394,21 @@ class capsule (
       server_ca_cert       => $certs::params::pulp_server_ca_cert,
     }
 
-    class { 'certs::pulp_child':
+    pulp::child::fragment{'gpg_key_proxy':
+      ssl_content => template('capsule/_pulp_child_gpg_proxy.erb'),
+    }
+
+    class { '::certs::pulp_child':
       hostname => $capsule_fqdn,
       notify   => [ Class['pulp'], Class['pulp::child'] ],
     }
   }
 
   if $puppet {
-    class { 'certs::puppet':
-      hostname => $capsule_fqdn
+    class { '::certs::puppet':
+      hostname => $capsule_fqdn,
     } ~>
-    class { 'puppet':
+    class { '::puppet':
       server                      => true,
       server_ca                   => $puppetca,
       server_foreman_url          => $foreman_url,

@@ -1,19 +1,15 @@
 # Configure foreman
 class foreman::config {
-  concat_build {'foreman_settings':
-    order => ['*.yaml'],
-  }
-
-  concat_fragment {'foreman_settings+01-header.yaml':
+  concat::fragment {'foreman_settings+01-header.yaml':
+    target  => '/etc/foreman/settings.yaml',
     content => template('foreman/settings.yaml.erb'),
+    order   => '01',
   }
 
-  file {'/etc/foreman/settings.yaml':
-    source  => concat_output('foreman_settings'),
-    require => Concat_build['foreman_settings'],
-    owner   => 'root',
-    group   => $foreman::group,
-    mode    => '0640',
+  concat {'/etc/foreman/settings.yaml':
+    owner => 'root',
+    group => $foreman::group,
+    mode  => '0640',
   }
 
   file { '/etc/foreman/database.yml':
@@ -53,7 +49,7 @@ class foreman::config {
     class { '::foreman::config::passenger': } -> anchor { 'foreman::config_end': }
 
     if $foreman::ipa_authentication {
-      if $::default_ipa_server == '' or $::default_ipa_realm == '' {
+      if !$::default_ipa_server or empty($::default_ipa_server) or !$::default_ipa_realm or empty($::default_ipa_realm) {
         fail("${::hostname}: The system does not seem to be IPA-enrolled")
       }
 
@@ -135,8 +131,10 @@ class foreman::config {
         }
       }
 
-      concat_fragment {'foreman_settings+02-authorize_login_delegation.yaml':
+      concat::fragment {'foreman_settings+02-authorize_login_delegation.yaml':
+        target  => '/etc/foreman/settings.yaml',
         content => template('foreman/settings-external-auth.yaml.erb'),
+        order   => '02',
       }
     }
   }
