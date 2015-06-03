@@ -14,6 +14,7 @@ Source0: %{name}-%{version}.tar.gz
 BuildArch: noarch
 Obsoletes: katello-installer < 2.1.0
 
+Requires: %{?scl_prefix}puppet >= 3.4.0
 Requires: %{?scl_prefix}rubygem-kafo
 Requires: %{?scl_prefix}rubygem-apipie-bindings >= 0.0.6
 Requires: foreman-selinux
