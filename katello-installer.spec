@@ -64,6 +64,7 @@ A set of tools for installation of a Katello Capsule
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/capsule-installer/answers.capsule-installer.yaml
 %config(noreplace) %attr(600, root, root) %{_sysconfdir}/capsule-installer/capsule-installer.yaml
 %{_sbindir}/capsule-installer
+%{_sbindir}/capsule-remove
 
 %package -n katello-devel-installer
 Summary:   Puppet-based installer for a Katello development setup from git
@@ -168,6 +169,7 @@ cp -dpR bin/katello-certs-check %{buildroot}/%{_datadir}/katello-installer/bin/k
 cp -dpR bin/katello-devel-installer %{buildroot}/%{_datadir}/katello-devel-installer/bin/katello-devel-installer
 cp -dpR bin/sam-installer %{buildroot}/%{_datadir}/sam-installer/bin/
 cp -dpR bin/capsule-installer %{buildroot}/%{_datadir}/capsule-installer/bin/capsule-installer
+cp -dpR bin/capsule-remove %{buildroot}/%{_datadir}/capsule-installer/bin/capsule-remove
 
 cp -dpR config/answers.katello-installer.yaml %{buildroot}/%{_sysconfdir}/katello-installer
 cp -dpR config/answers.capsule-certs-generate.yaml %{buildroot}/%{_sysconfdir}/katello-installer
@@ -192,6 +194,7 @@ ln -sf %{_datadir}/katello-installer/bin/katello-certs-check %{buildroot}/%{_sbi
 ln -sf %{_datadir}/katello-devel-installer/bin/katello-devel-installer %{buildroot}/%{_sbindir}/katello-devel-installer
 ln -sf %{_datadir}/sam-installer/bin/sam-installer %{buildroot}/%{_sbindir}/sam-installer
 ln -sf %{_datadir}/capsule-installer/bin/capsule-installer %{buildroot}/%{_sbindir}/capsule-installer
+ln -sf %{_datadir}/capsule-installer/bin/capsule-remove %{buildroot}/%{_sbindir}/capsule-remove
 
 %files
 %defattr(-,root,root,-)
