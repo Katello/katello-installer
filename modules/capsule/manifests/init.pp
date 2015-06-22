@@ -394,6 +394,10 @@ class capsule (
       server_ca_cert       => $certs::params::pulp_server_ca_cert,
     }
 
+    pulp::child::fragment{'gpg_key_proxy':
+      ssl_content => template('capsule/_pulp_child_gpg_proxy.erb'),
+    }
+
     class { 'certs::pulp_child':
       hostname => $capsule_fqdn,
       notify   => [ Class['pulp'], Class['pulp::child'] ],
