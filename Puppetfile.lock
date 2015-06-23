@@ -7,7 +7,7 @@ FORGE
       puppetlabs-stdlib (< 5.0.0, >= 2.4.0)
     puppetlabs-apt (1.8.0)
       puppetlabs-stdlib (>= 2.2.1)
-    puppetlabs-concat (1.2.2)
+    puppetlabs-concat (1.2.3)
       puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
     puppetlabs-stdlib (4.6.0)
     puppetlabs-vcsrepo (1.2.0)
@@ -136,7 +136,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-pulp
   ref: 0.1-stable
-  sha: d1f04e13084600390a806585915fd1c9e3479f91
+  sha: d9538cf5242cffc295880120ec06cbe8db324a0d
   specs:
     katello-pulp (0.1.1)
       katello-qpid (>= 0.1.0)
@@ -173,7 +173,7 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-mongodb
   ref: master
-  sha: 14117ae3391862021555df8139c66fd04c13c0c3
+  sha: 030100a176a72a32e265b77790d8d15407a13729
   specs:
     puppetlabs-mongodb (0.10.0)
       puppetlabs-apt (< 2.0.0, >= 1.0.0)
@@ -190,11 +190,11 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-postgresql
   ref: master
-  sha: b5b9c78d76e4e551f85f44600f094e6fb02da5a1
+  sha: 3f6f040e1cff84f08344abf57e4ccca27e08006f
   specs:
     puppetlabs-postgresql (4.3.0)
       puppetlabs-apt (< 2.0.0, >= 1.8.0)
-      puppetlabs-concat (< 2.0.0, >= 1.1.0)
+      puppetlabs-concat (< 3.0.0, >= 1.1.0)
       puppetlabs-stdlib (~> 4.0)
 
 GIT
@@ -223,7 +223,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman
   ref: master
-  sha: 88f1903370a66d999579ec1f5bcd5718f8fec841
+  sha: c5cfb238477d85a3b80e036aa13a3730d8c4df3b
   specs:
     theforeman-foreman (3.0.1)
       adrien-alternatives (< 1.0.0, >= 0.3.0)

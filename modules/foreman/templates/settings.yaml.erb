@@ -3,11 +3,7 @@
 ---
 <%= @header %>
 
-#your default puppet server - can be overridden in the host level
-#if none specified, plain "puppet" will be used.
-#:puppet_server: puppet
 :unattended: <%= scope.lookupvar("foreman::unattended") %>
-:puppetconfdir: /etc/puppet/puppet.conf
 :login: <%= scope.lookupvar("foreman::authentication") %>
 :require_ssl: <%= scope.lookupvar("foreman::ssl") %>
 :locations_enabled: <%= scope.lookupvar("foreman::locations_enabled") %>
@@ -23,3 +19,15 @@
 :websockets_encrypt: <%= scope.lookupvar("foreman::websockets_encrypt") ? 'on' : 'off' %>
 :websockets_ssl_key: <%= scope.lookupvar("foreman::websockets_ssl_key") %>
 :websockets_ssl_cert: <%= scope.lookupvar("foreman::websockets_ssl_cert") %>
+
+# Log settings for the current environment can be adjusted by adding them
+# here. For example, if you want to increase the log level.
+:logging:
+  :level: <%= scope.lookupvar("foreman::logging_level") %>
+
+# Individual logging types can be toggled on/off here
+:loggers:
+<% scope.lookupvar("foreman::loggers").each do |logger,enabled| -%>
+  :<%= logger %>:
+    :enabled: <%= enabled %>
+<% end -%>
