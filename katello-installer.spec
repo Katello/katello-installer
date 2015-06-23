@@ -3,8 +3,8 @@
 %global scl_ruby /usr/bin/ruby
 
 Name:    katello-installer-base
-Version: 2.2.1
-Release: 0%{?dist}
+Version: 2.2.2
+Release: 1%{?dist}
 Summary: Puppet-based installer for the Katello and Katello Capsule
 Group:   Applications/System
 License: GPLv3+ and ASL 2.0
@@ -201,6 +201,10 @@ ln -sf %{_datadir}/capsule-installer/bin/capsule-installer %{buildroot}/%{_sbind
 %doc README.*
 
 %changelog
+* Tue Jun 23 2015 Eric D. Helms <ericdhelms@gmail.com> 2.2.2-1
+- Fixes #10591: Crane setup references wrong CA path. (ericdhelms@gmail.com)
+- Ensure GPG key proxy works on Capsules (ericdhelms@gmail.com)
+
 * Thu May 28 2015 Eric D. Helms <ericdhelms@gmail.com> 2.2.1-0
 - Bump version to 2.2.1 (ericdhelms@gmail.com)
 - fixes #10512 - add 2.2 upgrade rake tasks to upgrade hook
