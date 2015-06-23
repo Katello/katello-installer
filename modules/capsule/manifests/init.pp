@@ -302,7 +302,7 @@ class capsule (
     class { 'crane':
       cert    => $certs::apache::apache_cert,
       key     => $certs::apache::apache_key,
-      ca_cert => $certs::server_ca_cert,
+      ca_cert => $certs::katello_server_ca_cert,
       require => Class['certs::apache'],
     }
   }
