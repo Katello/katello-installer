@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "author": "Katello",
   "summary": "Configure and install Candlepin entitlement server.",
-  "license": "GPLv3+",
+  "license": "GPL-3.0+",
   "source": "https://github.com/Katello/puppet-gutterball.git",
   "project_page": "https://github.com/Katello/puppet-gutterball",
   "issues_url": "http://projects.theforeman.org/projects/katello/issues",

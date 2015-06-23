@@ -7,9 +7,9 @@ class katello_devel::plugin::foreman_gutterball {
     ensure   => present,
     provider => git,
     source   => 'https://github.com/Katello/foreman-gutterball.git',
-    user     => $katello_devel::user
+    user     => $katello_devel::user,
   } ~>
-  class { 'katello::plugin::gutterball::config':
+  class { '::katello::plugin::gutterball::config':
     foreman_plugins_dir => $foreman_settings_path,
     foreman_user        => $katello_devel::user,
     foreman_group       => $katello_devel::group,

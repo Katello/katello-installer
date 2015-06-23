@@ -4,6 +4,8 @@ class pulp::params {
   $oauth_key = 'pulp'
   $oauth_secret = 'secret'
 
+  $mongodb_path = '/var/lib/mongodb'
+
   $messaging_url = 'tcp://localhost:5672'
   $messaging_ca_cert = undef
   $messaging_client_cert = undef

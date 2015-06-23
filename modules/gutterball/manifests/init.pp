@@ -29,14 +29,14 @@ class gutterball (
   $tomcat = $gutterball::params::tomcat,
 ) inherits gutterball::params {
 
-  class { 'gutterball::install': } ~>
-  class { 'gutterball::config':
+  class { '::gutterball::install': } ~>
+  class { '::gutterball::config':
     amqp_broker_host  => $amqp_broker_host,
     amqp_broker_port  => $amqp_broker_port,
-    keystore_password => $keystore_password
+    keystore_password => $keystore_password,
   } ~>
-  class { 'gutterball::database': } ~>
-  class { 'gutterball::service': } ~>
+  class { '::gutterball::database': } ~>
+  class { '::gutterball::service': } ~>
   Class['gutterball']
 
 }

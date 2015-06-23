@@ -32,6 +32,7 @@ class apache (
   $service_enable         = true,
   $service_manage         = true,
   $service_ensure         = 'running',
+  $service_restart        = undef,
   $purge_configs          = true,
   $purge_vhost_dir        = undef,
   $purge_vdir             = false,
@@ -48,6 +49,7 @@ class apache (
   $mod_dir                = $::apache::params::mod_dir,
   $mod_enable_dir         = $::apache::params::mod_enable_dir,
   $mpm_module             = $::apache::params::mpm_module,
+  $lib_path               = $::apache::params::lib_path,
   $conf_template          = $::apache::params::conf_template,
   $servername             = $::apache::params::servername,
   $manage_user            = true,
@@ -124,16 +126,14 @@ class apache (
     }
   }
 
-  $valid_log_level_re = '(emerg|alert|crit|error|warn|notice|info|debug)'
-
-  validate_re($log_level, $valid_log_level_re,
-  "Log level '${log_level}' is not one of the supported Apache HTTP Server log levels.")
+  validate_apache_log_level($log_level)
 
   class { '::apache::service':
-    service_name   => $service_name,
-    service_enable => $service_enable,
-    service_manage => $service_manage,
-    service_ensure => $service_ensure,
+    service_name    => $service_name,
+    service_enable  => $service_enable,
+    service_manage  => $service_manage,
+    service_ensure  => $service_ensure,
+    service_restart => $service_restart,
   }
 
   # Deprecated backwards-compatibility
@@ -280,6 +280,12 @@ class apache (
           ensure  => absent,
           require => Package['httpd'],
         }
+      }
+      'Suse': {
+        $pidfile              = '/var/run/httpd2.pid'
+        $error_log            = 'error.log'
+        $scriptalias          = '/usr/lib/cgi-bin'
+        $access_log_file      = 'access.log'
       }
       default: {
         fail("Unsupported osfamily ${::osfamily}")

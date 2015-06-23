@@ -14,6 +14,7 @@ class foreman_proxy::params {
   $plugin_version = 'installed'
 
   # variables
+  $bind_host = '*'
   $port = undef # deprecated in favor of $ssl_port/$http_port
   $dir  = '/usr/share/foreman-proxy'
   $user = 'foreman-proxy'
@@ -75,6 +76,7 @@ class foreman_proxy::params {
   $puppetssh_keyfile   = '/etc/foreman-proxy/id_rsa'
   $puppetssh_wait      = false
   $puppet_user         = 'root'
+  $salt_puppetrun_cmd  = 'puppet.run'
 
   # Template settings
   $templates           = false
@@ -130,8 +132,9 @@ class foreman_proxy::params {
   # will be split into an array
   $dhcp_nameservers = 'default'
   # Omapi settings
-  $dhcp_key_name       = undef
-  $dhcp_key_secret     = undef
+  $dhcp_key_name   = undef
+  $dhcp_key_secret = undef
+  $dhcp_omapi_port = 7911
 
   # DHCP server settings
   case $::osfamily {

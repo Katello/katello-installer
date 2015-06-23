@@ -65,32 +65,32 @@ class katello_devel (
     password   => $changeme,
   } ~>
   group { $katello_devel::group:
-    ensure => present
+    ensure => present,
   }
 
   Class['certs'] ~>
-  class { 'certs::apache': } ~>
-  class { 'katello_devel::apache': } ~>
-  class { 'certs::qpid':
-    require => Class['qpid::install']
+  class { '::certs::apache': } ~>
+  class { '::katello_devel::apache': } ~>
+  class { '::certs::qpid':
+    require => Class['qpid::install'],
   } ~>
-  class { 'katello_devel::install': } ~>
-  class { 'katello_devel::config': } ~>
-  class { 'katello_devel::database': } ~>
-  class { 'katello_devel::foreman_certs': } ~>
-  class { 'katello_devel::setup':
+  class { '::katello_devel::install': } ~>
+  class { '::katello_devel::config': } ~>
+  class { '::katello_devel::database': } ~>
+  class { '::katello_devel::foreman_certs': } ~>
+  class { '::katello_devel::setup':
     require => [
       Class['pulp'],
       Class['candlepin'],
-      Class['elasticsearch']
-    ]
+      Class['elasticsearch'],
+    ],
   }
 
 
   Class['certs'] ~>
   Class['certs::qpid'] ~>
-  class { 'certs::candlepin': } ~>
-  class { 'candlepin':
+  class { '::certs::candlepin': } ~>
+  class { '::candlepin':
     user_groups       => $katello_devel::group,
     oauth_key         => $katello_devel::oauth_key,
     oauth_secret      => $katello_devel::oauth_secret,
@@ -98,13 +98,13 @@ class katello_devel (
     ca_key            => $certs::ca_key,
     ca_cert           => $certs::ca_cert_stripped,
     keystore_password => $::certs::candlepin::keystore_password,
-    require           => Class['katello_devel::database']
+    require           => Class['katello_devel::database'],
   }
 
   Class['certs'] ~>
   Class['certs::qpid'] ~>
-  class { 'certs::pulp_parent': } ~>
-  class { 'pulp':
+  class { '::certs::pulp_parent': } ~>
+  class { '::pulp':
     oauth_key                   => $katello_devel::oauth_key,
     oauth_secret                => $katello_devel::oauth_secret,
     messaging_url               => 'ssl://localhost:5671',
@@ -116,17 +116,17 @@ class katello_devel (
     consumers_ca_key            => $certs::ca_key,
     consumers_crl               => $candlepin::crl_file,
   } ~>
-  class { 'qpid::client':
+  class { '::qpid::client':
     ssl                    => true,
     ssl_cert_name          => 'broker',
     ssl_cert_db            => $certs::nss_db_dir,
     ssl_cert_password_file => $certs::qpid::nss_db_password_file,
   } ~>
-  class { 'katello::qpid':
+  class { '::katello::qpid':
     client_cert  => $certs::qpid::client_cert,
     client_key   => $certs::qpid::client_key,
-    katello_user => $user
+    katello_user => $user,
   }
 
-  class{ 'elasticsearch': }
+  class{ '::elasticsearch': }
 }

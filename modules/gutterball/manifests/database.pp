@@ -1,5 +1,6 @@
-class gutterball::database{
-  include postgresql::server
+# Gutterball Database
+class gutterball::database {
+  include ::postgresql::server
 
   postgresql::server::pg_hba_rule { 'allow authenticated users over ipv4 loopback':
     type        => 'host',
@@ -7,6 +8,11 @@ class gutterball::database{
     user        => 'all',
     address     => '127.0.0.1/32',
     auth_method => 'password',
+  }
+
+  # Prevents errors if run from /root etc.
+  Postgresql_psql {
+    cwd => '/',
   }
 
   postgresql::server::db { 'gutterball':
@@ -23,7 +29,7 @@ class gutterball::database{
   exec { 'migrate database':
       path        => ['/usr/bin', '/bin'],
       command     => 'gutterball-db migrate',
-      refreshonly => true
+      refreshonly => true,
   }
 
 

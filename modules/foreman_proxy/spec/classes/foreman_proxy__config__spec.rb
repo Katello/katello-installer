@@ -6,6 +6,8 @@ describe 'foreman_proxy::config' do
       :fqdn                   => 'host.example.org',
       :domain                 => 'example.org',
       :ipaddress_eth0         => '127.0.1.1',
+      :network_eth0           => '127.0.1.0',
+      :netmask_eth0           => '255.255.255.0',
       :operatingsystem        => 'RedHat',
       :operatingsystemrelease => '6.5',
       :osfamily               => 'RedHat',
@@ -71,6 +73,7 @@ describe 'foreman_proxy::config' do
         '  - host.example.org',
         ":foreman_url: https://#{facts[:fqdn]}",
         ':daemon: true',
+        ':bind_host: \'*\'',
         ':https_port: 8443',
         ':virsh_network: default',
         ':log_file: /var/log/foreman-proxy/proxy.log',
@@ -463,6 +466,21 @@ describe 'foreman_proxy::config' do
     end
   end
 
+  context 'when puppetrun_provider => salt' do
+    let :pre_condition do
+      'class {"foreman_proxy":
+        puppetrun_provider => "salt",
+      }'
+    end
+
+    it 'should contain salt as puppet_provider and salt_puppetrun_cmd' do
+      verify_contents(catalogue, '/etc/foreman-proxy/settings.d/puppet.yml', [
+        ':puppet_provider: salt',
+        ':salt_puppetrun_cmd: puppet.run',
+      ])
+    end
+  end
+
   context 'when puppet_use_environment_api set' do
     let :pre_condition do
       'class {"foreman_proxy":
@@ -771,4 +789,24 @@ describe 'foreman_proxy::config' do
       ])
     end
   end
+
+  context 'with dhcp enabled' do
+    let :pre_condition do
+      'class {"foreman_proxy":
+        dhcp => true,
+      }'
+    end
+
+    it 'should generate correct dhcp.yml' do
+      verify_exact_contents(catalogue, '/etc/foreman-proxy/settings.d/dhcp.yml', [
+        '---',
+        ':enabled: https',
+        ':dhcp_vendor: isc',
+        ':dhcp_config: /etc/dhcp/dhcpd.conf',
+        ':dhcp_leases: /var/lib/dhcpd/dhcpd.leases',
+        ':dhcp_omapi_port: 7911',
+      ])
+    end
+  end
+
 end

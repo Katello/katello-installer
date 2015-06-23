@@ -19,7 +19,7 @@ class katello_devel::foreman_certs (
     purpose       => client,
     country       => $::certs::country,
     state         => $::certs::state,
-    city          => $::certs::sity,
+    city          => $::certs::city,
     org           => 'FOREMAN',
     org_unit      => 'PUPPET',
     expiration    => $::certs::expiration,
@@ -31,16 +31,16 @@ class katello_devel::foreman_certs (
   }
 
   Cert[$client_cert_name] ~>
-    pubkey { $client_cert:
+  pubkey { $client_cert:
     key_pair => Cert[$client_cert_name],
   } ~>
-    privkey { $client_key:
+  privkey { $client_key:
     key_pair => Cert[$client_cert_name],
   } ~>
   file { $client_key:
     group => $katello_devel::group,
     owner => 'root',
-    mode  => '0440'
+    mode  => '0440',
   }
 
 }

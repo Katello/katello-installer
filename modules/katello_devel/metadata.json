@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "author": "Katello",
   "summary": "Handles deploying and managing a Katello + Foreman development setup from git",
-  "license": "GPLv3+",
+  "license": "GPL-3.0+",
   "source": "https://github.com/Katello/puppet-katello_devel.git",
   "project_page": "https://github.com/Katello/puppet-katello_devel",
   "issues_url": "http://projects.theforeman.org/projects/katello/issues",

@@ -41,6 +41,8 @@ class capsule::params {
   $bmc_default_provider          = 'ipmitool'
 
   $dhcp                          = false
+  $dhcp_listen_on                = $foreman_proxy::params::dhcp_listen_on
+  $dhcp_option_domain            = $foreman_proxy::params::dhcp_option_domain
   $dhcp_managed                  = $foreman_proxy::params::dhcp_managed
   $dhcp_interface                = $foreman_proxy::params::dhcp_interface
   $dhcp_gateway                  = $foreman_proxy::params::dhcp_gateway
@@ -75,7 +77,7 @@ class capsule::params {
   $freeipa_remove_dns            = $foreman_proxy::params::freeipa_remove_dns
 
   # Templates proxy
-  $templates                     = false
+  $templates                     = true
 
   $register_in_foreman = false
   $certs_tar = undef
