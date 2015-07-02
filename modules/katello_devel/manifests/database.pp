@@ -29,7 +29,7 @@ class katello_devel::database {
       cwd => '/',
     }
 
-    class { 'postgresql::server':
+    class { '::postgresql::server':
       encoding             => 'UTF8',
       pg_hba_conf_defaults => false,
     }
@@ -62,11 +62,11 @@ class katello_devel::database {
 
     postgresql::server::role { $db_username:
       password_hash => $db_password,
-      superuser     => true
+      superuser     => true,
     }
 
     postgresql::server::role { 'candlepin':
-      superuser => true
+      superuser => true,
     }
 
     postgresql::server::db { $db_name:

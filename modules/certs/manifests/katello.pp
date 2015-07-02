@@ -39,7 +39,10 @@ class certs::katello (
     dir              => $katello_www_pub_dir,
     summary          => $candlepin_consumer_summary,
     description      => $candlepin_consumer_description,
-    files            => ["${rhsm_ca_dir}/katello-server-ca.pem:644 =${certs::pki_dir}/certs/${certs::server_ca_name}.crt"],
+    # katello-default-ca is needed for the katello-agent to work properly
+    # (especially in the custom certs scenario)
+    files            => ["${rhsm_ca_dir}/katello-default-ca.pem:644=${certs::pki_dir}/certs/${certs::default_ca_name}.crt",
+                        "${rhsm_ca_dir}/katello-server-ca.pem:644=${certs::pki_dir}/certs/${certs::server_ca_name}.crt"],
     bootstrap_script => template('certs/rhsm-katello-reconfigure.erb'),
     alias            => $candlepin_cert_rpm_alias,
     subscribe        => $::certs::server_ca,

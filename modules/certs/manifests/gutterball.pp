@@ -27,7 +27,7 @@ class certs::gutterball(
     hostname      => $hostname,
     country       => $::certs::country,
     state         => $::certs::state,
-    city          => $::certs::sity,
+    city          => $::certs::city,
     org           => 'gutterball',
     org_unit      => $::certs::org_unit,
     expiration    => $::certs::expiration,

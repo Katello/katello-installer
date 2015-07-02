@@ -327,21 +327,18 @@ describe 'clones a remote repo' do
     end
 
     context 'and noop' do
-      let(:repo_name) do
-        'testrepo_already_exists'
-      end
       before(:all) do
-        shell("mkdir #{tmpdir}/#{repo_name}")
-        shell("cd #{tmpdir}/#{repo_name} && git init")
-        shell("cd #{tmpdir}/#{repo_name} && touch a && git add a && git commit -m 'a'")
+        shell("mkdir #{tmpdir}/testrepo_already_exists")
+        shell("cd #{tmpdir}/testrepo_already_exists && git init")
+        shell("cd #{tmpdir}/testrepo_already_exists && touch a && git add a && git commit -m 'a'")
       end
       after(:all) do
-        shell("rm -rf #{tmpdir}/#{repo_name}")
+        shell("rm -rf #{tmpdir}/testrepo_already_exists")
       end
 
       it 'applies the manifest' do
         pp = <<-EOS
-        vcsrepo { "#{tmpdir}/#{repo_name}":
+        vcsrepo { "#{tmpdir}/testrepo_already_exists":
           ensure   => present,
           source   => "file://#{tmpdir}/testrepo.git",
           provider => git,
@@ -350,9 +347,7 @@ describe 'clones a remote repo' do
         }
         EOS
 
-        apply_manifest(pp, :catch_changes => true) do |r|
-          expect(r.stdout).to match(/Noop Mode/)
-        end
+        apply_manifest(pp, :catch_changes => true)
       end
     end
   end

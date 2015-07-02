@@ -8,6 +8,8 @@
 #
 # $oauth_secret::               The oauth secret; defaults to secret
 #
+# $mongodb_path::               Path where mongodb should be stored
+#
 # $messaging_url::              URL for the AMQP server that Pulp will use to
 #                               communicate with nodes.
 #
@@ -75,6 +77,8 @@ class pulp (
   $oauth_key = $pulp::params::oauth_key,
   $oauth_secret = $pulp::params::oauth_secret,
 
+  $mongodb_path = $pulp::params::mongodb_path,
+
   $messaging_url = $pulp::params::messaging_url,
   $messaging_ca_cert = $pulp::params::messaging_ca_cert,
   $messaging_client_cert = $pulp::params::messaging_client_cert,
@@ -123,8 +127,8 @@ class pulp (
   }
   class { 'apache::mod::wsgi':} ~>
   class { 'mongodb':
-    logpath     => '/var/lib/mongodb/mongodb.log',
-    dbpath      => '/var/lib/mongodb',
+    logpath     => "${mongodb_path}/mongodb.log",
+    dbpath      => $mongodb_path,
     pidfilepath => $mongodb_pidfilepath,
   } ~>
   class { 'qpid':

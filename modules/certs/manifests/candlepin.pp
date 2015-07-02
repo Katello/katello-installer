@@ -28,7 +28,7 @@ class certs::candlepin (
     hostname      => $hostname,
     country       => $::certs::country,
     state         => $::certs::state,
-    city          => $::certs::sity,
+    city          => $::certs::city,
     org           => 'candlepin',
     org_unit      => $::certs::org_unit,
     expiration    => $::certs::expiration,

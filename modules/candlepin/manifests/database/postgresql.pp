@@ -24,7 +24,7 @@ class candlepin::database::postgresql{
 
     # Temporary direct use of liquibase to initiall migrate the candlepin database
     # until support is added in cpdb - https://bugzilla.redhat.com/show_bug.cgi?id=1044574
-    include postgresql::client, postgresql::server
+    include ::postgresql::client, ::postgresql::server
     postgresql::server::db { $candlepin::db_name:
       user     => $candlepin::db_user,
       password => postgresql_password($candlepin::db_user, $candlepin::db_password),

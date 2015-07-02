@@ -18,6 +18,8 @@
 # $plugin_version::             foreman plugins version, it's passed to ensure parameter of plugins package resource
 #                               can be set to 'latest', 'present',  'installed', 'absent'.
 #
+# $bind_host::                  Host to bind ports to, e.g. *, localhost, 0.0.0.0
+#
 # $port::                       Port to listen on (deprecated in favor of $ssl_port and $http_port)
 #                               type:integer
 #
@@ -107,6 +109,8 @@
 #                               the exit code
 #                               type:boolean
 #
+# $salt_puppetrun_cmd::         Salt command to trigger Puppet run
+#
 # $puppet_user::                Which user to invoke sudo as to run puppet commands
 #
 # $puppet_url::                 URL of the Puppet master itself for API requests
@@ -177,6 +181,9 @@
 # $dhcp_key_name::              DHCP key name
 #
 # $dhcp_key_secret::            DHCP password
+#
+# $dhcp_omapi_port::            DHCP server OMAPI port
+#                               type:integer
 #
 # $dns::                        Enable DNS feature
 #                               type:boolean
@@ -256,6 +263,7 @@ class foreman_proxy (
   $custom_repo                = $foreman_proxy::params::custom_repo,
   $version                    = $foreman_proxy::params::version,
   $plugin_version             = $foreman_proxy::params::plugin_version,
+  $bind_host                  = $foreman_proxy::params::bind_host,
   $port                       = $foreman_proxy::params::port,
   $http_port                  = $foreman_proxy::params::http_port,
   $ssl_port                   = $foreman_proxy::params::ssl_port,
@@ -292,6 +300,7 @@ class foreman_proxy (
   $puppetssh_user             = $foreman_proxy::params::puppetssh_user,
   $puppetssh_keyfile          = $foreman_proxy::params::puppetssh_keyfile,
   $puppetssh_wait             = $foreman_proxy::params::puppetssh_wait,
+  $salt_puppetrun_cmd         = $foreman_proxy::params::salt_puppetrun_cmd,
   $puppet_user                = $foreman_proxy::params::puppet_user,
   $puppet_url                 = $foreman_proxy::params::puppet_url,
   $puppet_ssl_ca              = $foreman_proxy::params::ssl_ca,
@@ -322,6 +331,7 @@ class foreman_proxy (
   $dhcp_leases                = $foreman_proxy::params::dhcp_leases,
   $dhcp_key_name              = $foreman_proxy::params::dhcp_key_name,
   $dhcp_key_secret            = $foreman_proxy::params::dhcp_key_secret,
+  $dhcp_omapi_port            = $foreman_proxy::params::dhcp_omapi_port,
   $dns                        = $foreman_proxy::params::dns,
   $dns_listen_on              = $foreman_proxy::params::dns_listen_on,
   $dns_managed                = $foreman_proxy::params::dns_managed,
@@ -371,6 +381,7 @@ class foreman_proxy (
   }
 
   # Validate misc params
+  validate_string($bind_host)
   validate_bool($ssl, $manage_sudoersd, $use_sudoersd, $register_in_foreman)
   validate_array($trusted_hosts)
   validate_re($log_level, '^(UNKNOWN|FATAL|ERROR|WARN|INFO|DEBUG)$')
@@ -380,6 +391,7 @@ class foreman_proxy (
   validate_bool($puppetssh_wait)
   validate_string($ssldir, $puppetdir, $autosign_location, $puppetca_cmd, $puppetrun_cmd)
   validate_string($puppet_url, $puppet_ssl_ca, $puppet_ssl_cert, $puppet_ssl_key)
+  validate_string($salt_puppetrun_cmd)
 
   # Validate template params
   validate_string($template_url)
@@ -392,6 +404,7 @@ class foreman_proxy (
   # Validate dhcp params
   validate_bool($dhcp_managed)
   validate_array($dhcp_option_domain)
+  validate_integer($dhcp_omapi_port)
 
   # Validate dns params
   validate_string($dns_interface, $dns_provider, $dns_reverse, $dns_server, $keyfile)

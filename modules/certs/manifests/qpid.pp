@@ -16,7 +16,7 @@ class certs::qpid (
     hostname      => $::certs::qpid::hostname,
     country       => $::certs::country,
     state         => $::certs::state,
-    city          => $::certs::sity,
+    city          => $::certs::city,
     org           => 'pulp',
     org_unit      => $::certs::org_unit,
     expiration    => $::certs::expiration,

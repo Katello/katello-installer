@@ -218,6 +218,23 @@ describe 'apache', :type => :class do
       end
     end
 
+    describe "Override existing LogFormats" do
+      context "When parameter log_formats is a hash" do
+        let :params do
+          { :log_formats => {
+            'common'   => "%v %h %l %u %t \"%r\" %>s %b",
+            'combined' => "%v %h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\""
+          } }
+        end
+
+        it { is_expected.to contain_file("/etc/apache2/apache2.conf").with_content %r{^LogFormat "%v %h %l %u %t \"%r\" %>s %b" common\n} }
+        it { is_expected.to contain_file("/etc/apache2/apache2.conf").without_content %r{^LogFormat "%h %l %u %t \"%r\" %>s %b \"%\{Referer\}i\" \"%\{User-agent\}i\"" combined\n} }
+        it { is_expected.to contain_file("/etc/apache2/apache2.conf").with_content %r{^LogFormat "%v %h %l %u %t \"%r\" %>s %b" common\n} }
+        it { is_expected.to contain_file("/etc/apache2/apache2.conf").with_content %r{^LogFormat "%v %h %l %u %t \"%r\" %>s %b \"%\{Referer\}i\" \"%\{User-agent\}i\"" combined\n} }
+        it { is_expected.to contain_file("/etc/apache2/apache2.conf").without_content %r{^LogFormat "%h %l %u %t \"%r\" %>s %b \"%\{Referer\}i\" \"%\{User-agent\}i\"" combined\n} }
+      end
+    end
+
     context "on Ubuntu" do
       let :facts do
         super().merge({
@@ -487,7 +504,7 @@ describe 'apache', :type => :class do
         let :params do
           { :mpm_module => 'breakme' }
         end
-        it { expect { subject }.to raise_error Puppet::Error, /does not match/ }
+        it { expect { catalogue }.to raise_error Puppet::Error, /does not match/ }
       end
     end
 
@@ -561,7 +578,7 @@ describe 'apache', :type => :class do
         end
         it "should fail" do
           expect do
-            subject
+            catalogue
           end.to raise_error(Puppet::Error, /"foo" does not match/)
         end
       end
@@ -660,6 +677,7 @@ describe 'apache', :type => :class do
     # Assert that load files are placed for these mods, but no conf file.
     [
       'auth_basic',
+      'authn_core',
       'authn_file',
       'authz_groupfile',
       'authz_host',
@@ -794,7 +812,7 @@ describe 'apache', :type => :class do
 
     it do
       expect {
-       should compile
+       catalogue
       }.to raise_error(Puppet::Error, /Unsupported osfamily/)
     end
   end

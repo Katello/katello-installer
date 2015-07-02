@@ -16,11 +16,13 @@
         * [Classes: apache::mod::*](#classes-apachemodname)
         * [Class: apache::mod::alias](#class-apachemodalias)
         * [Class: apache::mod::event](#class-apachemodevent)
+        * [Class: apache::mod::geoip](#class-apachemodgeoip)
         * [Class: apache::mod::info](#class-apachemodinfo)
         * [Class: apache::mod::pagespeed](#class-apachemodpagespeed)
         * [Class: apache::mod::php](#class-apachemodphp)
         * [Class: apache::mod::ssl](#class-apachemodssl)
         * [Class: apache::mod::status](#class-apachemodstatus)
+        * [Class: apache::mod::expires](#class-apachemodexpires)
         * [Class: apache::mod::wsgi](#class-apachemodwsgi)
         * [Class: apache::mod::fcgid](#class-apachemodfcgid)
         * [Class: apache::mod::negotiation](#class-apachemodnegotiation)
@@ -329,6 +331,10 @@ Changes the location of the default [Documentroot](https://httpd.apache.org/docs
 
 Enables custom error documents. Defaults to 'false'.
 
+#####`group`
+
+Changes the group that Apache will answer requests as. The parent process will continue to be run as root, but resource accesses by child processes will be done under this group. By default, puppet will attempt to manage this group as a resource under `::apache`. If this is not what you want, set [`manage_group`](#manage_group) to 'false'. Defaults to the OS-specific default user for apache, as detected in `::apache::params`.
+
 #####`httpd_dir`
 
 Changes the base location of the configuration directories used for the apache service. This is useful for specially repackaged HTTPD builds, but might have unintended consequences when used in combination with the default distribution packages. Defaults to '/etc/httpd' on RedHat, '/etc/apache2' on Debian, '/usr/local/etc/apache22' on FreeBSD, and '/etc/apache2' on Gentoo.
@@ -345,9 +351,13 @@ Sets the amount of time the server waits for subsequent requests on a persistent
 
 Sets the limit of the number of requests allowed per connection when KeepAlive is on. Defaults to '100'.
 
+#####`lib_path`
+
+Specifies the location where apache module files are stored. It should not be configured manually without special reason.
+
 #####`loadfile_name`
 
-Sets the file name for the module loadfile. Should be in the format *.load.  This can be used to set the module load order.
+Sets the file name for the module loadfile. Should be in the format \*.load.  This can be used to set the module load order.
 
 #####`log_level`
 
@@ -360,6 +370,17 @@ Define additional [LogFormats](https://httpd.apache.org/docs/current/mod/mod_log
 ```puppet
   $log_formats = { vhost_common => '%v %h %l %u %t \"%r\" %>s %b' }
 ```
+
+There are a number of predefined LogFormats in the httpd.conf that Puppet writes out:
+
+```httpd
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+LogFormat "%h %l %u %t \"%r\" %>s %b" common
+LogFormat "%{Referer}i -> %U" referer
+LogFormat "%{User-agent}i" agent
+```
+
+If your `$log_formats` contains one of those, they will be overwritten with **your** definition.
 
 #####`logroot`
 
@@ -450,6 +471,11 @@ Name of the Apache service to run. Defaults to: 'httpd' on RedHat, 'apache2' on 
 
 Determines whether the HTTPD service state is managed by Puppet . Defaults to 'true'.
 
+#####`service_restart`
+
+Determines whether the HTTPD service restart command should be anything other than the default managed by Puppet.  Defaults to undef.
+
+
 #####`trace_enable`
 
 Controls how TRACE requests per RFC 2616 are handled. More information about [TraceEnable](http://httpd.apache.org/docs/current/mod/core.html#traceenable). Defaults to 'On'.
@@ -457,6 +483,10 @@ Controls how TRACE requests per RFC 2616 are handled. More information about [Tr
 #####`vhost_dir`
 
 Changes the location of the configuration directory your virtual host configuration files are placed in. Defaults to 'etc/httpd/conf.d' on RedHat, '/etc/apache2/sites-available' on Debian, '/usr/local/etc/apache22/Vhosts' on FreeBSD, and '/etc/apache2/vhosts.d' on Gentoo.
+
+#####`user`
+
+Changes the user that Apache will answer requests as. The parent process will continue to be run as root, but resource accesses by child processes will be done under this user. By default, puppet will attept to manage this user as a resource under `::apache`. If this is not what you want, set [`manage_user`](#manage_user) to 'false'. Defaults to the OS-specific default user for apache, as detected in `::apache::params`.
 
 #####`apache_name`
 
@@ -530,6 +560,7 @@ There are many `apache::mod::[name]` classes within this module that can be decl
 * `auth_basic`
 * `auth_cas`* (see [`apache::mod::auth_cas`](#class-apachemodauthcas) below)
 * `auth_kerb`
+* `authn_core`
 * `authn_file`
 * `authnz_ldap`*
 * `authz_default`
@@ -572,6 +603,7 @@ There are many `apache::mod::[name]` classes within this module that can be decl
 * `proxy_http`
 * `python`
 * `reqtimeout`
+* `remoteip`*
 * `rewrite`
 * `rpaf`*
 * `setenvif`
@@ -623,6 +655,25 @@ To configure the event thread limit:
 Installs and manages mod_auth_cas. The parameters `cas_login_url` and `cas_validate_url` are required.
 
 Full documentation on mod_auth_cas is available from [JASIG](https://github.com/Jasig/mod_auth_cas).
+
+####Class: `apache::mod::geoip`
+
+Installs and manages mod_geoip.
+
+Full documentation on mod_geoip is available from [MaxMind](http://dev.maxmind.com/geoip/legacy/mod_geoip2/).
+
+These are the default settings:
+
+```puppet
+  class {'apache::mod::geoip':
+    $enable  => false,
+    $db_file => '/usr/share/GeoIP/GeoIP.dat',
+    $flag    => 'Standard',
+    $output  => 'All',
+  }
+```
+
+The parameter `db_file` can be a single directory or a hash of directories.
 
 ####Class: `apache::mod::info`
 
@@ -769,12 +820,15 @@ Installs Apache SSL capabilities and uses the ssl.conf.erb template. These are t
 
 ```puppet
     class { 'apache::mod::ssl':
-      ssl_compression        => false,
-      ssl_options            => [ 'StdEnvVars' ],
-      ssl_cipher             => 'HIGH:MEDIUM:!aNULL:!MD5',
-      ssl_protocol           => [ 'all', '-SSLv2', '-SSLv3' ],
-      ssl_pass_phrase_dialog => 'builtin',
-      ssl_random_seed_bytes  => '512',
+      ssl_compression         => false,
+      ssl_cryptodevice        => 'builtin',
+      ssl_options             => [ 'StdEnvVars' ],
+      ssl_cipher              => 'HIGH:MEDIUM:!aNULL:!MD5',
+      ssl_honorcipherorder    => 'On',
+      ssl_protocol            => [ 'all', '-SSLv2', '-SSLv3' ],
+      ssl_pass_phrase_dialog  => 'builtin',
+      ssl_random_seed_bytes   => '512',
+      ssl_sessioncachetimeout => '300',
     }
 ```
 
@@ -786,12 +840,38 @@ Installs Apache mod_status and uses the status.conf.erb template. These are the 
 
 ```puppet
     class { 'apache::mod::status':
-      allow_from      = ['127.0.0.1','::1'],
-      extended_status = 'On',
-      status_path     = '/server-status',
+      allow_from      => ['127.0.0.1','::1'],
+      extended_status => 'On',
+      status_path     => '/server-status',
 ){
 
 
+  }
+```
+
+####Class: `apache::mod::expires`
+
+Installs Apache mod_expires and uses the expires.conf.erb template. These are the defaults:
+
+```puppet
+    class { 'apache::mod::expires':
+      expires_active  => true,
+      expires_default => undef,
+      expires_by_type => undef,
+){
+
+
+  }
+```
+
+`expires_by_type` is an array of Hashes, describing a set of types and their expire times:
+
+```puppet
+  class { 'apache::mod::expires':
+    expires_by_type => [
+      { 'text/json' => 'access plus 1 month' },
+      { 'text/html' => 'access plus 1 year' },
+    ]
   }
 ```
 
@@ -817,8 +897,8 @@ To specify an alternate mod\_wsgi package name to install and the name of the mo
       wsgi_socket_prefix => "\${APACHE_RUN_DIR}WSGI",
       wsgi_python_home   => '/path/to/venv',
       wsgi_python_path   => '/path/to/venv/site-packages',
-	  package_name       => 'python27-mod_wsgi',
-	  mod_path           => 'python27-mod_wsgi.so',
+      package_name       => 'python27-mod_wsgi',
+      mod_path           => 'python27-mod_wsgi.so',
     }
 ```
 
@@ -1297,11 +1377,11 @@ Sets [PassengerPreStart](https://www.phusionpassenger.com/documentation/Users%20
 
 #####`php_flags & values`
 
-Allows per-vhost setting [`php_value`s or `php_flag`s](http://php.net/manual/en/configuration.changes.php). These flags or values can be overwritten by a user or an application. Defaults to '[]'.
+Allows per-vhost setting [`php_value`s or `php_flag`s](http://php.net/manual/en/configuration.changes.php). These flags or values can be overwritten by a user or an application. Defaults to '{}'.
 
 #####`php_admin_flags & values`
 
-Allows per-vhost setting [`php_admin_value`s or `php_admin_flag`s](http://php.net/manual/en/configuration.changes.php). These flags or values cannot be overwritten by a user or an application. Defaults to '[]'.
+Allows per-vhost setting [`php_admin_value`s or `php_admin_flag`s](http://php.net/manual/en/configuration.changes.php). These flags or values cannot be overwritten by a user or an application. Defaults to '{}'.
 
 #####`port`
 
@@ -1654,7 +1734,7 @@ General `directories` usage looks something like
 
 *Note:* At least one directory should match the `docroot` parameter. After you start declaring directories, `apache::vhost` assumes that all required Directory blocks will be declared. If not defined, a single default Directory block is created that matches the `docroot` parameter.
 
-Available handlers, represented as keys, should be placed within the `directory`,`'files`, or `location` hashes.  This looks like
+Available handlers, represented as keys, should be placed within the `directory`, `files`, or `location` hashes.  This looks like
 
 ```puppet
     apache::vhost { 'sample.example.net':
@@ -1826,6 +1906,22 @@ An array of hashes used to override the [ErrorDocument](https://httpd.apache.org
     }
 ```
 
+######`geoip_enable`
+
+Sets the [GeoIPEnable](http://dev.maxmind.com/geoip/legacy/mod_geoip2/#Configuration) directive.
+Note that you must declare `class {'apache::mod::geoip': }` before using this directive.
+
+```puppet
+    apache::vhost { 'first.example.com':
+      docroot     => '/var/www/first',
+      directories => [
+        { path         => '/var/www/first',
+          geoip_enable => true,
+        },
+      ],
+    }
+```
+
 ######`headers`
 
 Adds lines for [Header](http://httpd.apache.org/docs/current/mod/mod_headers.html#header) directives.
@@ -1848,9 +1944,10 @@ Allows configuration settings for [directory indexing](http://httpd.apache.org/d
     apache::vhost { 'sample.example.net':
       docroot     => '/path/to/directory',
       directories => [
-        { path          => '/path/to/directory',
-          options       => ['Indexes','FollowSymLinks','MultiViews'],
-          index_options => ['IgnoreCase', 'FancyIndexing', 'FoldersFirst', 'NameWidth=*', 'DescriptionWidth=*', 'SuppressHTMLPreamble'],
+        { path           => '/path/to/directory',
+          directoryindex => 'disabled', # this is needed on Apache 2.4 or mod_autoindex doesn't work
+          options        => ['Indexes','FollowSymLinks','MultiViews'],
+          index_options  => ['IgnoreCase', 'FancyIndexing', 'FoldersFirst', 'NameWidth=*', 'DescriptionWidth=*', 'SuppressHTMLPreamble'],
         },
       ],
     }
@@ -1867,6 +1964,23 @@ Sets the [default ordering](http://httpd.apache.org/docs/current/mod/mod_autoind
         { path                => '/path/to/directory',
           order               => 'Allow,Deny',
           index_order_default => ['Descending', 'Date'],
+        },
+      ],
+    }
+```
+
+######`index_style_sheet`
+
+Sets the [IndexStyleSheet](http://httpd.apache.org/docs/current/mod/mod_autoindex.html#indexstylesheet) which adds a CSS stylesheet to the directory index.
+
+```puppet
+    apache::vhost { 'sample.example.net':
+      docroot     => '/path/to/directory',
+      directories => [
+        { path              => '/path/to/directory',
+          options           => ['Indexes','FollowSymLinks','MultiViews'],
+          index_options     => ['FancyIndexing'],
+          index_style_sheet => '/styles/style.css',
         },
       ],
     }
@@ -2541,6 +2655,10 @@ Something along the lines of:
 ```
 
 You need to set the contexts using `semanage fcontext` not `chcon` because `file {...}` resources reset the context to the values in the database if the resource isn't specifying the context.
+
+###FreeBSD
+
+In order to use this module on FreeBSD, you *must* use apache24-2.4.12 (www/apache24) or newer.
 
 ##Development
 

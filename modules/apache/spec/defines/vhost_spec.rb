@@ -168,7 +168,6 @@ describe 'apache::vhost', :type => :define do
           'log_level'                   => 'crit',
           'access_log'                  => false,
           'access_log_file'             => 'httpd_access_log',
-          'access_log_pipe'             => '',
           'access_log_syslog'           => true,
           'access_log_format'           => '%h %l %u %t \"%r\" %>s %b',
           'access_log_env_var'          => '',
@@ -184,10 +183,15 @@ describe 'apache::vhost', :type => :define do
               'provider' => 'files',
               'require'  => 'all granted',
             },
+            { 'path'              => '/var/www/files/indexed_directory',
+              'directoryindex'    => 'disabled',
+              'options'           => ['Indexes','FollowSymLinks','MultiViews'],
+              'index_options'     => ['FancyIndexing'],
+              'index_style_sheet' => '/styles/style.css',
+            },
           ],
           'error_log'                   => false,
           'error_log_file'              => 'httpd_error_log',
-          'error_log_pipe'              => '',
           'error_log_syslog'            => true,
           'error_documents'             => 'true',
           'fallbackresource'            => '/index.php',
@@ -313,6 +317,12 @@ describe 'apache::vhost', :type => :define do
       it { is_expected.to compile }
       it { is_expected.to_not contain_file('/var/www/foo') }
       it { is_expected.to contain_class('apache::mod::ssl') }
+      it { is_expected.to contain_file('ssl.conf').with(
+        :content => /^\s+SSLHonorCipherOrder On$/ ) }
+      it { is_expected.to contain_file('ssl.conf').with(
+        :content => /^\s+SSLPassPhraseDialog builtin$/ ) }
+      it { is_expected.to contain_file('ssl.conf').with(
+        :content => /^\s+SSLSessionCacheTimeout 300$/ ) }
       it { is_expected.to contain_class('apache::mod::mime') }
       it { is_expected.to contain_class('apache::mod::vhost_alias') }
       it { is_expected.to contain_class('apache::mod::wsgi') }
@@ -356,6 +366,14 @@ describe 'apache::vhost', :type => :define do
         :content => /^\s+Require all denied$/ ) }
       it { is_expected.to contain_concat__fragment('rspec.example.com-directories').with(
         :content => /^\s+Require all granted$/ ) }
+      it { is_expected.to contain_concat__fragment('rspec.example.com-directories').with(
+        :content => /^\s+Options\sIndexes\sFollowSymLinks\sMultiViews$/ ) }
+      it { is_expected.to contain_concat__fragment('rspec.example.com-directories').with(
+        :content => /^\s+IndexOptions\sFancyIndexing$/ ) }
+      it { is_expected.to contain_concat__fragment('rspec.example.com-directories').with(
+        :content => /^\s+IndexStyleSheet\s'\/styles\/style\.css'$/ ) }
+      it { is_expected.to contain_concat__fragment('rspec.example.com-directories').with(
+        :content => /^\s+DirectoryIndex\sdisabled$/ ) }
       it { is_expected.to contain_concat__fragment('rspec.example.com-additional_includes') }
       it { is_expected.to contain_concat__fragment('rspec.example.com-logging') }
       it { is_expected.to contain_concat__fragment('rspec.example.com-serversignature') }
@@ -444,7 +462,7 @@ describe 'apache::vhost', :type => :define do
       it { is_expected.to_not contain_class('apache::mod::passenger') }
       it { is_expected.to_not contain_class('apache::mod::suexec') }
       it { is_expected.to_not contain_class('apache::mod::rewrite') }
-      it { is_expected.to contain_class('apache::mod::alias') }
+      it { is_expected.to_not contain_class('apache::mod::alias') }
       it { is_expected.to_not contain_class('apache::mod::proxy') }
       it { is_expected.to_not contain_class('apache::mod::proxy_http') }
       it { is_expected.to_not contain_class('apache::mod::passenger') }
@@ -787,96 +805,6 @@ describe 'apache::vhost', :type => :define do
       end
       let :facts do default_facts end
       it { expect { is_expected.to compile }.to raise_error }
-    end
-  end
-  describe 'allow/deny/order/satisfy deprecation validation' do
-    let :default_facts do
-      {
-        :osfamily               => 'RedHat',
-        :operatingsystemrelease => '6',
-        :concat_basedir         => '/dne',
-        :operatingsystem        => 'RedHat',
-        :id                     => 'root',
-        :kernel                 => 'Linux',
-        :path                   => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
-        :is_pe                  => false,
-      }
-    end
-    context 'bad allow parameter' do
-      let :params do
-        {
-          'docroot'        => '/var/www/files',
-          'apache_version' => '2.4',
-          'directories'    => {
-            'path'     => '/var/www/files',
-            'provider' => 'files',
-            'allow'    => 'from 127.0.0.1',
-          },
-        }
-      end
-      let :facts do default_facts end
-      it do
-        expect {
-          should contain_concat__fragment('rspec.example.com-directories')
-        }.to raise_error(Puppet::Error)
-      end
-    end
-    context 'bad deny parameter' do
-      let :params do
-        {
-          'docroot'        => '/var/www/files',
-          'apache_version' => '2.4',
-          'directories'    => {
-            'path'     => '/var/www/files',
-            'provider' => 'files',
-            'deny'     => 'from 127.0.0.1',
-          },
-        }
-      end
-      let :facts do default_facts end
-      it do
-        expect {
-          should contain_concat__fragment('rspec.example.com-directories')
-        }.to raise_error(Puppet::Error)
-      end
-    end
-    context 'bad satisfy parameter' do
-      let :params do
-        {
-          'docroot'        => '/var/www/files',
-          'apache_version' => '2.4',
-          'directories'    => {
-            'path'     => '/var/www/files',
-            'provider' => 'files',
-            'satisfy'  => 'any',
-          },
-        }
-      end
-      let :facts do default_facts end
-      it do
-        expect {
-          should contain_concat__fragment('rspec.example.com-directories')
-        }.to raise_error(Puppet::Error)
-      end
-    end
-    context 'bad order parameter' do
-      let :params do
-        {
-          'docroot'        => '/var/www/files',
-          'apache_version' => '2.4',
-          'directories'    => {
-            'path'     => '/var/www/files',
-            'provider' => 'files',
-            'order'    => 'deny,allow',
-          },
-        }
-      end
-      let :facts do default_facts end
-      it do
-        expect {
-          should contain_concat__fragment('rspec.example.com-directories')
-        }.to raise_error(Puppet::Error)
-      end
     end
   end
 end

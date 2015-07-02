@@ -7,7 +7,7 @@ define katello_devel::install::repos (
   ) {
 
   case $::osfamily {
-    RedHat: {
+    'RedHat': {
       katello::install::repos::yum { $name:
         repo     => $repo,
         gpgcheck => $gpgcheck,

@@ -4,7 +4,7 @@ class katello_devel::rvm {
   $rvm_install = 'install_rvm.sh'
 
   package{ ['curl', 'bash']:
-    ensure => present
+    ensure => present,
   }
 
   augeas { 'katello_devel-tty':
@@ -30,7 +30,7 @@ class katello_devel::rvm {
     content => template("katello_devel/${rvm_install}.erb"),
     owner   => 'root',
     group   => 'root',
-    mode    => '0744'
+    mode    => '0744',
   } ~>
   exec { $rvm_install:
     path    => '/usr/bin:/usr/sbin:/bin',

@@ -8,7 +8,7 @@ define katello_devel::rvm_bundle($environment = {}) {
     $environment_string_complete = "${environment_string}\\\""
   }
   else {
-    $environment_string_complete = ''
+    $environment_string_complete = '' # lint:ignore:empty_string_assignment
   }
 
   exec { "rvm-bundle-${title}":

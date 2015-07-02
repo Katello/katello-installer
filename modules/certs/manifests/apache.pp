@@ -28,7 +28,7 @@ class certs::apache (
       hostname      => $hostname,
       country       => $::certs::country,
       state         => $::certs::state,
-      city          => $::certs::sity,
+      city          => $::certs::city,
       org           => $::certs::org,
       org_unit      => $::certs::org_unit,
       expiration    => $::certs::expiration,

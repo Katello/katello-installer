@@ -9,11 +9,11 @@ class katello_devel::setup {
       'SEED_ADMIN_PASSWORD' => $::katello_devel::admin_password,
     }
 
-    class { 'katello_devel::rvm': } ->
+    class { '::katello_devel::rvm': } ->
     katello_devel::rvm_bundle { 'install --without mysql:mysql2': } ->
     katello_devel::rvm_bundle { 'exec rake db:migrate': } ->
     katello_devel::rvm_bundle { 'exec rake db:seed':
-      environment => $seed_env
+      environment => $seed_env,
     } ~>
     katello_devel::rvm_bundle {
       "exec rake -- config --key ssl_ca_file --value ${katello_devel::foreman_certs::ssl_ca_cert}":
@@ -32,7 +32,7 @@ class katello_devel::setup {
       timeout   => '600',
       path      => '/usr/local/rvm/bin:/usr/bin:/bin:/usr/bin/env',
       unless    =>  'ps -p `cat tmp/pids/server.pid`',
-      before    => Class['capsule']
+      before    => Class['capsule'],
     }
 
     exec { 'destroy rails server':

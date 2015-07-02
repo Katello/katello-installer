@@ -5,16 +5,14 @@ class katello::params {
     'RedHat': {
       case $::operatingsystem {
         'Fedora': {
-          $scl_prefix = ''
-          $scl_root = ''
+          $rubygem_katello = 'rubygem-katello'
         }
         default: {
-          $scl_prefix = 'ruby193-'
-          $scl_root = '/opt/rh/ruby193/root'
+          $rubygem_katello = 'ruby193-rubygem-katello'
         }
       }
 
-      $package_names = ['katello', "${scl_prefix}rubygem-katello"]
+      $package_names = ['katello', $rubygem_katello]
     }
     default: {
       fail("${::hostname}: This module does not support osfamily ${::osfamily}")

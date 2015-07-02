@@ -33,7 +33,7 @@
 #
 # $cdn_ssl_version::    SSL version used to communicate with the CDN. Optional. Use SSLv23 or TLSv1
 #
-# $package_names::      Packages that this module ensures are present instead of the default: katello and ${scl_prefix}rubygem-katello
+# $package_names::      Packages that this module ensures are present instead of the default
 #
 class katello (
 
@@ -61,12 +61,12 @@ class katello (
   ) inherits katello::params {
 
   Class['certs'] ~>
-  class { 'certs::apache': } ~>
-  class { 'katello::install': } ~>
-  class { 'katello::config': } ~>
-  class { 'certs::qpid': } ~>
-  class { 'certs::candlepin': } ~>
-  class { 'candlepin':
+  class { '::certs::apache': } ~>
+  class { '::katello::install': } ~>
+  class { '::katello::config': } ~>
+  class { '::certs::qpid': } ~>
+  class { '::certs::candlepin': } ~>
+  class { '::candlepin':
     user_groups       => $katello::user_groups,
     oauth_key         => $katello::oauth_key,
     oauth_secret      => $katello::oauth_secret,
@@ -75,8 +75,8 @@ class katello (
     ca_cert           => $certs::ca_cert_stripped,
     keystore_password => $::certs::candlepin::keystore_password,
   } ~>
-  class { 'certs::pulp_parent': } ~>
-  class { 'pulp':
+  class { '::certs::pulp_parent': } ~>
+  class { '::pulp':
     oauth_key                   => $katello::oauth_key,
     oauth_secret                => $katello::oauth_secret,
     messaging_url               => "ssl://${::fqdn}:5671",
@@ -92,21 +92,21 @@ class katello (
     proxy_username              => $proxy_username,
     proxy_password              => $proxy_password,
   } ~>
-  class { 'qpid::client':
+  class { '::qpid::client':
     ssl                    => true,
     ssl_cert_name          => 'broker',
     ssl_cert_db            => $certs::nss_db_dir,
     ssl_cert_password_file => $certs::qpid::nss_db_password_file,
   } ~>
-  class { 'katello::qpid':
+  class { '::katello::qpid':
     client_cert  => $certs::qpid::client_cert,
     client_key   => $certs::qpid::client_key,
     katello_user => $katello::user,
   } ~>
-  class{ 'elasticsearch': } ~>
+  class{ '::elasticsearch': } ~>
   Exec['foreman-rake-db:seed']
 
-  class { 'certs::foreman': }
+  class { '::certs::foreman': }
 
   Service['httpd'] -> Exec['foreman-rake-db:seed']
 

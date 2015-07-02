@@ -129,10 +129,10 @@ class candlepin (
 
   $candlepin_conf_file = '/etc/candlepin/candlepin.conf'
 
-  class { 'candlepin::install': } ~>
-  class { 'candlepin::config':  } ~>
-  class { 'candlepin::database': } ~>
-  class { 'candlepin::service': } ~>
+  class { '::candlepin::install': } ~>
+  class { '::candlepin::config':  } ~>
+  class { '::candlepin::database': } ~>
+  class { '::candlepin::service': } ~>
   Class['candlepin']
 
 }

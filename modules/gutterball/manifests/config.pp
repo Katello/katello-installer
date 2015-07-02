@@ -7,7 +7,7 @@ class gutterball::config(
   $keystore_password = $gutterball::keystore_password_file,
 ){
   user { 'gutterball':
-    ensure => present
+    ensure => present,
   }->
   group {'gutterball':
     ensure => present,
