@@ -4,7 +4,7 @@ default_tagger = tito.tagger.VersionTagger
 changelog_do_not_remove_cherrypick = 0
 changelog_format = %s (%ae)
 
-[katello-nightly-rhel6]
+[katello-2.3-rhel6]
 disttag = .el6
 blacklist =
 
