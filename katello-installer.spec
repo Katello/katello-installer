@@ -3,7 +3,7 @@
 %global scl_ruby /usr/bin/ruby
 
 Name:    katello-installer-base
-Version: 2.3.0
+Version: 2.3.1
 Release: 1%{?dist}
 Summary: Puppet-based installer for the Katello and Katello Capsule
 Group:   Applications/System
@@ -205,6 +205,100 @@ ln -sf %{_datadir}/capsule-installer/bin/capsule-remove %{buildroot}/%{_sbindir}
 %doc README.*
 
 %changelog
+* Mon Jul 06 2015 Stephen Benjamin <stbenjam@redhat.com> 2.3.1-1
+- Merge pull request #235 from Katello/module-update (eric.d.helms@gmail.com)
+- Merge pull request #233 from stbenjam/10716 (stephen@bitbin.de)
+- Merge pull request #231 from iNecas/10648 (inecas@redhat.com)
+- Module update. (ericdhelms@gmail.com)
+- Merge pull request #230 from jlsherrill/10680 (jlsherrill@gmail.com)
+- fixes #10716 - migrate pulp in post as well (stbenjam@redhat.com)
+- Fixes #10385: Update Pulp to fix yum errors. (ericdhelms@gmail.com)
+- Merge pull request #232 from stbenjam/9680 (stephen@bitbin.de)
+- Merge pull request #227 from chris1984/10538 (eric.d.helms@gmail.com)
+- Fixes #10538 - Adding capsule-remove script (chrobert@redhat.com)
+- fixes #9680 - ensure httpd is started for access to repos
+  (stbenjam@redhat.com)
+- Fixes #10648 - the --profile parameter was introduced in puppet 3.4.0
+  (inecas@redhat.com)
+- fixes #10680 - use --profile for el6 devel install (jsherril@redhat.com)
+- fixes #10616 - backport pulp and capsule modules (jsherril@redhat.com)
+- fixes #10512 - add 2.2 upgrade rake tasks to upgrade hook
+  (jsherril@redhat.com)
+- fixes #10387 - backporting capsule module to fix bad certs on capsule
+  (jsherril@redhat.com)
+- Refs #10317: Allow upgrade to continue if not migrating gutterball.
+  (ericdhelms@gmail.com)
+- Merge pull request #216 from stbenjam/migrate (stephen@bitbin.de)
+- Merge pull request #213 from stbenjam/10221 (stephen@bitbin.de)
+- Fixes #10350: Set qdrouterd certs permission to qdrouterd user
+  (ericdhelms@gmail.com)
+- Merge pull request #217 from stbenjam/6781 (stephen@bitbin.de)
+- fixes #10282 - migrate 2.1 answer files to 2.2 (stbenjam@redhat.com)
+- fixes #10221 - handle services and failures better during upgrades
+  (stbenjam@redhat.com)
+- Fixes #10317: Check if gutterball-db exists before calling it.
+  (ericdhelms@gmail.com)
+- refs #6781 - install katello-service package (stbenjam@redhat.com)
+- Merge pull request #215 from ehelms/fixes-10252 (eric.d.helms@gmail.com)
+- Merge pull request #208 from bkearney/bkearney/10175
+  (bryan.kearney@gmail.com)
+- Fixes #10252: Fix duplicate resource on devel installer.
+  (ericdhelms@gmail.com)
+- Fixes #9702: Register default capsule and enable pulp smart proxy for devel.
+  (ericdhelms@gmail.com)
+- Merge pull request #201 from dustints/gb_migration_hook (dtsang@redhat.com)
+- Merge pull request #212 from stbenjam/10219 (stephen@bitbin.de)
+- fixes #10219 - use su instead of sudo (stbenjam@redhat.com)
+- Refs #10210: Explicitly set CRL to false since empty value is not the same.
+  (ericdhelms@gmail.com)
+- Fixes #10210: Ensure no CRL is set. (ericdhelms@gmail.com)
+- Fixes #10175 : Check for underscores in the hostname. Raise an error if they
+  exist. (bkearney@redhat.com)
+- Fixes #9988 - upgrade runs gb migrations (dtsang@redhat.com)
+- Merge pull request #206 from ehelms/fixes-8777 (eric.d.helms@gmail.com)
+- Merge pull request #202 from ehelms/fixes-10086 (eric.d.helms@gmail.com)
+- Fixes #8777: Fix logrotate errors with Candlepin. (ericdhelms@gmail.com)
+- Merge pull request #205 from ehelms/update-foreman (eric.d.helms@gmail.com)
+- Fixes #10096, #7064: Add use of '--profile' and update modules.
+  (ericdhelms@gmail.com)
+- Fixes #10086: Fix devel installer failing on RVM. (ericdhelms@gmail.com)
+- Merge pull request #204 from jlsherrill/9892 (jlsherrill@gmail.com)
+- fixes #9892 - install crane on server and capsule (jsherril@redhat.com)
+- Fixes #10033: Require katello-selinux in installer base.
+  (ericdhelms@gmail.com)
+- Merge pull request #193 from ehelms/fixes-9809 (eric.d.helms@gmail.com)
+- Merge pull request #199 from ehelms/fixes-9200 (eric.d.helms@gmail.com)
+- Fixes #9834 - Ensure plugin settings directory exists for gutterball
+  (dtsang@redhat.com)
+- Fixes #9200: Re-enable foreman_discovery as a default. (ericdhelms@gmail.com)
+- Fixes #9888 - require openssl for katello-installer-base (dtsang@redhat.com)
+- Fixes #8585: Remove unused configuration from Katello module.
+  (ericdhelms@gmail.com)
+- Fixes #9809: Use 'yum localinstall' to install sub-man as well.
+  (ericdhelms@gmail.com)
+- Fixes #9816: Allow access to /pub on http on Capsules. (ericdhelms@gmail.com)
+- Fixes #9699: Check for nssdb creation before running certutil.
+  (ericdhelms@gmail.com)
+- Merge pull request #146 from iNecas/issue/8609 (inecas@redhat.com)
+- fixes #9668 - update capsule module (stbenjam@redhat.com)
+- Fixes #8609 - validate the custom certificates passed in arguments on the
+  installer (inecas@redhat.com)
+- Merge pull request #188 from ehelms/fixes-9715 (eric.d.helms@gmail.com)
+- Fixes #9715: Lock pulp module to 0.1.0 line. (ericdhelms@gmail.com)
+- Merge pull request #186 from jlsherrill/8636 (jlsherrill@gmail.com)
+- Merge pull request #184 from stbenjam/9602 (stephen@bitbin.de)
+- fixes #8636 - import new puppet-certs with new ca-trust (jsherril@redhat.com)
+- Merge pull request #183 from dustints/sam_gb (dtsang@redhat.com)
+- fixes #9602, #9633 - ensure services are in correct states during upgrade
+  (stbenjam@redhat.com)
+- Fixes #7716,#9483 - update katello module with the latest fixes
+  (inecas@redhat.com)
+- Merge pull request #182 from stbenjam/8175-final (stephen@bitbin.de)
+- Fixes #9535 - gutterball installed as part of sam-installer
+  (dtsang@redhat.com)
+- refs #8175, #7064 - isolate consumer actions, and use foreman_proxy fork
+  (stbenjam@redhat.com)
+
 * Tue Feb 24 2015 Eric D. Helms <ericdhelms@gmail.com> 2.3.0-1
 -
 
