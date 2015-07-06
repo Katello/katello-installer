@@ -205,6 +205,9 @@ ln -sf %{_datadir}/capsule-installer/bin/capsule-remove %{buildroot}/%{_sbindir}
 %doc README.*
 
 %changelog
+* Mon Jul 06 2015 Stephen Benjamin <stbenjam@redhat.com> 2.4.0-1
+- Version bump to 2.4.0 (stbenjam@redhat.com)
+
 * Mon Jul 06 2015 Stephen Benjamin <stbenjam@redhat.com> 2.3.1-1
 - Merge pull request #235 from Katello/module-update (eric.d.helms@gmail.com)
 - Merge pull request #233 from stbenjam/10716 (stephen@bitbin.de)
