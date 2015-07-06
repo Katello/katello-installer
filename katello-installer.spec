@@ -3,7 +3,7 @@
 %global scl_ruby /usr/bin/ruby
 
 Name:    katello-installer-base
-Version: 2.3.1
+Version: 2.4.0
 Release: 1%{?dist}
 Summary: Puppet-based installer for the Katello and Katello Capsule
 Group:   Applications/System
