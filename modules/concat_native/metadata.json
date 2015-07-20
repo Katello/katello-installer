@@ -1,19 +1,19 @@
 {
   "name": "theforeman-concat_native",
-  "version": "1.5.1",
+  "version": "1.5.0",
   "author": "theforeman",
   "summary": "Deprecated native type for multi-part file concatenation",
   "license": "Apache-2.0",
   "source": "git://github.com/theforeman/puppet-concat_native",
   "project_page": "https://github.com/theforeman/puppet-concat_native",
   "issues_url": "https://github.com/theforeman/puppet-concat_native/issues",
+  "dependencies": [
+  
+  ],
   "description": "Deprecated module that provides a native type for performing multi-part file concatenation.",
   "tags": [
     "concat",
     "deprecated"
-  ],
-  "dependencies": [
-
   ],
   "requirements": [
     {

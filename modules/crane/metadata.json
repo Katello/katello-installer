@@ -7,22 +7,32 @@
   "source": "https://github.com/Katello/puppet-crane.git",
   "project_page": "https://github.com/Katello/puppet-crane",
   "issues_url": "http://projects.theforeman.org/projects/katello/issues",
-  "dependencies": [
+  "operatingsystem_support": [
     {
-      "name": "puppetlabs-stdlib",
-      "version_requirement": ">= 1.0.0"
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
     },
     {
-       "name": "puppetlabs-apache",
-       "version_requirement": ">= 1.0.0 < 2.0.0"
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
     },
     {
-       "name": "katello-certs",
-       "version_requirement": ">= 0.1.0"
-    },
-    {
-       "name": "katello-common",
-       "version_requirement": ">= 0.0.1"
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
     }
+  ],
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 4.2.0 < 5.0.0"},
+    {"name":"puppetlabs-apache","version_requirement":">= 1.0.0 < 2.0.0"},
+    {"name":"katello-common","version_requirement":">= 0.0.1 < 1.0.0"}
   ]
 }

@@ -4,9 +4,12 @@ describe 'puppet::config' do
 
   context "on a RedHat family OS" do
     let :facts do {
-      :concat_basedir => '/foo/bar',
-      :osfamily => 'RedHat',
-      :domain   => 'example.org',
+      :concat_basedir         => '/foo/bar',
+      :domain                 => 'example.org',
+      :fqdn                   => 'host.example.com',
+      :operatingsystemrelease => '6.6',
+      :osfamily               => 'RedHat',
+      :puppetversion          => Puppet.version,
     } end
 
     describe 'with default parameters' do
@@ -19,18 +22,25 @@ describe 'puppet::config' do
       end
 
       it 'should contain puppet.conf [main]' do
-        verify_concat_fragment_exact_contents(catalogue, 'puppet.conf+10-main', [
+        concat_fragment_content = [
           '[main]',
           '    vardir = /var/lib/puppet',
           '    logdir = /var/log/puppet',
           '    rundir = /var/run/puppet',
-          '    ssldir = $vardir/ssl',
+          '    ssldir = /var/lib/puppet/ssl',
           '    privatekeydir = $ssldir/private_keys { group = service }',
           '    hostprivkey = $privatekeydir/$certname.pem { mode = 640 }',
           '    autosign       = $confdir/autosign.conf { mode = 664 }',
           '    show_diff     = false',
           '    hiera_config = $confdir/hiera.yaml'
-        ])
+        ]
+        if Puppet.version >= '3.6'
+          concat_fragment_content.concat([
+            '    environmentpath  = /etc/puppet/environments',
+            '    basemodulepath   = /etc/puppet/environments/common:/etc/puppet/modules:/usr/share/puppet/modules',
+          ])
+        end
+        verify_concat_fragment_exact_contents(catalogue, 'puppet.conf+10-main', concat_fragment_content)
       end
     end
 
@@ -117,6 +127,7 @@ describe 'puppet::config' do
           '    use_srv_records = true',
           '    srv_domain = example.org',
           '    pluginsource = puppet:///plugins',
+          '    pluginfactsource = puppet:///pluginfacts',
         ])
       end
     end
@@ -145,14 +156,9 @@ describe 'puppet::config' do
       let :pre_condition do
         'class {"::puppet": listen => true}'
       end
-      let :facts do {
-        :concat_basedir => '/foo/bar',
-        :osfamily => 'RedHat',
-        :fqdn => 'me.example.org',
-        } end
 
       it 'should contain auth.conf with auth any' do
-        should contain_file('/etc/puppet/auth.conf').with_content(%r{^path /run\nauth any\nmethod save\nallow me.example.org$})
+        should contain_file('/etc/puppet/auth.conf').with_content(%r{^path /run\nauth any\nmethod save\nallow #{facts[:fqdn]}$})
         end
       end
 
@@ -176,6 +182,7 @@ describe 'puppet::config' do
       :concat_basedir => '/foo/bar',
       :osfamily => 'FreeBSD',
       :domain   => 'example.org',
+      :puppetversion => Puppet.version,
     } end
 
     describe 'with default parameters' do
@@ -188,18 +195,25 @@ describe 'puppet::config' do
       end
 
       it 'should contain puppet.conf [main]' do
-        verify_concat_fragment_exact_contents(catalogue, 'puppet.conf+10-main', [
+        concat_fragment_content = [
           '[main]',
           '    vardir = /var/puppet',
           '    logdir = /var/log/puppet',
           '    rundir = /var/run/puppet',
-          '    ssldir = $vardir/ssl',
+          '    ssldir = /var/puppet/ssl',
           '    privatekeydir = $ssldir/private_keys { group = service }',
           '    hostprivkey = $privatekeydir/$certname.pem { mode = 640 }',
           '    autosign       = $confdir/autosign.conf { mode = 664 }',
           '    show_diff     = false',
           '    hiera_config = $confdir/hiera.yaml'
-        ])
+        ]
+        if Puppet.version >= '3.6'
+          concat_fragment_content.concat([
+            '    environmentpath  = /usr/local/etc/puppet/environments',
+            '    basemodulepath   = /usr/local/etc/puppet/environments/common:/usr/local/etc/puppet/modules:/usr/share/puppet/modules',
+          ])
+        end
+        verify_concat_fragment_exact_contents(catalogue, 'puppet.conf+10-main', concat_fragment_content)
       end
     end
   end
@@ -209,6 +223,7 @@ describe 'puppet::config' do
       :concat_basedir => 'C:\Temp',
       :osfamily => 'windows',
       :domain   => 'example.org',
+      :puppetversion => Puppet.version,
     } end
 
     describe 'with default parameters' do
@@ -221,18 +236,25 @@ describe 'puppet::config' do
       end
 
       it 'should contain puppet.conf [main]' do
-        verify_concat_fragment_exact_contents(catalogue, 'puppet.conf+10-main', [
+        concat_fragment_content = [
           '[main]',
           '    vardir = C:/ProgramData/PuppetLabs/puppet/var',
           '    logdir = C:/ProgramData/PuppetLabs/puppet/var/log',
           '    rundir = C:/ProgramData/PuppetLabs/puppet/var/run',
-          '    ssldir = $confdir/ssl',
+          '    ssldir = C:/ProgramData/PuppetLabs/puppet/etc/ssl',
           '    privatekeydir = $ssldir/private_keys { group = service }',
           '    hostprivkey = $privatekeydir/$certname.pem { mode = 640 }',
           '    autosign       = $confdir/autosign.conf { mode = 664 }',
           '    show_diff     = false',
           '    hiera_config = $confdir/hiera.yaml'
-        ])
+        ]
+        if Puppet.version >= '3.6'
+          concat_fragment_content.concat([
+            '    environmentpath  = C:/ProgramData/PuppetLabs/puppet/etc/environments',
+            '    basemodulepath   = C:/ProgramData/PuppetLabs/puppet/etc/environments/common:C:/ProgramData/PuppetLabs/puppet/etc/modules:/usr/share/puppet/modules',
+          ])
+        end
+        verify_concat_fragment_exact_contents(catalogue, 'puppet.conf+10-main', concat_fragment_content)
       end
     end
 
@@ -297,6 +319,7 @@ describe 'puppet::config' do
         :concat_basedir => 'C:\Temp',
         :osfamily => 'windows',
         :fqdn     => 'me.example.org',
+        :puppetversion => Puppet.version,
       } end
 
       it 'should contain auth.conf with auth any' do

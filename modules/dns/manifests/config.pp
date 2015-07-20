@@ -2,12 +2,15 @@
 class dns::config {
   group { $dns::params::group: }
 
-  concat_build { 'dns_zones':
-    order  => ['*.dns'],
+  concat { $::dns::publicviewpath:
+    owner => root,
+    group => $dns::params::group,
+    mode  => '0640',
   }
-
-  concat_fragment { 'dns_zones+01-header.dns':
+  concat::fragment { 'dns_zones+01-header.dns':
+    target  => $::dns::publicviewpath,
     content => ' ',
+    order   => '01',
   }
 
   file {
@@ -16,12 +19,6 @@ class dns::config {
       group   => $dns::params::group,
       mode    => '0640',
       content => template('dns/named.conf.erb');
-    $dns::publicviewpath:
-      owner   => root,
-      group   => $dns::params::group,
-      mode    => '0640',
-      require => Concat_build['dns_zones'],
-      source  => concat_output('dns_zones');
     $dns::optionspath:
       owner   => root,
       group   => $dns::params::group,

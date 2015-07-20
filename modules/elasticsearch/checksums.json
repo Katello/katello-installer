@@ -1,0 +1,17 @@
+{
+  "CONTRIBUTING.md": "b09c628c63cd0562c3f8bbd74a3143f8",
+  "Gemfile": "43b899413f4dd7aad690514b484d7db9",
+  "LICENSE": "9eef91148a9b14ec7f9df333daebc746",
+  "README.md": "5d1b65c26d73db1aae5f9fd4cc71faec",
+  "Rakefile": "5d38eec4207040ace7e08a0282792a61",
+  "manifests/config.pp": "738887de938103a7ffd540e78bf3c6b0",
+  "manifests/init.pp": "9f6745808b476f5b3a92e2d709e204bd",
+  "manifests/install.pp": "6425738683f756499acf6e1384f119ed",
+  "manifests/params.pp": "4cf7e4824fbb5b9a2853c8cd6d6a77c5",
+  "manifests/service.pp": "d1778b92aa3107ee1ced0e79989c954d",
+  "metadata.json": "0e5f6fc506cd47ef0e2a37ae6b650467",
+  "spec/spec.opts": "6af1d8720d85a510f132e3250aa61075",
+  "spec/spec_helper.rb": "c97349efb008b3ef1e77afc51cc9bff5",
+  "templates/etc/elasticsearch/elasticsearch.yml.erb": "b407e086d2915fcdc24e04673d8183f3",
+  "templates/etc/sysconfig/elasticsearch.erb": "e6075a4fd36f1cbe35154c79823240c3"
+}

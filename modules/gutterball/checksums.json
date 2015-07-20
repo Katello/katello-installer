@@ -1,0 +1,18 @@
+{
+  "CONTRIBUTING.md": "b09c628c63cd0562c3f8bbd74a3143f8",
+  "Gemfile": "43b899413f4dd7aad690514b484d7db9",
+  "LICENSE": "9eef91148a9b14ec7f9df333daebc746",
+  "README.md": "6c2d48d9a852d623c6c68bcaa6d11d8a",
+  "Rakefile": "5d38eec4207040ace7e08a0282792a61",
+  "manifests/config.pp": "24a21e7b2192c6c703a64a23b5401406",
+  "manifests/database.pp": "9cb24db1fc469e419f43a8fac1f7cc29",
+  "manifests/init.pp": "c4b26fcf5b3bd07748fcd3c27c22ba5e",
+  "manifests/install.pp": "12d74db8631801d878a6a19700861daf",
+  "manifests/params.pp": "cd14efd6622d5205b6511f9c199d69bc",
+  "manifests/service.pp": "d0908f3762a4fc190f189b5524385a0a",
+  "metadata.json": "f40ab6886012fc86c853597b35d99b53",
+  "spec/spec.opts": "6af1d8720d85a510f132e3250aa61075",
+  "spec/spec_helper.rb": "c97349efb008b3ef1e77afc51cc9bff5",
+  "templates/gutterball-db.erb": "2584d09a7f4f3cd12842a01b8edcd372",
+  "templates/gutterball.conf.erb": "64e39ac6f1009e889064bd8b1fc0a542"
+}

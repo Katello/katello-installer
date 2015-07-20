@@ -19,7 +19,8 @@ This module is designed to setup a Gutterball with katello server.
 
 ##Limitations
 
-* EL6 (RHEL6 / CentOS 6)
+* EL6 (RHEL 6 / CentOS 6)
+* EL7 (RHEL 7 / CentOS 7)
 
 ##Development
 

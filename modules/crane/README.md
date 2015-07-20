@@ -22,17 +22,14 @@ This module is designed to setup Crane on a Pulp master or node.
 
 ###Beginning with crane
 
-The very basic steps needed for a user to get the module up and running. 
-
-If your most recent release breaks compatibility or requires particular steps for upgrading, you may wish to include an additional section here: Upgrading (For an example, see http://forge.puppetlabs.com/puppetlabs/firewall).
-
 ##Usage
 
 ##Reference
 
 ##Limitations
 
-* EL6 (RHEL6 / CentOS 6), EL7 (RHEL7 / CentOS 7)
+* EL6 (RHEL 6 / CentOS 6)
+* EL7 (RHEL 7 / CentOS 7)
 
 ##Development
 

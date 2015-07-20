@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'firewall isfragment property' do
+describe 'firewall isfragment property', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
   before :all do
     iptables_flush_all_tables
   end
@@ -17,9 +17,11 @@ describe 'firewall isfragment property' do
       EOS
 
       apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      unless fact('selinux') == 'true'
+        apply_manifest(pp, :catch_changes => true)
+      end
 
-      shell('iptables -S') do |r|
+      shell('iptables-save') do |r|
         expect(r.stdout).to match(/#{line_match}/)
       end
     end
@@ -35,9 +37,13 @@ describe 'firewall isfragment property' do
           }
       EOS
 
-      apply_manifest(pp, :catch_changes => true)
+      if fact('selinux') == 'true'
+        apply_manifest(pp, :catch_failures => true)
+      else
+        apply_manifest(pp, :catch_changes => true)
+      end
 
-      shell('iptables -S') do |r|
+      shell('iptables-save') do |r|
         expect(r.stdout).to match(/#{line_match}/)
       end
     end
@@ -67,7 +73,7 @@ describe 'firewall isfragment property' do
     context 'when unset or false' do
       before :each do
         iptables_flush_all_tables
-        shell('/sbin/iptables -A INPUT -p tcp -m comment --comment "597 - test"')
+        shell('iptables -A INPUT -p tcp -m comment --comment "597 - test"')
       end
       context 'and current value is false' do
         it_behaves_like "doesn't change", 'isfragment => false,', /-A INPUT -p tcp -m comment --comment "597 - test"/
@@ -79,7 +85,7 @@ describe 'firewall isfragment property' do
     context 'when set to true' do
       before :each do
         iptables_flush_all_tables
-        shell('/sbin/iptables -A INPUT -p tcp -f -m comment --comment "597 - test"')
+        shell('iptables -A INPUT -p tcp -f -m comment --comment "597 - test"')
       end
       context 'and current value is false' do
         it_behaves_like "is idempotent", 'isfragment => false,', /-A INPUT -p tcp -m comment --comment "597 - test"/

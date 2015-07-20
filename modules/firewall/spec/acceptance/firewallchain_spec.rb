@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'puppet resource firewallchain command:' do
+describe 'puppet resource firewallchain command:', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
   before :all do
     iptables_flush_all_tables
   end
@@ -14,12 +14,14 @@ describe 'puppet resource firewallchain command:' do
         EOS
         # Run it twice and test for idempotency
         apply_manifest(pp, :catch_failures => true)
-        apply_manifest(pp, :catch_changes => true)
+        unless fact('selinux') == 'true'
+          apply_manifest(pp, :catch_changes => true)
+        end
       end
 
       it 'finds the chain' do
-        shell('iptables -S') do |r|
-          expect(r.stdout).to match(/-N MY_CHAIN/)
+        shell('iptables-save') do |r|
+          expect(r.stdout).to match(/MY_CHAIN/)
         end
       end
     end
@@ -33,12 +35,14 @@ describe 'puppet resource firewallchain command:' do
         EOS
         # Run it twice and test for idempotency
         apply_manifest(pp, :catch_failures => true)
-        apply_manifest(pp, :catch_changes => true)
+        unless fact('selinux') == 'true'
+          apply_manifest(pp, :catch_changes => true)
+        end
       end
 
       it 'fails to find the chain' do
-        shell('iptables -S') do |r|
-          expect(r.stdout).to_not match(/-N MY_CHAIN/)
+        shell('iptables-save') do |r|
+          expect(r.stdout).to_not match(/MY_CHAIN/)
         end
       end
     end
@@ -112,12 +116,14 @@ describe 'puppet resource firewallchain command:' do
         EOS
         # Run it twice and test for idempotency
         apply_manifest(pp, :catch_failures => true)
-        apply_manifest(pp, :catch_changes => true)
+        unless fact('selinux') == 'true'
+          apply_manifest(pp, :catch_changes => true)
+        end
       end
 
       it 'finds the chain' do
-        shell('iptables -S') do |r|
-          expect(r.stdout).to match(/-P FORWARD DROP/)
+        shell('iptables-save') do |r|
+          expect(r.stdout).to match(/FORWARD DROP/)
         end
       end
     end

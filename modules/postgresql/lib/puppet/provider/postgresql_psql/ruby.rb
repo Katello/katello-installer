@@ -51,7 +51,8 @@ Puppet::Type.type(:postgresql_psql).provide(:ruby) do
     command = command.join ' '
     environment = get_environment
     if Puppet::PUPPETVERSION.to_f < 3.4
-      Puppet::Util.withenv environment do
+      require 'puppet/util/execution'
+      Puppet::Util::Execution.withenv environment do
         Puppet::Util::SUIDManager.run_and_capture(command, user, group)
       end
     else

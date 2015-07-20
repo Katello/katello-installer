@@ -1,0 +1,19 @@
+{
+  "name": "katello-service_wait",
+  "version": "0.1.0",
+  "author": "katello",
+  "summary": "Puppet provider wrapping service resources making sure the service is really running",
+  "license": "GPL-3.0+",
+  "source": "https://github.com/katello/puppet-service_wait",
+  "project_page": "https://github.com/katello/puppet-service_wait",
+  "issues_url": "https://github.com/katello/puppet-service_wait/issues",
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 3.2.0 < 4.0.0"
+    }
+  ],
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 4.2.0 < 5.0.0"}
+  ]
+}
