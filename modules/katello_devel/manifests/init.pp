@@ -21,6 +21,8 @@
 #
 # $db_type::              The database type; 'postgres' or 'sqlite'
 #
+# $mongodb_path::         Path where mongodb should be stored
+#
 # $use_rvm::              If set to true, will install and configure RVM
 #
 # $rvm_ruby::             The default Ruby version to use with RVM
@@ -43,6 +45,8 @@ class katello_devel (
   $post_sync_token = $katello_devel::params::post_sync_token,
 
   $db_type = $katello_devel::params::db_type,
+
+  $mongodb_path = $katello_devel::params::mongodb_path,
 
   $use_rvm = $katello_devel::params::use_rvm,
   $rvm_ruby = $katello_devel::params::rvm_ruby,
@@ -115,6 +119,7 @@ class katello_devel (
     consumers_ca_cert           => $certs::ca_cert,
     consumers_ca_key            => $certs::ca_key,
     consumers_crl               => $candlepin::crl_file,
+    mongodb_path                => $mongodb_path,
   } ~>
   class { '::qpid::client':
     ssl                    => true,

@@ -21,6 +21,8 @@
 #
 # $config_dir::         Location for Katello config files
 #
+# $mongodb_path::       Path where mongodb should be stored
+#
 # $use_passenger::      Whether Katello is being deployed with Passenger
 #
 # $proxy_url::          URL of the proxy server
@@ -48,6 +50,7 @@ class katello (
 
   $log_dir = $katello::params::log_dir,
   $config_dir = $katello::params::config_dir,
+  $mongodb_path = $katello::params::mongodb_path,
 
   $use_passenger = $katello::params::use_passenger,
 
@@ -91,6 +94,7 @@ class katello (
     proxy_port                  => $proxy_port,
     proxy_username              => $proxy_username,
     proxy_password              => $proxy_password,
+    mongodb_path                => $mongodb_path,
   } ~>
   class { '::qpid::client':
     ssl                    => true,

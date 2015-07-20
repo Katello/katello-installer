@@ -10,7 +10,7 @@ class qpid::config
   } ->
   user { $qpid::user:
     ensure => present,
-    groups => [$qpid::user_groups],
+    groups => $qpid::user_groups,
   }
 
   file { $qpid::config_file:

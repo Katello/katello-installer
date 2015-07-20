@@ -1,7 +1,15 @@
 zone "<%= @zone %>" {
     type <%= @zonetype %>;
     file "<%= @zonefilename %>";
+<% if @zonetype == 'master' -%>
     update-policy {
             grant rndc-key zonesub ANY;
     };
+<% end -%>
+<% unless @allow_transfer.empty? -%>
+    allow-transfer { <%= @allow_transfer.join('; ') %>; };
+<% end -%>
+<% unless @masters.empty? -%>
+    masters { <%= @masters.join('; ') %>; };
+<% end -%>
 };

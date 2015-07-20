@@ -4,9 +4,10 @@ describe 'dns' do
 
   let(:facts) do
     {
-      :osfamily   => 'RedHat',
-      :fqdn => 'puppetmaster.example.com',
-      :clientcert => 'puppetmaster.example.com',
+      :clientcert     => 'puppetmaster.example.com',
+      :concat_basedir => '/doesnotexist',
+      :fqdn           => 'puppetmaster.example.com',
+      :osfamily       => 'RedHat',
     }
   end
 

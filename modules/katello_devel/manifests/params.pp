@@ -7,6 +7,7 @@ class katello_devel::params() inherits ::katello::params { # lint:ignore:inherit
   $oauth_secret       = cache_data('oauth_consumer_secret', random_password(32))
 
   $db_type = 'sqlite'
+  $mongodb_path  = '/var/lib/mongodb'
 
   $deployment_dir = 'UNSET'
 
