@@ -4,7 +4,7 @@
 
 Name:    katello-installer-base
 Version: 2.3.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 Summary: Puppet-based installer for the Katello and Katello Capsule
 Group:   Applications/System
 License: GPLv3+ and ASL 2.0
@@ -205,6 +205,8 @@ ln -sf %{_datadir}/capsule-installer/bin/capsule-remove %{buildroot}/%{_sbindir}
 %doc README.*
 
 %changelog
+* Tue Jul 21 2015 Stephen Benjamin <stbenjam@redhat.com> 2.3.1-3
+- Pin modules to puppetforge releases for Katello 2.3 (stbenjam@redhat.com)
 * Mon Jul 13 2015 Stephen Benjamin <stbenjam@redhat.com> 2.3.1-2
 - Fix rel-eng for Katello 2.3 (stbenjam@redhat.com)
 - fixes #10986 - ensure noop is defined in upgrade hook (stbenjam@redhat.com)
