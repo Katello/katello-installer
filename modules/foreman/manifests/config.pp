@@ -19,6 +19,16 @@ class foreman::config {
     content => template('foreman/database.yml.erb'),
   }
 
+  if $foreman::email_delivery_method and !empty($foreman::email_delivery_method) {
+    file { "/etc/foreman/${foreman::email_conf}":
+      ensure  => file,
+      owner   => 'root',
+      group   => $foreman::group,
+      mode    => '0640',
+      content => template("foreman/${foreman::email_source}"),
+    }
+  }
+
   file { $foreman::init_config:
     ensure  => file,
     content => template("foreman/${foreman::init_config_tmpl}.erb"),
@@ -96,15 +106,15 @@ class foreman::config {
         mode   => '0600',
       }
 
-      passenger::fragment { 'intercept_form_submit':
+      ::foreman::config::passenger::fragment { 'intercept_form_submit':
         ssl_content => template('foreman/intercept_form_submit.conf.erb'),
       }
 
-      passenger::fragment { 'lookup_identity':
+      ::foreman::config::passenger::fragment { 'lookup_identity':
         ssl_content => template('foreman/lookup_identity.conf.erb'),
       }
 
-      passenger::fragment { 'auth_kerb':
+      ::foreman::config::passenger::fragment { 'auth_kerb':
         ssl_content => template('foreman/auth_kerb.conf.erb'),
       }
 

@@ -1,6 +1,7 @@
 fixtures:
   repositories:
-    concat_native:    'https://github.com/theforeman/puppet-concat'
+    concat:      'https://github.com/puppetlabs/puppetlabs-concat'
+    stdlib:      'https://github.com/puppetlabs/puppetlabs-stdlib.git'
 
   symlinks:
     dns: "#{source_dir}"

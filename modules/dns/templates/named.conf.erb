@@ -1,16 +1,16 @@
 // named.conf
 
-include "<%= @rndckeypath %>";
+include "<%= scope.lookupvar('::dns::rndckeypath') %>";
 
 controls  {
 	inet 127.0.0.1 port 953 allow { 127.0.0.1; } keys { "rndc-key"; };
 };
 
 options  {
-	include "<%= @optionspath %>";
+	include "<%= scope.lookupvar('::dns::optionspath') %>";
 };
 
-include "<%= @localzonepath %>";
+include "<%= scope.lookupvar('::dns::localzonepath') %>";
 
 // Public view read by Server Admin
-include "<%= @publicviewpath %>";
+include "<%= scope.lookupvar('::dns::publicviewpath') %>";

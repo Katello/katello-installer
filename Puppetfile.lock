@@ -93,7 +93,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello
   ref: master
-  sha: 4a6177e62ba471178d23654881882843151c647f
+  sha: fc9a5b7f9d25e43e4f24f6502ca2e83bbea4a7a1
   specs:
     katello-katello (1.0.0)
       katello-candlepin (>= 0.1.0)
@@ -114,7 +114,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-katello_devel
   ref: master
-  sha: c3e98adf9809d5bf52d5667243f15981ad0b6162
+  sha: 0d16a780c50b13d873a6e06a4427cf02c5a01eee
   specs:
     katello-katello_devel (0.1.0)
       katello-candlepin (>= 0.1.0)
@@ -136,7 +136,7 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-pulp
   ref: 0.1-stable
-  sha: 8d0ae9b281515f4d123496f312164ddca6da4f61
+  sha: e6debe8c630582c1c1bdf88385b1adc22a67d762
   specs:
     katello-pulp (0.1.1)
       katello-qpid (>= 0.1.0)
@@ -149,9 +149,9 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-qpid
   ref: master
-  sha: 866bc0e55536b4dc260108500bdd90b1038fa003
+  sha: 5002da80b5059e3ff33caa9b897b6ba9f1427bf2
   specs:
-    katello-qpid (1.0.1)
+    katello-qpid (1.0.3)
       puppetlabs-stdlib (< 5.0.0, >= 3.0.0)
       theforeman-concat_native (< 2.0.0, >= 1.3.0)
 
@@ -190,42 +190,43 @@ GIT
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-postgresql
   ref: master
-  sha: 4b1196b91886419de6f59758e9cae7f6f5384d3e
+  sha: 7cb4b9d98f12a483283c4111c92f84d58e1f7a0b
   specs:
-    puppetlabs-postgresql (4.3.0)
-      puppetlabs-apt (< 2.0.0, >= 1.8.0)
+    puppetlabs-postgresql (4.4.2)
+      puppetlabs-apt (< 3.0.0, >= 1.8.0)
       puppetlabs-concat (< 2.0.0, >= 1.1.0)
       puppetlabs-stdlib (~> 4.0)
 
 GIT
   remote: https://github.com/theforeman/puppet-concat
   ref: master
-  sha: d480ad36000180dd3a1912c225afa90aaa781b17
+  sha: 95b6111d27d6a0290ed3dc156316abc0363c349a
   specs:
     theforeman-concat_native (1.5.1)
 
 GIT
   remote: https://github.com/theforeman/puppet-dhcp
   ref: master
-  sha: 295caaf8d06fe504d0c842b809977bd0c5516d60
+  sha: 8b5821c7159f42434423a751295a0d03a828e598
   specs:
-    theforeman-dhcp (1.6.1)
+    theforeman-dhcp (2.0.1)
       puppetlabs-concat (< 3.0.0, >= 1.0.0)
 
 GIT
   remote: https://github.com/theforeman/puppet-dns
-  ref: 43bec3167ada475ed374a8d3db0c13164697129b
-  sha: 43bec3167ada475ed374a8d3db0c13164697129b
+  ref: master
+  sha: 21353bf32f8a002895d5621ea19b89b81bab8646
   specs:
-    theforeman-dns (1.4.0)
-      theforeman-concat_native (>= 1.3.0)
+    theforeman-dns (3.0.1)
+      puppetlabs-concat (< 3.0.0, >= 1.0.0)
+      puppetlabs-stdlib (< 5.0.0, >= 1.0.0)
 
 GIT
   remote: https://github.com/theforeman/puppet-foreman
   ref: master
-  sha: c5cfb238477d85a3b80e036aa13a3730d8c4df3b
+  sha: 4f4417434fd370404d8f76b6ecd4152cd8a4f299
   specs:
-    theforeman-foreman (3.0.1)
+    theforeman-foreman (4.0.2)
       adrien-alternatives (< 1.0.0, >= 0.3.0)
       puppetlabs-apache (< 2.0.0, >= 1.2.0)
       puppetlabs-apt (< 2.0.0)
@@ -237,29 +238,29 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-foreman_proxy
   ref: master
-  sha: 81ba7f2e713bf6aaa4d809007ca926933155f3a8
+  sha: 2ad616979472d8d0ea6a9c0a1b8251a395b6f6c9
   specs:
-    theforeman-foreman_proxy (2.2.3)
+    theforeman-foreman_proxy (2.3.1)
       puppetlabs-stdlib (< 5.0.0, >= 4.6.0)
       theforeman-dhcp (< 3.0.0, >= 1.3.0)
       theforeman-dns (< 4.0.0, >= 1.3.0)
-      theforeman-foreman (< 4.0.0, >= 1.3.0)
-      theforeman-puppet (< 4.0.0, >= 3.0.0)
+      theforeman-foreman (< 5.0.0, >= 1.3.0)
+      theforeman-puppet (< 5.0.0, >= 3.0.0)
       theforeman-tftp (< 2.0.0, >= 1.3.0)
 
 GIT
   remote: https://github.com/theforeman/puppet-git
   ref: master
-  sha: f88a629b3d81a2ae97a2946b5da8bacaef89d845
+  sha: a68f4569f400249842ff204d32b01e92c9c33705
   specs:
     theforeman-git (1.4.2)
 
 GIT
   remote: https://github.com/theforeman/puppet-puppet
   ref: master
-  sha: ee2d16138613ca4f675b7b9244ef7a3eb9e7c767
+  sha: 8c526e469ca981aca8846f062348a3a930d58da0
   specs:
-    theforeman-puppet (3.0.1)
+    theforeman-puppet (4.0.2)
       puppetlabs-apache (< 2.0.0, >= 1.2.0)
       puppetlabs-concat (< 3.0.0, >= 1.0.0)
       puppetlabs-stdlib (< 5.0.0, >= 2.0.0)
@@ -267,7 +268,7 @@ GIT
 GIT
   remote: https://github.com/theforeman/puppet-tftp
   ref: master
-  sha: 60fe474548f06927f89de20266732531f555e2f5
+  sha: 2f7bbb9bf8ebf0920dc545401c027da48c35ca16
   specs:
     theforeman-tftp (1.5.2)
       puppetlabs-stdlib (< 5.0.0, >= 2.3.0)

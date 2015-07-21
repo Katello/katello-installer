@@ -73,6 +73,15 @@ RSpec.configure do |c|
       apply_manifest_on(agents, pp, :catch_failures => false)
     end
 
+    # net-tools required for netstat utility being used by be_listening
+    if fact('osfamily') == 'RedHat' && fact('operatingsystemmajrelease') == '7'
+      pp = <<-EOS
+        package { 'net-tools': ensure => installed }
+      EOS
+
+      apply_manifest_on(agents, pp, :catch_failures => false)
+    end
+
     hosts.each do |host|
       on host, "/bin/touch #{default['puppetpath']}/hiera.yaml"
       on host, 'chmod 755 /root'
@@ -83,7 +92,7 @@ RSpec.configure do |c|
       end
 
       on host, puppet('module','install','puppetlabs-stdlib'), { :acceptable_exit_codes => [0,1] }
-      on host, puppet('module','install','puppetlabs-apt', '--version', '1.8.0', '--force'), { :acceptable_exit_codes => [0,1] }
+      on host, puppet('module','install','puppetlabs-apt'), { :acceptable_exit_codes => [0,1] }
       on host, puppet('module','install','--force','puppetlabs-concat'), { :acceptable_exit_codes => [0,1] }
     end
 
