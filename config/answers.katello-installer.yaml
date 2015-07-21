@@ -26,6 +26,7 @@ capsule:
   pulp_master: true
   puppet: true
   puppetca: true
+  templates: false
 
 foreman::plugin::bootdisk: true
 foreman::plugin::discovery: true
