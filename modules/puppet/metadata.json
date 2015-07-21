@@ -1,12 +1,17 @@
 {
   "name": "theforeman-puppet",
-  "version": "3.0.1",
+  "version": "4.0.1",
   "author": "theforeman",
   "summary": "Puppet agent and server configuration",
   "license": "GPL-3.0+",
   "source": "git://github.com/theforeman/puppet-puppet",
   "project_page": "https://github.com/theforeman/puppet-puppet",
   "issues_url": "https://github.com/theforeman/puppet-puppet/issues",
+  "dependencies": [
+    {"name":"puppetlabs/apache","version_requirement":">= 1.2.0 < 2.0.0"},
+    {"name":"puppetlabs/concat","version_requirement":">= 1.0.0 < 3.0.0"},
+    {"name":"puppetlabs/stdlib","version_requirement":">= 2.0.0 < 5.0.0"}
+  ],
   "description": "Module for installing the Puppet agent and Puppet server",
   "tags": [
     "foreman",
@@ -14,24 +19,10 @@
     "puppetmaster",
     "puppet-server"
   ],
-  "dependencies": [
-    {
-      "name": "puppetlabs/apache",
-      "version_requirement": ">= 1.2.0 < 2.0.0"
-    },
-    {
-      "name": "puppetlabs/concat",
-      "version_requirement": ">= 1.0.0 < 3.0.0"
-    },
-    {
-      "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 2.0.0 < 5.0.0"
-    }
-  ],
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 2.7.0 < 4.0.0"
+      "version_requirement": ">= 2.7.0 < 5.0.0"
     }
   ],
   "operatingsystem_support": [
@@ -66,7 +57,8 @@
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
         "6",
-        "7"
+        "7",
+        "8"
       ]
     },
     {

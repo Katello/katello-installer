@@ -131,12 +131,10 @@ Classes:
 * [postgresql::globals](#class-postgresqlglobals)
 * [postgresql::lib::devel](#class-postgresqllibdevel)
 * [postgresql::lib::java](#class-postgresqllibjava)
-* [postgresql::lib::docs](#class-postgresqllibdocs)
 * [postgresql::lib::perl](#class-postgresqllibperl)
 * [postgresql::lib::python](#class-postgresqllibpython)
 * [postgresql::server](#class-postgresqlserver)
 * [postgresql::server::plperl](#class-postgresqlserverplperl)
-* [postgresql::server::plpython](#class-postgresqlserverplpython)
 * [postgresql::server::contrib](#class-postgresqlservercontrib)
 * [postgresql::server::postgis](#class-postgresqlserverpostgis)
 
@@ -149,7 +147,6 @@ Resources:
 * [postgresql::server::extension](#resource-postgresqlserverextension)
 * [postgresql::server::pg_hba_rule](#resource-postgresqlserverpg_hba_rule)
 * [postgresql::server::pg_ident_rule](#resource-postgresqlserverpg_ident_rule)
-* [postgresql::server::recovery](#resource-postgresqlserverrecovery)
 * [postgresql::server::role](#resource-postgresqlserverrole)
 * [postgresql::server::schema](#resource-postgresqlserverschema)
 * [postgresql::server::table_grant](#resource-postgresqlservertable_grant)
@@ -207,17 +204,11 @@ This setting can be used to override the default postgresql devel package name. 
 ####`java_package_name`
 This setting can be used to override the default postgresql java package name. If not specified, the module will use whatever package name is the default for your OS distro.
 
-####`docs_package_name`
-This setting can be used to override the default postgresql docs package name. If not specified, the module will use whatever package name is the default for your OS distro.
-
 ####`perl_package_name`
 This setting can be used to override the default postgresql Perl package name. If not specified, the module will use whatever package name is the default for your OS distro.
 
 ####`plperl_package_name`
 This setting can be used to override the default postgresql PL/perl package name. If not specified, the module will use whatever package name is the default for your OS distro.
-
-####`plpython_package_name`
-This setting can be used to override the default postgresql PL/python package name. If not specified, the module will use whatever package name is the default for your OS distro.
 
 ####`python_package_name`
 This setting can be used to override the default postgresql Python package name. If not specified, the module will use whatever package name is the default for your OS distro.
@@ -254,9 +245,6 @@ Path to your `pg\_ident.conf` file.
 
 ####`postgresql_conf_path`
 Path to your `postgresql.conf` file.
-
-####`recovery_conf_path`
-Path to your `recovery.conf` file.
 
 ####`pg_hba_conf_defaults`
 If false, disables the defaults supplied with the module for `pg\_hba.conf`. This is useful if you disagree with the defaults and wish to override them yourself. Be sure that your changes of course align with the rest of the module, as some access is required to perform basic `psql` operations for example.
@@ -323,9 +311,6 @@ Value to pass through to the `package` resource when creating the server instanc
 ####`plperl_package_name`
 This sets the default package name for the PL/Perl extension. Defaults to utilising the operating system default.
 
-####`plpython_package_name`
-This sets the default package name for the PL/Python extension. Defaults to utilising the operating system default.
-
 ####`service_manage`
 This setting selects whether Puppet should manage the service. Defaults to `true`.
 
@@ -380,9 +365,6 @@ Path to your `pg\_ident.conf` file.
 ####`postgresql_conf_path`
 Path to your `postgresql.conf` file.
 
-####`recovery_conf_path`
-Path to your `recovery.conf` file.
-
 ####`pg_hba_conf_defaults`
 If false, disables the defaults supplied with the module for `pg\_hba.conf`. This is useful if you di
 sagree with the defaults and wish to override them yourself. Be sure that your changes of course alig
@@ -414,15 +396,9 @@ This value defaults to `true`. Whether or not manage the pg_hba.conf. If set to 
 ####`manage_pg_ident_conf`
 This value defaults to `true`. Whether or not manage the pg_ident.conf. If set to `true`, puppet will overwrite this file. If set to `false`, puppet will not modify the file.
 
-####`manage_recovery_conf`
-This value defaults to `false`. Whether or not manage the recovery.conf. If set to `true`, puppet will overwrite this file. If set to `false`, puppet will not create the file.
-
 ###Class: postgresql::client
 
 This class installs postgresql client software. Alter the following parameters if you have a custom version you would like to install (Note: don't forget to make sure to add any necessary yum or apt repositories if specifying a custom version):
-
-####`validcon_script_path`
-Path to validate connection script. Defaults to `/usr/local/bin/validate_postgresql_connection.sh`.
 
 ####`package_name`
 The name of the postgresql client package.
@@ -467,15 +443,6 @@ The name of the postgresql java package.
 ####`package_ensure`
 The ensure parameter passed on to postgresql java package resource.
 
-###Class: postgresql::lib::docs
-This class installs postgresql bindings for Postgres-Docs. Alter the following parameters if you have a custom version you would like to install (Note: don't forget to make sure to add any necessary yum or apt repositories if specifying a custom version):
-
-####`package_name`
-The name of the postgresql docs package.
-
-####`package_ensure`
-The ensure parameter passed on to postgresql docs package resource.
-
 
 ###Class: postgresql::lib::perl
 This class installs the postgresql Perl libraries. For customer requirements you can customise the following parameters:
@@ -486,14 +453,6 @@ The name of the postgresql perl package.
 ####`package_ensure`
 The ensure parameter passed on to postgresql perl package resource.
 
-###Class: postgresql::server::plpython
-This class installs the PL/Python procedural language for postgresql.
-
-####`package_name`
-The name of the postgresql PL/Python package.
-
-####`package_ensure`
-The ensure parameter passed on to postgresql PL/Python package resource.
 
 ###Class: postgresql::lib::python
 This class installs the postgresql Python libraries. For customer requirements you can customise the following parameters:
@@ -733,65 +692,6 @@ Database user name, the user name of the the database user. The `system_username
 
 ####`order`
 An order for placing the mapping in pg_ident.conf. Defaults to 150.
-
-####`target`
-This provides the target for the rule, and is generally an internal only property. Use with caution.
-
-###Resource: postgresql::server::recovery
-This defined type allows you to create the content for `recovery.conf`. For more details see the [PostgreSQL documentation](http://www.postgresql.org/docs/9.4/static/recovery-config.html).
-
-For example:
-
-    postgresql::server::recovery( 'Create a recovery.conf file with the following defined parameters':
-      restore_command                => 'cp /mnt/server/archivedir/%f %p',
-      archive_cleanup_command        => undef,
-      recovery_end_command           => undef,
-      recovery_target_name           => 'daily backup 2015-01-26',
-      recovery_target_time           => '2015-02-08 22:39:00 EST',
-      recovery_target_xid            => undef,
-      recovery_target_inclusive      => true,
-      recovery_target                => 'immediate',
-      recovery_target_timeline       => 'latest',
-      pause_at_recovery_target       => true,
-      standby_mode                   => 'on',
-      primary_conninfo               => 'host=localhost port=5432',
-      primary_slot_name              => undef,
-      trigger_file                   => undef,
-      recovery_min_apply_delay       => 0,
-    }
-
-This would create a `recovery.conf` config file, similar to this:
-
-    restore_command = 'cp /mnt/server/archivedir/%f %p'
-    recovery_target_name = 'daily backup 2015-01-26'
-    recovery_target_time = '2015-02-08 22:39:00 EST'
-    recovery_target_inclusive = true
-    recovery_target = 'immediate'
-    recovery_target_timeline = 'latest'
-    pause_at_recovery_target = true
-    standby_mode = on
-    primary_conninfo = 'host=localhost port=5432'
-    recovery_min_apply_delay = 0
-
-
-Only the specified parameters will be recognize in the template! The `recovery.conf` will be only create if at least one parameter set and [manage_recovery_conf](#manage_recovery_conf) set to true.
-
-Every param value is a String set in the template with inverted comma except `recovery_target_inclusive`, `pause_at_recovery_target`, `standby_mode` and `recovery_min_apply_delay`.
-`standby_mode` is special, String ('on'/'off') and Boolean (true/false) is allowed, but the postgres documentation says it's a Boolean.
-
-A detailed description of all above listed parameters can be found in the [PostgreSQL documentation](http://www.postgresql.org/docs/9.4/static/recovery-config.html).
-
-The parameters are grouped into these three sections:
-
-
-#### [`Archive Recovery Parameters`](http://www.postgresql.org/docs/9.4/static/archive-recovery-settings.html)
-In this section the `restore_command`, `archive_cleanup_command` and `recovery_end_command` parameters are listed.
-
-#### [`Recovery Target Settings`](http://www.postgresql.org/docs/9.4/static/recovery-target-settings.html)
-In this section the `recovery_target_name`, `recovery_target_time`, `recovery_target_xid`, `recovery_target_inclusive`, `recovery_target`, `recovery_target_timeline` and `pause_at_recovery_target` parameters are listed.
-
-#### [`Standby Server Settings`](http://www.postgresql.org/docs/9.4/static/standby-settings.html)
-In this section the `standby_mode`, `primary_conninfo`, `primary_slot_name`, `trigger_file` and `recovery_min_apply_delay` parameters are listed.
 
 ####`target`
 This provides the target for the rule, and is generally an internal only property. Use with caution.

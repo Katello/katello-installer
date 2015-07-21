@@ -1,0 +1,21 @@
+{
+  "CHANGELOG": "964a5be8b886486130b0b46bd9f50f74",
+  "CONTRIBUTING.md": "b09c628c63cd0562c3f8bbd74a3143f8",
+  "CONTRIBUTORS": "42d504f5029e79d84e7a8407280ebd86",
+  "Gemfile": "43b899413f4dd7aad690514b484d7db9",
+  "LICENSE": "9eef91148a9b14ec7f9df333daebc746",
+  "README.md": "17e8dc7f02d8b04b6e9e9c10c60e0338",
+  "Rakefile": "5d38eec4207040ace7e08a0282792a61",
+  "manifests/apache.pp": "cc34ba25f33eb17356b578e024d0555c",
+  "manifests/config.pp": "8c0a62ab9f6cd71e8954a1428cc233d0",
+  "manifests/init.pp": "52e14e682399daede82b0c453fb56ed7",
+  "manifests/install.pp": "6c47dbf7afea7f1a2c080600d6c271f3",
+  "manifests/params.pp": "1028bc21055ad9c8ff05d71e3b531f8f",
+  "metadata.json": "45628d9ca3992e393132a564394efe09",
+  "spec/classes/coverage_spec.rb": "5b6dfa0dd426aca0ccfae23c0a629f0b",
+  "spec/classes/crane_spec.rb": "4e23de0d2cef20742be137976ebd628a",
+  "spec/spec.opts": "6af1d8720d85a510f132e3250aa61075",
+  "spec/spec_helper.rb": "c97349efb008b3ef1e77afc51cc9bff5",
+  "spec/spec_helper_acceptance.rb": "bd7476a91bd26c61a3e694618c26230c",
+  "templates/crane.conf.erb": "426bceb88111d403d05bb60fce27ec66"
+}

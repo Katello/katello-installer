@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'complex ruleset 1' do
+describe 'complex ruleset 1', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
   before :all do
     iptables_flush_all_tables
   end
@@ -98,16 +98,18 @@ describe 'complex ruleset 1' do
   end
 
   it 'contains appropriate rules' do
-    shell('iptables -S') do |r|
-      expect(r.stdout).to eq(
-        "-P INPUT ACCEPT\n" +
-        "-P FORWARD ACCEPT\n" +
-        "-P OUTPUT ACCEPT\n" +
-        "-A FORWARD -s 10.0.0.0/8 -d 10.0.0.0/8 -m comment --comment \"090 forward allow local\" -j ACCEPT \n" +
-        "-A FORWARD -s 10.0.0.0/8 ! -d 10.0.0.0/8 -p icmp -m comment --comment \"100 forward standard allow icmp\" -j ACCEPT \n" +
-        "-A FORWARD -s 10.0.0.0/8 ! -d 10.0.0.0/8 -p tcp -m multiport --ports 80,443,21,20,22,53,123,43,873,25,465 -m comment --comment \"100 forward standard allow tcp\" -m state --state NEW -j ACCEPT \n" +
-        "-A FORWARD -s 10.0.0.0/8 ! -d 10.0.0.0/8 -p udp -m multiport --ports 53,123 -m comment --comment \"100 forward standard allow udp\" -j ACCEPT \n"
-      )
+    shell('iptables-save') do |r|
+      [
+        /INPUT ACCEPT/,
+        /FORWARD ACCEPT/,
+        /OUTPUT ACCEPT/,
+        /-A FORWARD -s 10.0.0.0\/(8|255\.0\.0\.0) -d 10.0.0.0\/(8|255\.0\.0\.0) -m comment --comment \"090 forward allow local\" -j ACCEPT/,
+        /-A FORWARD -s 10.0.0.0\/(8|255\.0\.0\.0) (! -d|-d !) 10.0.0.0\/(8|255\.0\.0\.0) -p icmp -m comment --comment \"100 forward standard allow icmp\" -j ACCEPT/,
+        /-A FORWARD -s 10.0.0.0\/(8|255\.0\.0\.0) (! -d|-d !) 10.0.0.0\/(8|255\.0\.0\.0) -p tcp -m multiport --ports 80,443,21,20,22,53,123,43,873,25,465 -m comment --comment \"100 forward standard allow tcp\" -m state --state NEW -j ACCEPT/,
+        /-A FORWARD -s 10.0.0.0\/(8|255\.0\.0\.0) (! -d|-d !) 10.0.0.0\/(8|255\.0\.0\.0) -p udp -m multiport --ports 53,123 -m comment --comment \"100 forward standard allow udp\" -j ACCEPT/
+      ].each do |line|
+        expect(r.stdout).to match(line)
+      end
     end
   end
 end
@@ -144,6 +146,12 @@ describe 'complex ruleset 2' do
         action => 'accept',
         before => Firewallchain['INPUT:filter:IPv4'],
       }
+      firewall { "011 reject local traffic not on loopback interface":
+        iniface     => '! lo',
+        proto       => 'all',
+        destination => '127.0.0.1/8',
+        action      => 'reject',
+      }
       firewall { '012 accept loopback':
         iniface => 'lo',
         action  => 'accept',
@@ -156,7 +164,14 @@ describe 'complex ruleset 2' do
         action => 'accept',
         before => Firewallchain['INPUT:filter:IPv4'],
       }
-
+      firewall { '025 smtp':
+        outiface => '! eth0:2',
+        chain    => 'OUTPUT',
+        proto    => 'tcp',
+        dport    => '25',
+        state    => 'NEW',
+        action   => 'accept',
+      }
       firewall { '013 icmp echo-request':
         proto  => 'icmp',
         icmp   => 'echo-request',
@@ -173,11 +188,17 @@ describe 'complex ruleset 2' do
         icmp   => 'time-exceeded',
         action => 'accept',
       }
+      firewall { '443 ssl on aliased interface':
+        proto   => 'tcp',
+        dport   => '443',
+        state   => 'NEW',
+        action  => 'accept',
+        iniface => 'eth0:3',
+      }
       firewall { '999 reject':
         action => 'reject',
         reject => 'icmp-host-prohibited',
       }
-
 
       firewallchain { 'LOCAL_INPUT_PRE:filter:IPv4': }
       firewall { '001 LOCAL_INPUT_PRE':
@@ -221,28 +242,35 @@ describe 'complex ruleset 2' do
 
     # Run it twice and test for idempotency
     apply_manifest(pp, :catch_failures => true)
-    apply_manifest(pp, :catch_changes => true)
+    unless fact('selinux') == 'true'
+      apply_manifest(pp, :catch_changes => true)
+    end
   end
 
   it 'contains appropriate rules' do
-    shell('iptables -S') do |r|
-      expect(r.stdout).to eq(
-        "-P INPUT DROP\n" +
-        "-P FORWARD DROP\n" +
-        "-P OUTPUT ACCEPT\n" +
-        "-N LOCAL_INPUT\n" +
-        "-N LOCAL_INPUT_PRE\n" +
-        "-A INPUT -m comment --comment \"001 LOCAL_INPUT_PRE\" -j LOCAL_INPUT_PRE \n" +
-        "-A INPUT -m comment --comment \"010 INPUT allow established and related\" -m state --state RELATED,ESTABLISHED -j ACCEPT \n" +
-        "-A INPUT -i lo -m comment --comment \"012 accept loopback\" -j ACCEPT \n" +
-        "-A INPUT -p icmp -m comment --comment \"013 icmp destination-unreachable\" -m icmp --icmp-type 3 -j ACCEPT \n" +
-        "-A INPUT -s 10.0.0.0/8 -p icmp -m comment --comment \"013 icmp echo-request\" -m icmp --icmp-type 8 -j ACCEPT \n" +
-        "-A INPUT -p icmp -m comment --comment \"013 icmp time-exceeded\" -m icmp --icmp-type 11 -j ACCEPT \n" +
-        "-A INPUT -p tcp -m multiport --dports 22 -m comment --comment \"020 ssh\" -m state --state NEW -j ACCEPT \n" +
-        "-A INPUT -m comment --comment \"900 LOCAL_INPUT\" -j LOCAL_INPUT \n" +
-        "-A INPUT -m comment --comment \"999 reject\" -j REJECT --reject-with icmp-host-prohibited \n" +
-        "-A FORWARD -m comment --comment \"010 allow established and related\" -m state --state RELATED,ESTABLISHED -j ACCEPT \n"
-      )
+    shell('iptables-save') do |r|
+      [
+        /INPUT DROP/,
+        /FORWARD DROP/,
+        /OUTPUT ACCEPT/,
+        /LOCAL_INPUT/,
+        /LOCAL_INPUT_PRE/,
+        /-A INPUT -m comment --comment \"001 LOCAL_INPUT_PRE\" -j LOCAL_INPUT_PRE/,
+        /-A INPUT -m comment --comment \"010 INPUT allow established and related\" -m state --state RELATED,ESTABLISHED -j ACCEPT/,
+        /-A INPUT -d 127.0.0.0\/(8|255\.0\.0\.0) (! -i|-i !) lo -m comment --comment \"011 reject local traffic not on loopback interface\" -j REJECT --reject-with icmp-port-unreachable/,
+        /-A INPUT -i lo -m comment --comment \"012 accept loopback\" -j ACCEPT/,
+        /-A INPUT -p icmp -m comment --comment \"013 icmp destination-unreachable\" -m icmp --icmp-type 3 -j ACCEPT/,
+        /-A INPUT -s 10.0.0.0\/(8|255\.0\.0\.0) -p icmp -m comment --comment \"013 icmp echo-request\" -m icmp --icmp-type 8 -j ACCEPT/,
+        /-A INPUT -p icmp -m comment --comment \"013 icmp time-exceeded\" -m icmp --icmp-type 11 -j ACCEPT/,
+        /-A INPUT -p tcp -m multiport --dports 22 -m comment --comment \"020 ssh\" -m state --state NEW -j ACCEPT/,
+        /-A OUTPUT (! -o|-o !) eth0:2 -p tcp -m multiport --dports 25 -m comment --comment \"025 smtp\" -m state --state NEW -j ACCEPT/,
+        /-A INPUT -i eth0:3 -p tcp -m multiport --dports 443 -m comment --comment \"443 ssl on aliased interface\" -m state --state NEW -j ACCEPT/,
+        /-A INPUT -m comment --comment \"900 LOCAL_INPUT\" -j LOCAL_INPUT/,
+        /-A INPUT -m comment --comment \"999 reject\" -j REJECT --reject-with icmp-host-prohibited/,
+        /-A FORWARD -m comment --comment \"010 allow established and related\" -m state --state RELATED,ESTABLISHED -j ACCEPT/
+      ].each do |line|
+        expect(r.stdout).to match(line)
+      end
     end
   end
 end

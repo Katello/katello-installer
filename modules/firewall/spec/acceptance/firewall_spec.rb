@@ -1,6 +1,6 @@
 require 'spec_helper_acceptance'
 
-describe 'firewall type' do
+describe 'firewall type', :unless => UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) do
 
   describe 'reset' do
     it 'deletes all rules' do
@@ -51,7 +51,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-         shell('iptables -S') do |r|
+         shell('iptables-save') do |r|
            expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 555 -m comment --comment "555 - test" -j ACCEPT/)
          end
       end
@@ -73,7 +73,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-         shell('iptables -S') do |r|
+         shell('iptables-save') do |r|
            expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 555 -m comment --comment "555 - test" -j ACCEPT/)
          end
       end
@@ -95,7 +95,7 @@ describe 'firewall type' do
       end
 
       it 'should not contain the rule' do
-         shell('iptables -S') do |r|
+         shell('iptables-save') do |r|
            expect(r.stdout).to_not match(/-A INPUT -p tcp -m multiport --ports 555 -m comment --comment "555 - test" -j ACCEPT/)
          end
       end
@@ -116,12 +116,14 @@ describe 'firewall type' do
         EOS
 
         apply_manifest(pp, :catch_failures => true)
-        apply_manifest(pp, :catch_changes => true)
+        unless fact('selinux') == 'true'
+          apply_manifest(pp, :catch_changes => true)
+        end
       end
 
       it 'should contain the rule' do
-         shell('iptables -S') do |r|
-           expect(r.stdout).to match(/-A INPUT -s 192.168.2.0\/24 -p tcp -m multiport --ports 556 -m comment --comment "556 - test" -j ACCEPT/)
+         shell('iptables-save') do |r|
+           expect(r.stdout).to match(/-A INPUT -s 192.168.2.0\/(24|255\.255\.255\.0) -p tcp -m multiport --ports 556 -m comment --comment "556 - test" -j ACCEPT/)
          end
       end
     end
@@ -139,12 +141,14 @@ describe 'firewall type' do
         EOS
 
         apply_manifest(pp, :catch_failures => true)
-        apply_manifest(pp, :catch_changes => true)
+        unless fact('selinux') == 'true'
+          apply_manifest(pp, :catch_changes => true)
+        end
       end
 
       it 'should contain the rule' do
-         shell('iptables -S') do |r|
-           expect(r.stdout).to match(/-A INPUT ! -s 192.168.2.0\/24 -p tcp -m multiport --ports 556 -m comment --comment "556 - test" -j ACCEPT/)
+         shell('iptables-save') do |r|
+           expect(r.stdout).to match(/-A INPUT (! -s|-s !) 192.168.2.0\/(24|255\.255\.255\.0) -p tcp -m multiport --ports 556 -m comment --comment "556 - test" -j ACCEPT/)
          end
       end
     end
@@ -163,13 +167,13 @@ describe 'firewall type' do
         EOS
 
         apply_manifest(pp, :expect_failures => true) do |r|
-          expect(r.stderr).to match(/host_to_ip failed for 256.168.2.0\/24/)
+          expect(r.stderr).to match(/host_to_ip failed for 256.168.2.0\/(24|255\.255\.255\.0)/)
         end
       end
 
       it 'should not contain the rule' do
-         shell('iptables -S') do |r|
-           expect(r.stdout).to_not match(/-A INPUT -s 256.168.2.0\/24 -p tcp -m multiport --ports 556 -m comment --comment "556 - test" -j ACCEPT/)
+         shell('iptables-save') do |r|
+           expect(r.stdout).to_not match(/-A INPUT -s 256.168.2.0\/(24|255\.255\.255\.0) -p tcp -m multiport --ports 556 -m comment --comment "556 - test" -j ACCEPT/)
          end
       end
     end
@@ -189,11 +193,13 @@ describe 'firewall type' do
         EOS
 
         apply_manifest(pp, :catch_failures => true)
-        apply_manifest(pp, :catch_changes => true)
+        unless fact('selinux') == 'true'
+          apply_manifest(pp, :catch_changes => true)
+        end
       end
 
       it 'should contain the rule' do
-         shell('iptables -S') do |r|
+         shell('iptables-save') do |r|
            expect(r.stdout).to match(/-A INPUT -p tcp -m iprange --src-range 192.168.1.1-192.168.1.10 -m multiport --ports 557 -m comment --comment "557 - test" -j ACCEPT/)
          end
       end
@@ -213,12 +219,12 @@ describe 'firewall type' do
         EOS
 
         apply_manifest(pp, :expect_failures => true) do |r|
-          expect(r.stderr).to match(/Invalid value "392.168.1.1-192.168.1.10"/)
+          expect(r.stderr).to match(/Invalid IP address "392.168.1.1" in range "392.168.1.1-192.168.1.10"/)
         end
       end
 
       it 'should not contain the rule' do
-         shell('iptables -S') do |r|
+         shell('iptables-save') do |r|
            expect(r.stdout).to_not match(/-A INPUT -p tcp -m iprange --src-range 392.168.1.1-192.168.1.10 -m multiport --ports 557 -m comment --comment "557 - test" -j ACCEPT/)
          end
       end
@@ -239,12 +245,14 @@ describe 'firewall type' do
         EOS
 
         apply_manifest(pp, :catch_failures => true)
-        apply_manifest(pp, :catch_changes => true)
+        unless fact('selinux') == 'true'
+          apply_manifest(pp, :catch_changes => true)
+        end
       end
 
       it 'should contain the rule' do
-         shell('iptables -S') do |r|
-           expect(r.stdout).to match(/-A INPUT -d 192.168.2.0\/24 -p tcp -m multiport --ports 558 -m comment --comment "558 - test" -j ACCEPT/)
+         shell('iptables-save') do |r|
+           expect(r.stdout).to match(/-A INPUT -d 192.168.2.0\/(24|255\.255\.255\.0) -p tcp -m multiport --ports 558 -m comment --comment "558 - test" -j ACCEPT/)
          end
       end
     end
@@ -262,12 +270,14 @@ describe 'firewall type' do
         EOS
 
         apply_manifest(pp, :catch_failures => true)
-        apply_manifest(pp, :catch_changes => true)
+        unless fact('selinux') == 'true'
+          apply_manifest(pp, :catch_changes => true)
+        end
       end
 
       it 'should contain the rule' do
-         shell('iptables -S') do |r|
-           expect(r.stdout).to match(/-A INPUT ! -d 192.168.2.0\/24 -p tcp -m multiport --ports 558 -m comment --comment "558 - test" -j ACCEPT/)
+         shell('iptables-save') do |r|
+           expect(r.stdout).to match(/-A INPUT (! -d|-d !) 192.168.2.0\/(24|255\.255\.255\.0) -p tcp -m multiport --ports 558 -m comment --comment "558 - test" -j ACCEPT/)
          end
       end
     end
@@ -286,13 +296,13 @@ describe 'firewall type' do
         EOS
 
         apply_manifest(pp, :expect_failures => true) do |r|
-          expect(r.stderr).to match(/host_to_ip failed for 256.168.2.0\/24/)
+          expect(r.stderr).to match(/host_to_ip failed for 256.168.2.0\/(24|255\.255\.255\.0)/)
         end
       end
 
       it 'should not contain the rule' do
-         shell('iptables -S') do |r|
-           expect(r.stdout).to_not match(/-A INPUT -d 256.168.2.0\/24 -p tcp -m multiport --ports 558 -m comment --comment "558 - test" -j ACCEPT/)
+         shell('iptables-save') do |r|
+           expect(r.stdout).to_not match(/-A INPUT -d 256.168.2.0\/(24|255\.255\.255\.0) -p tcp -m multiport --ports 558 -m comment --comment "558 - test" -j ACCEPT/)
          end
       end
     end
@@ -312,11 +322,13 @@ describe 'firewall type' do
         EOS
 
         apply_manifest(pp, :catch_failures => true)
-        apply_manifest(pp, :catch_changes => true)
+        unless fact('selinux') == 'true'
+          apply_manifest(pp, :catch_changes => true)
+        end
       end
 
       it 'should contain the rule' do
-         shell('iptables -S') do |r|
+         shell('iptables-save') do |r|
            expect(r.stdout).to match(/-A INPUT -p tcp -m iprange --dst-range 192.168.1.1-192.168.1.10 -m multiport --ports 559 -m comment --comment "559 - test" -j ACCEPT/)
          end
       end
@@ -336,12 +348,12 @@ describe 'firewall type' do
         EOS
 
         apply_manifest(pp, :expect_failures => true) do |r|
-          expect(r.stderr).to match(/Invalid value "392.168.1.1-192.168.1.10"/)
+          expect(r.stderr).to match(/Invalid IP address "392.168.1.1" in range "392.168.1.1-192.168.1.10"/)
         end
       end
 
       it 'should not contain the rule' do
-         shell('iptables -S') do |r|
+         shell('iptables-save') do |r|
            expect(r.stdout).to_not match(/-A INPUT -p tcp -m iprange --dst-range 392.168.1.1-192.168.1.10 -m multiport --ports 559 -m comment --comment "559 - test" -j ACCEPT/)
          end
       end
@@ -364,7 +376,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-         shell('iptables -S') do |r|
+         shell('iptables-save') do |r|
            expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --sports 560 -m comment --comment "560 - test" -j ACCEPT/)
          end
       end
@@ -385,7 +397,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-         shell('iptables -S') do |r|
+         shell('iptables-save') do |r|
            expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --sports 560:561 -m comment --comment "560 - test" -j ACCEPT/)
          end
       end
@@ -408,7 +420,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-         shell('iptables -S') do |r|
+         shell('iptables-save') do |r|
            expect(r.stdout).to_not match(/-A INPUT -p tcp -m multiport --sports 9999560-561 -m comment --comment "560 - test" -j ACCEPT/)
          end
       end
@@ -431,7 +443,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-         shell('iptables -S') do |r|
+         shell('iptables-save') do |r|
            expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --dports 561 -m comment --comment "561 - test" -j ACCEPT/)
          end
       end
@@ -452,7 +464,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-         shell('iptables -S') do |r|
+         shell('iptables-save') do |r|
            expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --dports 561:562 -m comment --comment "561 - test" -j ACCEPT/)
          end
       end
@@ -475,7 +487,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-         shell('iptables -S') do |r|
+         shell('iptables-save') do |r|
            expect(r.stdout).to_not match(/-A INPUT -p tcp -m multiport --dports 9999561-562 -m comment --comment "560 - test" -j ACCEPT/)
          end
       end
@@ -498,7 +510,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-         shell('iptables -S') do |r|
+         shell('iptables-save') do |r|
            expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 562 -m comment --comment "562 - test" -j ACCEPT/)
          end
       end
@@ -519,7 +531,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-         shell('iptables -S') do |r|
+         shell('iptables-save') do |r|
            expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 562:563 -m comment --comment "562 - test" -j ACCEPT/)
          end
       end
@@ -542,7 +554,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-         shell('iptables -S') do |r|
+         shell('iptables-save') do |r|
            expect(r.stdout).to_not match(/-A INPUT -p tcp -m multiport --ports 9999562-563 -m comment --comment "562 - test" -j ACCEPT/)
          end
       end
@@ -566,7 +578,7 @@ describe 'firewall type' do
         end
 
         it 'should contain the rule' do
-          shell('iptables -S') do |r|
+          shell('iptables-save') do |r|
             expect(r.stdout).to match(/-A INPUT -p tcp -m addrtype\s.*\sMULTICAST -m comment --comment "563 - test" -j ACCEPT/)
           end
         end
@@ -589,7 +601,7 @@ describe 'firewall type' do
         end
 
         it 'should not contain the rule' do
-          shell('iptables -S') do |r|
+          shell('iptables-save') do |r|
             expect(r.stdout).to_not match(/-A INPUT -p tcp -m addrtype\s.*\sBROKEN -m comment --comment "563 - test" -j ACCEPT/)
           end
         end
@@ -613,7 +625,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
+        shell('iptables-save') do |r|
           expect(r.stdout).to match(/-A INPUT -p tcp -m tcp --tcp-flags FIN,SYN ACK -m comment --comment "564 - test" -j ACCEPT/)
         end
       end
@@ -636,7 +648,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
+        shell('iptables-save') do |r|
           expect(r.stdout).to match(/-A FORWARD -p tcp -m comment --comment "565 - test" -j ACCEPT/)
         end
       end
@@ -659,30 +671,29 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -t mangle -S') do |r|
+        shell('iptables-save -t mangle') do |r|
           expect(r.stdout).to match(/-A INPUT -p tcp -m comment --comment "566 - test" -j ACCEPT/)
         end
       end
     end
-    context 'NAT' do
-      it 'fails' do
+    context 'nat' do
+      it 'applies' do
         pp = <<-EOS
           class { '::firewall': }
-          firewall { '566 - test':
+          firewall { '566 - test2':
             proto  => tcp,
             action => accept,
-            table  => 'MANGLE',
+            table  => 'nat',
+            chain  => 'OUTPUT',
           }
         EOS
 
-        apply_manifest(pp, :expect_failures => true) do |r|
-          expect(r.stderr).to match(/Invalid value "MANGLE"/)
-        end
+        apply_manifest(pp, :catch_failures => true)
       end
 
       it 'should not contain the rule' do
-        shell('iptables -t MANGLE -S', :acceptable_exit_codes => [3]) do |r|
-          expect(r.stdout).to_not match(/-A INPUT -p tcp -m comment --comment "566 - test" -j ACCEPT/)
+        shell('iptables-save -t nat') do |r|
+          expect(r.stdout).to match(/-A OUTPUT -p tcp -m comment --comment "566 - test2" -j ACCEPT/)
         end
       end
     end
@@ -712,7 +723,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
+        shell('iptables-save') do |r|
           expect(r.stdout).to match(/-A INPUT -p tcp -m comment --comment "567 - test" -j TEST/)
         end
       end
@@ -739,7 +750,7 @@ describe 'firewall type' do
       end
 
       it 'should not contain the rule' do
-        shell('iptables -S') do |r|
+        shell('iptables-save') do |r|
           expect(r.stdout).to_not match(/-A INPUT -p tcp -m comment --comment "568 - test" -j TEST/)
         end
       end
@@ -764,7 +775,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -t nat -S') do |r|
+        shell('iptables-save -t nat') do |r|
           expect(r.stdout).to match(/A POSTROUTING -p tcp -m comment --comment "568 - test" -j SNAT --to-source 192.168.1.1/)
         end
       end
@@ -790,8 +801,8 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -t nat -S') do |r|
-          expect(r.stdout).to match(/-A PREROUTING -s 200.200.200.200\/32 -p tcp -m comment --comment "569 - test" -j DNAT --to-destination 192.168.1.1/)
+        shell('iptables-save -t nat') do |r|
+          expect(r.stdout).to match(/-A PREROUTING -s 200.200.200.200(\/32)? -p tcp -m comment --comment "569 - test" -j DNAT --to-destination 192.168.1.1/)
         end
       end
     end
@@ -815,35 +826,99 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -t nat -S') do |r|
+        shell('iptables-save -t nat') do |r|
           expect(r.stdout).to match(/-A PREROUTING -p icmp -m comment --comment "570 - test" -j REDIRECT --to-ports 2222/)
         end
       end
     end
   end
 
-  describe 'random' do
-    context '192.168.1.1' do
-      it 'applies' do
-        pp = <<-EOS
-          class { '::firewall': }
-          firewall { '570 - test 2':
-            proto  => all,
-            table  => 'nat',
-            chain  => 'POSTROUTING',
-            jump   => 'MASQUERADE',
-            source => '172.30.0.0/16',
-            random => true
-          }
-        EOS
 
-        apply_manifest(pp, :catch_failures => true)
-        apply_manifest(pp, :catch_changes => true)
+  if default['platform'] !~ /el-5/ and default['platform'] !~ /ubuntu-10\.04/ and default['platform'] !~ /debian-6/ and default['platform'] !~ /sles/
+    describe 'checksum_fill' do
+      context 'virbr' do
+        it 'applies' do
+          pp = <<-EOS
+            class { '::firewall': }
+            firewall { '576 - test':
+              proto  => udp,
+              table  => 'mangle',
+              outiface => 'virbr0',
+              chain  => 'POSTROUTING',
+              dport => '68',
+              jump  => 'CHECKSUM',
+              checksum_fill => true,
+              provider => iptables,
+            }
+          EOS
+
+          apply_manifest(pp, :catch_failures => true)
+        end
+
+        it 'should contain the rule' do
+          shell('iptables-save -t mangle') do |r|
+            expect(r.stdout).to match(/-A POSTROUTING -o virbr0 -p udp -m multiport --dports 68 -m comment --comment "576 - test" -j CHECKSUM --checksum-fill/)
+          end
+        end
       end
+    end
 
-      it 'should contain the rule' do
-        shell('iptables -t nat -S') do |r|
-          expect(r.stdout).to match(/-A POSTROUTING -s 172\.30\.0\.0\/16 -m comment --comment "570 - test 2" -j MASQUERADE --random/)
+    describe 'checksum_fill6' do
+      context 'virbr' do
+        it 'applies' do
+          pp = <<-EOS
+            class { '::firewall': }
+            firewall { '576 - test':
+              proto  => udp,
+              table  => 'mangle',
+              outiface => 'virbr0',
+              chain  => 'POSTROUTING',
+              dport => '68',
+              jump  => 'CHECKSUM',
+              checksum_fill => true,
+              provider => ip6tables,
+            }
+          EOS
+
+          apply_manifest(pp, :catch_failures => true)
+        end
+
+        it 'should contain the rule' do
+          shell('ip6tables-save -t mangle') do |r|
+            expect(r.stdout).to match(/-A POSTROUTING -o virbr0 -p udp -m multiport --dports 68 -m comment --comment "576 - test" -j CHECKSUM --checksum-fill/)
+          end
+        end
+      end
+    end
+  end
+
+  # RHEL5 does not support --random
+  if default['platform'] !~ /el-5/
+    describe 'random' do
+      context '192.168.1.1' do
+        it 'applies' do
+          pp = <<-EOS
+            class { '::firewall': }
+            firewall { '570 - test 2':
+              proto  => all,
+              table  => 'nat',
+              chain  => 'POSTROUTING',
+              jump   => 'MASQUERADE',
+              source => '172.30.0.0/16',
+              random => true
+            }
+          EOS
+
+          apply_manifest(pp, :catch_failures => true)
+          unless fact('selinux') == 'true'
+            apply_manifest(pp, :catch_changes => true)
+          end
+        end
+
+        it 'should contain the rule' do
+          shell('iptables-save -t nat') do |r|
+            expect(r.stdout).to match(/-A POSTROUTING -s 172\.30\.0\.0\/16 -m comment --comment "570 - test 2" -j MASQUERADE --random/)
+          end
         end
       end
     end
@@ -866,63 +941,709 @@ describe 'firewall type' do
       end
 
       it 'should not contain the rule' do
-        shell('iptables -S') do |r|
+        shell('iptables-save') do |r|
           expect(r.stdout).to_not match(/-A INPUT -p icmp -m comment --comment "570 - test" -m icmp --icmp-type 11/)
         end
       end
     end
   end
 
-  describe 'hop_limit' do
-    context '5' do
-      it 'applies' do
-        pp = <<-EOS
-          class { '::firewall': }
-          firewall { '571 - test':
-            ensure => present,
-            proto => tcp,
-            port   => '571',
-            action => accept,
-            hop_limit => '5',
-            provider => 'ip6tables',
-          }
-        EOS
+  #iptables version 1.3.5 is not suppored by the ip6tables provider
+  if default['platform'] !~ /el-5/
+    describe 'hop_limit' do
+      context '5' do
+        it 'applies' do
+          pp = <<-EOS
+            class { '::firewall': }
+            firewall { '571 - test':
+              ensure => present,
+              proto => tcp,
+              port   => '571',
+              action => accept,
+              hop_limit => '5',
+              provider => 'ip6tables',
+            }
+          EOS
 
-        apply_manifest(pp, :catch_failures => true)
+          apply_manifest(pp, :catch_failures => true)
+        end
+
+        it 'should contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 571 -m comment --comment "571 - test" -m hl --hl-eq 5 -j ACCEPT/)
+          end
+        end
       end
 
-      it 'should contain the rule' do
-        shell('ip6tables -S') do |r|
-          expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 571 -m comment --comment "571 - test" -m hl --hl-eq 5 -j ACCEPT/)
+      context 'invalid' do
+        it 'applies' do
+          pp = <<-EOS
+            class { '::firewall': }
+            firewall { '571 - test':
+              ensure => present,
+              proto => tcp,
+              port   => '571',
+              action => accept,
+              hop_limit => 'invalid',
+              provider => 'ip6tables',
+            }
+          EOS
+
+          apply_manifest(pp, :expect_failures => true) do |r|
+            expect(r.stderr).to match(/Invalid value "invalid"./)
+          end
+        end
+
+        it 'should not contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to_not match(/-A INPUT -p tcp -m multiport --ports 571 -m comment --comment "571 - test" -m hl --hl-eq invalid -j ACCEPT/)
+          end
         end
       end
     end
 
-    context 'invalid' do
-      it 'applies' do
-        pp = <<-EOS
-          class { '::firewall': }
-          firewall { '571 - test':
-            ensure => present,
-            proto => tcp,
-            port   => '571',
-            action => accept,
-            hop_limit => 'invalid',
-            provider => 'ip6tables',
-          }
-        EOS
+    describe 'ishasmorefrags' do
+      context 'true' do
+        it 'applies' do
+          pp = <<-EOS
+            class { '::firewall': }
+            firewall { '587 - test':
+              ensure => present,
+              proto => tcp,
+              port   => '587',
+              action => accept,
+              ishasmorefrags => true,
+              provider => 'ip6tables',
+            }
+          EOS
 
-        apply_manifest(pp, :expect_failures => true) do |r|
-          expect(r.stderr).to match(/Invalid value "invalid"./)
+          apply_manifest(pp, :catch_failures => true)
+        end
+
+        it 'should contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to match(/A INPUT -p tcp -m frag --fragid 0 --fragmore -m multiport --ports 587 -m comment --comment "587 - test" -j ACCEPT/)
+          end
         end
       end
 
-      it 'should not contain the rule' do
-        shell('ip6tables -S') do |r|
-          expect(r.stdout).to_not match(/-A INPUT -p tcp -m multiport --ports 571 -m comment --comment "571 - test" -m hl --hl-eq invalid -j ACCEPT/)
+      context 'false' do
+        it 'applies' do
+          pp = <<-EOS
+            class { '::firewall': }
+            firewall { '588 - test':
+              ensure => present,
+              proto => tcp,
+              port   => '588',
+              action => accept,
+              ishasmorefrags => false,
+              provider => 'ip6tables',
+            }
+          EOS
+
+          apply_manifest(pp, :catch_failures => true)
+        end
+
+        it 'should contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 588 -m comment --comment "588 - test" -j ACCEPT/)
+          end
         end
       end
     end
+
+    describe 'islastfrag' do
+      context 'true' do
+        it 'applies' do
+          pp = <<-EOS
+            class { '::firewall': }
+            firewall { '589 - test':
+              ensure => present,
+              proto => tcp,
+              port   => '589',
+              action => accept,
+              islastfrag => true,
+              provider => 'ip6tables',
+            }
+          EOS
+
+          apply_manifest(pp, :catch_failures => true)
+        end
+
+        it 'should contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to match(/-A INPUT -p tcp -m frag --fragid 0 --fraglast -m multiport --ports 589 -m comment --comment "589 - test" -j ACCEPT/)
+          end
+        end
+      end
+
+      context 'false' do
+        it 'applies' do
+          pp = <<-EOS
+            class { '::firewall': }
+            firewall { '590 - test':
+              ensure => present,
+              proto => tcp,
+              port   => '590',
+              action => accept,
+              islastfrag => false,
+              provider => 'ip6tables',
+            }
+          EOS
+
+          apply_manifest(pp, :catch_failures => true)
+        end
+
+        it 'should contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 590 -m comment --comment "590 - test" -j ACCEPT/)
+          end
+        end
+      end
+    end
+
+    describe 'isfirstfrag' do
+      context 'true' do
+        it 'applies' do
+          pp = <<-EOS
+            class { '::firewall': }
+            firewall { '591 - test':
+              ensure => present,
+              proto => tcp,
+              port   => '591',
+              action => accept,
+              isfirstfrag => true,
+              provider => 'ip6tables',
+            }
+          EOS
+
+          apply_manifest(pp, :catch_failures => true)
+        end
+
+        it 'should contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to match(/-A INPUT -p tcp -m frag --fragid 0 --fragfirst -m multiport --ports 591 -m comment --comment "591 - test" -j ACCEPT/)
+          end
+        end
+      end
+
+      context 'false' do
+        it 'applies' do
+          pp = <<-EOS
+            class { '::firewall': }
+            firewall { '592 - test':
+              ensure => present,
+              proto => tcp,
+              port   => '592',
+              action => accept,
+              isfirstfrag => false,
+              provider => 'ip6tables',
+            }
+          EOS
+
+          apply_manifest(pp, :catch_failures => true)
+        end
+
+        it 'should contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 592 -m comment --comment "592 - test" -j ACCEPT/)
+          end
+        end
+      end
+    end
+
+    describe 'tcp_flags' do
+      context 'FIN,SYN ACK' do
+        it 'applies' do
+          pp = <<-EOS
+          class { '::firewall': }
+          firewall { '593 - test':
+            proto  => tcp,
+            action => accept,
+            tcp_flags => 'FIN,SYN ACK',
+            provider => 'ip6tables',
+          }
+          EOS
+
+          apply_manifest(pp, :catch_failures => true)
+        end
+
+        it 'should contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to match(/-A INPUT -p tcp -m tcp --tcp-flags FIN,SYN ACK -m comment --comment "593 - test" -j ACCEPT/)
+          end
+        end
+      end
+    end
+
+    describe 'src_range' do
+      context '2001:db8::1-2001:db8::ff' do
+        it 'applies' do
+          pp = <<-EOS
+          class { '::firewall': }
+          firewall { '601 - test':
+            proto     => tcp,
+            port      => '601',
+            action    => accept,
+            src_range => '2001:db8::1-2001:db8::ff',
+            provider  => 'ip6tables',
+          }
+          EOS
+
+          apply_manifest(pp, :catch_failures => true)
+          unless fact('selinux') == 'true'
+            apply_manifest(pp, :catch_changes => true)
+          end
+        end
+
+        it 'should contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to match(/-A INPUT -p tcp -m iprange --src-range 2001:db8::1-2001:db8::ff -m multiport --ports 601 -m comment --comment "601 - test" -j ACCEPT/)
+          end
+        end
+      end
+
+      # Invalid IP
+      context '2001::db8::1-2001:db8::ff' do
+        it 'applies' do
+          pp = <<-EOS
+          class { '::firewall': }
+          firewall { '601 - test':
+            proto     => tcp,
+            port      => '601',
+            action    => accept,
+            provider  => 'ip6tables',
+            src_range => '2001::db8::1-2001:db8::ff',
+          }
+          EOS
+
+          apply_manifest(pp, :expect_failures => true) do |r|
+            expect(r.stderr).to match(/Invalid IP address "2001::db8::1" in range "2001::db8::1-2001:db8::ff"/)
+          end
+        end
+
+        it 'should not contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to_not match(/-A INPUT -p tcp -m iprange --src-range 2001::db8::1-2001:db8::ff -m multiport --ports 601 -m comment --comment "601 - test" -j ACCEPT/)
+          end
+        end
+      end
+    end
+
+    describe 'dst_range' do
+      context '2001:db8::1-2001:db8::ff' do
+        it 'applies' do
+          pp = <<-EOS
+          class { '::firewall': }
+          firewall { '602 - test':
+            proto     => tcp,
+            port      => '602',
+            action    => accept,
+            dst_range => '2001:db8::1-2001:db8::ff',
+            provider  => 'ip6tables',
+          }
+          EOS
+
+          apply_manifest(pp, :catch_failures => true)
+          unless fact('selinux') == 'true'
+            apply_manifest(pp, :catch_changes => true)
+          end
+        end
+
+        it 'should contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to match(/-A INPUT -p tcp -m iprange --dst-range 2001:db8::1-2001:db8::ff -m multiport --ports 602 -m comment --comment "602 - test" -j ACCEPT/)
+          end
+        end
+      end
+
+      # Invalid IP
+      context '2001::db8::1-2001:db8::ff' do
+        it 'applies' do
+          pp = <<-EOS
+          class { '::firewall': }
+          firewall { '602 - test':
+            proto     => tcp,
+            port      => '602',
+            action    => accept,
+            provider  => 'ip6tables',
+            dst_range => '2001::db8::1-2001:db8::ff',
+          }
+          EOS
+
+          apply_manifest(pp, :expect_failures => true) do |r|
+            expect(r.stderr).to match(/Invalid IP address "2001::db8::1" in range "2001::db8::1-2001:db8::ff"/)
+          end
+        end
+
+        it 'should not contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to_not match(/-A INPUT -p tcp -m iprange --dst-range 2001::db8::1-2001:db8::ff -m multiport --ports 602 -m comment --comment "602 - test" -j ACCEPT/)
+          end
+        end
+      end
+    end
+
+    describe 'mac_source' do
+      context '0A:1B:3C:4D:5E:6F' do
+        it 'applies' do
+          pp = <<-EOS
+          class { '::firewall': }
+          firewall { '604 - test':
+            ensure      => present,
+            source      => '2001:db8::1/128',
+            mac_source  => '0A:1B:3C:4D:5E:6F',
+            chain       => 'INPUT',
+            provider    => 'ip6tables',
+          }
+          EOS
+
+          apply_manifest(pp, :catch_failures => true)
+        end
+
+        it 'should contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to match(/-A INPUT -s 2001:db8::1\/(128|ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff) -p tcp -m mac --mac-source 0A:1B:3C:4D:5E:6F -m comment --comment "604 - test"/)
+          end
+        end
+      end
+    end
+
+    # ip6tables has limited `-m socket` support
+    if default['platform'] !~ /el-5/ and default['platform'] !~ /ubuntu-10\.04/ and default['platform'] !~ /debian-6/ and default['platform'] !~ /sles/
+      describe 'socket' do
+        context 'true' do
+          it 'applies' do
+            pp = <<-EOS
+          class { '::firewall': }
+          firewall { '605 - test':
+            ensure   => present,
+            proto    => tcp,
+            port     => '605',
+            action   => accept,
+            chain    => 'INPUT',
+            socket   => true,
+            provider => 'ip6tables',
+          }
+            EOS
+
+            apply_manifest(pp, :catch_failures => true)
+          end
+
+          it 'should contain the rule' do
+            shell('ip6tables-save') do |r|
+              expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 605 -m socket -m comment --comment "605 - test" -j ACCEPT/)
+            end
+          end
+        end
+
+        context 'false' do
+          it 'applies' do
+            pp = <<-EOS
+          class { '::firewall': }
+          firewall { '606 - test':
+            ensure   => present,
+            proto    => tcp,
+            port     => '606',
+            action   => accept,
+            chain    => 'INPUT',
+            socket   => false,
+            provider => 'ip6tables',
+          }
+            EOS
+
+            apply_manifest(pp, :catch_failures => true)
+          end
+
+          it 'should contain the rule' do
+            shell('ip6tables-save') do |r|
+              expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 606 -m comment --comment "606 - test" -j ACCEPT/)
+            end
+          end
+        end
+      end
+    end
+
+    describe 'ipsec_policy' do
+      context 'ipsec' do
+        it 'applies' do
+          pp = <<-EOS
+          class { '::firewall': }
+          firewall { '607 - test':
+            ensure       => 'present',
+            action       => 'reject',
+            chain        => 'OUTPUT',
+            destination  => '2001:db8::1/128',
+            ipsec_dir    => 'out',
+            ipsec_policy => 'ipsec',
+            proto        => 'all',
+            reject       => 'icmp6-adm-prohibited',
+            table        => 'filter',
+            provider     => 'ip6tables',
+          }
+          EOS
+
+          apply_manifest(pp, :catch_failures => true)
+        end
+
+        it 'should contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to match(/-A OUTPUT -d 2001:db8::1\/(128|ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff) -m comment --comment "607 - test" -m policy --dir out --pol ipsec -j REJECT --reject-with icmp6-adm-prohibited/)
+          end
+        end
+      end
+
+      context 'none' do
+        it 'applies' do
+          pp = <<-EOS
+          class { '::firewall': }
+          firewall { '608 - test':
+            ensure       => 'present',
+            action       => 'reject',
+            chain        => 'OUTPUT',
+            destination  => '2001:db8::1/128',
+            ipsec_dir    => 'out',
+            ipsec_policy => 'none',
+            proto        => 'all',
+            reject       => 'icmp6-adm-prohibited',
+            table        => 'filter',
+            provider     => 'ip6tables',
+          }
+          EOS
+
+          apply_manifest(pp, :catch_failures => true)
+        end
+
+        it 'should contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to match(/-A OUTPUT -d 2001:db8::1\/(128|ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff) -m comment --comment "608 - test" -m policy --dir out --pol none -j REJECT --reject-with icmp6-adm-prohibited/)
+          end
+        end
+      end
+    end
+
+    describe 'ipsec_dir' do
+      context 'out' do
+        it 'applies' do
+          pp = <<-EOS
+          class { '::firewall': }
+          firewall { '609 - test':
+            ensure       => 'present',
+            action       => 'reject',
+            chain        => 'OUTPUT',
+            destination  => '2001:db8::1/128',
+            ipsec_dir    => 'out',
+            ipsec_policy => 'ipsec',
+            proto        => 'all',
+            reject       => 'icmp6-adm-prohibited',
+            table        => 'filter',
+            provider     => 'ip6tables',
+          }
+          EOS
+
+          apply_manifest(pp, :catch_failures => true)
+        end
+
+        it 'should contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to match(/-A OUTPUT -d 2001:db8::1\/(128|ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff) -m comment --comment "609 - test" -m policy --dir out --pol ipsec -j REJECT --reject-with icmp6-adm-prohibited/)
+          end
+        end
+      end
+
+      context 'in' do
+        it 'applies' do
+          pp = <<-EOS
+          class { '::firewall': }
+          firewall { '610 - test':
+            ensure       => 'present',
+            action       => 'reject',
+            chain        => 'INPUT',
+            destination  => '2001:db8::1/128',
+            ipsec_dir    => 'in',
+            ipsec_policy => 'none',
+            proto        => 'all',
+            reject       => 'icmp6-adm-prohibited',
+            table        => 'filter',
+            provider     => 'ip6tables',
+          }
+          EOS
+
+          apply_manifest(pp, :catch_failures => true)
+        end
+
+        it 'should contain the rule' do
+          shell('ip6tables-save') do |r|
+            expect(r.stdout).to match(/-A INPUT -d 2001:db8::1\/(128|ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff) -m comment --comment "610 - test" -m policy --dir in --pol none -j REJECT --reject-with icmp6-adm-prohibited/)
+          end
+        end
+      end
+    end
+
+    describe 'set_mark' do
+      context '0x3e8/0xffffffff' do
+        it 'applies' do
+          pp = <<-EOS
+            class { '::firewall': }
+            firewall { '611 - test':
+              ensure => present,
+              chain => 'OUTPUT',
+              proto => tcp,
+              port   => '611',
+              jump => 'MARK',
+              table => 'mangle',
+              set_mark => '0x3e8/0xffffffff',
+              provider => 'ip6tables',
+            }
+          EOS
+
+          apply_manifest(pp, :catch_failures => true)
+        end
+
+        it 'should contain the rule' do
+          shell('ip6tables-save -t mangle') do |r|
+            expect(r.stdout).to match(/-A OUTPUT -p tcp -m multiport --ports 611 -m comment --comment "611 - test" -j MARK --set-xmark 0x3e8\/0xffffffff/)
+          end
+        end
+      end
+    end
+
+    #ip6tables only supports ipset, addrtype, and mask on a limited set of platforms
+    if default['platform'] =~ /el-7/ or default['platform'] =~ /debian-7/ or default['platform'] =~ /ubuntu-14\.04/
+      #ipset is really difficult to test, just testing on one platform
+      if default['platform'] =~ /ubuntu-14\.04/
+        describe 'ipset' do
+          it 'applies' do
+            pp = <<-EOS
+            exec { 'hackery pt 1':
+              command => 'service iptables-persistent flush',
+              path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+            }
+            package { 'ipset':
+              ensure  => present,
+              require => Exec['hackery pt 1'],
+            }
+            exec { 'hackery pt 2':
+              command => 'service iptables-persistent start',
+              path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+              require => Package['ipset'],
+            }
+            class { '::firewall': }
+            exec { 'create ipset':
+              command => 'ipset create blacklist hash:ip,port family inet6 maxelem 1024 hashsize 65535 timeout 120',
+              path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+              require => Package['ipset'],
+            }
+            exec { 'add blacklist':
+              command => 'ipset add blacklist 2001:db8::1,80',
+              path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin',
+              require => Exec['create ipset'],
+            }
+            firewall { '612 - test':
+              ensure   => present,
+              chain    => 'INPUT',
+              proto    => tcp,
+              action   => drop,
+              ipset    => 'blacklist src,src',
+              provider => 'ip6tables',
+              require  => Exec['add blacklist'],
+            }
+            EOS
+
+            apply_manifest(pp, :catch_failures => true)
+          end
+
+          it 'should contain the rule' do
+            shell('ip6tables-save') do |r|
+              expect(r.stdout).to match(/-A INPUT -p tcp -m comment --comment "612 - test" -m set --match-set blacklist src,src -j DROP/)
+            end
+          end
+        end
+      end
+
+      # mask isn't supported on deb7
+      if default['platform'] !~ /debian-7/
+        describe 'mask' do
+          it 'applies' do
+            pp = <<-EOS
+            class { '::firewall': }
+            firewall { '613 - test':
+              recent => 'update',
+              rseconds => 60,
+              rsource => true,
+              rname => 'test',
+              action => 'drop',
+              chain => 'FORWARD',
+              mask => 'ffff::',
+              provider => 'ip6tables',
+            }
+            EOS
+
+            apply_manifest(pp, :catch_failures => true)
+          end
+
+          it 'should contain the rule' do
+            shell('ip6tables-save') do |r|
+              expect(r.stdout).to match(/-A FORWARD -p tcp -m comment --comment "613 - test" -m recent --update --seconds 60 --name test --mask ffff:: --rsource -j DROP/)
+            end
+          end
+        end
+      end
+
+      ['dst_type', 'src_type'].each do |type|
+        describe "#{type}" do
+          context 'MULTICAST' do
+            it 'applies' do
+              pp = <<-EOS
+            class { '::firewall': }
+            firewall { '603 - test':
+              proto    => tcp,
+              action   => accept,
+              #{type}  => 'MULTICAST',
+              provider => 'ip6tables',
+            }
+              EOS
+
+              apply_manifest(pp, :catch_failures => true)
+              unless fact('selinux') == 'true'
+                apply_manifest(pp, :catch_changes => true)
+              end
+            end
+
+            it 'should contain the rule' do
+              shell('ip6tables-save') do |r|
+                expect(r.stdout).to match(/-A INPUT -p tcp -m addrtype\s.*\sMULTICAST -m comment --comment "603 - test" -j ACCEPT/)
+              end
+            end
+          end
+
+          context 'BROKEN' do
+            it 'fails' do
+              pp = <<-EOS
+            class { '::firewall': }
+            firewall { '603 - test':
+              proto    => tcp,
+              action   => accept,
+              #{type}  => 'BROKEN',
+              provider => 'ip6tables',
+            }
+              EOS
+
+              apply_manifest(pp, :expect_failures => true) do |r|
+                expect(r.stderr).to match(/Invalid value "BROKEN"./)
+              end
+            end
+
+            it 'should not contain the rule' do
+              shell('ip6tables-save') do |r|
+                expect(r.stdout).to_not match(/-A INPUT -p tcp -m addrtype\s.*\sBROKEN -m comment --comment "603 - test" -j ACCEPT/)
+              end
+            end
+          end
+        end
+      end
+    end
+
   end
 
   describe 'limit' do
@@ -943,7 +1664,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
+        shell('iptables-save') do |r|
           expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 572 -m comment --comment "572 - test" -m limit --limit 500\/sec -j ACCEPT/)
         end
       end
@@ -969,7 +1690,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
+        shell('iptables-save') do |r|
           expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 573 -m comment --comment "573 - test" -m limit --limit 500\/sec --limit-burst 1500 -j ACCEPT/)
         end
       end
@@ -995,7 +1716,7 @@ describe 'firewall type' do
       end
 
       it 'should not contain the rule' do
-        shell('iptables -S') do |r|
+        shell('iptables-save') do |r|
           expect(r.stdout).to_not match(/-A INPUT -p tcp -m multiport --ports 573 -m comment --comment "573 - test" -m limit --limit 500\/sec --limit-burst 1500\/sec -j ACCEPT/)
         end
       end
@@ -1021,15 +1742,15 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
-          expect(r.stdout).to match(/-A OUTPUT -p tcp -m owner --uid-owner nobody -m multiport --ports 574 -m comment --comment "574 - test" -j ACCEPT/)
+        shell('iptables-save') do |r|
+          expect(r.stdout).to match(/-A OUTPUT -p tcp -m owner --uid-owner (nobody|\d+) -m multiport --ports 574 -m comment --comment "574 - test" -j ACCEPT/)
         end
       end
     end
   end
 
   describe 'gid' do
-    context 'nobody' do
+    context 'root' do
       it 'applies' do
         pp = <<-EOS
           class { '::firewall': }
@@ -1039,7 +1760,7 @@ describe 'firewall type' do
             chain => 'OUTPUT',
             port   => '575',
             action => accept,
-            gid => 'nobody',
+            gid => 'root',
           }
         EOS
 
@@ -1047,35 +1768,38 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
-          expect(r.stdout).to match(/-A OUTPUT -p tcp -m owner --gid-owner nobody -m multiport --ports 575 -m comment --comment "575 - test" -j ACCEPT/)
+        shell('iptables-save') do |r|
+          expect(r.stdout).to match(/-A OUTPUT -p tcp -m owner --gid-owner (root|\d+) -m multiport --ports 575 -m comment --comment "575 - test" -j ACCEPT/)
         end
       end
     end
   end
 
-  describe 'set_mark' do
-    context '0x3e8/0xffffffff' do
-      it 'applies' do
-        pp = <<-EOS
-          class { '::firewall': }
-          firewall { '580 - test':
-            ensure => present,
-            chain => 'OUTPUT',
-            proto => tcp,
-            port   => '580',
-            jump => 'MARK',
-            table => 'mangle',
-            set_mark => '0x3e8/0xffffffff',
-          }
-        EOS
+  #iptables version 1.3.5 does not support masks on MARK rules
+  if default['platform'] !~ /el-5/
+    describe 'set_mark' do
+      context '0x3e8/0xffffffff' do
+        it 'applies' do
+          pp = <<-EOS
+            class { '::firewall': }
+            firewall { '580 - test':
+              ensure => present,
+              chain => 'OUTPUT',
+              proto => tcp,
+              port   => '580',
+              jump => 'MARK',
+              table => 'mangle',
+              set_mark => '0x3e8/0xffffffff',
+            }
+          EOS
 
-        apply_manifest(pp, :catch_failures => true)
-      end
+          apply_manifest(pp, :catch_failures => true)
+        end
 
-      it 'should contain the rule' do
-        shell('iptables -t mangle -S') do |r|
-          expect(r.stdout).to match(/-A OUTPUT -p tcp -m multiport --ports 580 -m comment --comment "580 - test" -j MARK --set-xmark 0x3e8\/0xffffffff/)
+        it 'should contain the rule' do
+          shell('iptables-save -t mangle') do |r|
+            expect(r.stdout).to match(/-A OUTPUT -p tcp -m multiport --ports 580 -m comment --comment "580 - test" -j MARK --set-xmark 0x3e8\/0xffffffff/)
+          end
         end
       end
     end
@@ -1099,7 +1823,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
+        shell('iptables-save') do |r|
           expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 581 -m pkttype --pkt-type multicast -m comment --comment "581 - test" -j ACCEPT/)
         end
       end
@@ -1124,7 +1848,7 @@ describe 'firewall type' do
       end
 
       it 'should not contain the rule' do
-        shell('iptables -S') do |r|
+        shell('iptables-save') do |r|
           expect(r.stdout).to_not match(/-A INPUT -p tcp -m multiport --ports 582 -m pkttype --pkt-type multicast -m comment --comment "582 - test" -j ACCEPT/)
         end
       end
@@ -1149,7 +1873,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
+        shell('iptables-save') do |r|
           expect(r.stdout).to match(/-A INPUT -p tcp -f -m multiport --ports 583 -m comment --comment "583 - test" -j ACCEPT/)
         end
       end
@@ -1172,14 +1896,15 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
+        shell('iptables-save') do |r|
           expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 584 -m comment --comment "584 - test" -j ACCEPT/)
         end
       end
     end
   end
 
-  describe 'socket' do
+  # RHEL5/SLES does not support -m socket
+  describe 'socket', :unless => (default['platform'] =~ /el-5/ or fact('operatingsystem') == 'SLES') do
     context 'true' do
       it 'applies' do
         pp = <<-EOS
@@ -1199,7 +1924,7 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -t nat -S') do |r|
+        shell('iptables-save -t nat') do |r|
           expect(r.stdout).to match(/-A PREROUTING -p tcp -m multiport --ports 585 -m socket -m comment --comment "585 - test" -j ACCEPT/)
         end
       end
@@ -1224,158 +1949,8 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -t nat -S') do |r|
+        shell('iptables-save -t nat') do |r|
           expect(r.stdout).to match(/-A PREROUTING -p tcp -m multiport --ports 586 -m comment --comment "586 - test" -j ACCEPT/)
-        end
-      end
-    end
-  end
-
-  describe 'ishasmorefrags' do
-    context 'true' do
-      it 'applies' do
-        pp = <<-EOS
-          class { '::firewall': }
-          firewall { '587 - test':
-            ensure => present,
-            proto => tcp,
-            port   => '587',
-            action => accept,
-            ishasmorefrags => true,
-            provider => 'ip6tables',
-          }
-        EOS
-
-        apply_manifest(pp, :catch_failures => true)
-      end
-
-      it 'should contain the rule' do
-        shell('ip6tables -S') do |r|
-          expect(r.stdout).to match(/A INPUT -p tcp -m frag --fragid 0 --fragmore -m multiport --ports 587 -m comment --comment "587 - test" -j ACCEPT/)
-        end
-      end
-    end
-
-    context 'false' do
-      it 'applies' do
-        pp = <<-EOS
-          class { '::firewall': }
-          firewall { '588 - test':
-            ensure => present,
-            proto => tcp,
-            port   => '588',
-            action => accept,
-            ishasmorefrags => false,
-            provider => 'ip6tables',
-          }
-        EOS
-
-        apply_manifest(pp, :catch_failures => true)
-      end
-
-      it 'should contain the rule' do
-        shell('ip6tables -S') do |r|
-          expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 588 -m comment --comment "588 - test" -j ACCEPT/)
-        end
-      end
-    end
-  end
-
-  describe 'islastfrag' do
-    context 'true' do
-      it 'applies' do
-        pp = <<-EOS
-          class { '::firewall': }
-          firewall { '589 - test':
-            ensure => present,
-            proto => tcp,
-            port   => '589',
-            action => accept,
-            islastfrag => true,
-            provider => 'ip6tables',
-          }
-        EOS
-
-        apply_manifest(pp, :catch_failures => true)
-      end
-
-      it 'should contain the rule' do
-        shell('ip6tables -S') do |r|
-          expect(r.stdout).to match(/-A INPUT -p tcp -m frag --fragid 0 --fraglast -m multiport --ports 589 -m comment --comment "589 - test" -j ACCEPT/)
-        end
-      end
-    end
-
-    context 'false' do
-      it 'applies' do
-        pp = <<-EOS
-          class { '::firewall': }
-          firewall { '590 - test':
-            ensure => present,
-            proto => tcp,
-            port   => '590',
-            action => accept,
-            islastfrag => false,
-            provider => 'ip6tables',
-          }
-        EOS
-
-        apply_manifest(pp, :catch_failures => true)
-      end
-
-      it 'should contain the rule' do
-        shell('ip6tables -S') do |r|
-          expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 590 -m comment --comment "590 - test" -j ACCEPT/)
-        end
-      end
-    end
-  end
-
-  describe 'isfirstfrag' do
-    context 'true' do
-      it 'applies' do
-        pp = <<-EOS
-          class { '::firewall': }
-          firewall { '591 - test':
-            ensure => present,
-            proto => tcp,
-            port   => '591',
-            action => accept,
-            isfirstfrag => true,
-            provider => 'ip6tables',
-          }
-        EOS
-
-        apply_manifest(pp, :catch_failures => true)
-      end
-
-      it 'should contain the rule' do
-        shell('ip6tables -S') do |r|
-          expect(r.stdout).to match(/-A INPUT -p tcp -m frag --fragid 0 --fragfirst -m multiport --ports 591 -m comment --comment "591 - test" -j ACCEPT/)
-        end
-      end
-    end
-
-    context 'false' do
-      it 'applies' do
-        pp = <<-EOS
-          class { '::firewall': }
-          firewall { '592 - test':
-            ensure => present,
-            proto => tcp,
-            port   => '592',
-            action => accept,
-            isfirstfrag => false,
-            provider => 'ip6tables',
-          }
-        EOS
-
-        apply_manifest(pp, :catch_failures => true)
-      end
-
-      it 'should contain the rule' do
-        shell('ip6tables -S') do |r|
-          expect(r.stdout).to match(/-A INPUT -p tcp -m multiport --ports 592 -m comment --comment "592 - test" -j ACCEPT/)
         end
       end
     end
@@ -1403,8 +1978,8 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
-          expect(r.stdout).to match(/-A OUTPUT -d 20.0.0.0\/8 -m comment --comment "593 - test" -m policy --dir out --pol ipsec -j REJECT --reject-with icmp-net-unreachable/)
+        shell('iptables-save') do |r|
+          expect(r.stdout).to match(/-A OUTPUT -d 20.0.0.0\/(8|255\.0\.0\.0) -m comment --comment "593 - test" -m policy --dir out --pol ipsec -j REJECT --reject-with icmp-net-unreachable/)
         end
       end
     end
@@ -1430,8 +2005,8 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
-          expect(r.stdout).to match(/-A OUTPUT -d 20.0.0.0\/8 -m comment --comment "594 - test" -m policy --dir out --pol none -j REJECT --reject-with icmp-net-unreachable/)
+        shell('iptables-save') do |r|
+          expect(r.stdout).to match(/-A OUTPUT -d 20.0.0.0\/(8|255\.0\.0\.0) -m comment --comment "594 - test" -m policy --dir out --pol none -j REJECT --reject-with icmp-net-unreachable/)
         end
       end
     end
@@ -1459,8 +2034,8 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
-          expect(r.stdout).to match(/-A OUTPUT -d 20.0.0.0\/8 -m comment --comment "595 - test" -m policy --dir out --pol ipsec -j REJECT --reject-with icmp-net-unreachable/)
+        shell('iptables-save') do |r|
+          expect(r.stdout).to match(/-A OUTPUT -d 20.0.0.0\/(8|255\.0\.0\.0) -m comment --comment "595 - test" -m policy --dir out --pol ipsec -j REJECT --reject-with icmp-net-unreachable/)
         end
       end
     end
@@ -1486,8 +2061,8 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
-          expect(r.stdout).to match(/-A INPUT -d 20.0.0.0\/8 -m comment --comment "596 - test" -m policy --dir in --pol none -j REJECT --reject-with icmp-net-unreachable/)
+        shell('iptables-save') do |r|
+          expect(r.stdout).to match(/-A INPUT -d 20.0.0.0\/(8|255\.0\.0\.0) -m comment --comment "596 - test" -m policy --dir in --pol none -j REJECT --reject-with icmp-net-unreachable/)
         end
       end
     end
@@ -1514,8 +2089,9 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
-          expect(r.stdout).to match(/-A INPUT -d 30.0.0.0\/8 -m comment --comment "597 - test" -m recent --set --name list1 --rdest/)
+        shell('iptables-save') do |r|
+          # Mask added as of Ubuntu 14.04.
+          expect(r.stdout).to match(/-A INPUT -d 30.0.0.0\/(8|255\.0\.0\.0) -m comment --comment "597 - test" -m recent --set --name list1 (--mask 255.255.255.255 )?--rdest/)
         end
       end
     end
@@ -1543,8 +2119,8 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
-          expect(r.stdout).to match(/-A INPUT -d 30.0.0.0\/8 -m comment --comment "598 - test" -m recent --rcheck --seconds 60 --hitcount 5 --rttl --name list1 --rsource/)
+        shell('iptables-save') do |r|
+          expect(r.stdout).to match(/-A INPUT -d 30.0.0.0\/(8|255\.0\.0\.0) -m comment --comment "598 - test" -m recent --rcheck --seconds 60 --hitcount 5 --rttl --name list1 (--mask 255.255.255.255 )?--rsource/)
         end
       end
     end
@@ -1567,8 +2143,8 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
-          expect(r.stdout).to match(/-A INPUT -d 30.0.0.0\/8 -m comment --comment "599 - test" -m recent --update/)
+        shell('iptables-save') do |r|
+          expect(r.stdout).to match(/-A INPUT -d 30.0.0.0\/(8|255\.0\.0\.0) -m comment --comment "599 - test" -m recent --update/)
         end
       end
     end
@@ -1591,8 +2167,36 @@ describe 'firewall type' do
       end
 
       it 'should contain the rule' do
-        shell('iptables -S') do |r|
-          expect(r.stdout).to match(/-A INPUT -d 30.0.0.0\/8 -m comment --comment "600 - test" -m recent --remove/)
+        shell('iptables-save') do |r|
+          expect(r.stdout).to match(/-A INPUT -d 30.0.0.0\/(8|255\.0\.0\.0) -m comment --comment "600 - test" -m recent --remove/)
+        end
+      end
+    end
+  end
+
+  describe 'mac_source' do
+    context '0A:1B:3C:4D:5E:6F' do
+      it 'applies' do
+        pp = <<-EOS
+          class { '::firewall': }
+          firewall { '610 - test':
+            ensure      => present,
+            source      => '10.1.5.28/32',
+            mac_source  => '0A:1B:3C:4D:5E:6F',
+            chain       => 'INPUT',
+          }
+        EOS
+
+        apply_manifest(pp, :catch_failures => true)
+      end
+
+      it 'should contain the rule' do
+        shell('iptables-save') do |r|
+          if (fact('osfamily') == 'RedHat' and fact('operatingsystemmajrelease') == '5')
+            expect(r.stdout).to match(/-A INPUT -s 10.1.5.28 -p tcp -m mac --mac-source 0A:1B:3C:4D:5E:6F -m comment --comment "610 - test"/)
+          else
+            expect(r.stdout).to match(/-A INPUT -s 10.1.5.28\/(32|255\.255\.255\.255) -p tcp -m mac --mac-source 0A:1B:3C:4D:5E:6F -m comment --comment "610 - test"/)
+          end
         end
       end
     end
@@ -1602,6 +2206,102 @@ describe 'firewall type' do
     it 'deletes all rules' do
       shell('ip6tables --flush')
       shell('iptables --flush; iptables -t nat --flush; iptables -t mangle --flush')
+    end
+  end
+
+  describe 'to' do
+    context 'Destination netmap 192.168.1.1' do
+      it 'applies' do
+        pp = <<-EOS
+          class { '::firewall': }
+          firewall { '569 - test':
+            proto  => tcp,
+            table  => 'nat',
+            chain  => 'PREROUTING',
+            jump   => 'NETMAP',
+            source => '200.200.200.200',
+            to => '192.168.1.1',
+          }
+        EOS
+
+        apply_manifest(pp, :catch_failures => true)
+      end
+
+      it 'should contain the rule' do
+        shell('iptables-save -t nat') do |r|
+          expect(r.stdout).to match(/-A PREROUTING -s 200.200.200.200(\/32)? -p tcp -m comment --comment "569 - test" -j NETMAP --to 192.168.1.1/)
+        end
+      end
+    end
+
+     describe 'reset' do
+       it 'deletes all rules' do
+         shell('ip6tables --flush')
+         shell('iptables --flush; iptables -t nat --flush; iptables -t mangle --flush')
+       end
+     end
+
+    context 'Source netmap 192.168.1.1' do
+      it 'applies' do
+        pp = <<-EOS
+          class { '::firewall': }
+          firewall { '569 - test':
+            proto  => tcp,
+            table  => 'nat',
+            chain  => 'POSTROUTING',
+            jump   => 'NETMAP',
+            destination => '200.200.200.200',
+            to => '192.168.1.1',
+          }
+        EOS
+
+        apply_manifest(pp, :catch_failures => true)
+      end
+
+      it 'should contain the rule' do
+        shell('iptables-save -t nat') do |r|
+          expect(r.stdout).to match(/-A POSTROUTING -d 200.200.200.200(\/32)? -p tcp -m comment --comment "569 - test" -j NETMAP --to 192.168.1.1/)
+        end
+      end
+    end
+  end
+
+  context 'log_prefix containing -A' do
+    it 'adds the rule' do
+      pp = <<-EOS
+      class { '::firewall': }
+      firewall { '700 - test':
+        jump       => 'LOG',
+        log_prefix => 'FW-A-INPUT: ',
+      }
+      EOS
+
+      apply_manifest(pp, :catch_failures => true)
+    end
+
+    it 'should contain the rule' do
+      shell('iptables-save') do |r|
+        expect(r.stdout).to match(/-A INPUT -p tcp -m comment --comment "700 - test" -j LOG --log-prefix "FW-A-INPUT: "/)
+      end
+    end
+
+    it 'removes the rule' do
+      pp = <<-EOS
+      class { '::firewall': }
+      firewall { '700 - test':
+        ensure     => absent,
+        jump       => 'LOG',
+        log_prefix => 'FW-A-INPUT: ',
+      }
+      EOS
+
+      apply_manifest(pp, :catch_failures => true)
+    end
+
+    it 'should not contain the rule' do
+      shell('iptables-save') do |r|
+        expect(r.stdout).to_not match(/-A INPUT -p tcp -m comment --comment "700 - test" -j LOG --log-prefix "FW-A-INPUT: "/)
+      end
     end
   end
 

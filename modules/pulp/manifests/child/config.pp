@@ -6,7 +6,7 @@ class pulp::child::config {
     content => template('pulp/etc/pulp/nodes.conf.erb'),
   }
 
-  include apache
+  include ::apache
 
   apache::vhost { 'pulp-node-ssl':
     servername        => $::fqdn,

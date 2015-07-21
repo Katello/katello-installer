@@ -31,7 +31,7 @@ define postgresql::server::schema(
     port       => $port,
   }
 
-  $schema_title   = "Create Schema '${title}'"
+  $schema_title   = "Create Schema '${schema}'"
   $authorization = $owner? {
     undef   => '',
     default => "AUTHORIZATION \"${owner}\"",

@@ -17,7 +17,11 @@ class puppet::params {
   $agent_noop          = false
   $show_diff           = false
   $module_repository   = undef
-  $configtimeout       = 120
+  if versioncmp($::puppetversion, '4.0') < 0 {
+    $configtimeout     = 120
+  } else {
+    $configtimeout     = undef
+  }
   $usecacheonfailure   = true
   $ca_server           = undef
   $ca_port             = undef
@@ -43,7 +47,7 @@ class puppet::params {
       $dir    = "${dir_prefix}/etc"
       $logdir = "${dir_prefix}/var/log"
       $rundir = "${dir_prefix}/var/run"
-      $ssldir = '$confdir/ssl'
+      $ssldir = "${dir_prefix}/etc/ssl"
       $vardir = "${dir_prefix}/var"
       $root_group = undef
     }
@@ -52,7 +56,7 @@ class puppet::params {
       $dir        = '/usr/local/etc/puppet'
       $logdir     = '/var/log/puppet'
       $rundir     = '/var/run/puppet'
-      $ssldir     = '$vardir/ssl'
+      $ssldir     = '/var/puppet/ssl'
       $vardir     = '/var/puppet'
       $root_group = undef
     }
@@ -61,7 +65,7 @@ class puppet::params {
       $dir        = '/etc/puppet'
       $logdir     = '/var/log/puppet'
       $rundir     = '/var/run/puppet'
-      $ssldir     = '$vardir/ssl'
+      $ssldir     = '/var/lib/puppet/ssl'
       $vardir     = '/var/lib/puppet'
       $root_group = undef
     }
@@ -196,10 +200,23 @@ class puppet::params {
 
   # Puppet service name
   $service_name = 'puppet'
-  $agent_restart_command = $::osfamily ? {
-    'Debian' => '/usr/sbin/service puppet reload',
-    'Redhat' => '/usr/sbin/service puppet reload',
-    default  => undef,
+  # Command to reload/restart the agent
+  # If supported on the OS, reloading is prefered since it does not kill a currently active puppet run
+  case $::osfamily {
+    'Debian' : {
+      $agent_restart_command = "/usr/sbin/service ${service_name} reload"
+    }
+    'Redhat' : {
+      $osreleasemajor = regsubst($::operatingsystemrelease, '^(\d+)\..*$', '\1') # workaround for the possibly missing operatingsystemmajrelease
+      $agent_restart_command = $osreleasemajor ? {
+        '6'     => "/sbin/service ${service_name} reload",
+        '7'     => "/usr/bin/systemctl reload-or-restart ${service_name}",
+        default => undef,
+      }
+    }
+    default  : {
+      $agent_restart_command = undef
+    }
   }
 
   # Foreman parameters

@@ -1,0 +1,16 @@
+{
+  "CONTRIBUTING.md": "b09c628c63cd0562c3f8bbd74a3143f8",
+  "Gemfile": "43b899413f4dd7aad690514b484d7db9",
+  "README.md": "240cf19dcb6e2b73bab9b032c8803ffa",
+  "Rakefile": "5d38eec4207040ace7e08a0282792a61",
+  "lib/puppet/parser/functions/file_exists.rb": "619023c394b6245e9e37edefd3352e03",
+  "lib/puppet/parser/functions/find_or_create_password.rb": "61a84f1217cae035bc44cfbeabc89af8",
+  "lib/puppet/parser/functions/generate_password.rb": "e37df5948499131109221215990876ab",
+  "lib/puppet/parser/functions/subsystem_url.rb": "8107357a2c3d305f5d927de35c8075e7",
+  "lib/puppet/parser/functions/validate_file_exists.rb": "4fdcd1677193d983bba2b0b819e19d98",
+  "lib/puppet/parser/functions/validate_present.rb": "49a533814a4419897c9d739b3de00bed",
+  "manifests/line.pp": "5a66233f00725d96549059ab58f24edd",
+  "metadata.json": "06ae93e4d7b335fcf7e610c1e8b34fcf",
+  "spec/spec.opts": "6af1d8720d85a510f132e3250aa61075",
+  "spec/spec_helper.rb": "c97349efb008b3ef1e77afc51cc9bff5"
+}

@@ -7,18 +7,38 @@
   "source": "https://github.com/Katello/puppet-certs.git",
   "project_page": "https://github.com/Katello/puppet-certs",
   "issues_url": "http://projects.theforeman.org/projects/katello/issues",
-  "dependencies": [
+  "requirements": [
     {
-      "name": "puppetlabs-stdlib",
-      "version_requirement": ">= 1.0.0"
-    },
-    {
-       "name": "theforeman-foreman",
-       "version_requirement": ">= 2.0.0"
-    },
-    {
-       "name": "katello-common",
-       "version_requirement": ">= 0.0.1"
+      "name": "puppet",
+      "version_requirement": ">= 3.2.0 < 4.0.0"
     }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    }
+  ],
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 4.2.0 < 5.0.0"},
+    {"name":"theforeman-foreman","version_requirement":">= 4.0.0 < 5.0.0"},
+    {"name":"katello-common","version_requirement":">= 0.0.1 < 1.0.0"}
   ]
 }

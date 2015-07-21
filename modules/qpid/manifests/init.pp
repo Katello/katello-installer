@@ -12,7 +12,7 @@
 # $log_level::                Logging level
 #                             type:string
 #
-# $log_to_syslog:             Log to syslog or not
+# $log_to_syslog::            Log to syslog or not
 #                             type:boolean
 #
 # $ssl::                      Use SSL with Qpid

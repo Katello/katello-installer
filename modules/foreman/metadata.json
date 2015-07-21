@@ -1,6 +1,6 @@
 {
   "name": "theforeman-foreman",
-  "version": "3.0.1",
+  "version": "4.0.1",
   "author": "theforeman",
   "summary": "Foreman server configuration",
   "license": "GPL-3.0+",
@@ -10,36 +10,6 @@
   "description": "Module for configuring Foreman",
   "tags": [
     "foreman"
-  ],
-  "dependencies": [
-    {
-      "name": "theforeman/tftp",
-      "version_requirement": ">= 1.4.0 < 2.0.0"
-    },
-    {
-      "name": "adrien/alternatives",
-      "version_requirement": ">= 0.3.0 < 1.0.0"
-    },
-    {
-      "name": "puppetlabs/apache",
-      "version_requirement": ">= 1.2.0 < 2.0.0"
-    },
-    {
-      "name": "puppetlabs/apt",
-      "version_requirement": "< 2.0.0"
-    },
-    {
-      "name": "puppetlabs/concat",
-      "version_requirement": ">= 1.0.0 < 3.0.0"
-    },
-    {
-      "name": "puppetlabs/postgresql",
-      "version_requirement": ">= 3.0.0 < 5.0.0"
-    },
-    {
-      "name": "puppetlabs/stdlib",
-      "version_requirement": ">= 4.2.0 < 5.0.0"
-    }
   ],
   "requirements": [
     {
@@ -78,7 +48,8 @@
     {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
-        "7"
+        "7",
+        "8"
       ]
     },
     {
@@ -88,5 +59,14 @@
         "14.04"
       ]
     }
+  ],
+  "dependencies": [
+    {"name":"theforeman/tftp","version_requirement":">= 1.4.0 < 2.0.0"},
+    {"name":"adrien/alternatives","version_requirement":">= 0.3.0 < 1.0.0"},
+    {"name":"puppetlabs/apache","version_requirement":">= 1.2.0 < 2.0.0"},
+    {"name":"puppetlabs/apt","version_requirement":"< 2.0.0"},
+    {"name":"puppetlabs/concat","version_requirement":">= 1.0.0 < 3.0.0"},
+    {"name":"puppetlabs/postgresql","version_requirement":">= 3.0.0 < 5.0.0"},
+    {"name":"puppetlabs/stdlib","version_requirement":">= 4.2.0 < 5.0.0"}
   ]
 }

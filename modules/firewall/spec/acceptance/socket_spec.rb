@@ -1,6 +1,7 @@
 require 'spec_helper_acceptance'
 
-describe 'firewall socket property' do
+# RHEL5 does not support -m socket
+describe 'firewall socket property', :unless => (UNSUPPORTED_PLATFORMS.include?(fact('osfamily')) || default['platform'] =~ /el-5/ || fact('operatingsystem') == 'SLES') do
   before :all do
     iptables_flush_all_tables
   end
@@ -19,9 +20,11 @@ describe 'firewall socket property' do
       EOS
 
       apply_manifest(pp, :catch_failures => true)
-      apply_manifest(pp, :catch_changes => true)
+      unless fact('selinux') == 'true'
+        apply_manifest(pp, :catch_changes => true)
+      end
 
-      shell('iptables -t raw -S') do |r|
+      shell('iptables-save -t raw') do |r|
         expect(r.stdout).to match(/#{line_match}/)
       end
     end
@@ -39,9 +42,13 @@ describe 'firewall socket property' do
           }
       EOS
 
-      apply_manifest(pp, :catch_changes => true)
+      if fact('selinux') == 'true'
+        apply_manifest(pp, :catch_failures => true)
+      else
+        apply_manifest(pp, :catch_changes => true)
+      end
 
-      shell('iptables -t raw -S') do |r|
+      shell('iptables-save -t raw') do |r|
         expect(r.stdout).to match(/#{line_match}/)
       end
     end
@@ -71,7 +78,7 @@ describe 'firewall socket property' do
     context 'when unset or false' do
       before :each do
         iptables_flush_all_tables
-        shell('/sbin/iptables -t raw -A PREROUTING -p tcp -m comment --comment "598 - test"')
+        shell('iptables -t raw -A PREROUTING -p tcp -m comment --comment "598 - test"')
       end
       context 'and current value is false' do
         it_behaves_like "doesn't change", 'socket => false,', /-A PREROUTING -p tcp -m comment --comment "598 - test"/
@@ -83,7 +90,7 @@ describe 'firewall socket property' do
     context 'when set to true' do
       before :each do
         iptables_flush_all_tables
-        shell('/sbin/iptables -t raw -A PREROUTING -p tcp -m socket -m comment --comment "598 - test"')
+        shell('iptables -t raw -A PREROUTING -p tcp -m socket -m comment --comment "598 - test"')
       end
       context 'and current value is false' do
         it_behaves_like "is idempotent", 'socket => false,', /-A PREROUTING -p tcp -m comment --comment "598 - test"/

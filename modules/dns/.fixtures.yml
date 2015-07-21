@@ -1,6 +1,0 @@
-fixtures:
-  repositories:
-    concat_native:    'https://github.com/theforeman/puppet-concat'
-
-  symlinks:
-    dns: "#{source_dir}"
