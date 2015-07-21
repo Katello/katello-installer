@@ -101,6 +101,6 @@ class pulp::admin (
   $puppet_upload_working_dir = $pulp::admin::params::puppet_upload_working_dir,
   $puppet_upload_chunk_size  = $pulp::admin::params::puppet_upload_chunk_size,
 ) inherits pulp::admin::params {
-  class { 'pulp::admin::install': } ~>
-  class { 'pulp::admin::config': }
+  class { '::pulp::admin::install': } ~>
+  class { '::pulp::admin::config': }
 }

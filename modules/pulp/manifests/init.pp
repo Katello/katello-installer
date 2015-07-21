@@ -122,32 +122,32 @@ class pulp (
     $mongodb_pidfilepath = '/var/run/mongodb/mongodb.pid'
   }
 
-  class { 'mongodb::globals':
+  class { '::mongodb::globals':
     version => $::mongodb_version, # taken from the custom facts
   }
-  class { 'apache::mod::wsgi':} ~>
-  class { 'mongodb':
+  class { '::apache::mod::wsgi':} ~>
+  class { '::mongodb':
     logpath     => "${mongodb_path}/mongodb.log",
     dbpath      => $mongodb_path,
     pidfilepath => $mongodb_pidfilepath,
   } ~>
-  class { 'qpid':
+  class { '::qpid':
     ssl                    => $qpid_ssl,
     ssl_cert_db            => $qpid_ssl_cert_db,
     ssl_cert_password_file => $qpid_ssl_cert_password_file,
     ssl_cert_name          => 'broker',
-    user_groups            => $pulp::user_groups
+    user_groups            => $pulp::user_groups,
   } ~>
   # Make sure we install the mongodb client, used by service-wait to check
   # that the server is up.
   class {'::mongodb::client':} ~>
-  class { 'pulp::install':
-    require => [Class['mongodb'], Class['qpid']]
+  class { '::pulp::install':
+    require => [Class['mongodb'], Class['qpid']],
   } ~>
-  class { 'pulp::config':
-    require => [Class['mongodb'], Class['qpid']]
+  class { '::pulp::config':
+    require => [Class['mongodb'], Class['qpid']],
   } ~>
-  class { 'pulp::service': } ~>
+  class { '::pulp::service': } ~>
   Service['httpd']
   ->
   Class[pulp]

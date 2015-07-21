@@ -136,20 +136,20 @@ GIT
 GIT
   remote: https://github.com/Katello/puppet-pulp
   ref: 0.1-stable
-  sha: e6debe8c630582c1c1bdf88385b1adc22a67d762
+  sha: 50800ae9952c15cf72dcdfb71578573db498c5ff
   specs:
-    katello-pulp (0.1.1)
-      katello-qpid (>= 0.1.0)
+    katello-pulp (0.1.3)
+      katello-qpid (< 2.0.0, >= 1.0.0)
       puppetlabs-apache (< 2.0.0, >= 1.2.0)
-      puppetlabs-mongodb (>= 0)
-      puppetlabs-stdlib (>= 1.0.0)
-      theforeman-concat_native (>= 1.3.0)
-      theforeman-foreman (>= 1.5.0)
+      puppetlabs-mongodb (< 1.0.0, >= 0.11.0)
+      puppetlabs-stdlib (< 5.0.0, >= 4.2.0)
+      theforeman-concat_native (< 2.0.0, >= 1.3.0)
+      theforeman-foreman (< 5.0.0, >= 4.0.0)
 
 GIT
   remote: https://github.com/Katello/puppet-qpid
   ref: master
-  sha: 5002da80b5059e3ff33caa9b897b6ba9f1427bf2
+  sha: 26ec66e0da867f08bdd0ae2def05a3f59f696965
   specs:
     katello-qpid (1.0.3)
       puppetlabs-stdlib (< 5.0.0, >= 3.0.0)
