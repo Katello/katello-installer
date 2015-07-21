@@ -17,9 +17,9 @@ class pulp::child (
 
   if ! $parent_fqdn { fail('$parent_fqdn has to be specified') }
 
-  class { 'pulp::child::install': } ~>
+  class { '::pulp::child::install': } ~>
 
-  class { 'pulp::child::config': } ~>
+  class { '::pulp::child::config': } ~>
 
-  class { 'pulp::child::service': }
+  class { '::pulp::child::service': }
 }

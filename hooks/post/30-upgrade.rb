@@ -1,7 +1,3 @@
-def migrate_pulp
-  Kafo::Helpers.execute('su - apache -s /bin/bash -c pulp-manage-db')
-end
-
 def restart_services
   Kafo::Helpers.execute('katello-service restart')
 end
@@ -39,10 +35,7 @@ def fail_and_exit(message)
 end
 
 if app_value(:upgrade)
-  if Kafo::Helpers.module_enabled?(@kafo, 'katello') || @kafo.param('capsule', 'pulp').value
-    upgrade_step :migrate_pulp
-    upgrade_step :restart_services
-  end
+  upgrade_step :restart_services
 
   if Kafo::Helpers.module_enabled?(@kafo, 'katello')
     upgrade_step :db_seed
