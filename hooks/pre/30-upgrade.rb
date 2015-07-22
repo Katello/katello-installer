@@ -1,5 +1,5 @@
 def stop_services
-  Kafo::Helpers.execute('katello-service stop --exclude mongod,httpd')
+  Kafo::Helpers.execute('katello-service stop --exclude mongod')
 end
 
 def start_mongo
@@ -65,8 +65,8 @@ if app_value(:upgrade)
 
   if Kafo::Helpers.module_enabled?(@kafo, 'katello') || @kafo.param('capsule', 'pulp').value
     upgrade_step :start_mongo
-    upgrade_step :start_httpd
     upgrade_step :migrate_pulp
+    upgrade_step :start_httpd
   end
 
   if Kafo::Helpers.module_enabled?(@kafo, 'katello')
