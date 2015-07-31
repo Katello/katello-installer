@@ -75,7 +75,7 @@ Puppet::Type.type(:vcsrepo).provide(:git, :parent => Puppet::Provider::Vcsrepo) 
       at_path { git_with_identity('reset', '--hard', "#{@resource.value(:remote)}/#{desired}") }
     end
     #TODO Would this ever reach here if it is bare?
-    if @resource.value(:ensure) != :bare
+    if @resource.value(:ensure) != :bare && @resource.value(:submodules) == :true
       update_submodules
     end
     update_owner_and_excludes
@@ -180,6 +180,9 @@ Puppet::Type.type(:vcsrepo).provide(:git, :parent => Puppet::Provider::Vcsrepo) 
     args = ['clone']
     if @resource.value(:depth) and @resource.value(:depth).to_i > 0
       args.push('--depth', @resource.value(:depth).to_s)
+      if @resource.value(:revision)
+        args.push('--branch', @resource.value(:revision).to_s)
+      end
     end
     if @resource.value(:branch)
       args.push('--branch', @resource.value(:branch).to_s)
@@ -326,11 +329,13 @@ Puppet::Type.type(:vcsrepo).provide(:git, :parent => Puppet::Provider::Vcsrepo) 
     at_path { git_with_identity('branch', '-a') }.gsub('*', ' ').split(/\n/).map { |line| line.strip }
   end
 
+  # git < 2.4 returns 'detached from'
+  # git 2.4+ returns 'HEAD detached at'
   # @!visibility private
   def on_branch?
     at_path {
       matches = git_with_identity('branch', '-a').match /\*\s+(.*)/
-      matches[1] unless matches[1].match /(\(detached from|\(no branch)/
+      matches[1] unless matches[1].match /(\(detached from|\(HEAD detached at|\(no branch)/
     }
   end
 

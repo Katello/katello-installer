@@ -1,3 +1,5 @@
+[![Puppet Forge](http://img.shields.io/puppetforge/v/katello/common.svg)](https://forge.puppetlabs.com/katello/common)
+[![Build Status](https://travis-ci.org/Katello/puppet-common.svg?branch=master)](https://travis-ci.org/Katello/puppet-common)
 ####Table of Contents
 
 1. [Overview](#overview)
@@ -36,4 +38,3 @@ See lib/puppet/parser/functions.
 ##Development
 
 See the CONTRIBUTING guide for steps on how to make a change and get it accepted upstream.
-

@@ -1,3 +1,32 @@
+##2015-06-22 - Supported Release 4.7.0
+###Summary
+
+Adds Solaris 12 support along with improved Puppet 4 support. There are significant test improvements, and some minor fixes.
+
+####Features
+- Add support for Solaris 12
+
+####Bugfixes
+- Fix for AIO Puppet 4
+- Fix time for ruby 1.8.7
+- Specify rspec-puppet version
+- range() fix for typeerror and missing functionality
+- Fix pw_hash() on JRuby < 1.7.17
+- fqdn_rand_string: fix argument error message
+- catch and rescue from looking up non-existent facts
+- Use puppet_install_helper, for Puppet 4
+
+####Improvements
+- Enforce support for Puppet 4 testing
+- fqdn_rotate/fqdn_rand_string acceptance tests and implementation
+- Simplify mac address regex
+- validate_integer, validate_numeric: explicitely reject hashes in arrays
+- Readme edits
+- Remove all the pops stuff for rspec-puppet
+- Sync via modulesync
+- Add validate_slength optional 3rd arg
+- Move tests directory to examples directory
+
 ##2015-04-14 - Supported Release 4.6.0
 ###Summary
 
@@ -12,7 +41,7 @@ Adds functions and function argument abilities, and improves compatibility with 
 - `validate_absolute_path()` can now take an array
 - `validate_cmd()` can now use % in the command to embed the validation file argument in the string
 - MODULES-1473: deprecate `type()` function in favor of `type3x()`
-- MODULES-1473: Add `type_of()` to give better time information on future parser
+- MODULES-1473: Add `type_of()` to give better type information on future parser
 - Deprecate `private()` for `assert_private()` due to future parser
 - Adds `ceiling()` to take the ceiling of a number
 - Adds `fqdn_rand_string()` to generate random string based on fqdn
@@ -90,7 +119,7 @@ backwards-compatible with the stdlib 3 series. It adds two new functions, one bu
 
 #### Features
 - New `bool2str()` function
-- New `camalcase()` function
+- New `camelcase()` function
 
 #### Bugfixes
 - Fix `has_interface_with()` when interfaces fact is nil
