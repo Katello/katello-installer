@@ -1,3 +1,5 @@
+[![Puppet Forge](http://img.shields.io/puppetforge/v/katello/service_wait.svg)](https://forge.puppetlabs.com/katello/service_wait)
+[![Build Status](https://travis-ci.org/Katello/puppet-service_wait.svg?branch=master)](https://travis-ci.org/Katello/puppet-service_wait)
 service-wait
 ============
 

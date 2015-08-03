@@ -1,3 +1,5 @@
+[![Puppet Forge](http://img.shields.io/puppetforge/v/katello/gutterball.svg)](https://forge.puppetlabs.com/katello/gutterball)
+[![Build Status](https://travis-ci.org/Katello/puppet-gutterball.svg?branch=master)](https://travis-ci.org/Katello/puppet-gutterball)
 ####Table of Contents
 
 1. [Overview](#overview)
@@ -25,4 +27,3 @@ This module is designed to setup a Gutterball with katello server.
 ##Development
 
 See the CONTRIBUTING guide for steps on how to make a change and get it accepted upstream.
-

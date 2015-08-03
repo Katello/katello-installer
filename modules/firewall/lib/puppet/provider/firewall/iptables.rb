@@ -32,6 +32,7 @@ Puppet::Type.type(:firewall).provide :iptables, :parent => Puppet::Provider::Fir
   has_feature :ipsec_policy
   has_feature :mask
   has_feature :ipset
+  has_feature :clusterip
 
   optional_commands({
     :iptables => 'iptables',
@@ -41,7 +42,7 @@ Puppet::Type.type(:firewall).provide :iptables, :parent => Puppet::Provider::Fir
   defaultfor :kernel => :linux
   confine :kernel => :linux
 
-  iptables_version = Facter.fact('iptables_version').value
+  iptables_version = Facter.value('iptables_version')
   if (iptables_version and Puppet::Util::Package.versioncmp(iptables_version, '1.4.1') < 0)
     mark_flag = '--set-mark'
   else
@@ -51,78 +52,86 @@ Puppet::Type.type(:firewall).provide :iptables, :parent => Puppet::Provider::Fir
   @protocol = "IPv4"
 
   @resource_map = {
-    :burst              => "--limit-burst",
-    :checksum_fill      => "--checksum-fill",
-    :clamp_mss_to_pmtu  => "--clamp-mss-to-pmtu",
-    :connlimit_above    => "-m connlimit --connlimit-above",
-    :connlimit_mask     => "--connlimit-mask",
-    :connmark           => "-m connmark --mark",
-    :ctstate            => "-m conntrack --ctstate",
-    :destination        => "-d",
-    :dport              => ["-m multiport --dports", "--dport"],
-    :dst_range          => "--dst-range",
-    :dst_type           => "--dst-type",
-    :gateway            => "--gateway",
-    :gid                => "--gid-owner",
-    :icmp               => "-m icmp --icmp-type",
-    :iniface            => "-i",
-    :ipsec_dir          => "-m policy --dir",
-    :ipsec_policy       => "--pol",
-    :ipset              => "-m set --match-set",
-    :isfragment         => "-f",
-    :jump               => "-j",
-    :limit              => "-m limit --limit",
-    :log_level          => "--log-level",
-    :log_prefix         => "--log-prefix",
-    :mac_source         => ["-m mac --mac-source", "--mac-source"],
-    :mask               => '--mask',
-    :match_mark         => "-m mark --mark",
-    :mss                => '-m tcpmss --mss',
-    :name               => "-m comment --comment",
-    :outiface           => "-o",
-    :pkttype            => "-m pkttype --pkt-type",
-    :port               => '-m multiport --ports',
-    :proto              => "-p",
-    :random             => "--random",
-    :rdest              => "--rdest",
-    :reap               => "--reap",
-    :recent             => "-m recent",
-    :reject             => "--reject-with",
-    :rhitcount          => "--hitcount",
-    :rname              => "--name",
-    :rseconds           => "--seconds",
-    :rsource            => "--rsource",
-    :rttl               => "--rttl",
-    :set_mark           => mark_flag,
-    :set_mss            => '--set-mss',
-    :socket             => "-m socket",
-    :source             => "-s",
-    :sport              => ["-m multiport --sports", "--sport"],
-    :src_range          => "--src-range",
-    :src_type           => "--src-type",
-    :stat_every         => '--every',
-    :stat_mode          => "-m statistic --mode",
-    :stat_packet        => '--packet',
-    :stat_probability   => '--probability',
-    :state              => "-m state --state",
-    :table              => "-t",
-    :tcp_flags          => "-m tcp --tcp-flags",
-    :todest             => "--to-destination",
-    :toports            => "--to-ports",
-    :tosource           => "--to-source",
-    :to                 => "--to",
-    :uid                => "--uid-owner",
-    :physdev_in         => "--physdev-in",
-    :physdev_out        => "--physdev-out",
-    :physdev_is_bridged => "--physdev-is-bridged",
-    :date_start         => "--datestart",
-    :date_stop          => "--datestop",
-    :time_start         => "--timestart",
-    :time_stop          => "--timestop",
-    :month_days         => "--monthdays",
-    :week_days          => "--weekdays",
-    :time_contiguous    => "--contiguous",
-    :kernel_timezone    => "--kerneltz",
+    :burst                 => "--limit-burst",
+    :checksum_fill         => "--checksum-fill",
+    :clamp_mss_to_pmtu     => "--clamp-mss-to-pmtu",
+    :connlimit_above       => "-m connlimit --connlimit-above",
+    :connlimit_mask        => "--connlimit-mask",
+    :connmark              => "-m connmark --mark",
+    :ctstate               => "-m conntrack --ctstate",
+    :destination           => "-d",
+    :dport                 => ["-m multiport --dports", "--dport"],
+    :dst_range             => "--dst-range",
+    :dst_type              => "--dst-type",
+    :gateway               => "--gateway",
+    :gid                   => "--gid-owner",
+    :icmp                  => "-m icmp --icmp-type",
+    :iniface               => "-i",
+    :ipsec_dir             => "-m policy --dir",
+    :ipsec_policy          => "--pol",
+    :ipset                 => "-m set --match-set",
+    :isfragment            => "-f",
+    :jump                  => "-j",
+    :limit                 => "-m limit --limit",
+    :log_level             => "--log-level",
+    :log_prefix            => "--log-prefix",
+    :mac_source            => ["-m mac --mac-source", "--mac-source"],
+    :mask                  => '--mask',
+    :match_mark            => "-m mark --mark",
+    :mss                   => '-m tcpmss --mss',
+    :name                  => "-m comment --comment",
+    :outiface              => "-o",
+    :pkttype               => "-m pkttype --pkt-type",
+    :port                  => '-m multiport --ports',
+    :proto                 => "-p",
+    :random                => "--random",
+    :rdest                 => "--rdest",
+    :reap                  => "--reap",
+    :recent                => "-m recent",
+    :reject                => "--reject-with",
+    :rhitcount             => "--hitcount",
+    :rname                 => "--name",
+    :rseconds              => "--seconds",
+    :rsource               => "--rsource",
+    :rttl                  => "--rttl",
+    :set_dscp              => '--set-dscp',
+    :set_dscp_class        => '--set-dscp-class',
+    :set_mark              => mark_flag,
+    :set_mss               => '--set-mss',
+    :socket                => "-m socket",
+    :source                => "-s",
+    :sport                 => ["-m multiport --sports", "--sport"],
+    :src_range             => "--src-range",
+    :src_type              => "--src-type",
+    :stat_every            => '--every',
+    :stat_mode             => "-m statistic --mode",
+    :stat_packet           => '--packet',
+    :stat_probability      => '--probability',
+    :state                 => "-m state --state",
+    :table                 => "-t",
+    :tcp_flags             => "-m tcp --tcp-flags",
+    :todest                => "--to-destination",
+    :toports               => "--to-ports",
+    :tosource              => "--to-source",
+    :to                    => "--to",
+    :uid                   => "--uid-owner",
+    :physdev_in            => "--physdev-in",
+    :physdev_out           => "--physdev-out",
+    :physdev_is_bridged    => "--physdev-is-bridged",
+    :date_start            => "--datestart",
+    :date_stop             => "--datestop",
+    :time_start            => "--timestart",
+    :time_stop             => "--timestop",
+    :month_days            => "--monthdays",
+    :week_days             => "--weekdays",
+    :time_contiguous       => "--contiguous",
+    :kernel_timezone       => "--kerneltz",
+    :clusterip_new         => "--new",
+    :clusterip_hashmode    => "--hashmode",
+    :clusterip_clustermac  => "--clustermac",
+    :clusterip_total_nodes => "--total-nodes",
+    :clusterip_local_node  => "--local-node",
+    :clusterip_hash_init   => "--hash-init",
   }
 
   # These are known booleans that do not take a value, but we want to munge
@@ -140,6 +149,7 @@ Puppet::Type.type(:firewall).provide :iptables, :parent => Puppet::Provider::Fir
     :physdev_is_bridged,
     :time_contiguous,
     :kernel_timezone,
+    :clusterip_new,
   ]
 
   # Properties that use "-m <ipt module name>" (with the potential to have multiple 
@@ -242,9 +252,11 @@ Puppet::Type.type(:firewall).provide :iptables, :parent => Puppet::Provider::Fir
     :src_range, :dst_range, :tcp_flags, :uid, :gid, :mac_source, :sport, :dport, :port,
     :src_type, :dst_type, :socket, :pkttype, :name, :ipsec_dir, :ipsec_policy,
     :state, :ctstate, :icmp, :limit, :burst, :recent, :rseconds, :reap,
-    :rhitcount, :rttl, :rname, :mask, :rsource, :rdest, :ipset, :jump, :clamp_mss_to_pmtu, :gateway, :set_mss, :todest,
-    :tosource, :toports, :to, :checksum_fill, :random, :log_prefix, :log_level, :reject, :set_mark, :match_mark, :mss,
-    :connlimit_above, :connlimit_mask, :connmark, :time_start, :time_stop, :month_days, :week_days, :date_start, :date_stop, :time_contiguous, :kernel_timezone
+    :rhitcount, :rttl, :rname, :mask, :rsource, :rdest, :ipset, :jump, :clusterip_new, :clusterip_hashmode,
+    :clusterip_clustermac, :clusterip_total_nodes, :clusterip_local_node, :clusterip_hash_init,
+    :clamp_mss_to_pmtu, :gateway, :set_mss, :set_dscp, :set_dscp_class, :todest, :tosource, :toports, :to, :checksum_fill, :random, :log_prefix,
+    :log_level, :reject, :set_mark, :match_mark, :mss, :connlimit_above, :connlimit_mask, :connmark, :time_start, :time_stop,
+    :month_days, :week_days, :date_start, :date_stop, :time_contiguous, :kernel_timezone
   ]
 
   def insert
@@ -319,6 +331,8 @@ Puppet::Type.type(:firewall).provide :iptables, :parent => Puppet::Provider::Fir
     values = values.gsub(/(!)\s*(-\S+)\s*(\S*)/, '\2 "\1 \3"')
     # The match extension for tcp & udp are optional and throws off the @resource_map.
     values = values.gsub(/(?!-m tcp --tcp-flags)-m (tcp|udp) /, '')
+    # There is a bug in EL5 which puts 2 spaces before physdev, so we fix it
+    values = values.gsub(/\s{2}--physdev/, ' --physdev')
     # '--pol ipsec' takes many optional arguments; we cheat again by adding " around them
     values = values.sub(/
         --pol\sipsec
@@ -382,8 +396,16 @@ Puppet::Type.type(:firewall).provide :iptables, :parent => Puppet::Provider::Fir
     values.slice!('-A')
     keys << :chain
 
-    # Here we generate the main hash
-    keys.zip(values.scan(/"[^"]*"|\S+/).reverse) { |f, v| hash[f] = v.gsub(/"/, '') }
+    # Here we generate the main hash by scanning arguments off the values
+    # string, handling any quoted characters present in the value, and then
+    # zipping the values with the array of keys.
+    keys.zip(values.scan(/("([^"\\]|\\.)*"|\S+)/).transpose[0].reverse) do |f, v|
+      if v =~ /^".*"$/ then
+        hash[f] = v.sub(/^"(.*)"$/, '\1').gsub(/\\(\\|'|")/, '\1')
+      else
+        hash[f] = v.dup
+      end
+    end
 
     #####################
     # POST PARSE CLUDGING
@@ -392,6 +414,37 @@ Puppet::Type.type(:firewall).provide :iptables, :parent => Puppet::Provider::Fir
     [:dport, :sport, :port, :state, :ctstate].each do |prop|
       hash[prop] = hash[prop].split(',') if ! hash[prop].nil?
     end
+  
+    ## clean up DSCP class to HEX mappings 
+    valid_dscp_classes = {
+      '0x0a' => 'af11',
+      '0x0c' => 'af12',
+      '0x0e' => 'af13',
+      '0x12' => 'af21',
+      '0x14' => 'af22',
+      '0x16' => 'af23',
+      '0x1a' => 'af31',
+      '0x1c' => 'af32',
+      '0x1e' => 'af33',
+      '0x22' => 'af41',
+      '0x24' => 'af42',
+      '0x26' => 'af43',
+      '0x08' => 'cs1',
+      '0x10' => 'cs2',
+      '0x18' => 'cs3',
+      '0x20' => 'cs4',
+      '0x28' => 'cs5',
+      '0x30' => 'cs6',
+      '0x38' => 'cs7',
+      '0x2e' => 'ef'
+    }
+    [:set_dscp_class].each do |prop|
+      [:set_dscp].each do |dmark|
+        next unless hash[dmark]
+        hash[prop] = valid_dscp_classes[hash[dmark]]
+     end
+    end
+
 
     # Convert booleans removing the previous cludge we did
     @known_booleans.each do |bool|
@@ -462,9 +515,9 @@ Puppet::Type.type(:firewall).provide :iptables, :parent => Puppet::Provider::Fir
     if ! hash[:name]
       num = 9000 + counter
       hash[:name] = "#{num} #{Digest::MD5.hexdigest(line)}"
-    elsif not /^\d+[[:alpha:][:digit:][:punct:][:space:]]+$/ =~ hash[:name]
+    elsif not /^\d+[[:graph:][:space:]]+$/ =~ hash[:name]
       num = 9000 + counter
-      hash[:name] = "#{num} #{/([[:alpha:][:digit:][:punct:][:space:]]+)/.match(hash[:name])[1]}"
+      hash[:name] = "#{num} #{/([[:graph:][:space:]]+)/.match(hash[:name])[1]}"
     end
 
     # Iptables defaults to log_level '4', so it is omitted from the output of iptables-save.
@@ -495,7 +548,6 @@ Puppet::Type.type(:firewall).provide :iptables, :parent => Puppet::Provider::Fir
       hash[:action] = hash[:jump].downcase
       hash.delete(:jump)
     end
-
     hash
   end
 
@@ -515,7 +567,7 @@ Puppet::Type.type(:firewall).provide :iptables, :parent => Puppet::Provider::Fir
 
   def delete_args
     # Split into arguments
-    line = properties[:line].gsub(/\-A /, '-D ').split(/\s(?=(?:[^"]|"[^"]*")*$)/).map{|v| v.gsub(/"/, '')}
+    line = properties[:line].gsub(/^\-A /, '-D ').split(/\s(?=(?:[^"]|"[^"]*")*$)/).map{|v| v.gsub(/"/, '')}
     line.unshift("-t", properties[:table])
   end
 

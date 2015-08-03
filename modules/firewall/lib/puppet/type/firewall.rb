@@ -57,6 +57,7 @@ Puppet::Type.newtype(:firewall) do
   feature :ipsec_dir, "Match IPsec policy direction"
   feature :mask, "Ability to match recent rules based on the ipv4 mask"
   feature :ipset, "Match against specified ipset list"
+  feature :clusterip, "Configure a simple cluster of nodes that share a certain IP and MAC address without an explicit load balancer in front of them."
 
   # provider specific features
   feature :iptables, "The provider provides iptables features."
@@ -91,7 +92,7 @@ Puppet::Type.newtype(:firewall) do
     isnamevar
 
     # Keep rule names simple - they must start with a number
-    newvalues(/^\d+[[:alpha:][:digit:][:punct:][:space:]]+$/)
+    newvalues(/^\d+[[:graph:][:space:]]+$/)
   end
 
   newproperty(:action) do
@@ -321,8 +322,10 @@ Puppet::Type.newtype(:firewall) do
       * XRESOLVE - undocumented
     EOS
 
-    newvalues(:UNSPEC, :UNICAST, :LOCAL, :BROADCAST, :ANYCAST, :MULTICAST,
-              :BLACKHOLE, :UNREACHABLE, :PROHIBIT, :THROW, :NAT, :XRESOLVE)
+    newvalues(*[:UNSPEC, :UNICAST, :LOCAL, :BROADCAST, :ANYCAST, :MULTICAST,
+              :BLACKHOLE, :UNREACHABLE, :PROHIBIT, :THROW, :NAT, :XRESOLVE].collect do |address_type|
+      [address_type, "! #{address_type}".to_sym]
+    end.flatten)
   end
 
   newproperty(:src_type, :required_features => :address_type) do
@@ -347,8 +350,10 @@ Puppet::Type.newtype(:firewall) do
       * XRESOLVE - undocumented
     EOS
 
-    newvalues(:UNSPEC, :UNICAST, :LOCAL, :BROADCAST, :ANYCAST, :MULTICAST,
-              :BLACKHOLE, :UNREACHABLE, :PROHIBIT, :THROW, :NAT, :XRESOLVE)
+    newvalues(*[:UNSPEC, :UNICAST, :LOCAL, :BROADCAST, :ANYCAST, :MULTICAST,
+              :BLACKHOLE, :UNREACHABLE, :PROHIBIT, :THROW, :NAT, :XRESOLVE].collect do |address_type|
+      [address_type, "! #{address_type}".to_sym]
+    end.flatten)
   end
 
   newproperty(:proto) do
@@ -836,7 +841,7 @@ Puppet::Type.newtype(:firewall) do
       end
 
       # Old iptables does not support a mask. New iptables will expect one.
-      iptables_version = Facter.fact('iptables_version').value
+      iptables_version = Facter.value('iptables_version')
       mask_required = (iptables_version and Puppet::Util::Package.versioncmp(iptables_version, '1.4.1') >= 0)
 
       if mask_required
@@ -866,6 +871,30 @@ Puppet::Type.newtype(:firewall) do
     EOS
 
     newvalues(:true, :false)
+  end
+
+  newproperty(:set_dscp, :required_features => :iptables) do
+    desc <<-EOS
+      Set DSCP Markings.
+    EOS
+  end
+  
+  newproperty(:set_dscp_class, :required_features => :iptables) do
+    desc <<-EOS
+      This sets the DSCP field according to a predefined DiffServ class.
+    EOS
+    #  iptables uses the cisco DSCP classes as the basis for this flag. Values may be found here:
+    #  'http://www.cisco.com/c/en/us/support/docs/quality-of-service-qos/qos-packet-marking/10103-dscpvalues.html'
+    valid_codes = [
+      'af11','af12','af13','af21','af22','af23','af31','af32','af33','af41',
+      'af42','af43','cs1','cs2','cs3','cs4','cs5','cs6','cs7','ef'
+    ]
+    munge do |value|
+      unless valid_codes.include? value.downcase
+        raise ArgumentError, "#{value} is not a valid DSCP Class"
+      end
+      value.downcase
+    end
   end
 
   newproperty(:set_mss, :required_features => :iptables) do
@@ -1255,6 +1284,58 @@ Puppet::Type.newtype(:firewall) do
     newvalues(:true, :false)
   end
 
+  newproperty(:clusterip_new, :required_features => :clusterip) do
+    desc <<-EOS
+      Used with the CLUSTERIP jump target.
+      Create a new ClusterIP. You always have to set this on the first rule for a given ClusterIP.
+    EOS
+
+    newvalues(:true, :false)
+  end
+
+  newproperty(:clusterip_hashmode, :required_features => :clusterip) do
+    desc <<-EOS
+      Used with the CLUSTERIP jump target.
+      Specify the hashing mode. Valid values: sourceip, sourceip-sourceport, sourceip-sourceport-destport.
+    EOS
+
+    newvalues(:sourceip, :'sourceip-sourceport', :'sourceip-sourceport-destport')
+  end
+
+  newproperty(:clusterip_clustermac, :required_features => :clusterip) do
+    desc <<-EOS
+      Used with the CLUSTERIP jump target.
+      Specify the ClusterIP MAC address. Has to be a link-layer multicast address.
+    EOS
+
+    newvalues(/^([0-9a-f]{2}[:]){5}([0-9a-f]{2})$/i)
+  end
+
+  newproperty(:clusterip_total_nodes, :required_features => :clusterip) do
+    desc <<-EOS
+      Used with the CLUSTERIP jump target.
+      Number of total nodes within this cluster.
+    EOS
+
+    newvalues(/\d+/)
+  end
+
+  newproperty(:clusterip_local_node, :required_features => :clusterip) do
+    desc <<-EOS
+      Used with the CLUSTERIP jump target.
+      Specify the random seed used for hash initialization.
+    EOS
+
+    newvalues(/\d+/)
+  end
+
+  newproperty(:clusterip_hash_init, :required_features => :clusterip) do
+    desc <<-EOS
+      Used with the CLUSTERIP jump target.
+      Specify the random seed used for hash initialization.
+    EOS
+  end
+
 
   autorequire(:firewallchain) do
     reqs = []
@@ -1282,7 +1363,16 @@ Puppet::Type.newtype(:firewall) do
   autorequire(:package) do
     case value(:provider)
     when :iptables, :ip6tables
-      %w{iptables iptables-persistent netfilter-persistent iptables-services}
+      %w{iptables iptables-persistent iptables-services}
+    else
+      []
+    end
+  end
+
+  autorequire(:service) do
+    case value(:provider)
+    when :iptables, :ip6tables
+      %w{firewalld iptables ip6tables iptables-persistent netfilter-persistent}
     else
       []
     end
@@ -1345,6 +1435,12 @@ Puppet::Type.newtype(:firewall) do
         self.fail "[%s] Parameter dport only applies to sctp, tcp and udp " \
           "protocols. Current protocol is [%s] and dport is [%s]" %
           [value(:name), should(:proto), should(:dport)]
+      end
+    end
+
+    if value(:jump).to_s == "DSCP"
+      unless value(:set_dscp) || value(:set_dscp_class)
+        self.fail "When using jump => DSCP, the set_dscp or set_dscp_class property is required"
       end
     end
 
