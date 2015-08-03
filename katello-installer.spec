@@ -4,7 +4,7 @@
 
 Name:    katello-installer-base
 Version: 2.3.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 Summary: Puppet-based installer for the Katello and Katello Capsule
 Group:   Applications/System
 License: GPLv3+ and ASL 2.0
@@ -205,6 +205,14 @@ ln -sf %{_datadir}/capsule-installer/bin/capsule-remove %{buildroot}/%{_sbindir}
 %doc README.*
 
 %changelog
+* Mon Aug 03 2015 Stephen Benjamin <stbenjam@redhat.com> 2.3.1-4
+- RC2
+- Update modules (stbenjam@redhat.com)
+- refs #10675 - templates off by default for upgrade, too (stbenjam@redhat.com)
+- refs #10716 - start httpd after migrating pulp (stbenjam@redhat.com)
+- refs #10675 - templates off by default for katello (stbenjam@redhat.com)
+- fixes #11086 - error out when upgrade post tasks fail (stbenjam@redhat.com)
+
 * Tue Jul 21 2015 Stephen Benjamin <stbenjam@redhat.com> 2.3.1-3
 - Pin modules to puppetforge releases for Katello 2.3 (stbenjam@redhat.com)
 * Mon Jul 13 2015 Stephen Benjamin <stbenjam@redhat.com> 2.3.1-2
