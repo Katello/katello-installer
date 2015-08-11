@@ -33,3 +33,5 @@ namespace :pkg do
     `bzip2 -9 #{PKGDIR}/katello-installer-#{version}.tar`
   end
 end
+
+task :default => ['pkg:generate_source']
