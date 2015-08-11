@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Katello/katello-installer.svg?branch=master)](https://travis-ci.org/Katello/katello-installer)
+
 # Katello Installer
 
 A set of tools to properly configure Katello with Foreman in production and development.

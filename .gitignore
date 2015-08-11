@@ -1,6 +1,7 @@
 _build
 pkg
 Puppetfile.lock
+Gemfile.lock
 foreman-installer
 .vagrant
 Vagrantfile
