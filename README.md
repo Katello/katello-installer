@@ -246,11 +246,11 @@ For bugs found within the hooks, config, answer or script files, please do the f
 ## Updating Packages
 
 This repository uses the gems librarian and librarian-puppet to handle the dependent
-puppet modules. To update all the modules and automatically commit the result:
+puppet modules.
 
 ```
 gem install librarian librarian-puppet puppet
-rel-eng/librarian-update
+librarian-puppet update
 ```
 
 `tito` is used for doing the releases.

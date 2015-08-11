@@ -1,6 +1,0 @@
-directory "<%= scope.lookupvar('::dns::vardir') %>";
-<% unless scope.lookupvar('::dns::forwarders').empty? -%>
-forwarders { <%= scope.lookupvar('::dns::forwarders').join("; ") %>; };
-<% end -%>
-
-listen-on-v6 { <%= scope.lookupvar('::dns::listen_on_v6') %>; };
