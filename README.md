@@ -86,14 +86,14 @@ katello-installer --clear-puppet-environments
 
 ## Development Usage
 
+### Devel Installer
+
 ```
 $ yum install -y katello-installer
 
 # install Katello with Foreman from git
 $ katello-devel-installer
 ```
-
-### Development Examples
 
 Install with custom user
 
@@ -105,6 +105,17 @@ Install without RVM
 
 ```
 katello-devel-installer --katello-use-rvm false
+```
+
+### From Git
+
+If you're working off the master branch, use Librarian to pull in all the modules to your local checkout:
+
+```
+$ git clone https://github.com/Katello/katello.org.git
+$ bundle install
+$ librarian-puppet install --path modules/
+$ bin/katello-installer
 ```
 
 ### Certificates
