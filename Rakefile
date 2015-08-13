@@ -30,7 +30,7 @@ namespace :pkg do
 
     `git archive --prefix=katello-installer-#{version}/ HEAD > #{PKGDIR}/katello-installer-#{version}.tar`
     `tar --concatenate --file=#{PKGDIR}/katello-installer-#{version}.tar #{BUILDDIR}/modules.tar`
-    `bzip2 -9 #{PKGDIR}/katello-installer-#{version}.tar`
+    `gzip -9 #{PKGDIR}/katello-installer-#{version}.tar`
   end
 end
 
