@@ -112,7 +112,7 @@ katello-devel-installer --katello-use-rvm false
 If you're working off the master branch, use Librarian to pull in all the modules to your local checkout:
 
 ```
-$ git clone https://github.com/Katello/katello.org.git
+$ git clone https://github.com/Katello/katello-installer.git
 $ bundle install
 $ librarian-puppet install --path modules/
 $ bin/katello-installer
