@@ -4,15 +4,16 @@
   "LICENSE": "9eef91148a9b14ec7f9df333daebc746",
   "README.md": "387c4bea5086253d9642333ec13de117",
   "Rakefile": "5d38eec4207040ace7e08a0282792a61",
-  "manifests/config.pp": "24a21e7b2192c6c703a64a23b5401406",
+  "manifests/config.pp": "690de74711d803e2fe428ca1fdb1aaee",
   "manifests/database.pp": "9cb24db1fc469e419f43a8fac1f7cc29",
-  "manifests/init.pp": "c4b26fcf5b3bd07748fcd3c27c22ba5e",
+  "manifests/init.pp": "3fef3bffa62e70e69a7e65179158bc82",
   "manifests/install.pp": "12d74db8631801d878a6a19700861daf",
   "manifests/params.pp": "cd14efd6622d5205b6511f9c199d69bc",
   "manifests/service.pp": "d0908f3762a4fc190f189b5524385a0a",
-  "metadata.json": "1c1f0fceb4883ca634fb911a5e0033fc",
+  "metadata.json": "6ce8035bcd08e225081aa1d2d226e7c8",
+  "spec/classes/init_spec.rb": "ba4062e84d3f53c484c76514b62e5ad3",
   "spec/spec.opts": "6af1d8720d85a510f132e3250aa61075",
   "spec/spec_helper.rb": "c97349efb008b3ef1e77afc51cc9bff5",
   "templates/gutterball-db.erb": "2584d09a7f4f3cd12842a01b8edcd372",
-  "templates/gutterball.conf.erb": "64e39ac6f1009e889064bd8b1fc0a542"
+  "templates/gutterball.conf.erb": "aab82037f759145648085fd8fd86a94f"
 }
