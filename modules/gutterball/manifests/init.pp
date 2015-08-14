@@ -20,21 +20,17 @@
 # $amqp_broker_port::      AMQP service's port number
 #
 class gutterball (
-  $amqp_broker_host = $::fqdn,
-  $amqp_broker_port = '5671',
-  $gutterball_conf_file = $gutterball::params::gutterball_conf_file,
-  $dbuser = $gutterball::params::dbuser,
-  $dbpassword = $gutterball::params::dbpassword,
-  $keystore_password = $gutterball::params::keystore_password,
-  $tomcat = $gutterball::params::tomcat,
+  $amqp_broker_host     = $::fqdn,
+  $amqp_broker_port     = '5671',
+  $gutterball_conf_file = $::gutterball::params::gutterball_conf_file,
+  $dbuser               = $::gutterball::params::dbuser,
+  $dbpassword           = $::gutterball::params::dbpassword,
+  $keystore_password    = $::gutterball::params::keystore_password,
+  $tomcat               = $::gutterball::params::tomcat,
 ) inherits gutterball::params {
 
   class { '::gutterball::install': } ~>
-  class { '::gutterball::config':
-    amqp_broker_host  => $amqp_broker_host,
-    amqp_broker_port  => $amqp_broker_port,
-    keystore_password => $keystore_password,
-  } ~>
+  class { '::gutterball::config': } ~>
   class { '::gutterball::database': } ~>
   class { '::gutterball::service': } ~>
   Class['gutterball']

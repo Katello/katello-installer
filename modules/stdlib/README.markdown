@@ -99,6 +99,7 @@ All parameters are optional, unless otherwise noted.
 * `multiple`: Determines if `match` and/or `after` can change multiple lines. If set to false, an exception will be raised if more than one line matches. Valid options: 'true', 'false'. Default: Undefined.
 * `name`: Sets the name to use as the identity of the resource. This is necessary if you want the resource namevar to differ from the supplied `title` of the resource. Valid options: String. Default: Undefined.
 * `path`: **Required.** Defines the file in which Puppet will ensure the line specified by `line`. Must be an absolute path to the file.
+* `replace`: Defines whether the resource will overwrite an existing line that matches the `match` parameter. If set to false and a line is found matching the `match` param, the line will not be placed in the file. Valid options: true, false, yes, no. Default: true
 
 
 ### Functions
@@ -449,6 +450,17 @@ Loads a YAML file containing an array, string, or hash, and returns the data in 
 
 *Type*: rvalue.
 
+#### `load_module_metadata`
+
+Loads the metadata.json of a target module. Can be used to determine module version and authorship for dynamic support of modules.
+
+  ~~~
+  $metadata = load_module_metadata('archive')
+  notify { $metadata['author']: }
+  ~~~
+
+*Type*: rvalue.
+
 #### `lstrip`
 
 Strips spaces to the left of a string. *Type*: rvalue.
@@ -578,7 +590,7 @@ Randomizes the order of a string or array elements. *Type*: rvalue.
 
 #### `size`
 
-Returns the number of elements in a string or an array. *Type*: rvalue.
+Returns the number of elements in a string, an array or a hash. *Type*: rvalue.
 
 #### `sort`
 
@@ -888,7 +900,7 @@ Validates that the first argument is an integer (or an array of integers). Abort
 
   * Plus all of the above, but any combination of values passed as strings ('false' or "false").
   * Plus all of the above, but with incorrect combinations of negative integer values.
-  * Plus all of the above, but with non-integer crap in arrays or maximum / minimum argument.
+  * Plus all of the above, but with non-integer items in arrays or maximum / minimum argument.
 
   *Type*: statement.
 

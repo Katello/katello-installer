@@ -6,10 +6,13 @@
 #
 # $prefix::     Prefix to use
 #
+# $direction:: Direction when using asymmetric routing
+#
 # $connector::  Connector for this link route pattern
 #
 define qpid::router::link_route_pattern(
   $prefix    = 'queue.',
+  $direction = undef,
   $connector = undef,
 ){
 

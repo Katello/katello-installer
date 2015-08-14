@@ -15,7 +15,7 @@
 #
 class qpid::router(
   $router_id               = $qpid::router::params::router_id,
-  $mode                    = $qpid::router::params::mode,
+  $mode                    = $qpid::router::params::router_mode,
   $config_file             = $qpid::router::params::config_file,
   $container_name          = $qpid::router::params::container_name,
   $router_packages         = $qpid::router::params::router_packages,

@@ -78,6 +78,12 @@ Puppet::Type.newtype(:file_line) do
     end
   end
 
+  newparam(:replace) do
+    desc 'If true, replace line that matches. If false, do not write line if a match is found'
+    newvalues(true, false)
+    defaultto true
+  end
+
   # Autorequire the file resource if it's being managed
   autorequire(:file) do
     self[:path]
