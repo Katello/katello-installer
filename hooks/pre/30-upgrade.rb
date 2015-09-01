@@ -1,17 +1,13 @@
 def stop_services
-  Kafo::Helpers.execute('katello-service stop --exclude mongod')
+  Kafo::Helpers.execute('katello-service stop --exclude mongod,postgresql')
 end
 
-def start_mongo
-  status = Kafo::Helpers.execute('service-wait mongod status')
-  Kafo::Helpers.execute('service-wait mongod start') unless status
-  Kafo::Helpers.execute('service-wait mongod status')
+def start_databases
+  Kafo::Helpers.execute('katello-service start --only mongod,postgresql')
 end
 
 def start_httpd
-  status = Kafo::Helpers.execute('service-wait httpd status')
-  Kafo::Helpers.execute('service-wait httpd start') unless status
-  Kafo::Helpers.execute('service-wait httpd status')
+  Kafo::Helpers.execute('katello-service start --only httpd')
 end
 
 def migrate_candlepin
@@ -62,9 +58,9 @@ end
 if app_value(:upgrade)
   Kafo::Helpers.log_and_say :info, 'Upgrading...'
   upgrade_step :stop_services
+  upgrade_step :start_databases
 
   if Kafo::Helpers.module_enabled?(@kafo, 'katello') || @kafo.param('capsule', 'pulp').value
-    upgrade_step :start_mongo
     upgrade_step :migrate_pulp
     upgrade_step :start_httpd
   end
