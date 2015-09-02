@@ -1,3 +1,5 @@
+require 'rake/clean'
+
 BUILDDIR = File.expand_path(ENV['BUILDDIR'] || '_build')
 PKGDIR = ENV['PKGDIR'] || File.expand_path('pkg')
 
@@ -19,7 +21,7 @@ end
 
 namespace :pkg do
   desc 'Generate package source tar.bz2'
-  task :generate_source => [PKGDIR, "#{BUILDDIR}/modules"] do
+  task :generate_source => [:clean, PKGDIR, "#{BUILDDIR}/modules"] do
 
     version = File.read('VERSION').chomp
     raise "can't read VERSION" if version.length == 0
@@ -33,5 +35,7 @@ namespace :pkg do
     `gzip -9 #{PKGDIR}/katello-installer-#{version}.tar`
   end
 end
+
+CLEAN.include(BUILDDIR, PKGDIR)
 
 task :default => ['pkg:generate_source']
