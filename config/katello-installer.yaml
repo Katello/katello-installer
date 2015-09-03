@@ -27,6 +27,7 @@
     :foreman::plugin::puppetdb:
       :dir_name: foreman
       :manifest_name: plugin/puppetdb
+      :params_name: plugin/puppetdb/params
     :foreman::plugin::hooks:
       :dir_name: foreman
       :manifest_name: plugin/hooks
@@ -40,6 +41,7 @@
     :foreman::plugin::tasks:
       :dir_name: foreman
       :manifest_name: plugin/tasks
+      :params_name: plugin/tasks/params
     :foreman::plugin::templates:
       :dir_name: foreman
       :manifest_name: plugin/templates
