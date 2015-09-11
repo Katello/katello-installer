@@ -4,7 +4,7 @@
 
 Name:    katello-installer-base
 Version: 2.3.1
-Release: 5%{?dist}
+Release: 6%{?dist}
 Summary: Puppet-based installer for the Katello and Katello Capsule
 Group:   Applications/System
 License: GPLv3+ and ASL 2.0
@@ -205,6 +205,10 @@ ln -sf %{_datadir}/capsule-installer/bin/capsule-remove %{buildroot}/%{_sbindir}
 %doc README.*
 
 %changelog
+* Fri Sep 11 2015 Stephen Benjamin <stbenjam@redhat.com> 2.3.1-6
+- Update puppet modules for 2.3.1 (stbenjam@redhat.com)
+- refs #10210 - set CRL to false with migration (stbenjam@redhat.com)
+
 * Fri Aug 14 2015 Stephen Benjamin <stbenjam@redhat.com> 2.3.1-5
 - Update modules for Katello 2.3 RC3 (stbenjam@redhat.com)
 
