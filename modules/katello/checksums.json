@@ -19,7 +19,7 @@
   "manifests/plugin/gutterball/config.pp": "c1d9d4c45066044296ad1758d7feba05",
   "manifests/plugin/gutterball.pp": "5c04d3001ebe8e13a5b7ea529afef294",
   "manifests/qpid.pp": "dae8509c5a0272dc0727787b245096b0",
-  "metadata.json": "d39e3e4fa958be7e3ccf264f11efa836",
+  "metadata.json": "de8ff86702f64e7a6cd9ad68d89d3488",
   "spec/classes/coverage_spec.rb": "5b6dfa0dd426aca0ccfae23c0a629f0b",
   "spec/classes/katello_config_spec.rb": "33b8e7eda9b6fcfa9053e3aa4c3478df",
   "spec/classes/katello_spec.rb": "1711cfe8ae541ac26834167fa635484e",
@@ -29,7 +29,7 @@
   "spec/spec_helper_acceptance.rb": "17222484897f97955b182d15485eb0fd",
   "templates/client.conf.erb": "eac85dbfb4e4e11286d04c1c56c0b14b",
   "templates/etc/httpd/conf.d/05-foreman-ssl.d/katello.conf.erb": "e82db167a73b1dfee329f9adc7dc951f",
-  "templates/etc/httpd/conf.d/05-foreman.d/katello.conf.erb": "9a66b6f0edab1ced762055c0ab4d01ef",
+  "templates/etc/httpd/conf.d/05-foreman.d/katello.conf.erb": "bc522695d801b3f3023c56d5e68a65c2",
   "templates/etc/sysconfig/katello.erb": "0fa5f405f6c8ddc7be4878020e014344",
   "templates/katello.yml.erb": "08254c4e552c8354a0ac0d453dfa3d4f",
   "templates/plugin/gutterball/gutterball.yaml.erb": "9db1721b3cb851506e5665a24b4ce3e1"

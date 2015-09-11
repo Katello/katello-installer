@@ -216,7 +216,7 @@ IPv6 rules can be specified using the _ip6tables_ provider:
 
 ~~~puppet
 firewall { '006 Allow inbound SSH (v6)':
-  port     => 22,
+  dport     => 22,
   proto    => tcp,
   action   => accept,
   provider => 'ip6tables',
@@ -240,7 +240,7 @@ class profile::apache {
   apache::vhost { 'mysite': ensure => present }
 
   firewall { '100 allow http and https access':
-    port   => [80, 443],
+    dport   => [80, 443],
     proto  => tcp,
     action => accept,
   }
@@ -621,7 +621,7 @@ firewall { '999 this runs last':
 
 * `pkttype`: Sets the packet type to match. Valid values are: 'unicast', 'broadcast', and'multicast'. Requires the `pkttype` feature.
 
-* `port`: The destination or source port to match for this filter (if the protocol supports ports). Will accept a single element or an array. For some firewall providers you can pass a range of ports in the format: 'start number-end number'. For example, '1-1024' would cover ports 1 to 1024.
+* `port`: *DEPRECATED* Using the unspecific 'port' parameter can lead to firewall rules that are unexpectedly too lax. It is recommended to always use the specific dport and sport parameters to avoid this ambiguity. The destination or source port to match for this filter (if the protocol supports ports). Will accept a single element or an array. For some firewall providers you can pass a range of ports in the format: 'start number-end number'. For example, '1-1024' would cover ports 1 to 1024.
 
 * `proto`: The specific protocol to match for this rule. This is 'tcp' by default. Valid values are:
   * 'tcp'
