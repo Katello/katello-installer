@@ -1,3 +1,24 @@
+##2015-09-08 - Supported Release 4.9.0
+###Summary
+
+This release adds new features including the new functions dos2unix, unix2dos, try_get_value, convert_base as well as other features and improvements.
+
+####Features
+- (MODULES-2370) allow `match` parameter to influence `ensure => absent` behavior
+- (MODULES-2410) Add new functions dos2unix and unix2dos
+- (MODULE-2456) Modify union to accept more than two arrays
+- Adds a convert_base function, which can convert numbers between bases
+- Add a new function "try_get_value"
+
+####Bugfixes
+- n/a
+
+####Improvements
+- (MODULES-2478) Support root_home fact on AIX through "lsuser" command
+- Acceptance test improvements
+- Unit test improvements
+- Readme improvements
+
 ## 2015-08-10 - Supported Release 4.8.0
 ### Summary
 This release adds a function for reading metadata.json from any module, and expands file\_line's abilities.

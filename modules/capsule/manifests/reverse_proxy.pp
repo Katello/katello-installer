@@ -22,7 +22,7 @@ class capsule::reverse_proxy (
     ssl_proxyengine   => true,
     ssl_cert          => $certs::apache::apache_cert,
     ssl_key           => $certs::apache::apache_key,
-    ssl_ca            => $certs::katello_server_ca_cert,
+    ssl_ca            => $certs::ca_cert,
     ssl_verify_client => 'optional',
     ssl_verify_depth  => 10,
     request_headers   => ['set X_RHSM_SSL_CLIENT_CERT "%{SSL_CLIENT_CERT}s"'],
@@ -41,7 +41,7 @@ class capsule::reverse_proxy (
       },
     ],
     custom_fragment   => "
-      SSLProxyCACertificateFile ${::certs::katello_server_ca_cert}
+      SSLProxyCACertificateFile ${::certs::ca_cert}
       SSLProxyMachineCertificateFile ${certs::foreman_proxy::foreman_proxy_ssl_client_bundle}
     ",
   }

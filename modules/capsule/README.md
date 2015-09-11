@@ -1,3 +1,5 @@
+[![Puppet Forge](http://img.shields.io/puppetforge/v/katello/capsule.svg)](https://forge.puppetlabs.com/katello/capsule)
+[![Build Status](https://travis-ci.org/Katello/puppet-capsule.svg?branch=master)](https://travis-ci.org/Katello/puppet-capsule)
 ####Table of Contents
 
 1. [Overview](#overview)
@@ -37,4 +39,3 @@ If your most recent release breaks compatibility or requires particular steps fo
 ##Development
 
 See the CONTRIBUTING guide for steps on how to make a change and get it accepted upstream.
-
