@@ -91,7 +91,7 @@ Validation succeeded.
 
 To install the satellite with the custom certificates, run:
 
-katello-installer --certs-server-cert "$CERT_FILE"\\
+katello-installer     --certs-server-cert "$CERT_FILE"\\
                       --certs-server-cert-req "$REQ_FILE"\\
                       --certs-server-key "$KEY_FILE"\\
                       --certs-server-ca-cert "$CA_BUNDLE_FILE"
