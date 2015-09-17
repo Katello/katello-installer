@@ -89,7 +89,14 @@ if [ $EXIT_CODE == "0" ]; then
     cat <<EOF
 Validation succeeded.
 
-To use the certificates on the Katello main server, run:
+To install the satellite with the custom certificates, run:
+
+katello-installer --certs-server-cert "$CERT_FILE"\\
+                      --certs-server-cert-req "$REQ_FILE"\\
+                      --certs-server-key "$KEY_FILE"\\
+                      --certs-server-ca-cert "$CA_BUNDLE_FILE"
+
+To update the certificates on a currently installed satellite, run:
 
     katello-installer --certs-server-cert "$CERT_FILE"\\
                       --certs-server-cert-req "$REQ_FILE"\\
