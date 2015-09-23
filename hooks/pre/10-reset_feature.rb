@@ -7,7 +7,6 @@ def reset
     reset_database
     reset_candlepin
     reset_pulp
-    reset_elasticsearch
 
   else
     Kafo::KafoConfigure.logger.warn 'Katello not installed yet, can not drop database!'
@@ -55,15 +54,6 @@ def reset_pulp
     'rm -rf /var/lib/pulp/{distributions,published,repos}/*'
   ]
 
-  Kafo::Helpers.execute(commands)
-end
-
-def reset_elasticsearch
-  Kafo::KafoConfigure.logger.info 'Dropping Elasticsearch!'
-  commands = [
-    'service-wait elasticsearch stop',
-    'rm -rf /var/lib/elasticsearch/*',
-  ]
   Kafo::Helpers.execute(commands)
 end
 
