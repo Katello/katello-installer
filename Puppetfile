@@ -4,34 +4,41 @@ forge 'https://forgeapi.puppetlabs.com'
 #        Foreman         #
 ##########################
 
-mod 'puppetlabs-postgresql'
-mod 'puppetlabs-mysql'
-mod 'puppetlabs/puppetdb',      '< 5.0.0'
-mod 'theforeman-dhcp',          :git => 'https://github.com/theforeman/puppet-dhcp'
-mod 'theforeman-dns',           :git => 'https://github.com/theforeman/puppet-dns'
-mod 'theforeman-git',           :git => 'https://github.com/theforeman/puppet-git'
-mod 'theforeman-tftp',          :git => 'https://github.com/theforeman/puppet-tftp'
+# Dependencies
+mod 'puppetlabs/apache',        '< 1.7.0'
+mod 'puppetlabs/concat',        '< 1.3.0'
+mod 'puppetlabs/mysql',         '< 3.7.0'
+mod 'puppetlabs/postgresql',    '< 4.7.0'
+mod 'puppetlabs/puppetdb',      '< 4.4.0'
+mod 'puppetlabs/stdlib',        '< 5.0.0'
+mod 'theforeman/dhcp',          '>= 2.2.0 < 2.3.0'
+mod 'theforeman/dns',           '>= 3.1.0 < 3.2.0'
+mod 'theforeman/git',           '>= 1.5.0 < 1.6.0'
+mod 'theforeman/tftp',          '>= 1.6.0 < 1.7.0'
 
-mod 'theforeman-foreman',       :git => 'https://github.com/theforeman/puppet-foreman'
-mod 'theforeman-foreman_proxy', :git => 'https://github.com/theforeman/puppet-foreman_proxy'
-mod 'theforeman-puppet',        :git => 'https://github.com/theforeman/puppet-puppet'
+# Top-level modules
+mod 'theforeman/foreman',       '>= 5.0.0 < 5.1.0'
+mod 'theforeman/foreman_proxy', '>= 2.4.0 < 2.5.0'
+mod 'theforeman/puppet',        '>= 4.2.0 < 4.3.0'
 
 ##########################
 #        Katello         #
 ##########################
 
-# Katello specific modules
-mod 'katello-candlepin',        :git => 'https://github.com/Katello/puppet-candlepin'
-mod 'katello-capsule',          :git => 'https://github.com/Katello/puppet-capsule'
-mod 'katello-certs',            :git => 'https://github.com/Katello/puppet-certs'
-mod 'katello-common',           :git => 'https://github.com/Katello/puppet-common'
-mod 'katello-crane',            :git => 'https://github.com/Katello/puppet-crane'
-mod 'katello-elasticsearch',    :git => 'https://github.com/Katello/puppet-elasticsearch'
-mod 'katello-gutterball',       :git => 'https://github.com/Katello/puppet-gutterball'
-mod 'katello-katello',          :git => 'https://github.com/Katello/puppet-katello'
-mod 'katello-pulp',             :git => 'https://github.com/Katello/puppet-pulp'
-mod 'katello-qpid',             :git => 'https://github.com/Katello/puppet-qpid'
-mod 'katello-service_wait',     :git => 'https://github.com/Katello/puppet-service_wait'
+# Dependencies
+mod 'katello-qpid',             '>= 1.1.0 < 1.2.0'
+mod 'katello-candlepin',        '>= 0.2.0 < 0.3.0'
+mod 'katello-pulp',             '>= 1.0.0 < 1.1.0'
+mod 'katello-service_wait',     '>= 0.1.0 < 0.2.0'
+mod 'katello-elasticsearch',    '>= 0.1.0 < 0.2.0'
+mod 'katello-crane',            '>= 0.1.0 < 0.2.0'
+mod 'katello-common',           '>= 0.1.0 < 0.2.0'
+mod 'katello-gutterball',       '>= 0.2.0 < 0.3.0'
+
+# Top-level modules
+mod 'katello-katello',          '>= 2.0.0 < 2.1.0'
+mod 'katello-capsule',          '>= 1.0.0 < 1.1.0'
+mod 'katello-certs',            '>= 0.2.0 < 0.3.0'
 
 # Katello devel specific modules
 mod 'katello-katello_devel',    :git => 'https://github.com/Katello/puppet-katello_devel'
