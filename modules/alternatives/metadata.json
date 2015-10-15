@@ -1,0 +1,13 @@
+{
+  "name": "adrien-alternatives",
+  "version": "0.3.0",
+  "author": "Adrien Thebo <adrien@somethingsinistral.net>",
+  "summary": "Maintain symbolic links determining default commands",
+  "license": "Apache 2.0",
+  "source": "https://github.com/puppet-community/puppet-alternatives",
+  "project_page": "https://github.com/puppet-community/puppet-alternatives",
+  "issues_url": "https://github.com/puppet-community/puppet-alternatives/issues",
+  "dependencies": [
+  
+  ]
+}

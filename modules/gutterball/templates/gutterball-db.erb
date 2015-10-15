@@ -1,0 +1,60 @@
+#!/bin/bash
+
+function get_property_value_from_conf() {
+  name=$1
+  echo "$( cat <%= scope['gutterball::gutterball_conf_file'] %> | grep ${name} | head -n 1 | grep -o '\=.*$' | sed 's/^=//g' )"
+}
+
+URL="$( get_property_value_from_conf 'hibernate.*url' )"
+USERNAME="$( get_property_value_from_conf 'hibernate.*username' )"
+PASSWORD="$( get_property_value_from_conf 'hibernate.*password' )"
+
+usage() {
+cat <<EOF
+Usage: $0 [options]
+
+    Options:
+      migrate Runs liquibase migration
+      --username DB username
+      --password DB password
+EOF
+}
+
+[ $# -eq 0 ] && usage && exit 1
+
+while test $# -gt 0; do
+  case "$1" in
+      -h|help)
+        usage
+        exit 1
+        ;;
+      migrate)
+        gutterball_migrate=true
+        shift
+        ;;
+      --username*)
+        shift
+        export USERNAME=`echo $1 | sed -e 's/^[^=]*=//g'`
+        shift
+        ;;
+      --password*)
+        shift
+        export PASSWORD=`echo $1 | sed -e 's/^[^=]*=//g'`
+        shift
+        ;;
+      *)
+        break
+        ;;
+   esac
+done
+
+if [ "$gutterball_migrate" == true ];
+then
+  /usr/bin/liquibase --driver=org.postgresql.Driver \
+  --classpath=/usr/share/java/postgresql-jdbc.jar:/var/lib/<%= scope['::gutterball::tomcat'] %>/webapps/gutterball/WEB-INF/classes/ \
+          --changeLogFile=db/changelog/changelog.xml \
+          --url=$URL\
+          --username=$USERNAME\
+          --password=$PASSWORD\
+          update
+fi

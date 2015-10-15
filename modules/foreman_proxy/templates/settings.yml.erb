@@ -1,0 +1,89 @@
+---
+### File managed with puppet ###
+## Module:           '<%= scope.to_hash['module_name'] %>'
+
+:settings_directory: <%= scope.lookupvar("foreman_proxy::etc") -%>/foreman-proxy/settings.d
+
+# SSL Setup
+<% ssl  = scope.lookupvar("foreman_proxy::real_ssl") -%>
+<% http = scope.lookupvar("foreman_proxy::real_http") -%>
+
+# if enabled, all communication would be verfied via SSL
+# NOTE that both certificates need to be signed by the same CA in order for this to work
+# see http://theforeman.org/projects/smart-proxy/wiki/SSL for more information
+<% if ssl && scope.lookupvar("foreman_proxy::ssl_ca") -%>
+:ssl_ca_file: <%= scope.lookupvar("foreman_proxy::ssl_ca") %>
+<% else -%>
+#:ssl_ca_file: ssl/certs/ca.pem
+<% end -%>
+<% if ssl && scope.lookupvar("foreman_proxy::ssl_cert") -%>
+:ssl_certificate: <%= scope.lookupvar("foreman_proxy::ssl_cert") %>
+<% else -%>
+#:ssl_certificate: ssl/certs/fqdn.pem
+<% end -%>
+<% if ssl && scope.lookupvar("foreman_proxy::ssl_key") -%>
+:ssl_private_key: <%= scope.lookupvar("foreman_proxy::ssl_key") %>
+<% else -%>
+#:ssl_private_key: ssl/private_keys/fqdn.key
+<% end -%>
+
+# the hosts which the proxy accepts connections from
+# commenting the following lines would mean every verified SSL connection allowed
+<% if thosts = scope.lookupvar("foreman_proxy::trusted_hosts") and thosts.any? -%>
+:trusted_hosts:
+<% thosts.each do |h| -%>
+<%= "  - #{h}" %>
+<% end -%>
+<% else -%>
+#:trusted_hosts:
+#- foreman.prod.domain
+#- foreman.dev.domain
+<% end -%>
+
+# Endpoint for reverse communication
+:foreman_url: <%= scope.lookupvar("foreman_proxy::foreman_base_url") %>
+
+# SSL settings for client authentication against Foreman. If undefined, the values
+# from general SSL options are used instead. Mainly useful when Foreman uses
+# different certificates for its web UI and for smart-proxy requests.
+<% unless [nil, :undefined, :undef].include?(scope.lookupvar("foreman_proxy::foreman_ssl_ca")) -%>
+:foreman_ssl_ca: <%= scope.lookupvar("foreman_proxy::foreman_ssl_ca") %>
+<% else -%>
+#:foreman_ssl_ca: ssl/certs/ca.pem
+<% end -%>
+<% unless [nil, :undefined, :undef].include?(scope.lookupvar("foreman_proxy::foreman_ssl_cert")) -%>
+:foreman_ssl_cert: <%= scope.lookupvar("foreman_proxy::foreman_ssl_cert") %>
+<% else -%>
+#:foreman_ssl_cert: ssl/certs/fqdn.pem
+<% end -%>
+<% unless [nil, :undefined, :undef].include?(scope.lookupvar("foreman_proxy::foreman_ssl_key")) -%>
+:foreman_ssl_key: <%= scope.lookupvar("foreman_proxy::foreman_ssl_key") %>
+<% else -%>
+#:foreman_ssl_key: ssl/private_keys/fqdn.pem
+<% end -%>
+
+# by default smart_proxy runs in the foreground. To enable running as a daemon, uncomment 'daemon' setting
+:daemon: true
+# Only used when 'daemon' is set to true.
+# Uncomment and modify if you want to change the default pid file '/var/run/foreman-proxy/foreman-proxy.pid'
+#:daemon_pid: /var/run/foreman-proxy/foreman-proxy.pid
+
+# host and ports configuration
+# Host or IPs to bind on (e.g. *, localhost, 0.0.0.0, ::, 192.168.1.20)
+:bind_host: '<%= scope.lookupvar("foreman_proxy::bind_host") %>'
+# http is disabled by default. To enable, uncomment 'http_port' setting
+# https is enabled if certificate, CA certificate, and private key are present in locations specifed by
+# ssl_certificate, ssl_ca_file, and ssl_private_key correspondingly
+# default values for https_port is 8443
+<%= '#' unless ssl -%>:https_port: <%= scope.lookupvar("foreman_proxy::real_https_port") %>
+<%= '#' unless http -%>:http_port: <%= scope.lookupvar("foreman_proxy::real_http_port") %>
+
+# shared options for virsh DNS/DHCP provider
+:virsh_network: <%= scope.lookupvar("foreman_proxy::virsh_network") %>
+
+# Where our proxy log files are stored
+# filename or STDOUT
+:log_file: <%= scope.lookupvar("foreman_proxy::log") %>
+# valid options are
+# WARN, DEBUG, Error, Fatal, INFO, UNKNOWN
+:log_level: <%= scope.lookupvar("foreman_proxy::log_level") %>

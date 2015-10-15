@@ -1,0 +1,86 @@
+# dhcpd.conf
+omapi-port 7911;
+<% if @omapi_name && @omapi_key -%>
+key <%= @omapi_name %> {
+  algorithm HMAC-MD5;
+  secret "<%= @omapi_key %>";
+}
+omapi-key <%= @omapi_name %>;
+<% end -%>
+
+default-lease-time <%= @default_lease_time %>;
+max-lease-time <%= @max_lease_time %>;
+
+<% if @authoritative -%>
+# Make the server authoritative for the network segments that
+# are configured, and tell it to send DHCPNAKs to bogus requests
+authoritative;
+<% end -%>
+
+<% if has_variable?( 'dnsupdatekey' ) and @dnsupdatekey -%>
+ddns-updates on;
+ddns-update-style interim;
+update-static-leases on;
+use-host-decl-names on;
+
+<% if @ddns_domainname and !@ddns_domainname.empty? -%>
+ddns-domainname "<%= @ddns_domainname %>";
+<% end -%>
+<% if @ddns_rev_domainname and !@ddns_rev_domainname.empty? -%>
+ddns-rev-domainname "<%= @ddns_rev_domainname %>";
+<% end -%>
+
+# Key from bind
+include "<%= @dnsupdatekey %>";
+<% @dnsdomain.each do |dom| -%>
+zone <%= dom %>. {
+  primary <%= @nameservers.first %>;
+  key <%= @dnskeyname%>;
+}
+<% end -%>
+<% else %>
+ddns-update-style none;
+<% end -%>
+
+<% unless @dnsdomain.nil? || @dnsdomain.empty? -%>
+option domain-name "<%= @dnsdomain.first %>";
+<% end -%>
+option domain-name-servers <%= @nameservers.join( ', ') %>;
+<% if @ntpservers and !@ntpservers.empty? -%>
+option ntp-servers <%= @ntpservers.join(', ') %>;
+<% else -%>
+option ntp-servers none;
+<% end -%>
+
+allow booting;
+allow bootp;
+
+option fqdn.no-client-update    on;  # set the "O" and "S" flag bits
+option fqdn.rcode2            255;
+option pxegrub code 150 = text ;
+
+<% if has_variable?( 'option_static_route' ) && @option_static_route -%>
+option rfc3442-classless-static-routes code 121 = array of integer 8;
+option ms-classless-static-routes code 249 = array of integer 8;
+<% end -%>
+
+<% if @options.is_a? Array -%>
+<%   @options.each do |option| -%>
+option <%= option %>;
+<%   end -%>
+<% elsif @options && !@options.strip.empty? -%>
+  option <%= @options %>;
+<% end -%>
+
+<% if has_variable?( 'pxeserver' ) &&
+  has_variable?( 'pxefilename' ) &&
+  @pxeserver &&
+  @pxefilename -%>
+# PXE Handoff.
+next-server <%= @pxeserver %>;
+filename "<%= @pxefilename %>";
+<% end -%>
+
+log-facility <%= @logfacility %>;
+
+include "<%= @dhcp_dir %>/dhcpd.hosts";
