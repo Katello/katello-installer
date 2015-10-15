@@ -1,0 +1,49 @@
+#
+# Apache configuration file for pulp web services and repositories
+#
+
+# -- HTTPS Repositories ---------
+Alias /pulp/repos /var/www/pub/yum/https/repos
+
+# -- HTTPS Exports
+Alias /pulp/exports /var/www/pub/yum/https/exports
+
+<Directory /var/www/pub/yum/https>
+    WSGIAccessScript /srv/pulp/repo_auth.wsgi
+    SSLRequireSSL
+    SSLVerifyClient <%= scope['pulp::ssl_verify_client'] %>
+    SSLVerifyDepth 2
+    SSLOptions +StdEnvVars +ExportCertData +FakeBasicAuth
+    Options FollowSymLinks Indexes
+</Directory>
+
+# -- HTTP Repositories ---------
+<Directory /var/www/pub/yum/http>
+    Options FollowSymLinks Indexes
+</Directory>
+
+
+# -- HTTPS ISOS
+Alias /pulp/isos /var/www/pub/https/isos
+
+<Directory /var/www/pub/https/isos>
+    WSGIAccessScript /srv/pulp/repo_auth.wsgi
+    SSLRequireSSL
+    SSLVerifyClient <%= scope['pulp::ssl_verify_client'] %>
+    SSLVerifyDepth 2
+    SSLOptions +StdEnvVars +ExportCertData +FakeBasicAuth
+    Options FollowSymLinks Indexes
+</Directory>
+
+# --- HTTP ISOS
+<Directory /var/www/pub/http/isos >
+    Options FollowSymLinks Indexes
+</Directory>
+
+
+# -- GPG Keys -------------------
+Alias /pulp/gpg /var/www/pub/gpg
+
+<Directory /var/www/pub/gpg/>
+    Options FollowSymLinks Indexes
+</Directory>

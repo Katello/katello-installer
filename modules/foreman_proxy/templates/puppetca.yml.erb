@@ -1,0 +1,5 @@
+---
+# PuppetCA management
+:enabled: <%= @module_enabled %>
+:ssldir: <%= scope.lookupvar("foreman_proxy::ssldir") %>
+:puppetdir: <%= scope.lookupvar("foreman_proxy::puppetdir") %>
