@@ -1,0 +1,18 @@
+{
+  "CHANGELOG.md": "0e478caf3115c20d344a55f0779e0bcc",
+  "CONTRIBUTING.md": "2bb69681c48e07a172cb7875d14985c0",
+  "Gemfile": "c531bccb91f67f5628549eebcdbfb68e",
+  "LICENSE": "9eef91148a9b14ec7f9df333daebc746",
+  "README.md": "5f0b01638ba97ca3964305ad0c0e154e",
+  "Rakefile": "e348ac5f27cee76f2285e2cc9a2bfdf8",
+  "manifests/config.pp": "d42964360135bc032a59f2f3877be009",
+  "manifests/init.pp": "03e914841cb493cb6cb35d987f32471e",
+  "manifests/install.pp": "cfdebbd4f661f44c811ed33e69d201d3",
+  "manifests/params.pp": "2f3cba0c0d779938b57e4aec227265b0",
+  "manifests/service.pp": "ee3eec1355a56b1065351ff3edbc852f",
+  "metadata.json": "64f2406aae6645c85803c1069cc9daf3",
+  "spec/classes/init_spec.rb": "98d45d9f00660f3366e61060f145a55e",
+  "spec/spec.opts": "6af1d8720d85a510f132e3250aa61075",
+  "spec/spec_helper.rb": "f92e3b365a269e93ff2cbcf98f50e78c",
+  "templates/tftpd.map": "e25509e3ae895f72cf1671b614890797"
+}

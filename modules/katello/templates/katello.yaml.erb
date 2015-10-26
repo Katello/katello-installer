@@ -1,0 +1,33 @@
+### File managed with puppet ###
+## Module: puppet-katello
+
+:katello:
+  <%- if @cdn_ssl_version && !@cdn_ssl_version.strip.empty?-%>
+  :cdn_ssl_version: <%= @cdn_ssl_version %>
+  <%- end -%>
+
+  :rest_client_timeout: 120
+
+  :post_sync_url: https://localhost<%= @deployment_url %>/api/v2/repositories/sync_complete?token=<%= @post_sync_token %>
+
+  :candlepin:
+    :url: <%= @candlepin_url %>
+    :oauth_key: <%= @oauth_key %>
+    :oauth_secret: <%= @oauth_secret %>
+
+  :pulp:
+    :url: <%= @pulp_url %>
+    :oauth_key: <%= @oauth_key %>
+    :oauth_secret: <%= @oauth_secret %>
+
+  :qpid:
+    :url: <%= @qpid_url %>
+    :subscriptions_queue_address: <%= @candlepin_event_queue %>
+
+<%- if @proxy_url -%>
+  :cdn_proxy:
+    :host: <%= @proxy_url %>
+    :port: <%= @proxy_port %>
+    :user: <%= @proxy_username %>
+    :password: <%= @proxy_password %>
+<%- end -%>

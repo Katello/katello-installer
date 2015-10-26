@@ -1,0 +1,19 @@
+directory "<%= scope.lookupvar('::dns::vardir') %>";
+<% unless scope.lookupvar('::dns::forwarders').empty? -%>
+forwarders { <%= scope.lookupvar('::dns::forwarders').join("; ") %>; };
+<% end -%>
+
+recursion <%= scope.lookupvar('::dns::recursion') %>;
+allow-query { <%= scope.lookupvar('::dns::allow_query').join("; ") %>; };
+dnssec-enable <%= scope.lookupvar('::dns::dnssec_enable') %>;
+dnssec-validation <%= scope.lookupvar('::dns::dnssec_validation') %>;
+
+listen-on-v6 { <%= scope.lookupvar('::dns::listen_on_v6') %>; };
+
+<% unless scope.lookupvar('::dns::allow_recursion').empty? -%>
+allow-recursion { <%= scope.lookupvar('::dns::allow_recursion').join("; ") %>; };
+<% end -%>
+
+<% if (@osfamily =~ /^(FreeBSD|DragonFly)$/) -%>
+pid-file "/var/run/named/pid";
+<% end -%>
