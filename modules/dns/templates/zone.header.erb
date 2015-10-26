@@ -1,0 +1,13 @@
+$TTL <%= @ttl %>
+@ IN SOA <%= @soa %>. <%= @contact %> (
+	<%= @serial %>	;Serial
+	<%= @refresh %>	;Refresh
+	<%= @update_retry %>	;Retry
+	<%= @expire %>	;Expire
+	<%= @negttl %>	;Negative caching TTL
+)
+
+@ IN NS <%= @soa %>.
+<% if ! @reverse %>
+<%= @soa %>. IN A <%= @soaip %>
+<% end %>

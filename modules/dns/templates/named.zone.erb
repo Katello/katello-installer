@@ -1,0 +1,26 @@
+zone "<%= @zone %>" {
+    type <%= @zonetype %>;
+<% if @zonetype == 'forward' -%>
+    forward <%= @forward %>;
+<% end -%>
+<% if @manage_file == true -%>
+    file "<%= @zonefilename %>";
+<% end -%>
+<% if @zonetype == 'master' -%>
+    update-policy {
+            grant rndc-key zonesub ANY;
+    };
+<% end -%>
+<% unless @allow_transfer.empty? -%>
+    allow-transfer { <%= @allow_transfer.join('; ') %>; };
+<% end -%>
+<% unless @also_notify.empty? -%>
+    also-notify { <%= @also_notify.join('; ') %>; };
+<% end -%>
+<% unless @masters.empty? -%>
+    masters { <%= @masters.join('; ') %>; };
+<% end -%>
+<% unless @forwarders.empty? -%>
+    forwarders { <%= @forwarders.join('; ') %>; };
+<% end -%>
+};

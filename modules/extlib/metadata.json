@@ -1,0 +1,14 @@
+{
+  "name": "puppet-extlib",
+  "version": "0.10.4",
+  "author": "puppetcommunity",
+  "summary": "extlib provides functions out of scope puppetlabs/stdlib",
+  "license": "Apache-2.0",
+  "source": "https://github.com/puppet-community/puppetcommunity-extlib",
+  "project_page": "https://github.com/puppet-community/puppetcommunity-extlib",
+  "issues_url": "https://github.com/puppet-community/puppetcommunity-extlib/issues",
+  "description": "extlib provides functions out of scope puppetlabs/stdlib",
+  "dependencies": [
+    {"name":"puppetlabs/stdlib"}
+  ]
+}
