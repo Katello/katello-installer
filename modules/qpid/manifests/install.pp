@@ -11,4 +11,10 @@ class qpid::install {
     before => Service['qpidd'],
   }
 
+  if ($qpid::server_store) {
+    package { $qpid::server_store_package:
+      ensure => 'installed',
+      before => Service['qpidd'],
+    }
+  }
 }

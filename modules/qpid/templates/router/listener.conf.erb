@@ -8,5 +8,8 @@ listener {
 <% unless [nil, :undefined, :undef, ''].include?(@ssl_profile) -%>
     ssl-profile: <%= @ssl_profile %>
 <% end -%>
+<% unless [nil, :undefined, :undef, ''].include?(@idle_timeout) -%>
+    idle-timeout-seconds: <%= @idle_timeout %>
+<% end -%>
 }
 

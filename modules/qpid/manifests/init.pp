@@ -17,6 +17,11 @@
 #
 # $interface::                Interface to listen on
 #
+# $server_store::             Install a Qpid message store
+#                             type:boolean
+#
+# $server_store_package::     Package name for the Qpid message store
+#
 # $ssl::                      Use SSL with Qpid
 #                             type:boolean
 #
@@ -47,6 +52,8 @@ class qpid (
   $log_level               = $qpid::params::log_level,
   $log_to_syslog           = $qpid::params::log_to_syslog,
   $interface               = $qpid::params::interface,
+  $server_store            = $qpid::params::server_store,
+  $server_store_package    = $qpid::params::server_store_package,
   $ssl                     = $qpid::params::ssl,
   $ssl_port                = $qpid::params::ssl_port,
   $ssl_cert_db             = $qpid::params::ssl_cert_db,
