@@ -40,10 +40,11 @@ class capsule::dispatch_router (
 
     # Connect dispatch router to the local qpid
     qpid::router::connector { 'broker':
-      addr        => $capsule::qpid_router_broker_addr,
-      port        => $capsule::qpid_router_broker_port,
-      ssl_profile => 'client',
-      role        => 'on-demand',
+      addr         => $capsule::qpid_router_broker_addr,
+      port         => $capsule::qpid_router_broker_port,
+      ssl_profile  => 'client',
+      role         => 'on-demand',
+      idle_timeout => 0,
     }
 
     qpid::router::link_route_pattern { 'broker-pulp-route':
@@ -57,10 +58,11 @@ class capsule::dispatch_router (
     }
   } else {
     qpid::router::connector { 'hub':
-      addr        => $capsule::parent_fqdn,
-      port        => $capsule::qpid_router_hub_port,
-      ssl_profile => 'client',
-      role        => 'inter-router',
+      addr         => $capsule::parent_fqdn,
+      port         => $capsule::qpid_router_hub_port,
+      ssl_profile  => 'client',
+      role         => 'inter-router',
+      idle_timeout => 0,
     }
 
     qpid::router::link_route_pattern { 'hub-pulp-route':

@@ -264,6 +264,7 @@ class capsule (
   }
 
   class { '::capsule::install': } ~>
+  class { '::capsule::config': }
   class { '::certs::foreman_proxy':
     hostname => $capsule_fqdn,
     require  => Package['foreman-proxy'],
@@ -392,13 +393,24 @@ class capsule (
       ssl_cert_name          => 'broker',
     } ~>
     class { '::pulp':
+      enable_rpm                => true,
+      enable_puppet             => true,
+      enable_docker             => true,
       default_password          => $pulp_admin_password,
+      oauth_enabled             => true,
       oauth_key                 => $pulp_oauth_key,
       oauth_secret              => $pulp_oauth_secret,
       messaging_transport       => 'qpid',
+      messaging_auth_enabled    => false,
       messaging_ca_cert         => $certs::ca_cert,
       messaging_client_cert     => $certs::params::messaging_client_cert,
       messaging_url             => "ssl://${::fqdn}:5671",
+      broker_url                => "qpid://${qpid_router_broker_addr}:${qpid_router_broker_port}",
+      broker_use_ssl            => true,
+      manage_broker             => false,
+      manage_httpd              => false,
+      manage_plugins_httpd      => true,
+      repo_auth                 => true,
       node_oauth_effective_user => $pulp_oauth_effective_user,
       node_oauth_key            => $pulp_oauth_key,
       node_oauth_secret         => $pulp_oauth_secret,
@@ -451,6 +463,7 @@ class capsule (
     }
 
     if $pulp {
+      Certs::Tar_extract[$certs_tar] -> Class['certs'] -> Class['::certs::qpid']
       Certs::Tar_extract[$certs_tar] -> Class['certs::pulp_child']
     }
 
