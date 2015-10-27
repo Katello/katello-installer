@@ -107,6 +107,7 @@ describe 'qpid::client::config' do
          qpid::router::listener { "hub":
            role        => "inter-router",
            ssl_profile => "router-ssl",
+           idle_timeout => 0,
          }
         '
       end
@@ -120,6 +121,7 @@ describe 'qpid::client::config' do
           '    sasl-mechanisms: ANONYMOUS',
           '    role: inter-router',
           '    ssl-profile: router-ssl',
+          '    idle-timeout-seconds: 0',
           '}'
         ]
       end
@@ -130,10 +132,11 @@ describe 'qpid::client::config' do
         'class {"qpid::router":}
 
          qpid::router::connector { "broker":
-           addr        => "127.0.0.1",
-           port        => "5672",
-           role        => "on-demand",
-           ssl_profile => "router-ssl",
+           addr         => "127.0.0.1",
+           port         => "5672",
+           role         => "on-demand",
+           ssl_profile  => "router-ssl",
+           idle_timeout => 0,
          }
         '
       end
@@ -148,6 +151,7 @@ describe 'qpid::client::config' do
           '    sasl-mechanisms: ANONYMOUS',
           '    role: on-demand',
           '    ssl-profile: router-ssl',
+          '    idle-timeout-seconds: 0',
           '}'
         ]
       end

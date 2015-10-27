@@ -14,12 +14,15 @@
 #
 # $role::           Listener role
 #
+# $idle_timeout::   Timeout in seconds
+#
 define qpid::router::listener(
   $ssl_profile    = undef,
   $addr           = '0.0.0.0',
   $port           = 5672,
   $sasl_mech      = 'ANONYMOUS',
   $role           = undef,
+  $idle_timeout   = undef,
 ){
 
   concat_fragment {"qdrouter+listener_${title}.conf":
