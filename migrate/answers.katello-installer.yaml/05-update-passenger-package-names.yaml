@@ -1,0 +1,5 @@
+---
+update:
+  foreman:
+    passenger_ruby: /usr/bin/tfm-ruby
+    passenger_ruby_package: tfm-rubygem-passenger-native
