@@ -26,7 +26,7 @@ if [0,2].include?(@kafo.exit_code)
 
     if Kafo::Helpers.module_enabled?(@kafo, 'katello')
       say <<MSG
-  * To install additional capsule on separate machine continue by running:"
+  * To install additional capsule on separate machine continue by running:
 
       capsule-certs-generate --capsule-fqdn "<%= color('$CAPSULE', :info) %>" --certs-tar "<%= color('~/$CAPSULE-certs.tar', :info) %>"
 
