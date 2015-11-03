@@ -33,6 +33,16 @@ def migrate(yaml_file)
       end
     end
 
+    if migration['update']
+      contents.merge!(migration['update']) do |key, value1, value2|
+        if [value1, value2].all? { |value| value.is_a? Hash }
+          value1.merge(value2)
+        else
+          value2
+        end
+      end
+    end
+
     applied << migrate
     File.open(state, 'w') { |f| f.write(applied.to_yaml) }
   end
