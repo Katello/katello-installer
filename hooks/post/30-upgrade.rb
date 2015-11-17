@@ -22,6 +22,22 @@ def import_package_groups
   Kafo::Helpers.execute('foreman-rake katello:upgrades:2.4:import_package_groups')
 end
 
+def import_rpms
+  Kafo::Helpers.execute('foreman-rake katello:upgrades:2.4:import_rpms')
+end
+
+def import_distributions
+  Kafo::Helpers.execute('foreman-rake katello:upgrades:2.4:import_distributions')
+end
+
+def import_puppet_modules
+  Kafo::Helpers.execute('foreman-rake katello:upgrades:2.4:import_puppet_modules')
+end
+
+def import_subscriptions
+  Kafo::Helpers.execute('foreman-rake katello:upgrades:2.4:import_subscriptions')
+end
+
 def upgrade_step(step, options = {})
   noop = app_value(:noop) ? ' (noop)' : ''
   long_running = options[:long_running] ? ' (this may take a while) ' : ''
@@ -47,6 +63,10 @@ if app_value(:upgrade)
     upgrade_step :update_gpg_urls, :long_running => true
     upgrade_step :update_repository_metadata, :long_running => true
     upgrade_step :import_package_groups, :long_running => true
+    upgrade_step :import_rpms, :long_running => true
+    upgrade_step :import_distributions, :long_running => true
+    upgrade_step :import_puppet_modules, :long_running => true
+    upgrade_step :import_subscriptions, :long_running => true
   end
 
   if [0,2].include? @kafo.exit_code
