@@ -1,0 +1,6 @@
+---
+add:
+  :mapping:
+    :foreman::plugin::remote_execution:
+      :dir_name: foreman
+      :manifest_name: plugin/remote_execution

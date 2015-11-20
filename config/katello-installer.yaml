@@ -45,6 +45,10 @@
     :foreman::plugin::templates:
       :dir_name: foreman
       :manifest_name: plugin/templates
+    :foreman::plugin::remote_execution:
+      :dir_name: foreman
+      :manifest_name: plugin/remote_execution
+      :params_name: plugin/remote_execution/params
     :foreman::plugin::setup:
       :dir_name: foreman
       :manifest_name: plugin/setup
