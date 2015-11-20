@@ -2,6 +2,7 @@
 class capsule::params {
 
   include ::foreman_proxy::params
+  include ::foreman_proxy::plugin::remote_execution::ssh::params
 
   # when not specified, we expect all in one installation
   $parent_fqdn                = $::fqdn
@@ -75,6 +76,11 @@ class capsule::params {
   $realm_keytab                  = $foreman_proxy::params::realm_keytab
   $realm_principal               = $foreman_proxy::params::realm_principal
   $freeipa_remove_dns            = $foreman_proxy::params::freeipa_remove_dns
+
+  $remote_execution_ssh               = false
+  $remote_execution_ssh_generate_keys = $::foreman_proxy::plugin::remote_execution::ssh::params::generate_keys
+  $remote_execution_ssh_identity_dir  = $::foreman_proxy::plugin::remote_execution::ssh::params::ssh_identity_dir
+  $remote_execution_ssh_identity_file = $::foreman_proxy::plugin::remote_execution::ssh::params::ssh_identity_file
 
   # Templates proxy
   $templates                     = true

@@ -169,10 +169,6 @@
 #                               to false
 #                               type:boolean
 #
-# $enable_child_node::          Boolean to enable pulp child nodes. Defaults
-#                               to false
-#                               type:boolean
-#
 # $enable_http::                Boolean to enable http access to rpm repos. Defaults
 #                               to false
 #                               type:boolean
@@ -205,8 +201,6 @@
 # $node_oauth_key::             The oauth key used to authenticate to the parent node
 #
 # $node_oauth_secret::          The oauth secret used to authenticate to the parent node
-# 
-# $parent::                     Boolean whether the pulp install is a parent.
 class pulp (
   $version                   = $pulp::params::version,
   $db_name                   = $pulp::params::db_name,
@@ -277,7 +271,6 @@ class pulp (
   $node_oauth_effective_user = $pulp::params::node_oauth_effective_user,
   $node_oauth_key            = $pulp::params::node_oauth_key,
   $node_oauth_secret         = $pulp::params::node_oauth_secret,
-  $parent                    = $pulp::params::parent,
 ) inherits pulp::params {
   validate_bool($repo_auth)
   validate_bool($reset_cache)
@@ -291,7 +284,6 @@ class pulp (
   validate_bool($manage_httpd)
   validate_bool($manage_plugins_httpd)
   validate_bool($enable_parent_node)
-  validate_bool($parent)
 
   include ::mongodb::client
   include ::pulp::apache

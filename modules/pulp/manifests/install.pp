@@ -17,7 +17,7 @@ class pulp::install {
     )
   }
 
-  if $pulp::parent {
+  if $pulp::enable_parent_node {
     package { ['pulp-nodes-parent']: ensure => $pulp::version, }
   }
 
