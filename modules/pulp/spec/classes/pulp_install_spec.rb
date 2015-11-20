@@ -14,13 +14,13 @@ describe 'pulp::install' do
     }
   end
 
-  describe "with parent" do
+  describe "with enable_parent_node" do
     let :facts do
       default_facts
     end
 
     let :pre_condition do
-      "class {'pulp': parent => true}"
+      "class {'pulp': enable_parent_node => true}"
     end
     
     it { should contain_package('pulp-nodes-parent').with_ensure('installed') }

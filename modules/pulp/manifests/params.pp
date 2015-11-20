@@ -90,8 +90,6 @@ class pulp::params {
 
   $osreleasemajor = regsubst($::operatingsystemrelease, '^(\d+)\..*$', '\1')
 
-  $parent = false
-
   case $::osfamily {
     'RedHat' : {
       case $osreleasemajor {

@@ -79,6 +79,11 @@ class katello (
     enable_basic_auth            => false,
     consumer_system_name_pattern => '.+',
     adapter_module               => 'org.candlepin.katello.KatelloModule',
+    amq_enable                   => true,
+    amqp_keystore_password       => $::certs::candlepin::keystore_password,
+    amqp_truststore_password     => $::certs::candlepin::keystore_password,
+    amqp_keystore                => $::certs::candlepin::amqp_keystore,
+    amqp_truststore              => $::certs::candlepin::amqp_truststore,
   } ~>
   class { '::qpid':
     ssl                    => true,
@@ -110,7 +115,7 @@ class katello (
     enable_puppet          => true,
     enable_docker          => true,
     num_workers            => $num_pulp_workers,
-    parent                 => true,
+    enable_parent_node     => true,
   } ~>
   class { '::qpid::client':
     ssl                    => true,
@@ -123,7 +128,6 @@ class katello (
     client_key   => $certs::qpid::client_key,
     katello_user => $katello::user,
   } ~>
-  class{ '::elasticsearch': } ~>
   Exec['foreman-rake-db:seed']
 
   class { '::certs::foreman': }

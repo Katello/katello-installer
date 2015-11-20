@@ -28,7 +28,7 @@ mod 'theforeman/puppet',        '>= 4.2.0 < 4.3.0'
 # Dependencies
 mod 'katello-qpid',             '>= 1.1.0 < 1.2.0'
 mod 'katello-candlepin',        '>= 0.2.0 < 0.3.0'
-mod 'katello-pulp',             '>= 1.0.0 < 1.1.0'
+mod 'katello-pulp',             '>= 2.0.0 < 2.1.0'
 mod 'katello-service_wait',     '>= 0.1.0 < 0.2.0'
 mod 'katello-elasticsearch',    '>= 0.1.0 < 0.2.0'
 mod 'katello-crane',            '>= 0.1.0 < 0.2.0'

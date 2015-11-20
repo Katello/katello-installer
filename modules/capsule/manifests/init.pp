@@ -2,246 +2,259 @@
 #
 # === Parameters:
 #
-# $parent_fqdn::                    fqdn of the parent node. REQUIRED
+# $parent_fqdn::                        fqdn of the parent node. REQUIRED
 #
-# $certs_tar::                      path to a tar with certs for the node
+# $certs_tar::                          path to a tar with certs for the node
 #
-# $pulp::                           should Pulp be configured on the node
-#                                   type:boolean
+# $pulp::                               should Pulp be configured on the node
+#                                       type:boolean
 #
-# $pulp_master::                    whether the capsule should be identified as a pulp master server
+# $pulp_master::                        whether the capsule should be identified as a pulp master server
 #
-# $pulp_admin_password::            password for the Pulp admin user. It should be left blank so that a random password is generated
+# $pulp_admin_password::                password for the Pulp admin user. It should be left blank so that a random password is generated
 #
-# $pulp_oauth_effective_user::      User to be used for Pulp REST interaction
+# $pulp_oauth_effective_user::          User to be used for Pulp REST interaction
 #
-# $pulp_oauth_key::                 OAuth key to be used for Pulp REST interaction
+# $pulp_oauth_key::                     OAuth key to be used for Pulp REST interaction
 #
-# $pulp_oauth_secret::              OAuth secret to be used for Pulp REST interaction
+# $pulp_oauth_secret::                  OAuth secret to be used for Pulp REST interaction
 #
-# $foreman_proxy_port::             SSL port on which foreman proxy will listen
-#                                   type:integer
+# $foreman_proxy_port::                 SSL port on which foreman proxy will listen
+#                                       type:integer
 #
-# $foreman_proxy_http::             Foreman proxy listen on HTTP
-#                                   type:boolean
+# $foreman_proxy_http::                 Foreman proxy listen on HTTP
+#                                       type:boolean
 #
-# $foreman_proxy_http_port::        HTTP port on which foreman proxy will listen
-#                                   type:integer
+# $foreman_proxy_http_port::            HTTP port on which foreman proxy will listen
+#                                       type:integer
 #
-# $puppet::                         Use puppet
-#                                   type:boolean
+# $puppet::                             Use puppet
+#                                       type:boolean
 #
-# $puppetca::                       Use puppet ca
-#                                   type:boolean
+# $puppetca::                           Use puppet ca
+#                                       type:boolean
 #
-# $puppet_ca_proxy::                The actual server that handles puppet CA.
-#                                   Setting this to anything non-empty causes
-#                                   the apache vhost to set up a proxy for all
-#                                   certificates pointing to the value.
+# $puppet_ca_proxy::                    The actual server that handles puppet CA.
+#                                       Setting this to anything non-empty causes
+#                                       the apache vhost to set up a proxy for all
+#                                       certificates pointing to the value.
 #
-# $reverse_proxy::                  Add reverse proxy to the parent
-#                                   type:boolean
+# $remote_execution_ssh::               Enable remote execution SSH plugin
 #
-# $reverse_proxy_port::             reverse proxy listening port
+# $remote_execution_ssh_generate_keys:: Automatically generate SSH keys or not
 #
-# $tftp::                           Use TFTP
-#                                   type:boolean
+# $remote_execution_ssh_identity_dir::  Directory where SSH keys are stored
 #
-# $tftp_syslinux_root::             Directory that hold syslinux files
+# $remote_execution_ssh_identity_file:: Location of SSH key
 #
-# $tftp_syslinux_files::            Syslinux files to install on TFTP (copied from $tftp_syslinux_root)
-#                                   type:array
+# $reverse_proxy::                      Add reverse proxy to the parent
+#                                       type:boolean
 #
-# $tftp_root::                      TFTP root directory
+# $reverse_proxy_port::                 reverse proxy listening port
 #
-# $tftp_dirs::                      Directories to be create in $tftp_root
-#                                   type:array
+# $tftp::                               Use TFTP
+#                                       type:boolean
 #
-# $tftp_servername::                Defines the TFTP server name to use, overrides the name in the subnet declaration
+# $tftp_syslinux_root::                 Directory that hold syslinux files
 #
-# $bmc::                            Enable BMC feature
-#                                   type:boolean
+# $tftp_syslinux_files::                Syslinux files to install on TFTP (copied from $tftp_syslinux_root)
+#                                       type:array
 #
-# $bmc_default_provider::           BMC default provider.
+# $tftp_root::                          TFTP root directory
 #
-# $dhcp::                           Use DHCP
-#                                   type:boolean
+# $tftp_dirs::                          Directories to be create in $tftp_root
+#                                       type:array
 #
-# $dhcp_listen_on::                 DHCP proxy to listen on https, http, or both
+# $tftp_servername::                    Defines the TFTP server name to use, overrides the name in the subnet declaration
 #
-# $dhcp_option_domain::             DHCP config option domain-name
-#                                   type: array
+# $bmc::                                Enable BMC feature
+#                                       type:boolean
 #
-# $dhcp_managed::                   DHCP is managed by Foreman proxy
-#                                   type:boolean
+# $bmc_default_provider::               BMC default provider.
 #
-# $dhcp_interface::                 DHCP listen interface
+# $dhcp::                               Use DHCP
+#                                       type:boolean
 #
-# $dhcp_gateway::                   DHCP pool gateway
+# $dhcp_listen_on::                     DHCP proxy to listen on https, http, or both
 #
-# $dhcp_range::                     Space-separated DHCP pool range
+# $dhcp_option_domain::                 DHCP config option domain-name
+#                                       type: array
 #
-# $dhcp_nameservers::               DHCP nameservers
+# $dhcp_managed::                       DHCP is managed by Foreman proxy
+#                                       type:boolean
 #
-# $dhcp_vendor::                    DHCP vendor
+# $dhcp_interface::                     DHCP listen interface
 #
-# $dhcp_config::                    DHCP config file path
+# $dhcp_gateway::                       DHCP pool gateway
 #
-# $dhcp_leases::                    DHCP leases file
+# $dhcp_range::                         Space-separated DHCP pool range
 #
-# $dhcp_key_name::                  DHCP key name
+# $dhcp_nameservers::                   DHCP nameservers
 #
-# $dhcp_key_secret::                DHCP password
+# $dhcp_vendor::                        DHCP vendor
 #
-# $dns::                            Use DNS
-#                                   type:boolean
+# $dhcp_config::                        DHCP config file path
 #
-# $dns_managed::                    DNS is managed by Foreman proxy
-#                                   type:boolean
+# $dhcp_leases::                        DHCP leases file
 #
-# $dns_provider::                   DNS provider
+# $dhcp_key_name::                      DHCP key name
 #
-# $dns_zone::                       DNS zone name
+# $dhcp_key_secret::                    DHCP password
 #
-# $dns_reverse::                    DNS reverse zone name
+# $dns::                                Use DNS
+#                                       type:boolean
 #
-# $dns_interface::                  DNS interface
+# $dns_managed::                        DNS is managed by Foreman proxy
+#                                       type:boolean
 #
-# $dns_server::                     Address of DNS server to manage
+# $dns_provider::                       DNS provider
 #
-# $dns_ttl::                        DNS default TTL override
+# $dns_zone::                           DNS zone name
 #
-# $dns_tsig_keytab::                Kerberos keytab for DNS updates using GSS-TSIG authentication
+# $dns_reverse::                        DNS reverse zone name
 #
-# $dns_tsig_principal::             Kerberos principal for DNS updates using GSS-TSIG authentication
+# $dns_interface::                      DNS interface
 #
-# $dns_forwarders::                 DNS forwarders
-#                                   type:array
+# $dns_server::                         Address of DNS server to manage
 #
-# $virsh_network::                  Network for virsh DNS/DHCP provider
+# $dns_ttl::                            DNS default TTL override
 #
-# $realm::                          Use realm management
-#                                   type:boolean
+# $dns_tsig_keytab::                    Kerberos keytab for DNS updates using GSS-TSIG authentication
 #
-# $realm_provider::                 Realm management provider
+# $dns_tsig_principal::                 Kerberos principal for DNS updates using GSS-TSIG authentication
 #
-# $realm_keytab::                   Kerberos keytab path to authenticate realm updates
+# $dns_forwarders::                     DNS forwarders
+#                                       type:array
 #
-# $realm_principal::                Kerberos principal for realm updates
+# $virsh_network::                      Network for virsh DNS/DHCP provider
 #
-# $freeipa_remove_dns::             Remove DNS entries from FreeIPA when deleting hosts from realm
-#                                   type:boolean
+# $realm::                              Use realm management
+#                                       type:boolean
 #
-# $register_in_foreman::            Register proxy back in Foreman
-#                                   type:boolean
+# $realm_provider::                     Realm management provider
 #
-# $foreman_oauth_effective_user::   User to be used for Foreman REST interaction
+# $realm_keytab::                       Kerberos keytab path to authenticate realm updates
 #
-# $foreman_oauth_key::              OAuth key to be used for Foreman REST interaction
+# $realm_principal::                    Kerberos principal for realm updates
 #
-# $foreman_oauth_secret::           OAuth secret to be used for Foreman REST interaction
+# $freeipa_remove_dns::                 Remove DNS entries from FreeIPA when deleting hosts from realm
+#                                       type:boolean
 #
-# $rhsm_url::                       The URL that the RHSM API is rooted at
+# $register_in_foreman::                Register proxy back in Foreman
+#                                       type:boolean
 #
-# $templates::                      Enable templates proxying feature
-#                                   type:boolean
+# $foreman_oauth_effective_user::       User to be used for Foreman REST interaction
 #
-# $qpid_router::                    Configure qpid dispatch router
-#                                   type:boolean
+# $foreman_oauth_key::                  OAuth key to be used for Foreman REST interaction
 #
-# $qpid_router_hub_addr::           Address for dispatch router hub
+# $foreman_oauth_secret::               OAuth secret to be used for Foreman REST interaction
 #
-# $qpid_router_hub_port::           Port for dispatch router hub
+# $rhsm_url::                           The URL that the RHSM API is rooted at
 #
-# $qpid_router_agent_addr::         Listener address for goferd agents
+# $templates::                          Enable templates proxying feature
+#                                       type:boolean
 #
-# $qpid_router_agent_port::         Listener port for goferd agents
+# $qpid_router::                        Configure qpid dispatch router
+#                                       type:boolean
 #
-# $qpid_router_broker_addr::        Address of qpidd broker to connect to
+# $qpid_router_hub_addr::               Address for dispatch router hub
 #
-# $qpid_router_broker_port::        Port of qpidd broker to connect to
+# $qpid_router_hub_port::               Port for dispatch router hub
+#
+# $qpid_router_agent_addr::             Listener address for goferd agents
+#
+# $qpid_router_agent_port::             Listener port for goferd agents
+#
+# $qpid_router_broker_addr::            Address of qpidd broker to connect to
+#
+# $qpid_router_broker_port::            Port of qpidd broker to connect to
 #
 class capsule (
-  $parent_fqdn                   = $capsule::params::parent_fqdn,
-  $certs_tar                     = $capsule::params::certs_tar,
-  $pulp                          = $capsule::params::pulp,
-  $pulp_master                   = $capsule::params::pulp_master,
-  $pulp_admin_password           = $capsule::params::pulp_admin_password,
-  $pulp_oauth_effective_user     = $capsule::params::pulp_oauth_effective_user,
-  $pulp_oauth_key                = $capsule::params::pulp_oauth_key,
-  $pulp_oauth_secret             = $capsule::params::pulp_oauth_secret,
+  $parent_fqdn                        = $capsule::params::parent_fqdn,
+  $certs_tar                          = $capsule::params::certs_tar,
+  $pulp                               = $capsule::params::pulp,
+  $pulp_master                        = $capsule::params::pulp_master,
+  $pulp_admin_password                = $capsule::params::pulp_admin_password,
+  $pulp_oauth_effective_user          = $capsule::params::pulp_oauth_effective_user,
+  $pulp_oauth_key                     = $capsule::params::pulp_oauth_key,
+  $pulp_oauth_secret                  = $capsule::params::pulp_oauth_secret,
 
-  $foreman_proxy_port            = $capsule::params::foreman_proxy_port,
-  $foreman_proxy_http            = $capsule::params::foreman_proxy_http,
-  $foreman_proxy_http_port       = $capsule::params::foreman_proxy_http_port,
+  $foreman_proxy_port                 = $capsule::params::foreman_proxy_port,
+  $foreman_proxy_http                 = $capsule::params::foreman_proxy_http,
+  $foreman_proxy_http_port            = $capsule::params::foreman_proxy_http_port,
 
-  $puppet                        = $capsule::params::puppet,
-  $puppetca                      = $capsule::params::puppetca,
-  $puppet_ca_proxy               = $capsule::params::puppet_ca_proxy,
+  $puppet                             = $capsule::params::puppet,
+  $puppetca                           = $capsule::params::puppetca,
+  $puppet_ca_proxy                    = $capsule::params::puppet_ca_proxy,
 
-  $reverse_proxy                 = $capsule::params::reverse_proxy,
-  $reverse_proxy_port            = $capsule::params::reverse_proxy_port,
+  $remote_execution_ssh               = $capsule::params::remote_execution_ssh,
+  $remote_execution_ssh_generate_keys = $capsule::params::remote_execution_ssh_generate_keys,
+  $remote_execution_ssh_identity_dir  = $capsule::params::remote_execution_ssh_identity_dir,
+  $remote_execution_ssh_identity_file = $capsule::params::remote_execution_ssh_identity_file,
 
-  $tftp                          = $capsule::params::tftp,
-  $tftp_syslinux_root            = $capsule::params::tftp_syslinux_root,
-  $tftp_syslinux_files           = $capsule::params::tftp_syslinux_files,
-  $tftp_root                     = $capsule::params::tftp_root,
-  $tftp_dirs                     = $capsule::params::tftp_dirs,
-  $tftp_servername               = $capsule::params::tftp_servername,
+  $reverse_proxy                      = $capsule::params::reverse_proxy,
+  $reverse_proxy_port                 = $capsule::params::reverse_proxy_port,
 
-  $bmc                           = $capsule::params::bmc,
-  $bmc_default_provider          = $capsule::params::bmc_default_provider,
+  $tftp                               = $capsule::params::tftp,
+  $tftp_syslinux_root                 = $capsule::params::tftp_syslinux_root,
+  $tftp_syslinux_files                = $capsule::params::tftp_syslinux_files,
+  $tftp_root                          = $capsule::params::tftp_root,
+  $tftp_dirs                          = $capsule::params::tftp_dirs,
+  $tftp_servername                    = $capsule::params::tftp_servername,
 
-  $dhcp                          = $capsule::params::dhcp,
-  $dhcp_listen_on                = $capsule::params::dhcp_listen_on,
-  $dhcp_option_domain            = $capsule::params::dhcp_option_domain,
-  $dhcp_managed                  = $capsule::params::dhcp_managed,
-  $dhcp_interface                = $capsule::params::dhcp_interface,
-  $dhcp_gateway                  = $capsule::params::dhcp_gateway,
-  $dhcp_range                    = $capsule::params::dhcp_range,
-  $dhcp_nameservers              = $capsule::params::dhcp_nameservers,
-  $dhcp_vendor                   = $capsule::params::dhcp_vendor,
-  $dhcp_config                   = $capsule::params::dhcp_config,
-  $dhcp_leases                   = $capsule::params::dhcp_leases,
-  $dhcp_key_name                 = $capsule::params::dhcp_key_name,
-  $dhcp_key_secret               = $capsule::params::dhcp_key_secret,
+  $bmc                                = $capsule::params::bmc,
+  $bmc_default_provider               = $capsule::params::bmc_default_provider,
 
-  $dns                           = $capsule::params::dns,
-  $dns_managed                   = $capsule::params::dns_managed,
-  $dns_provider                  = $capsule::params::dns_provider,
-  $dns_zone                      = $capsule::params::dns_zone,
-  $dns_reverse                   = $capsule::params::dns_reverse,
-  $dns_interface                 = $capsule::params::dns_interface,
-  $dns_server                    = $capsule::params::dns_server,
-  $dns_ttl                       = $capsule::params::dns_ttl,
-  $dns_tsig_keytab               = $capsule::params::dns_tsig_keytab,
-  $dns_tsig_principal            = $capsule::params::dns_tsig_principal,
-  $dns_forwarders                = $capsule::params::dns_forwarders,
+  $dhcp                               = $capsule::params::dhcp,
+  $dhcp_listen_on                     = $capsule::params::dhcp_listen_on,
+  $dhcp_option_domain                 = $capsule::params::dhcp_option_domain,
+  $dhcp_managed                       = $capsule::params::dhcp_managed,
+  $dhcp_interface                     = $capsule::params::dhcp_interface,
+  $dhcp_gateway                       = $capsule::params::dhcp_gateway,
+  $dhcp_range                         = $capsule::params::dhcp_range,
+  $dhcp_nameservers                   = $capsule::params::dhcp_nameservers,
+  $dhcp_vendor                        = $capsule::params::dhcp_vendor,
+  $dhcp_config                        = $capsule::params::dhcp_config,
+  $dhcp_leases                        = $capsule::params::dhcp_leases,
+  $dhcp_key_name                      = $capsule::params::dhcp_key_name,
+  $dhcp_key_secret                    = $capsule::params::dhcp_key_secret,
 
-  $virsh_network                 = $capsule::params::virsh_network,
+  $dns                                = $capsule::params::dns,
+  $dns_managed                        = $capsule::params::dns_managed,
+  $dns_provider                       = $capsule::params::dns_provider,
+  $dns_zone                           = $capsule::params::dns_zone,
+  $dns_reverse                        = $capsule::params::dns_reverse,
+  $dns_interface                      = $capsule::params::dns_interface,
+  $dns_server                         = $capsule::params::dns_server,
+  $dns_ttl                            = $capsule::params::dns_ttl,
+  $dns_tsig_keytab                    = $capsule::params::dns_tsig_keytab,
+  $dns_tsig_principal                 = $capsule::params::dns_tsig_principal,
+  $dns_forwarders                     = $capsule::params::dns_forwarders,
 
-  $realm                         = $capsule::params::realm,
-  $realm_provider                = $capsule::params::realm_provider,
-  $realm_keytab                  = $capsule::params::realm_keytab,
-  $realm_principal               = $capsule::params::realm_principal,
-  $freeipa_remove_dns            = $capsule::params::freeipa_remove_dns,
+  $virsh_network                      = $capsule::params::virsh_network,
 
-  $register_in_foreman           = $capsule::params::register_in_foreman,
-  $foreman_oauth_effective_user  = $capsule::params::foreman_oauth_effective_user,
-  $foreman_oauth_key             = $capsule::params::foreman_oauth_key,
-  $foreman_oauth_secret          = $capsule::params::foreman_oauth_secret,
+  $realm                              = $capsule::params::realm,
+  $realm_provider                     = $capsule::params::realm_provider,
+  $realm_keytab                       = $capsule::params::realm_keytab,
+  $realm_principal                    = $capsule::params::realm_principal,
+  $freeipa_remove_dns                 = $capsule::params::freeipa_remove_dns,
 
-  $rhsm_url                      = $capsule::params::rhsm_url,
+  $register_in_foreman                = $capsule::params::register_in_foreman,
+  $foreman_oauth_effective_user       = $capsule::params::foreman_oauth_effective_user,
+  $foreman_oauth_key                  = $capsule::params::foreman_oauth_key,
+  $foreman_oauth_secret               = $capsule::params::foreman_oauth_secret,
 
-  $templates                     = $capsule::params::templates,
+  $rhsm_url                           = $capsule::params::rhsm_url,
 
-  $qpid_router                   = $capsule::params::qpid_router,
-  $qpid_router_hub_addr          = $capsule::params::qpid_router_hub_addr,
-  $qpid_router_hub_port          = $capsule::params::qpid_router_hub_port,
-  $qpid_router_agent_addr        = $capsule::params::qpid_router_agent_addr,
-  $qpid_router_agent_port        = $capsule::params::qpid_router_agent_port,
-  $qpid_router_broker_addr       = $capsule::params::qpid_router_broker_addr,
-  $qpid_router_broker_port       = $capsule::params::qpid_router_broker_port,
+  $templates                          = $capsule::params::templates,
+
+  $qpid_router                        = $capsule::params::qpid_router,
+  $qpid_router_hub_addr               = $capsule::params::qpid_router_hub_addr,
+  $qpid_router_hub_port               = $capsule::params::qpid_router_hub_port,
+  $qpid_router_agent_addr             = $capsule::params::qpid_router_agent_addr,
+  $qpid_router_agent_port             = $capsule::params::qpid_router_agent_port,
+  $qpid_router_broker_addr            = $capsule::params::qpid_router_broker_addr,
+  $qpid_router_broker_port            = $capsule::params::qpid_router_broker_port,
 ) inherits capsule::params {
 
   validate_present($capsule::parent_fqdn)
@@ -340,6 +353,7 @@ class capsule (
     dhcp_option_domain    => $dhcp_option_domain,
     dhcp_interface        => $dhcp_interface,
     dhcp_gateway          => $dhcp_gateway,
+    dhcp_managed          => $dhcp_managed,
     dhcp_range            => $dhcp_range,
     dhcp_nameservers      => $dhcp_nameservers,
     dhcp_vendor           => $dhcp_vendor,
@@ -372,6 +386,16 @@ class capsule (
     oauth_consumer_key    => $foreman_oauth_key,
     oauth_consumer_secret => $foreman_oauth_secret,
     templates             => $templates,
+  }
+
+  if $remote_execution_ssh {
+    class { '::foreman_proxy::plugin::remote_execution::ssh':
+        enabled           => $remote_execution_ssh,
+        generate_keys     => $remote_execution_ssh_generate_keys,
+        ssh_identity_dir  => $remote_execution_ssh_identity_dir,
+        ssh_identity_file => $remote_execution_ssh_identity_file,
+        require           => Class['::foreman_proxy'],
+    }
   }
 
   if $pulp {
