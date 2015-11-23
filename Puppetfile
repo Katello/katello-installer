@@ -26,7 +26,6 @@ mod 'katello-capsule',          :git => 'https://github.com/Katello/puppet-capsu
 mod 'katello-certs',            :git => 'https://github.com/Katello/puppet-certs'
 mod 'katello-common',           :git => 'https://github.com/Katello/puppet-common'
 mod 'katello-crane',            :git => 'https://github.com/Katello/puppet-crane'
-mod 'katello-elasticsearch',    :git => 'https://github.com/Katello/puppet-elasticsearch'
 mod 'katello-gutterball',       :git => 'https://github.com/Katello/puppet-gutterball'
 mod 'katello-katello',          :git => 'https://github.com/Katello/puppet-katello'
 mod 'katello-pulp',             :git => 'https://github.com/Katello/puppet-pulp'
