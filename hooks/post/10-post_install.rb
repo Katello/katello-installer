@@ -1,10 +1,10 @@
 def proxy_available?
   Kafo::Helpers.module_enabled?(@kafo, 'capsule') &&
    (@kafo.param('capsule', 'puppet').value ||
-    @kafo.param('capsule', 'puppetca').value ||
-    @kafo.param('capsule', 'dhcp').value ||
-    @kafo.param('capsule', 'dns').value ||
-    @kafo.param('capsule', 'tftp').value)
+    @kafo.param('foreman_proxy', 'puppetca').value ||
+    @kafo.param('foreman_proxy', 'dhcp').value ||
+    @kafo.param('foreman_proxy', 'dns').value ||
+    @kafo.param('foreman_proxy', 'tftp').value)
 end
 
 if [0,2].include?(@kafo.exit_code)
@@ -21,7 +21,7 @@ if [0,2].include?(@kafo.exit_code)
 
     # Capsule?
     if proxy_available?
-      say "  * <%= color('Capsule', :info) %> is running at <%= color('https://#{fqdn}:#{@kafo.param('capsule', 'foreman_proxy_port').value}', :info) %>"
+      say "  * <%= color('Capsule', :info) %> is running at <%= color('https://#{fqdn}:#{@kafo.param('foreman_proxy', 'ssl_port').value}', :info) %>"
     end
 
     if Kafo::Helpers.module_enabled?(@kafo, 'katello')

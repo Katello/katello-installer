@@ -22,11 +22,22 @@ foreman:
   websockets_ssl_key: /etc/pki/katello/private/katello-apache.key
   websockets_ssl_cert: /etc/pki/katello/certs/katello-apache.crt
 capsule:
-  register_in_foreman: true
   pulp_master: true
   puppet: true
-  puppetca: true
-  templates: false
+foreman_proxy:
+  custom_repo: true
+  http: true
+  port: '9090'
+  ssl_port: '9090'
+  templates: true
+  tftp: false
+  ssl_ca: /etc/foreman-proxy/ssl_ca.pem
+  ssl_cert: /etc/foreman-proxy/ssl_cert.pem
+  ssl_key: /etc/foreman-proxy/ssl_key.pem
+  foreman_ssl_ca: /etc/foreman-proxy/foreman_ssl_ca.pem
+  foreman_ssl_cert: /etc/foreman-proxy/foreman_ssl_cert.pem
+  foreman_ssl_key: /etc/foreman-proxy/foreman_ssl_key.pem
+foreman_proxy::plugin::pulp: true
 
 foreman::plugin::bootdisk: true
 foreman::plugin::discovery: true

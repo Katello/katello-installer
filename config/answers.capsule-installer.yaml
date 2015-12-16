@@ -3,3 +3,18 @@ certs:
   generate: false
   deploy: true
 capsule: true
+foreman_proxy:
+  custom_repo: true
+  http: true
+  ssl_port: '9090'
+  templates: true
+  tftp: false
+  ssl_ca: /etc/foreman-proxy/ssl_ca.pem
+  ssl_cert: /etc/foreman-proxy/ssl_cert.pem
+  ssl_key: /etc/foreman-proxy/ssl_key.pem
+  foreman_ssl_ca: /etc/foreman-proxy/foreman_ssl_ca.pem
+  foreman_ssl_cert: /etc/foreman-proxy/foreman_ssl_cert.pem
+  foreman_ssl_key: /etc/foreman-proxy/foreman_ssl_key.pem
+foreman_proxy::plugin::pulp:
+  enabled: false
+  pulpnode_enabled: true

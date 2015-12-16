@@ -10,9 +10,20 @@ katello_devel:
   rvm: true
 capsule:
   puppet: true
-  puppetca: true
   pulp_master: true
-  register_in_foreman: true
-
+foreman_proxy:
+  custom_repo: true
+  http: true
+  port: '9090'
+  ssl_port: '9090'
+  templates: true
+  tftp: false
+  ssl_ca: /etc/foreman-proxy/ssl_ca.pem
+  ssl_cert: /etc/foreman-proxy/ssl_cert.pem
+  ssl_key: /etc/foreman-proxy/ssl_key.pem
+  foreman_ssl_ca: /etc/foreman-proxy/foreman_ssl_ca.pem
+  foreman_ssl_cert: /etc/foreman-proxy/foreman_ssl_cert.pem
+  foreman_ssl_key: /etc/foreman-proxy/foreman_ssl_key.pem
+foreman_proxy::plugin::pulp: true
 katello_devel::plugin::gutterball: true
 katello_devel::plugin::foreman_gutterball: true
