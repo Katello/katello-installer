@@ -93,4 +93,17 @@ describe 'candlepin::config' do
     end
   end
 
+  describe 'with ssl_port' do
+    let :pre_condition do
+      "class {'candlepin':
+        ssl_port => 9070,
+      }"
+    end
+
+    it "should setup the tomcat config file" do
+      should contain_file('/etc/tomcat6/server.xml').
+        with_content(/^    <Connector port="9070" protocol="HTTP\/1.1" SSLEnabled="true"/).
+        with({})
+    end
+  end
 end
