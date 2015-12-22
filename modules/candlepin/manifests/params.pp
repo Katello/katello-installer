@@ -12,6 +12,8 @@ class candlepin::params {
     default => 'tomcat'
   }
 
+  $ssl_port = 8443
+
   $manage_db = true
   $db_type = 'postgresql'
   $db_host = 'localhost'

@@ -10,12 +10,12 @@
   "manifests/database/mysql.pp": "c3ac1d941a0c68b0444a59c1d1f158a1",
   "manifests/database/postgresql.pp": "b1d0536916bab7206fffaf7b8a6f9c79",
   "manifests/database.pp": "3e9bc087897252d013ce5a5f7fa312ee",
-  "manifests/init.pp": "2ded520550e44b77dae3243713469f80",
+  "manifests/init.pp": "7e92420d63f05b856472d8c8a583fa73",
   "manifests/install.pp": "f19d32fb250e5bcfb0bbe2d4671d201d",
-  "manifests/params.pp": "8706d1c21674013f83cb5f1f92dba2b4",
-  "manifests/service.pp": "fcd3e703448d2b8c5ac702efa09ab0e2",
-  "metadata.json": "e708655b166df10e08174bdc73a1a992",
-  "spec/classes/candlepin_config_spec.rb": "cff8a3b5c859728d4cced553dc2fcd84",
+  "manifests/params.pp": "2f04d0c69744547615b1a6ce46018f4f",
+  "manifests/service.pp": "1f967d16c9ae186b075d299fbe48d748",
+  "metadata.json": "71664a55146677ab904800ea9eef65c5",
+  "spec/classes/candlepin_config_spec.rb": "13440246644c2a56401538dea141eb7e",
   "spec/classes/candlepin_database_spec.rb": "5245683b3fb21368c901b8b804a77dd5",
   "spec/classes/candlepin_install_spec.rb": "422f3720910d89f7c71743d05d0bfa04",
   "spec/classes/candlepin_spec.rb": "6ce196c22bcc522f1df41129987184cd",
@@ -25,6 +25,6 @@
   "spec/spec_helper_acceptance.rb": "eff75621f3cb32e08d78fc394fb5ccf9",
   "templates/_candlepin_database.conf.erb": "2a9f3dba6cadf258d78b7376bb276db7",
   "templates/candlepin.conf.erb": "694a738b2dbf7e4e6fddb372d238bd54",
-  "templates/tomcat/server.xml.erb": "e26cb33f711dd1b82f0aec5bd1c899bc",
-  "templates/tomcat6/server.xml.erb": "67de3740a55d8cdee1cec31a70c717b8"
+  "templates/tomcat/server.xml.erb": "d545d1f8321f20f9e5d8b457b555fd09",
+  "templates/tomcat6/server.xml.erb": "210db7ba68496a621978737b6418f063"
 }

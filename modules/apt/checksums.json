@@ -1,5 +1,5 @@
 {
-  "CHANGELOG.md": "e49926ff292a2b21a249ae4e323c6921",
+  "CHANGELOG.md": "c89f565c9043979925bd318529491a9b",
   "CONTRIBUTING.md": "e2b8e8e433fc76b3798b7fe435f49375",
   "Gemfile": "bf3e2f7d33eb4497453331532e85a998",
   "LICENSE": "c236a08bf88c5c8e480957038c869ed1",
@@ -35,7 +35,7 @@
   "manifests/setting.pp": "cde5492c31b2b94c49bf67c7c96a6058",
   "manifests/source.pp": "c1be91ad56665839711ada25c6f10850",
   "manifests/update.pp": "93f132802d6280debfc46b35c656486f",
-  "metadata.json": "250a966dfdbde70657a318a693ac967b",
+  "metadata.json": "279d00e2bcea1a6d5a7d36c266521374",
   "spec/acceptance/apt_key_provider_spec.rb": "1e19756f710dbc8799b630721197786e",
   "spec/acceptance/apt_spec.rb": "0bd13c6cb16e56d049ad0a5770f9c1f3",
   "spec/acceptance/class_spec.rb": "7fa3ee3cade5e27891fe01aa8af8941d",

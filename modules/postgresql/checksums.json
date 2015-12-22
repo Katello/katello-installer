@@ -1,5 +1,5 @@
 {
-  "CHANGELOG.md": "3cec2a5a6d77e99549c5c80a9d21ca90",
+  "CHANGELOG.md": "07b17822934b9117fe3933c9f5c5b1ef",
   "CONTRIBUTING.md": "e2b8e8e433fc76b3798b7fe435f49375",
   "Gemfile": "e6e6eb07f0bfc9bb1e328895ca49b3f5",
   "LICENSE": "746fe83ebbf8970af0a9ea13962293e9",
@@ -53,7 +53,7 @@
   "manifests/server/tablespace.pp": "7a76820bae0f079bdbcde0be7a164f82",
   "manifests/server.pp": "60405bc9368079d6110b41522b104eac",
   "manifests/validate_db_connection.pp": "a4d331cfbc32562fd641b1fa4b54e35a",
-  "metadata.json": "4b1df540f3cad9f6fd854e6ae490acab",
+  "metadata.json": "73d27b7b82d4965b713972adaf431d31",
   "spec/acceptance/00-utf8_encoding_spec.rb": "68d1771b2ae116c394841a6d9ac81a0c",
   "spec/acceptance/alternative_port_spec.rb": "cf33ba48e8d54ba9f63ae7ad6c737d57",
   "spec/acceptance/db_spec.rb": "bad1c86df16a8d9a123416358b0fe0b6",

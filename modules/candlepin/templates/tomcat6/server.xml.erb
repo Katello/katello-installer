@@ -72,20 +72,20 @@
     -->
     <Connector port="8080" protocol="HTTP/1.1"
                connectionTimeout="20000"
-               redirectPort="8443" />
+               redirectPort="<%= scope['::candlepin::ssl_port'] %>" />
     <!-- A "Connector" using the shared thread pool-->
     <!--
     <Connector executor="tomcatThreadPool"
                port="8080" protocol="HTTP/1.1"
                connectionTimeout="20000"
-               redirectPort="8443" />
+               redirectPort="<%= scope['::candlepin::ssl_port'] %>" />
     -->
-    <!-- Define a SSL HTTP/1.1 Connector on port 8443
+    <!-- Define a SSL HTTP/1.1 Connector on port <%= scope['::candlepin::ssl_port'] %>
          This connector uses the JSSE configuration, when using APR, the
          connector should be using the OpenSSL style configuration
          described in the APR documentation -->
 
-    <Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
+    <Connector port="<%= scope['::candlepin::ssl_port'] %>" protocol="HTTP/1.1" SSLEnabled="true"
                maxThreads="150" scheme="https" secure="true"
                clientAuth="want"
                sslEnabledProtocols="TLSv1.2,TLSv1.1,TLSv1"
@@ -104,7 +104,7 @@
                truststorePass="<%= scope.lookupvar("candlepin::keystore_password") %>" />
 
     <!-- Define an AJP 1.3 Connector on port 8009 -->
-    <Connector port="8009" protocol="AJP/1.3" redirectPort="8443" />
+    <Connector port="8009" protocol="AJP/1.3" redirectPort="<%= scope['::candlepin::ssl_port'] %>" />
 
 
     <!-- An Engine represents the entry point (within Catalina) that processes

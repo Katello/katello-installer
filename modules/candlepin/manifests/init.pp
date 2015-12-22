@@ -86,6 +86,8 @@
 #                                 this feature may be required if modifications are required to the schema.
 #                                 default is true
 #
+# $ssl_port::                     Port to deploy SSL enabled Tomcat server on
+#
 class candlepin (
 
   $manage_db   = $candlepin::params::manage_db,
@@ -135,6 +137,8 @@ class candlepin (
   $enable_basic_auth = $candlepin::params::enable_basic_auth,
   $enable_trusted_auth = $candlepin::params::enable_trusted_auth,
   $consumer_system_name_pattern = $candlepin::params::consumer_system_name_pattern,
+
+  $ssl_port = $candlepin::params::ssl_port,
 
   ) inherits candlepin::params {
 
