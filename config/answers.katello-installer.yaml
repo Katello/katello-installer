@@ -28,9 +28,9 @@ capsule:
   puppetca: true
   templates: false
 
-foreman::plugin::bootdisk: true
-foreman::plugin::discovery: true
-foreman::plugin::hooks: true
+foreman::plugin::bootdisk: false
+foreman::plugin::discovery: false
+foreman::plugin::hooks: false
 foreman::plugin::tasks: true
 foreman::plugin::chef: false
 foreman::plugin::default_hostgroup: false
