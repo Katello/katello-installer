@@ -21,15 +21,14 @@ foreman:
   websockets_encrypt: true
   websockets_ssl_key: /etc/pki/katello/private/katello-apache.key
   websockets_ssl_cert: /etc/pki/katello/certs/katello-apache.crt
-capsule:
-  pulp_master: true
-  puppet: true
 foreman_proxy:
   custom_repo: true
+  puppetca: true
   http: true
-  port: '9090'
+  http_port: '8000'
   ssl_port: '9090'
-  templates: true
+  register_in_foreman: true
+  templates: false
   tftp: false
   ssl_ca: /etc/foreman-proxy/ssl_ca.pem
   ssl_cert: /etc/foreman-proxy/ssl_cert.pem
@@ -37,28 +36,44 @@ foreman_proxy:
   foreman_ssl_ca: /etc/foreman-proxy/foreman_ssl_ca.pem
   foreman_ssl_cert: /etc/foreman-proxy/foreman_ssl_cert.pem
   foreman_ssl_key: /etc/foreman-proxy/foreman_ssl_key.pem
-foreman_proxy::plugin::pulp: true
-
-foreman::plugin::bootdisk: false
-foreman::plugin::discovery: false
-foreman::plugin::hooks: false
-foreman::plugin::tasks: true
-foreman::plugin::chef: false
-foreman::plugin::default_hostgroup: false
-foreman::plugin::puppetdb: false
-foreman::plugin::setup: false
-foreman::plugin::templates: false
-foreman::plugin::remote_execution: false
+capsule:
+  pulp_master: true
+  puppet: true
 
 katello::plugin::gutterball: true
 
-# Issue #4244 - Commenting these out due to the seg fault
-# caused on Ruby 1.8.7, the Katello RPM ensures these
-# are installed instead
-#foreman::compute::ec2: true
-#foreman::compute::gce: true
-#foreman::compute::libvirt: true
-#foreman::compute::openstack: false
-#foreman::compute::ovirt: true
-#foreman::compute::rackspace: false
-#foreman::compute::vmware: true
+foreman::cli: true
+foreman::plugin::bootdisk: false
+foreman::plugin::chef: false
+foreman::plugin::cockpit: false
+foreman::plugin::default_hostgroup: false
+foreman::plugin::dhcp_browser: false
+foreman::plugin::digitalocean: false
+foreman::plugin::discovery: false
+foreman::plugin::docker: false
+foreman::plugin::memcache: false
+foreman::plugin::openscap: false
+foreman::plugin::ovirt_provision: false
+foreman::plugin::tasks: true
+foreman::plugin::hooks: false
+foreman::plugin::puppetdb: false
+foreman::plugin::remote_execution: false
+foreman::plugin::salt: false
+foreman::plugin::setup: false
+foreman::plugin::templates: false
+foreman::compute::ec2: false
+foreman::compute::gce: false
+foreman::compute::libvirt: false
+foreman::compute::openstack: false
+foreman::compute::ovirt: false
+foreman::compute::rackspace: false
+foreman::compute::vmware: false
+foreman_proxy::plugin::abrt: false
+foreman_proxy::plugin::chef: false
+foreman_proxy::plugin::discovery: false
+foreman_proxy::plugin::dns::powerdns: false
+foreman_proxy::plugin::dynflow: false
+foreman_proxy::plugin::openscap: false
+foreman_proxy::plugin::pulp: false
+foreman_proxy::plugin::remote_execution::ssh: false
+foreman_proxy::plugin::salt: false
