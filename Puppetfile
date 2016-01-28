@@ -1,6 +1,5 @@
 forge 'https://forgeapi.puppetlabs.com'
 
-# Katello specific modules
 mod 'katello-candlepin',        :git => 'https://github.com/Katello/puppet-candlepin'
 mod 'katello-capsule',          :git => 'https://github.com/Katello/puppet-capsule'
 mod 'katello-certs',            :git => 'https://github.com/Katello/puppet-certs'
