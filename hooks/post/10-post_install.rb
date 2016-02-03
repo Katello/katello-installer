@@ -44,23 +44,24 @@ MSG
 
   To finish the installation, follow these steps:
 
-  1. Ensure that the capsule-installer package is installed on the system.
+  1. Ensure that the katello-installer-capsule package is installed on the system.
   2. Copy <%= color("#{certs_tar}", :info) %> to the system <%= color("#{capsule_fqdn}", :info) %>
   3. Run the following commands on the capsule (possibly with the customized
-     parameters, see <%= color("capsule-installer --help", :info) %> and
+     parameters, see <%= color("foreman-installer --scenario capsule --help", :info) %> and
      documentation for more info on setting up additional services):
 
   yum -y localinstall http://#{fqdn}/pub/katello-ca-consumer-latest.noarch.rpm
   subscription-manager register --org "<%= color('#{org}', :info) %>"
-  capsule-installer --parent-fqdn          "<%= "#{fqdn}" %>"\\
-                    --register-in-foreman  "true"\\
-                    --foreman-oauth-key    "<%= "#{foreman_oauth_key}" %>"\\
-                    --foreman-oauth-secret "<%= "#{foreman_oauth_secret}" %>"\\
-                    --pulp-oauth-secret    "<%= "#{katello_oauth_secret}" %>"\\
-                    --certs-tar            "<%= color('#{certs_tar}', :info) %>"\\
-                    --puppet               "<%= color('true', :info) %>"\\
-                    --puppetca             "<%= color('true', :info) %>"\\
-                    --pulp                 "<%= color('true', :info) %>"
+  foreman-installer --scenario capsule\\
+                    --parent-fqdn                         "<%= "#{fqdn}" %>"\\
+                    --register-in-foreman                 "true"\\
+                    --foreman-base-url                    "https://<%= "#{fqdn}" %>"\\
+                    --trusted-hosts                       "<%= "#{fqdn}" %>"\\
+                    --trusted-hosts                       "<%= "#{capsule_fqdn}" %>"\\
+                    --oauth-consumer-key                  "<%= "#{foreman_oauth_key}" %>"\\
+                    --oauth-consumer-secret               "<%= "#{foreman_oauth_secret}" %>"\\
+                    --pulp-oauth-secret                   "<%= "#{katello_oauth_secret}" %>"\\
+                    --certs-tar                           "<%= color('#{certs_tar}', :info) %>"
 MSG
       end
     end

@@ -8,11 +8,8 @@
   :answer_file: "./config/katello-answers.yaml"
   :installer_dir: "."
   :default_values_dir: "/tmp"
-  :module_dirs:
-    - "./_build/modules"
-    - "../katello-installer/modules"
-  :hook_dirs:
-    - "../katello-installer/hooks"
+  :module_dirs: ["./_build/modules", "../katello-installer/modules"]
+  :hook_dirs: ["../katello-installer/hooks"]
   :default_values_dir: "./config"
   :colors: true
   :order:

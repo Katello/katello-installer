@@ -1,6 +1,0 @@
----
-update:
-  katello:
-    package_names:
-      - katello
-      - tfm-rubygem-katello

@@ -1,4 +1,4 @@
-LEGACY_CONF_DIR = '/etc/katello'
+LEGACY_CONF_DIR = '/etc/katello-installer'
 LEGACY_CONFIG_NAME = 'capsule-installer.yaml'
 SCENARIO_NAME = 'capsule.yaml'
 legacy_config_file = File.join(LEGACY_CONF_DIR, LEGACY_CONFIG_NAME)
@@ -25,8 +25,10 @@ if File.exists?(legacy_config_file)
   end
 
   # rename legacy config and answer file
-  File.rename(legacy_config.answer_file, legacy_config.answer_file + '.backup')
-  File.rename(legacy_config.config_file, legacy_config.config_file + '.backup')
-  logger.info("Legacy configuration #{legacy_config_file} was removed.")
+  backup_config = legacy_config.config_file + '.backup'
+  backup_answers = legacy_config.answer_file + '.backup'
+  File.rename(legacy_config.answer_file, backup_answers)
+  File.rename(legacy_config.config_file, backup_config)
+  logger.info("Backup of legacy configuration was stored in #{backup_config} and #{backup_answers}.")
   legacy_config = nil
 end
