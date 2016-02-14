@@ -39,15 +39,15 @@ def import_subscriptions
 end
 
 def remove_elasticsearch
-  if Kafo::Helpers.execute('rpm -q elasticsearch')
-    gems = ['ruby193-rubygem-tire', 'tfm-rubygem-tire', 'elasticsearch', 'sigar', 'snappy-java', 'lucene4-contrib', 'lucene4']
-    gems.each do |gem|
-      Kafo::Helpers.execute("rpm -e #{gem}")
-    end
-    message = "Elasticsearch has been removed as a dependency, the database files can be "\
-              "removed manually with #rm -rf /var/lib/elasticsearch"
-    Kafo::Helpers.log_and_say :info, message
+  return true unless Kafo::Helpers.execute('rpm -q elasticsearch')
+
+  gems = ['ruby193-rubygem-tire', 'tfm-rubygem-tire', 'elasticsearch', 'sigar', 'snappy-java', 'lucene4-contrib', 'lucene4']
+  gems.each do |gem|
+    Kafo::Helpers.execute("rpm -e #{gem}")
   end
+  message = "Elasticsearch has been removed as a dependency, the database files can be "\
+            "removed manually with #rm -rf /var/lib/elasticsearch"
+  Kafo::Helpers.log_and_say :info, message
 end
 
 def upgrade_step(step, options = {})
