@@ -25,7 +25,7 @@ end
 def migrate_pulp
   # Fix pid if neccessary
   if Kafo::Helpers.execute("grep -qe '7.[[:digit:]]' /etc/redhat-release")
-    Kafo::Helpers.execute("sed -i -e 's?/var/run/mongodb/mongodb.pid?/var/run/mongodb/mongod.pid?g' /etc/mongodb.conf")
+    Kafo::Helpers.execute("sed -i -e 's?/var/run/mongodb/mongodb.pid?/var/run/mongodb/mongod.pid?g' /etc/mongod.conf")
   end
 
   # Start mongo if not running
