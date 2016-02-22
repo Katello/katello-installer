@@ -15,7 +15,7 @@ mod 'theforeman-tftp',          :git => 'https://github.com/theforeman/puppet-tf
 mod 'theforeman-foreman',       :git => 'https://github.com/theforeman/puppet-foreman'
 mod 'theforeman-foreman_proxy', :git => 'https://github.com/theforeman/puppet-foreman_proxy'
 mod 'theforeman-puppet',        :git => 'https://github.com/theforeman/puppet-puppet'
-mod 'puppetlabs/apache',        :git => 'https://github.com/puppetlabs/puppetlabs-apache', :ref => '1.8.x'
+
 ##########################
 #        Katello         #
 ##########################
