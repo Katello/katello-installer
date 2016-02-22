@@ -19,11 +19,6 @@ if [0,2].include?(@kafo.exit_code)
       say "      Initial credentials are <%= color('#{@kafo.param('foreman', 'admin_username').value}', :info) %> / <%= color('#{@kafo.param('foreman', 'admin_password').value}', :info) %>" if @kafo.param('foreman','authentication').value == true
     end
 
-    # Capsule?
-    if proxy_available?
-      say "  * <%= color('Capsule', :info) %> is running at <%= color('https://#{fqdn}:#{@kafo.param('foreman_proxy', 'ssl_port').value}', :info) %>"
-    end
-
     if Kafo::Helpers.module_enabled?(@kafo, 'katello')
       say <<MSG
   * To install additional capsule on separate machine continue by running:
