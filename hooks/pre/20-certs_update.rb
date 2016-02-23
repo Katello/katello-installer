@@ -25,7 +25,7 @@ key_file  = param('certs', 'server_key').value
 req_file  = param('certs', 'server_cert_req').value
 
 if app_value('certs_update_server_ca') && !Kafo::Helpers.module_enabled?(@kafo, 'katello')
-  error "--certs-update-server-ca needs to be used with katello-installer"
+  error "--certs-update-server-ca needs to be used with katello"
 end
 
 if param('capsule_certs', 'capsule_fqdn')

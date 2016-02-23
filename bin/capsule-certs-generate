@@ -1,10 +1,54 @@
 #!/usr/bin/env ruby
-
 require 'rubygems'
 require 'kafo'
+require 'tempfile'
 
-CONFIG_FILE = "./config/capsule-certs-generate.yaml"
+def self.temp_file(name, content)
+  f = Tempfile.open([name, '.yaml'])
+  f.write content
+  f.close
+  f
+end
+
+INSTALLER_DIR = '.'
+
+ANSWERS_CONTENT = <<EOF
+certs:
+  generate: true
+  deploy: false
+  group: foreman
+  org: Default_Organization
+capsule_certs: true
+EOF
+
+answers_file = temp_file('capsule-certs-answers', ANSWERS_CONTENT)
+
+CONFIG_CONTENT = <<EOF
+:log_level: :debug
+:log_dir: /var/log
+:log_name: capsule-certs-generate.log
+:no_prefix: true
+:answer_file: #{answers_file.path}
+:installer_dir: #{INSTALLER_DIR}
+:module_dirs: ["/usr/share/foreman-installer/modules", "#{INSTALLER_DIR}/modules"]
+:hook_dirs: ["#{INSTALLER_DIR}/hooks"]
+:default_values_dir: /tmp
+:dont_save_answers: true
+:mapping:
+  :capsule_certs:
+    :manifest_name: capsule
+    :dir_name: certs
+:order:
+  - certs
+  - capsule_certs
+EOF
+
+config_file = temp_file('capsule-certs', CONFIG_CONTENT)
+CONFIG_FILE = config_file.path
 
 Kafo::KafoConfigure.run
+
+config_file.unlink
+answers_file.unlink
 
 Kafo::KafoConfigure.exit_code == 2  ? exit(0) : exit(Kafo::KafoConfigure.exit_code)

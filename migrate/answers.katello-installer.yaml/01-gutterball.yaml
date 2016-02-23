@@ -1,3 +1,0 @@
----
-add:
-  katello::plugin::gutterball: true

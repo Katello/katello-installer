@@ -1,12 +1,16 @@
 ---
-  :log_dir: /var/log/katello-devel-installer
+  :name: Katello devel
+  :description:
+  :log_dir: /var/log/foreman-installer
   :log_name: katello-devel-installer.log
   :log_level: DEBUG
   :no_prefix: true
-  :answer_file: "./config/answers.katello-devel-installer.yaml"
+  :answer_file: "./config/katello-devel-answers.yaml"
   :installer_dir: "."
-  :modules_dir: "./modules"
-  :default_values_dir: "./config"
+  :default_values_dir: "/tmp"
+  :module_dirs: ["./_build/modules", "../katello-installer/modules"]
+  :hook_dirs: ["../katello-installer/hooks"]
+
   :colors: true
   :order:
     - certs

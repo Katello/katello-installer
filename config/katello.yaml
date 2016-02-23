@@ -1,48 +1,74 @@
 ---
-  :log_dir: /var/log/katello-installer
-  :log_name: katello-installer.log
+  :name: Katello
+  :description: Install Foreman with Katello
+  :log_dir: /var/log/foreman-installer
+  :log_name: katello.log
   :log_level: DEBUG
   :no_prefix: false
-  :answer_file: "./config/answers.katello-installer.yaml"
+  :answer_file: "./config/katello-answers.yaml"
   :installer_dir: "."
-  :modules_dir: "./modules"
-  :hook_dirs: ["./hooks"]
+  :default_values_dir: "/tmp"
+  :module_dirs: ["./_build/modules", "../katello-installer/modules"]
+  :hook_dirs: ["../katello-installer/hooks"]
   :default_values_dir: "./config"
   :colors: true
-  :password: l7VtnWiPeKe412o2CVBM6yVbTkKGh6L_CKx4_zBkmUE
   :order:
     - certs
     - foreman
     - katello
-    - capsule
     - foreman_proxy
-
-  # The mapping hash provides Kafo with the information to find plugin classes
+    - "foreman_proxy::plugin::pulp"
+    - capsule
   :mapping:
-    :katello::plugin::gutterball:
-      :dir_name: katello
-      :manifest_name: plugin/gutterball
+    :foreman::cli:
+      :dir_name: foreman
+      :manifest_name: cli
+      :params_name: cli/params
     :foreman::plugin::bootdisk:
       :dir_name: foreman
       :manifest_name: plugin/bootdisk
+    :foreman::plugin::cockpit:
+      :dir_name: foreman
+      :manifest_name: plugin/cockpit
     :foreman::plugin::puppetdb:
       :dir_name: foreman
-      :manifest_name: plugin/puppetdb
       :params_name: plugin/puppetdb/params
+      :manifest_name: plugin/puppetdb
     :foreman::plugin::hooks:
       :dir_name: foreman
       :manifest_name: plugin/hooks
+    :foreman::plugin::dhcp_browser:
+      :dir_name: foreman
+      :manifest_name: plugin/dhcp_browser
+    :foreman::plugin::digitalocean:
+      :dir_name: foreman
+      :manifest_name: plugin/digitalocean
     :foreman::plugin::discovery:
       :dir_name: foreman
       :manifest_name: plugin/discovery
       :params_name: plugin/discovery/params
+    :foreman::plugin::docker:
+      :dir_name: foreman
+      :manifest_name: plugin/docker
+    :foreman::plugin::memcache:
+      :dir_name: foreman
+      :manifest_name: plugin/memcache
+      :params_name: plugin/memcache/params
+    :foreman::plugin::openscap:
+      :dir_name: foreman
+      :params_name: plugin/openscap/params
+      :manifest_name: plugin/openscap
+    :foreman::plugin::ovirt_provision:
+      :dir_name: foreman
+      :params_name: plugin/ovirt_provision/params
+      :manifest_name: plugin/ovirt_provision
     :foreman::plugin::chef:
       :dir_name: foreman
       :manifest_name: plugin/chef
     :foreman::plugin::tasks:
       :dir_name: foreman
-      :manifest_name: plugin/tasks
       :params_name: plugin/tasks/params
+      :manifest_name: plugin/tasks
     :foreman::plugin::templates:
       :dir_name: foreman
       :manifest_name: plugin/templates
@@ -50,6 +76,9 @@
       :dir_name: foreman
       :manifest_name: plugin/remote_execution
       :params_name: plugin/remote_execution/params
+    :foreman::plugin::salt:
+      :dir_name: foreman
+      :manifest_name: plugin/salt
     :foreman::plugin::setup:
       :dir_name: foreman
       :manifest_name: plugin/setup
@@ -109,3 +138,6 @@
       :manifest_name: plugin/salt
       :params_name: plugin/salt/params
       :dir_name: foreman_proxy
+    :katello::plugin::gutterball:
+      :dir_name: katello
+      :manifest_name: plugin/gutterball

@@ -1,0 +1,16 @@
+---
+  :name: Capsule
+  :description: Install a stand-alone Capsule.
+  :log_dir: /var/log/foreman-installer
+  :log_name: capsule.log
+  :log_level: DEBUG
+  :no_prefix: true
+  :answer_file: "./config/capsule-answers.yaml"
+  :installer_dir: "."
+  :default_values_dir: "/tmp"
+  :module_dirs: ["/usr/share/foreman/modules", "./modules"]
+  :hook_dirs: ["./hooks"]
+  :colors: true
+  :order:
+    - certs
+    - capsule
