@@ -4,7 +4,7 @@
   :log_dir: /var/log/foreman-installer
   :log_name: capsule.log
   :log_level: DEBUG
-  :no_prefix: true
+  :no_prefix: false
   :answer_file: "./config/capsule-answers.yaml"
   :installer_dir: "."
   :default_values_dir: "/tmp"
