@@ -48,15 +48,15 @@ MSG
   yum -y localinstall http://#{fqdn}/pub/katello-ca-consumer-latest.noarch.rpm
   subscription-manager register --org "<%= color('#{org}', :info) %>"
   foreman-installer --scenario capsule\\
-                    --parent-fqdn                         "<%= "#{fqdn}" %>"\\
-                    --register-in-foreman                 "true"\\
-                    --foreman-base-url                    "https://<%= "#{fqdn}" %>"\\
-                    --trusted-hosts                       "<%= "#{fqdn}" %>"\\
-                    --trusted-hosts                       "<%= "#{capsule_fqdn}" %>"\\
-                    --oauth-consumer-key                  "<%= "#{foreman_oauth_key}" %>"\\
-                    --oauth-consumer-secret               "<%= "#{foreman_oauth_secret}" %>"\\
-                    --pulp-oauth-secret                   "<%= "#{katello_oauth_secret}" %>"\\
-                    --certs-tar                           "<%= color('#{certs_tar}', :info) %>"
+                    --capsule-parent-fqdn                         "<%= "#{fqdn}" %>"\\
+                    --foreman-proxy-register-in-foreman           "true"\\
+                    --foreman-proxy-foreman-base-url              "https://<%= "#{fqdn}" %>"\\
+                    --foreman-proxy-trusted-hosts                 "<%= "#{fqdn}" %>"\\
+                    --foreman-proxy-trusted-hosts                 "<%= "#{capsule_fqdn}" %>"\\
+                    --foreman-proxy-oauth-consumer-key            "<%= "#{foreman_oauth_key}" %>"\\
+                    --foreman-proxy-oauth-consumer-secret         "<%= "#{foreman_oauth_secret}" %>"\\
+                    --capsule-pulp-oauth-secret                   "<%= "#{katello_oauth_secret}" %>"\\
+                    --capsule-certs-tar                           "<%= color('#{certs_tar}', :info) %>"
 MSG
       end
     end
