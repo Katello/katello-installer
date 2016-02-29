@@ -39,7 +39,7 @@ MSG
 
   To finish the installation, follow these steps:
 
-  1. Ensure that the katello-installer-capsule package is installed on the system.
+  1. Ensure that the foreman-installer-katello package is installed on the system.
   2. Copy <%= color("#{certs_tar}", :info) %> to the system <%= color("#{capsule_fqdn}", :info) %>
   3. Run the following commands on the capsule (possibly with the customized
      parameters, see <%= color("foreman-installer --scenario capsule --help", :info) %> and
