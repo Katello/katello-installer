@@ -39,6 +39,8 @@ foreman::plugin::setup: false
 foreman::plugin::templates: false
 foreman::plugin::remote_execution: false
 
+foreman_proxy::plugin::remote_execution::ssh: false
+
 katello::plugin::gutterball: true
 
 # Issue #4244 - Commenting these out due to the seg fault
