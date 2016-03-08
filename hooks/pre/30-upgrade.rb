@@ -10,6 +10,11 @@ def start_httpd
   Kafo::Helpers.execute('katello-service start --only httpd')
 end
 
+def update_http_conf
+  Kafo::Helpers.execute("grep -q -F 'Include \"/etc/httpd/conf.modules.d/*.conf\"' /etc/httpd/conf/httpd.conf || \
+		         echo 'Include \"/etc/httpd/conf.modules.d/*.conf\"' >> /etc/httpd/conf/httpd.conf")
+end
+
 def migrate_candlepin
   Kafo::Helpers.execute("/usr/share/candlepin/cpdb --update --password #{Kafo::Helpers.read_cache_data('candlepin_db_password')}")
 end
@@ -59,6 +64,7 @@ if app_value(:upgrade)
   Kafo::Helpers.log_and_say :info, 'Upgrading...'
   upgrade_step :stop_services
   upgrade_step :start_databases
+  upgrade_step :update_http_conf if Kafo::Helpers.module_enabled?(@kafo, 'katello') 
 
   if Kafo::Helpers.module_enabled?(@kafo, 'katello') || @kafo.param('capsule', 'pulp').value
     upgrade_step :migrate_pulp
