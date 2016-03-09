@@ -37,6 +37,10 @@ fi
 CONFIG_FILES=(
     /etc/pulp/
     /usr/share/caspule-installer/
+    /usr/share/foreman
+    /usr/share/foreman-installer
+    /usr/share/foreman-installer-katello
+    /usr/share/katelo-installer-base
     /var/lib/puppet/
     /var/lib/mongodb/
     /var/lib/pulp/
@@ -45,6 +49,7 @@ CONFIG_FILES=(
     /etc/foreman-proxy
     /var/lib/foreman-proxy
     /etc/capsule-installer
+    /etc/foreman-installer
     /etc/foreman-proxy/
     /etc/puppet/environments
     /etc/pki/katello-certs-tools
@@ -56,6 +61,7 @@ LOG_FILES=(
     /var/log/httpd/
     /var/log/mongodb/
     /var/log/foreman-proxy
+    /var/log/foreman-installer
 )
 
 # Setting a variable to make sure we actually grab the FQDN of the capsule incase there are other packages that have a short hostname in them.
@@ -66,6 +72,8 @@ RPMS=(
     `rpm -qa | grep puppetlabs-release`
     `rpm -qa | grep foreman-release`
     `rpm -qa | grep foreman-client`
+    `rpm -qa | grep ^foreman-installer`
+    `rpm -qa | grep ^katello-installer`
     `rpm -qa | grep foreman-proxy`
     `rpm -qa | grep katello`
     `rpm -qa | grep ^pulp`
@@ -109,7 +117,7 @@ CERT_FILES=(
 
 # stopping all katello/foreman related services
 
-katello-service stop 
+katello-service stop
 
 echo "Removing RPMs"
 yum erase -y ${RPMS[*]}
@@ -122,5 +130,5 @@ echo "Cleaning up log files"
 rm -rf ${LOG_FILES[*]}
 
 echo "Cleaning up Certs"
-# pulp cert stuff 
+# pulp cert stuff
 rm -rf ${CERT_FILES[*]}
