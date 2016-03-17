@@ -2,9 +2,9 @@
   :name: Katello devel
   :description:
   :log_dir: /var/log/foreman-installer
-  :log_name: katello-devel-installer.log
+  :log_name: katello-devel.log
   :log_level: DEBUG
-  :no_prefix: true
+  :no_prefix: false
   :answer_file: "./config/katello-devel-answers.yaml"
   :installer_dir: "."
   :default_values_dir: "/tmp"

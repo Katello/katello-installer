@@ -92,14 +92,16 @@ Validation succeeded.
 
 To install the Katello main server with the custom certificates, run:
 
-    katello-installer --certs-server-cert "$CERT_FILE"\\
+    foreman-installer --scenario katello\\
+                      --certs-server-cert "$CERT_FILE"\\
                       --certs-server-cert-req "$REQ_FILE"\\
                       --certs-server-key "$KEY_FILE"\\
                       --certs-server-ca-cert "$CA_BUNDLE_FILE"
 
 To update the certificates on a currently running Katello installation, run:
-    
-    katello-installer --certs-server-cert "$CERT_FILE"\\
+
+    foreman-installer --scenario katello\\
+                      --certs-server-cert "$CERT_FILE"\\
                       --certs-server-cert-req "$REQ_FILE"\\
                       --certs-server-key "$KEY_FILE"\\
                       --certs-server-ca-cert "$CA_BUNDLE_FILE"\\

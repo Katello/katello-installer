@@ -7,10 +7,10 @@ A set of tools to properly configure Katello with Foreman in production and deve
 ## Production Usage
 
 ```
-$ yum install -y katello-installer
+$ yum install -y foreman-installer-katello
 
 # install Katello with Foreman and smart proxy with Puppet and Puppetca
-$ katello-installer
+$ foreman-installer --scenario katello
 ```
 
 ### Production Examples
@@ -18,26 +18,28 @@ $ katello-installer
 ```
 # Install also provisioning-related services
 
-katello-installer --capsule-dns            "true"\
-                  --capsule-dns-forwarders "8.8.8.8"
-                  --capsule-dns-forwarders "8.8.4.4"\
-                  --capsule-dns-interface  "virbr1"\
-                  --capsule-dns-zone       "example.com"\
-                  --capsule-dhcp           "true"\
-                  --capsule-dhcp-interface "virbr1"\
-                  --capsule-tftp           "true"\
-                  --capsule-puppet         "true"\
-                  --capsule-puppetca       "true"
+foreman-installer --scenario                     "katello"\
+                  --foreman-proxy-dns            "true"\
+                  --foreman-proxy-dns-forwarders "8.8.8.8"
+                  --foreman-proxy-dns-forwarders "8.8.4.4"\
+                  --foreman-proxy-dns-interface  "virbr1"\
+                  --foreman-proxy-dns-zone       "example.com"\
+                  --foreman-proxy-dhcp           "true"\
+                  --foreman-proxy-dhcp-interface "virbr1"\
+                  --foreman-proxy-tftp           "true"\
+                  --capsule-puppet               "true"\
+                  --foreman-proxy-puppetca       "true"
 
 # Install only DNS with smart proxy
 
-katello-installer --capsule-dns            "true"\
-                  --capsule-dns-forwarders "8.8.8.8"
-                  --capsule-dns-forwarders "8.8.4.4"\
-                  --capsule-dns-interface  "virbr1"\
-                  --capsule-dns-zone       "example.com"\
-                  --capsule-puppet         "false"\
-                  --capsule-puppetca       "false"
+foreman-installer --scenario                     "katello"\
+                  --foreman-proxy-dns            "true"\
+                  --foreman-proxy-dns-forwarders "8.8.8.8"
+                  --foreman-proxy-dns-forwarders "8.8.4.4"\
+                  --foreman-proxy-dns-interface  "virbr1"\
+                  --foreman-proxy-dns-zone       "example.com"\
+                  --capsule-puppet               "false"\
+                  --foreman-proxy-puppetca       "false"
 
 # Generate certificates for installing capsule on another system
 capsule-certs-generate --capsule-fqdn "mycapsule.example.com"\
@@ -45,23 +47,26 @@ capsule-certs-generate --capsule-fqdn "mycapsule.example.com"\
 
 # Copy the ~/mycapsule.example.com-certs.tar to the capsule system
 # register the system to Katello and run:
-capsule-installer --parent-fqdn          "master.example.com"\
-                  --register-in-foreman  "true"\
-                  --foreman-oauth-key    "foreman_oauth_key"\
-                  --foreman-oauth-secret "foreman_oauth_secret"\
-                  --pulp-oauth-secret    "pulp_oauth_secret"\
-                  --certs-tar            "/root/mycapsule.exampe.com-certs.tar"\
-                  --puppet               "true"\
-                  --puppetca             "true"\
-                  --pulp                 "true"\
-                  --dns                  "true"\
-                  --dns-forwarders       "8.8.8.8"\
-                  --dns-forwarders       "8.8.4.4"\
-                  --dns-interface        "virbr1"\
-                  --dns-zone             "example.com"\
-                  --dhcp                 "true"\
-                  --dhcp-interface       "virbr1"\
-                  --tftp                 "true"\
+foreman-installer --scenario                            "capsule"\
+                  --capsule-parent-fqdn                 "master.example.com"\
+                  --foreman-proxy-register-in-foreman   "true"\
+                  --foreman-proxy-foreman-base-url      "https://master.example.com"\
+                  --foreman-proxy-trusted-hosts         "master.example.com"\
+                  --foreman-proxy-trusted-hosts         "mycapsule.example.com"\
+                  --foreman-proxy-oauth-consumer-key    "foreman_oauth_key"\
+                  --foreman-proxy-oauth-consumer-secret "foreman_oauth_secret"\
+                  --capsule-pulp-oauth-secret           "pulp_oauth_secret"\
+                  --capsule-certs-tar                   "/root/mycapsule.exampe.com-certs.tar"\
+                  --capsule-puppet                      "true"\
+                  --foreman-proxy-puppetca              "true"\
+                  --foreman-proxy-dns                   "true"\
+                  --foreman-proxy-dns-forwarders        "8.8.8.8"\
+                  --foreman-proxy-dns-forwarders        "8.8.4.4"\
+                  --foreman-proxy-dns-interface         "virbr1"\
+                  --foreman-proxy-dns-zone              "example.com"\
+                  --foreman-proxy-dhcp                  "true"\
+                  --foreman-proxy-dhcp-interface        "virbr1"\
+                  --foreman-proxy-tftp                  "true"\
 ```
 
 ## Data Reset
@@ -69,19 +74,19 @@ capsule-installer --parent-fqdn          "master.example.com"\
 If you run into an error during the initial installation or wish to reset your installation entirely, the installer provides a reset option. To reset the database and all subsystems:
 
 ```
-katello-installer --reset
+foreman-installer --scenario katello --reset
 ```
 
 To clear all of your on disk Pulp content:
 
 ```
-katello-installer --clear-pulp-content
+foreman-installer --scenario katello --clear-pulp-content
 ```
 
 To clear all Puppet environments on disk:
 
 ```
-katello-installer --clear-puppet-environments
+foreman-installer --scenario katello --clear-puppet-environments
 ```
 
 ## Development Usage
@@ -89,22 +94,26 @@ katello-installer --clear-puppet-environments
 ### Devel Installer
 
 ```
-$ yum install -y katello-installer
+$ yum install -y foreman-installer-katello-devel
 
 # install Katello with Foreman from git
-$ katello-devel-installer
+$ foreman-installer --scenario katello-devel
 ```
 
 Install with custom user
 
 ```
-katello-devel-installer --katello-devel-user testuser --certs-group testuser --katello-deployment-dir /home/testuser
+foreman-installer --scenario katello-devel\
+                  --katello-devel-user testuser\
+                  --certs-group testuser\
+                  --katello-devel-deployment-dir /home/testuser
 ```
 
 Install without RVM
 
 ```
-katello-devel-installer --katello-use-rvm false
+foreman-installer --scenario katello-devel\
+                  --katello-devel-use-rvm false
 ```
 
 ### From Git
@@ -141,10 +150,11 @@ The check is performed also as part of the installer script. In case
 the script marked the certs as invalid incorrectly, one can skip this
 check by passing `--certs-skip-check` to the installer.
 
-**When running katello-installer for the first time:**
+**When running the installer for the first time:**
 
 ```
-katello-installer --certs-server-cert ~/path/to/server.crt\
+foreman-installer --scenario katello\
+                  --certs-server-cert ~/path/to/server.crt\
                   --certs-server-cert-req ~/path/to/server.crt.req\
                   --certs-server-key ~/path/to/server.key\
                   --certs-server-ca-cert ~/path/to/cacert.crt
@@ -167,18 +177,19 @@ capsule-certs-generate --capsule-fqdn "$CAPSULE"\
 
 The rest of the procedure is identical to the default CA setup.
 
-**Setting custom certificates after katello-installer was already
-run.**
+**Setting custom certificates after 'foreman-installer --scenario katello'
+was already run.**
 
-The first run of `katello-installer` uses the default CA for both server
-and client certificates. To enforce the custom certificates to be
-deployed, on needs to set `--certs-update-server` for
+The first run of `foreman-installer --scenario katello` uses the default 
+CA for both server and client certificates. To enforce the custom 
+certificates to be deployed, on needs to set `--certs-update-server` for
 updating the CA certificate and `--certs-update-server-ca` because the
 server CA changed as well (and new katello-ca-consumer rpm needs to be
 regenerated):
 
 ```
-katello-installer --certs-server-cert ~/path/to/server.crt\
+foreman-installer --scenario katello\
+                  --certs-server-cert ~/path/to/server.crt\
                   --certs-server-cert-req ~/path/to/server.crt.req\
                   --certs-server-key ~/path/to/server.crt.req\
                   --certs-server-ca-cert ~/path/to/cacert.crt\
@@ -197,7 +208,8 @@ When using the custom server CA, the CA needs to be used for
 the server certificates on the capsules as well. The certificates for
 the capsule are deployed to the capsule through the use of the
 `capsule-certs-generate` script (followed by copying the certs tar to
-the capsule and running the capsule-installer to refresh the certificates).:
+the capsule and running the 'foreman-installer --scenario capsule'
+to refresh the certificates).:
 
 ```
 capsule-certs-generate --capsule-fqdn "$CAPSULE"\
@@ -215,10 +227,11 @@ capsule-certs-generate --capsule-fqdn "$CAPSULE"\
 
 To regenerate the server certificates when using the default CA or
 enforce deploying new certificates for the custom server CA run
-the katello-installer with `--certs-update-server` option:
+the 'foreman-installer --scenario katello' with `--certs-update-server`
+option:
 
 ```
-katello-installer --certs-update-server
+foreman-installer --scenario katello --certs-update-server
 ```
 
 To regenerate all the certificates used in the Katello server, there
@@ -231,8 +244,8 @@ For updating the certificates on a capsule pass the same
 options (either `--certs-update-server` or `--certs-update-all`) to
 the `capsule-certs-generate` script. The new certs tar gets generated
 that needs to be transferred to the capsule and then
-`capsule-installer` needs to be re-run to apply the updates and
-restart corresponding services.
+`foreman-installer --scenario capsule` needs to be re-run to apply
+the updates and restart corresponding services.
 
 ## Filing and Fixing Issues
 

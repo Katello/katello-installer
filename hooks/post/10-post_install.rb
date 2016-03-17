@@ -39,7 +39,7 @@ MSG
 
   To finish the installation, follow these steps:
 
-  1. Ensure that the katello-installer-capsule package is installed on the system.
+  1. Ensure that the foreman-installer-katello package is installed on the system.
   2. Copy <%= color("#{certs_tar}", :info) %> to the system <%= color("#{capsule_fqdn}", :info) %>
   3. Run the following commands on the capsule (possibly with the customized
      parameters, see <%= color("foreman-installer --scenario capsule --help", :info) %> and
@@ -48,15 +48,15 @@ MSG
   yum -y localinstall http://#{fqdn}/pub/katello-ca-consumer-latest.noarch.rpm
   subscription-manager register --org "<%= color('#{org}', :info) %>"
   foreman-installer --scenario capsule\\
-                    --parent-fqdn                         "<%= "#{fqdn}" %>"\\
-                    --register-in-foreman                 "true"\\
-                    --foreman-base-url                    "https://<%= "#{fqdn}" %>"\\
-                    --trusted-hosts                       "<%= "#{fqdn}" %>"\\
-                    --trusted-hosts                       "<%= "#{capsule_fqdn}" %>"\\
-                    --oauth-consumer-key                  "<%= "#{foreman_oauth_key}" %>"\\
-                    --oauth-consumer-secret               "<%= "#{foreman_oauth_secret}" %>"\\
-                    --pulp-oauth-secret                   "<%= "#{katello_oauth_secret}" %>"\\
-                    --certs-tar                           "<%= color('#{certs_tar}', :info) %>"
+                    --capsule-parent-fqdn                         "<%= "#{fqdn}" %>"\\
+                    --foreman-proxy-register-in-foreman           "true"\\
+                    --foreman-proxy-foreman-base-url              "https://<%= "#{fqdn}" %>"\\
+                    --foreman-proxy-trusted-hosts                 "<%= "#{fqdn}" %>"\\
+                    --foreman-proxy-trusted-hosts                 "<%= "#{capsule_fqdn}" %>"\\
+                    --foreman-proxy-oauth-consumer-key            "<%= "#{foreman_oauth_key}" %>"\\
+                    --foreman-proxy-oauth-consumer-secret         "<%= "#{foreman_oauth_secret}" %>"\\
+                    --capsule-pulp-oauth-secret                   "<%= "#{katello_oauth_secret}" %>"\\
+                    --capsule-certs-tar                           "<%= color('#{certs_tar}', :info) %>"
 MSG
       end
     end
