@@ -7,6 +7,14 @@ def proxy_available?
     @kafo.param('foreman_proxy', 'tftp').value)
 end
 
+def success_file
+  File.join(File.dirname(Kafo::KafoConfigure.config_file), '.installed')
+end
+
+def new_install?
+  !File.exist?(success_file)
+end
+
 if [0,2].include?(@kafo.exit_code)
   if !app_value(:upgrade)
     fqdn = Facter.value(:fqdn)
@@ -16,7 +24,7 @@ if [0,2].include?(@kafo.exit_code)
     # Fortello UI?
     if Kafo::Helpers.module_enabled?(@kafo, 'katello')
       say "  * <%= color('Katello', :info) %> is running at <%= color('#{@kafo.param('foreman','foreman_url').value}', :info) %>"
-      say "      Initial credentials are <%= color('#{@kafo.param('foreman', 'admin_username').value}', :info) %> / <%= color('#{@kafo.param('foreman', 'admin_password').value}', :info) %>" if @kafo.param('foreman','authentication').value == true
+      say "      Initial credentials are <%= color('#{@kafo.param('foreman', 'admin_username').value}', :info) %> / <%= color('#{@kafo.param('foreman', 'admin_password').value}', :info) %>" if @kafo.param('foreman','authentication').value == true && new_install?
     end
 
     if Kafo::Helpers.module_enabled?(@kafo, 'katello')
@@ -66,6 +74,8 @@ MSG
       end
     end
   end
+
+  File.open(success_file, 'w') {} unless app_value(:noop) # Used to indicate that we had a successful install
   exit_code = 0
 else
   say "  <%= color('Something went wrong!', :bad) %> Check the log for ERROR-level output"
