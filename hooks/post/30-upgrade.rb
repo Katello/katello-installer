@@ -38,15 +38,13 @@ def import_subscriptions
   Kafo::Helpers.execute('foreman-rake katello:upgrades:2.4:import_subscriptions')
 end
 
-def remove_elasticsearch
+def elasticsearch_message
   return true unless Kafo::Helpers.execute('rpm -q elasticsearch')
 
   gems = ['ruby193-rubygem-tire', 'tfm-rubygem-tire', 'elasticsearch', 'sigar', 'snappy-java', 'lucene4-contrib', 'lucene4']
-  gems.each do |gem|
-    Kafo::Helpers.execute("rpm -e #{gem}")
-  end
-  message = "Elasticsearch has been removed as a dependency, the database files can be "\
-            "removed manually with #rm -rf /var/lib/elasticsearch"
+  message = "Elasticsearch has been removed as a dependency.  The database files can be "\
+            "removed manually with #rm -rf /var/lib/elasticsearch.  "
+  message += "Some packages are no longer needed and can be removed:  #rpm -e #{rpms.join(' ')}"
   Kafo::Helpers.log_and_say :info, message
 end
 
@@ -83,7 +81,7 @@ if app_value(:upgrade)
     upgrade_step :import_distributions, :long_running => true
     upgrade_step :import_puppet_modules, :long_running => true
     upgrade_step :import_subscriptions, :long_running => true
-    upgrade_step :remove_elasticsearch
+    upgrade_step :elasticsearch_message
     upgrade_step :remove_docker_v1_content, :long_running => true
   end
 
