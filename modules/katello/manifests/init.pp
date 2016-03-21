@@ -103,14 +103,14 @@ class katello (
     ssl_cert_password_file => $::certs::qpid::nss_db_password_file,
     ssl_cert_name          => 'broker',
   } ~>
-  class { '::certs::pulp_parent': } ~>
+  class { '::certs::qpid_client': } ~>
   class { '::pulp':
     oauth_enabled          => true,
     oauth_key              => $katello::oauth_key,
     oauth_secret           => $katello::oauth_secret,
     messaging_url          => "ssl://${::fqdn}:5671",
-    messaging_ca_cert      => $certs::pulp_parent::messaging_ca_cert,
-    messaging_client_cert  => $certs::pulp_parent::messaging_client_cert,
+    messaging_ca_cert      => $::certs::ca_cert,
+    messaging_client_cert  => $certs::qpid_client::messaging_client_cert,
     messaging_transport    => 'qpid',
     messaging_auth_enabled => false,
     broker_url             => "qpid://${::fqdn}:5671",
@@ -129,8 +129,8 @@ class katello (
     enable_docker          => true,
     enable_ostree          => $enable_ostree,
     num_workers            => $num_pulp_workers,
-    enable_parent_node     => true,
-    repo_auth              => true,
+    enable_parent_node     => false,
+    repo_auth              => false,
   } ~>
   class { '::qpid::client':
     ssl                    => true,
