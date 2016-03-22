@@ -6,18 +6,6 @@ def db_seed
   Kafo::Helpers.execute('foreman-rake db:seed')
 end
 
-def errata_import
-  Kafo::Helpers.execute('foreman-rake katello:upgrades:2.1:import_errata')
-end
-
-def update_gpg_urls
-  Kafo::Helpers.execute('foreman-rake katello:upgrades:2.2:update_gpg_key_urls')
-end
-
-def update_repository_metadata
-  Kafo::Helpers.execute('foreman-rake katello:upgrades:2.2:update_metadata_expire')
-end
-
 def import_package_groups
   Kafo::Helpers.execute('foreman-rake katello:upgrades:2.4:import_package_groups')
 end
@@ -73,9 +61,6 @@ if app_value(:upgrade)
 
   if Kafo::Helpers.module_enabled?(@kafo, 'katello')
     upgrade_step :db_seed
-    upgrade_step :errata_import, :long_running => true
-    upgrade_step :update_gpg_urls, :long_running => true
-    upgrade_step :update_repository_metadata, :long_running => true
     upgrade_step :import_package_groups, :long_running => true
     upgrade_step :import_rpms, :long_running => true
     upgrade_step :import_distributions, :long_running => true
