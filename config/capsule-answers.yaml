@@ -3,4 +3,5 @@ certs:
   generate: false
   deploy: true
 capsule: true
+foreman_proxy::plugin::openscap: false
 foreman_proxy::plugin::remote_execution::ssh: false
