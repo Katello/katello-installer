@@ -65,6 +65,10 @@ namespace :pkg do
   end
 end
 
+task :setup_local => [:clean, "#{BUILDDIR}/modules"] do
+  cp_r "#{BUILDDIR}/modules", "modules"
+end
+
 CLEAN.include(BUILDDIR, PKGDIR)
 
 task :default => ['pkg:generate_source']
