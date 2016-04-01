@@ -39,14 +39,19 @@ MSG
 
   To finish the installation, follow these steps:
 
+  If you do not have the smartproxy registered to the Katello instance, then please do the following:
+
+  1. yum -y localinstall http://#{fqdn}/pub/katello-ca-consumer-latest.noarch.rpm
+  2. subscription-manager register --org "<%= color('#{org}', :info) %>"
+
+  Once this is completed run the steps below to start the smartproxy installation:
+ 
   1. Ensure that the foreman-installer-katello package is installed on the system.
   2. Copy <%= color("#{certs_tar}", :info) %> to the system <%= color("#{capsule_fqdn}", :info) %>
   3. Run the following commands on the capsule (possibly with the customized
      parameters, see <%= color("foreman-installer --scenario capsule --help", :info) %> and
      documentation for more info on setting up additional services):
-
-  yum -y localinstall http://#{fqdn}/pub/katello-ca-consumer-latest.noarch.rpm
-  subscription-manager register --org "<%= color('#{org}', :info) %>"
+  
   foreman-installer --scenario capsule\\
                     --capsule-parent-fqdn                         "<%= "#{fqdn}" %>"\\
                     --foreman-proxy-register-in-foreman           "true"\\
