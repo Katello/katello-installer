@@ -26,7 +26,7 @@ INVALID = %q(Output of 'hostname -f' does not seems to be valid FQDN
 Make sure above command gives fully qualified domain name. At least one
 dot must be present and underscores are not allowed. )
 
-UPCASE = %q(The hostname contains a a capital letter.
+UPCASE = %q(The hostname contains a capital letter.
 
 This is not supported. Please modify the hostname to be all lowercase. )
  
