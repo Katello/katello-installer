@@ -34,11 +34,13 @@ foreman::plugin::hooks: false
 foreman::plugin::tasks: true
 foreman::plugin::chef: false
 foreman::plugin::default_hostgroup: false
+foreman::plugin::openscap: false
 foreman::plugin::puppetdb: false
 foreman::plugin::setup: false
 foreman::plugin::templates: false
 foreman::plugin::remote_execution: false
 
+foreman_proxy::plugin::openscap: false
 foreman_proxy::plugin::remote_execution::ssh: false
 
 katello::plugin::gutterball: true
