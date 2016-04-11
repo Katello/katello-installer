@@ -1,7 +1,7 @@
 forge 'https://forgeapi.puppetlabs.com'
 
 mod 'katello-candlepin',        '1.0.1'
-mod 'katello-capsule',          '2.0.1'
+mod 'katello-capsule',          '2.0.2'
 mod 'katello-certs',            '0.5.0'
 mod 'katello-common',           '0.1.3'
 mod 'katello-crane',            '1.0.0'
