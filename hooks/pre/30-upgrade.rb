@@ -19,6 +19,10 @@ def migrate_candlepin
   Kafo::Helpers.execute("/usr/share/candlepin/cpdb --update --password #{Kafo::Helpers.read_cache_data('candlepin_db_password')}")
 end
 
+def start_tomcat
+  Kafo::Helpers.execute('katello-service start --only tomcat,tomcat6')
+end
+
 def migrate_gutterball
   if File.exist?('/usr/bin/gutterball-db')
     Kafo::Helpers.execute("/usr/bin/gutterball-db migrate")
@@ -90,6 +94,7 @@ if app_value(:upgrade)
 
   if katello
     upgrade_step :migrate_candlepin
+    upgrade_step :start_tomcat
     upgrade_step :migrate_foreman
     upgrade_step :migrate_gutterball
     upgrade_step :remove_nodes_distributors
