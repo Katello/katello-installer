@@ -19,6 +19,10 @@ def migrate_candlepin
   Kafo::Helpers.execute("/usr/share/candlepin/cpdb --update --password #{Kafo::Helpers.read_cache_data('candlepin_db_password')}")
 end
 
+def start_tomcat
+  Kafo::Helpers.execute('katello-service start --only tomcat,tomcat6')
+end
+
 def migrate_gutterball
   if File.exist?('/usr/bin/gutterball-db')
     Kafo::Helpers.execute("/usr/bin/gutterball-db migrate")
@@ -42,7 +46,9 @@ def migrate_pulp
 end
 
 def migrate_foreman
+  Kafo::Helpers.execute('foreman-rake -- config -k use_pulp_oauth -v true')
   Kafo::Helpers.execute('foreman-rake db:migrate')
+  Kafo::Helpers.execute('foreman-rake -- config -k use_pulp_oauth -v false')
 end
 
 def remove_nodes_importers
@@ -75,7 +81,7 @@ if app_value(:upgrade)
 
   upgrade_step :stop_services
   upgrade_step :start_databases
-  upgrade_step :update_http_conf if Kafo::Helpers.module_enabled?(@kafo, 'katello') 
+  upgrade_step :update_http_conf if Kafo::Helpers.module_enabled?(@kafo, 'katello')
 
   if katello || capsule
     upgrade_step :migrate_pulp
@@ -88,6 +94,7 @@ if app_value(:upgrade)
 
   if katello
     upgrade_step :migrate_candlepin
+    upgrade_step :start_tomcat
     upgrade_step :migrate_foreman
     upgrade_step :migrate_gutterball
     upgrade_step :remove_nodes_distributors
