@@ -192,6 +192,9 @@ class capsule (
       node_oauth_key            => $pulp_oauth_key,
       node_oauth_secret         => $pulp_oauth_secret,
       node_server_ca_cert       => $certs::params::pulp_server_ca_cert,
+      https_cert                => $certs::apache::apache_cert,
+      https_key                 => $certs::apache::apache_key,
+      ca_cert                   => $certs::ca_cert,
     }
 
     pulp::apache::fragment{'gpg_key_proxy':

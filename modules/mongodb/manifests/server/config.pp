@@ -55,6 +55,7 @@ class mongodb::server::config {
   $bind_ip         = $mongodb::server::bind_ip
   $directoryperdb  = $mongodb::server::directoryperdb
   $profile         = $mongodb::server::profile
+  $maxconns        = $mongodb::server::maxconns
   $set_parameter   = $mongodb::server::set_parameter
   $syslog          = $mongodb::server::syslog
   $ssl             = $mongodb::server::ssl
@@ -132,6 +133,9 @@ class mongodb::server::config {
       # - $shardsvr
       # - $slowms
       # - $smallfiles
+      # - $ssl
+      # - $ssl_ca
+      # - $ssl_key
       # - $syslog
       # - $verbose
       # - $verbositylevel
@@ -205,6 +209,15 @@ class mongodb::server::config {
       owner   => $user,
       group   => $group,
       require => File[$config]
+    }
+
+    if $pidfilepath {
+      file { $pidfilepath:
+        ensure => file,
+        mode   => '0644',
+        owner  => $user,
+        group  => $group,
+      }
     }
   } else {
     file { $dbpath:
