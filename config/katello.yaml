@@ -138,6 +138,3 @@
       :manifest_name: plugin/salt
       :params_name: plugin/salt/params
       :dir_name: foreman_proxy
-    :katello::plugin::gutterball:
-      :dir_name: katello
-      :manifest_name: plugin/gutterball

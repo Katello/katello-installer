@@ -46,8 +46,6 @@ foreman::plugin::remote_execution: false
 foreman_proxy::plugin::openscap: false
 foreman_proxy::plugin::remote_execution::ssh: false
 
-katello::plugin::gutterball: true
-
 # Issue #4244 - Commenting these out due to the seg fault
 # caused on Ruby 1.8.7, the Katello RPM ensures these
 # are installed instead
