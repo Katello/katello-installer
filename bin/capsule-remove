@@ -40,7 +40,7 @@ CONFIG_FILES=(
     /usr/share/foreman
     /usr/share/foreman-installer
     /usr/share/foreman-installer-katello
-    /usr/share/katelo-installer-base
+    /usr/share/katello-installer-base
     /var/lib/puppet/
     /var/lib/mongodb/
     /var/lib/pulp/
@@ -53,6 +53,19 @@ CONFIG_FILES=(
     /etc/foreman-proxy/
     /etc/puppet/environments
     /etc/pki/katello-certs-tools
+    /etc/crane.conf
+    /etc/mongod.conf
+    /var/www/html/pub/bootstrap.py
+    /var/www/html/pub/katello-rhsm-consumer
+    /var/lib/hiera
+    /var/lib/qpidd
+    /usr/share/qpid-tools
+    /etc/puppet
+    /etc/qpid-dispatch
+    /etc/hiera.yaml
+    /etc/squid
+    /etc/qpid
+    /var/www/html/pub/katello-server-ca.crt
 )
 
 LOG_FILES=(
@@ -62,6 +75,7 @@ LOG_FILES=(
     /var/log/mongodb/
     /var/log/foreman-proxy
     /var/log/foreman-installer
+    /var/log/squid
 )
 
 # Setting a variable to make sure we actually grab the FQDN of the capsule incase there are other packages that have a short hostname in them.
@@ -107,12 +121,14 @@ RPMS=(
     rubygems
     httpd
     puppet
+    squid
 )
 
 CERT_FILES=(
     /etc/pki/pulp/
     /etc/pki/katello
     /root/ssl-build
+    /var/www/html/pub/katello-ca*.rpm
 )
 
 # stopping all katello/foreman related services
