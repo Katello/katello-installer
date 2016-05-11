@@ -50,7 +50,6 @@ def reset_pulp
     'service-wait httpd stop',
     'service-wait mongod stop',
     'rm -f /var/lib/mongodb/pulp_database*',
-    'service-wait mongod start',
     'rm -rf /var/lib/pulp/{distributions,published,repos}/*'
   ]
 
