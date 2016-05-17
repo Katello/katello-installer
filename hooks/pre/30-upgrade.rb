@@ -11,8 +11,9 @@ def start_httpd
 end
 
 def update_http_conf
-  Kafo::Helpers.execute("grep -q -F 'Include \"/etc/httpd/conf.modules.d/*.conf\"' /etc/httpd/conf/httpd.conf || \
-		         echo 'Include \"/etc/httpd/conf.modules.d/*.conf\"' >> /etc/httpd/conf/httpd.conf")
+  Kafo::Helpers.execute("grep -F -q 'Include \"/etc/httpd/conf.modules.d/*.conf\"' /etc/httpd/conf/httpd.conf || \
+                       echo -e '<IfVersion >= 2.4> \n    Include \"/etc/httpd/conf.modules.d/*.conf\"\n</IfVersion>' \
+                       >> /etc/httpd/conf/httpd.conf")
 end
 
 def migrate_candlepin
