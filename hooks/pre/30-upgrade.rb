@@ -1,3 +1,5 @@
+require 'tempfile'
+
 def stop_services
   Kafo::Helpers.execute('katello-service stop --exclude mongod,postgresql')
 end
@@ -74,11 +76,24 @@ def fail_and_exit(message)
   kafo.class.exit 1
 end
 
+def check_active_tasks
+  filepath = Tempfile.new("katello_upgrade_tasks").path
+  filter = "state != stopped && label != Actions::Candlepin::ListenOnCandlepinEvents"
+
+  Kafo::Helpers.execute("foreman-rake foreman_tasks:export_tasks TASK_SEARCH=\"#{filter}\" TASK_FORMAT=csv TASK_FILE=\"#{filepath}\"")
+  task_count = `wc -l "#{filepath}"`.strip.split.first.to_i - 1
+
+  if task_count > 0
+    fail_and_exit "Upgrade cannot proceed. You have #{task_count} active task(s)."
+  end
+end
+
 if app_value(:upgrade)
   Kafo::Helpers.log_and_say :info, 'Upgrading...'
   katello = Kafo::Helpers.module_enabled?(@kafo, 'katello')
   capsule = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
 
+  check_active_tasks
   upgrade_step :stop_services
   upgrade_step :start_databases
   upgrade_step :update_http_conf if Kafo::Helpers.module_enabled?(@kafo, 'katello')
