@@ -14,6 +14,7 @@ describe 'capsule' do
     end
 
     it { should contain_package('katello-debug') }
+    it { should contain_package('katello-client-bootstrap') }
   end
 
   context 'with pulp' do

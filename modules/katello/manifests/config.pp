@@ -34,5 +34,20 @@ class katello::config {
     mode   => '0755',
   }
 
+  # NB: we define this here to avoid a dependency cycle. It is not a problem if
+  # this dir exists before the pulp RPMs are installed.
+  file { '/var/lib/pulp':
+    ensure => directory,
+    owner  => 'apache',
+    group  => 'apache',
+    mode   => '0755',
+  }
+
+  file { $katello::repo_export_dir:
+    ensure => directory,
+    owner  => $katello::user,
+    group  => $katello::group,
+    mode   => '0755',
+  }
 
 }

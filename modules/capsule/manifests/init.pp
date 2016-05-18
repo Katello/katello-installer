@@ -16,6 +16,10 @@
 #
 # $pulp_oauth_secret::                  OAuth secret to be used for Pulp REST interaction
 #
+# $pulp_db_username::                   Username for the pulp database
+#
+# $pulp_db_password::                   Password for the pulp database
+#
 # $puppet::                             Use puppet
 #                                       type:boolean
 #
@@ -58,6 +62,9 @@ class capsule (
   $pulp_oauth_key            = $capsule::params::pulp_oauth_key,
   $pulp_oauth_secret         = $capsule::params::pulp_oauth_secret,
 
+  $pulp_db_username          = $capsule::params::pulp_db_username,
+  $pulp_db_password          = $capsule::params::pulp_db_password,
+
   $puppet                    = $capsule::params::puppet,
   $puppet_ca_proxy           = $capsule::params::puppet_ca_proxy,
 
@@ -97,7 +104,7 @@ class capsule (
     false => '443'
   }
 
-  package{ ['katello-debug']:
+  package{ ['katello-debug', 'katello-client-bootstrap']:
     ensure => installed,
   }
 
@@ -195,6 +202,8 @@ class capsule (
       https_cert                => $certs::apache::apache_cert,
       https_key                 => $certs::apache::apache_key,
       ca_cert                   => $certs::ca_cert,
+      db_username               => $pulp_db_username,
+      db_password               => $pulp_db_password,
     }
 
     pulp::apache::fragment{'gpg_key_proxy':

@@ -44,6 +44,12 @@
 #                       on the virtualHost for port 443.
 #                       type: integer
 #
+# $repo_export_dir::    Directory to create for repository exports
+#
+# $pulp_db_username::   Username for the pulp database
+#
+# $pulp_db_password::   Password for the pulp database
+#
 class katello (
 
   $user = $katello::params::user,
@@ -69,9 +75,15 @@ class katello (
   $package_names = $katello::params::package_names,
   $enable_ostree = $katello::params::enable_ostree,
   $max_keep_alive = $katello::params::max_keep_alive,
+
+  $repo_export_dir = $katello::params::repo_export_dir,
+
+  $pulp_db_username = $katello::params::pulp_db_username,
+  $pulp_db_password = $katello::params::pulp_db_password,
   ) inherits katello::params {
   validate_bool($enable_ostree)
   validate_integer($max_keep_alive)
+  validate_absolute_path($repo_export_dir)
 
   Class['certs'] ~>
   class { '::certs::apache': } ~>
@@ -131,6 +143,8 @@ class katello (
     num_workers            => $num_pulp_workers,
     enable_parent_node     => false,
     repo_auth              => false,
+    db_username            => $pulp_db_username,
+    db_password            => $pulp_db_password,
   } ~>
   class { '::qpid::client':
     ssl                    => true,
@@ -139,9 +153,8 @@ class katello (
     ssl_cert_password_file => $certs::qpid::nss_db_password_file,
   } ~>
   class { '::katello::qpid':
-    client_cert  => $certs::qpid::client_cert,
-    client_key   => $certs::qpid::client_key,
-    katello_user => $katello::user,
+    client_cert => $certs::qpid::client_cert,
+    client_key  => $certs::qpid::client_key,
   } ~>
   Exec['foreman-rake-db:seed']
 

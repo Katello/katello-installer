@@ -7,6 +7,7 @@ class katello::install {
   if $katello::enable_ostree {
     package { $katello::rubygem_katello_ostree:
       ensure => installed,
+      notify => Service['foreman-tasks', 'httpd'],
     }
   }
 }
