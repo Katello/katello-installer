@@ -40,6 +40,10 @@ def remove_docker_v1_content
   Kafo::Helpers.execute('foreman-rake katello:upgrades:3.0:delete_docker_v1_content')
 end
 
+def unset_pulp_oauth
+  Kafo::Helpers.execute('foreman-rake -- config -k use_pulp_oauth -v false')
+end
+
 def upgrade_step(step, options = {})
   noop = app_value(:noop) ? ' (noop)' : ''
   long_running = options[:long_running] ? ' (this may take a while) ' : ''
@@ -60,6 +64,7 @@ if app_value(:upgrade)
   upgrade_step :restart_services
 
   if Kafo::Helpers.module_enabled?(@kafo, 'katello')
+    upgrade_step :unset_pulp_oauth
     upgrade_step :db_seed
     upgrade_step :import_package_groups, :long_running => true
     upgrade_step :import_rpms, :long_running => true

@@ -45,10 +45,8 @@ def migrate_pulp
   Kafo::Helpers.execute('su - apache -s /bin/bash -c pulp-manage-db')
 end
 
-def migrate_foreman
-  Kafo::Helpers.execute('foreman-rake -- config -k use_pulp_oauth -v true')
-  Kafo::Helpers.execute('foreman-rake db:migrate')
-  Kafo::Helpers.execute('foreman-rake -- config -k use_pulp_oauth -v false')
+def set_pulp_oauth
+    Kafo::Helpers.execute('foreman-rake -- config -k use_pulp_oauth -v true')
 end
 
 def remove_nodes_importers
@@ -95,9 +93,9 @@ if app_value(:upgrade)
   if katello
     upgrade_step :migrate_candlepin
     upgrade_step :start_tomcat
-    upgrade_step :migrate_foreman
     upgrade_step :migrate_gutterball
     upgrade_step :remove_nodes_distributors
+    upgrade_step :set_pulp_oauth
   end
 
   Kafo::Helpers.log_and_say :info, 'Upgrade Step: Running installer...'
