@@ -30,6 +30,7 @@ CONFIG_CONTENT = <<EOF
 :no_prefix: true
 :answer_file: #{answers_file.path}
 :installer_dir: #{INSTALLER_DIR}
+:installer_name: 'foreman-installer'
 :module_dirs: ["/usr/share/foreman-installer/modules", "#{INSTALLER_DIR}/modules"]
 :hook_dirs: ["#{INSTALLER_DIR}/hooks"]
 :default_values_dir: /tmp

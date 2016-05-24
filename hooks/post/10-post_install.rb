@@ -15,6 +15,8 @@ def new_install?
   !File.exist?(success_file)
 end
 
+installer_name = kafo.config.app[:installer_name] || kafo.invocation_path
+
 if [0,2].include?(@kafo.exit_code)
   if !app_value(:upgrade)
     fqdn = Facter.value(:fqdn)
@@ -53,14 +55,14 @@ MSG
   2. subscription-manager register --org "<%= color('#{org}', :info) %>"
 
   Once this is completed run the steps below to start the smartproxy installation:
- 
+
   1. Ensure that the foreman-installer-katello package is installed on the system.
   2. Copy <%= color("#{certs_tar}", :info) %> to the system <%= color("#{capsule_fqdn}", :info) %>
   3. Run the following commands on the capsule (possibly with the customized
-     parameters, see <%= color("foreman-installer --scenario capsule --help", :info) %> and
+     parameters, see <%= color("#{installer_name} --scenario capsule --help", :info) %> and
      documentation for more info on setting up additional services):
-  
-  foreman-installer --scenario capsule\\
+
+  #{installer_name} --scenario capsule\\
                     --capsule-parent-fqdn                         "<%= "#{fqdn}" %>"\\
                     --foreman-proxy-register-in-foreman           "true"\\
                     --foreman-proxy-foreman-base-url              "https://<%= "#{fqdn}" %>"\\
