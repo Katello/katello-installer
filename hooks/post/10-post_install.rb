@@ -44,23 +44,22 @@ MSG
         foreman_oauth_key     = Kafo::Helpers.read_cache_data("oauth_consumer_key")
         foreman_oauth_secret  = Kafo::Helpers.read_cache_data("oauth_consumer_secret")
         katello_oauth_secret  = Kafo::Helpers.read_cache_data("katello_oauth_secret")
-        org                   = @kafo.param('certs', 'org').value
         say <<MSG
 
   To finish the installation, follow these steps:
-
-  If you do not have the smartproxy registered to the Katello instance, then please do the following:
-
-  1. yum -y localinstall http://#{fqdn}/pub/katello-ca-consumer-latest.noarch.rpm
-  2. subscription-manager register --org "<%= color('#{org}', :info) %>"
-
-  Once this is completed run the steps below to start the smartproxy installation:
 
   1. Ensure that the foreman-installer-katello package is installed on the system.
   2. Copy <%= color("#{certs_tar}", :info) %> to the system <%= color("#{capsule_fqdn}", :info) %>
   3. Run the following commands on the capsule (possibly with the customized
      parameters, see <%= color("#{installer_name} --scenario capsule --help", :info) %> and
-     documentation for more info on setting up additional services):
+     documentation for more info on setting up additional services).
+
+     It's a good idea to specify the organization(s) and location(s) in which
+     you'd like to use the proxy now in the installer command.  For each
+     location or organization, add an additional --foreman-proxy-registered-organizations
+     or --foreman-proxy-registered-locations option.  Some suggestions are
+     included below, omit these or change them if you do not use the suggested
+     defaults.
 
   #{installer_name} --scenario capsule\\
                     --capsule-parent-fqdn                         "<%= "#{fqdn}" %>"\\
@@ -71,7 +70,10 @@ MSG
                     --foreman-proxy-oauth-consumer-key            "<%= "#{foreman_oauth_key}" %>"\\
                     --foreman-proxy-oauth-consumer-secret         "<%= "#{foreman_oauth_secret}" %>"\\
                     --capsule-pulp-oauth-secret                   "<%= "#{katello_oauth_secret}" %>"\\
-                    --capsule-certs-tar                           "<%= color('#{certs_tar}', :info) %>"
+                    --capsule-certs-tar                           "<%= color('#{certs_tar}', :info) %>"\\
+                    --foreman-proxy-registered-organizations      "<%= color('Default Organization', :bad) %>"\\
+                    --foreman-proxy-registered-locations          "<%= color('Default Location', :bad) %>"
+
 MSG
       end
     end
