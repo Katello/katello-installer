@@ -1,4 +1,4 @@
-LEGACY_CONF_DIR = '/etc/katello-installer'
+LEGACY_CONF_DIR = '/etc/capsule-installer'
 LEGACY_CONFIG_NAME = 'capsule-installer.yaml'
 SCENARIO_NAME = 'capsule.yaml'
 legacy_config_file = File.join(LEGACY_CONF_DIR, LEGACY_CONFIG_NAME)
