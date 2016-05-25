@@ -108,7 +108,7 @@ if app_value(:upgrade)
 
   upgrade_step :stop_services
   upgrade_step :start_databases
-  upgrade_step :update_http_conf if Kafo::Helpers.module_enabled?(@kafo, 'katello')
+  upgrade_step :update_http_conf
 
   if katello || capsule
     upgrade_step :migrate_pulp
