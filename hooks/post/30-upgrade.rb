@@ -40,6 +40,11 @@ def remove_docker_v1_content
   Kafo::Helpers.execute('foreman-rake katello:upgrades:3.0:delete_docker_v1_content')
 end
 
+def remove_gutterball
+  return true unless Kafo::Helpers.execute('rpm -q gutterball')
+  Kafo::Helpers.execute("rpm -e gutterball tfm-rubygem-foreman_gutterball gutterball-certs tfm-rubygem-hammer_cli_gutterball")
+end
+
 def upgrade_step(step, options = {})
   noop = app_value(:noop) ? ' (noop)' : ''
   long_running = options[:long_running] ? ' (this may take a while) ' : ''
@@ -68,6 +73,7 @@ if app_value(:upgrade)
     upgrade_step :import_subscriptions, :long_running => true
     upgrade_step :elasticsearch_message
     upgrade_step :remove_docker_v1_content, :long_running => true
+    upgrade_step :remove_gutterball
   end
 
   if [0,2].include? @kafo.exit_code
