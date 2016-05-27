@@ -10,9 +10,18 @@ def start_httpd
   Kafo::Helpers.execute('katello-service start --only httpd')
 end
 
+def start_qpidd
+  Kafo::Helpers.execute('katello-service start --only qpidd,qdrouterd')
+end
+
+def start_pulp
+  Kafo::Helpers.execute('katello-service start --only pulp_workers,pulp_resource_manager,pulp_celerybeat')
+end
+
 def update_http_conf
-  Kafo::Helpers.execute("grep -q -F 'Include \"/etc/httpd/conf.modules.d/*.conf\"' /etc/httpd/conf/httpd.conf || \
-		         echo 'Include \"/etc/httpd/conf.modules.d/*.conf\"' >> /etc/httpd/conf/httpd.conf")
+  Kafo::Helpers.execute("grep -F -q 'Include \"/etc/httpd/conf.modules.d/*.conf\"' /etc/httpd/conf/httpd.conf || \
+                       echo -e '<IfVersion >= 2.4> \n    Include \"/etc/httpd/conf.modules.d/*.conf\"\n</IfVersion>' \
+                       >> /etc/httpd/conf/httpd.conf")
 end
 
 def migrate_candlepin
@@ -21,14 +30,6 @@ end
 
 def start_tomcat
   Kafo::Helpers.execute('katello-service start --only tomcat,tomcat6')
-end
-
-def migrate_gutterball
-  if File.exist?('/usr/bin/gutterball-db')
-    Kafo::Helpers.execute("/usr/bin/gutterball-db migrate")
-  else
-    true
-  end
 end
 
 def migrate_pulp
@@ -59,6 +60,24 @@ def remove_nodes_distributors
   Kafo::Helpers.execute("mongo pulp_database --eval  'db.repo_distributors.remove({'distributor_type_id': \"nodes_http_distributor\"});'")
 end
 
+def fix_pulp_httpd_conf
+  return true unless File.exist?('/etc/httpd/conf.d/pulp.conf.rpmnew')
+
+  Kafo::Helpers.execute('cp /etc/httpd/conf.d/pulp.conf.rpmnew /etc/httpd/conf.d/pulp.conf')
+end
+
+def fix_katello_settings_file
+  settings_file = '/etc/foreman/plugins/katello.yaml'
+  settings = JSON.parse(JSON.dump(YAML.load_file(settings_file)), :symbolize_names => true)
+
+  return true unless settings.key?(:common)
+
+  settings = {:katello => settings[:common]}
+  File.open(settings_file, 'w') do |file|
+    file.write(settings.to_yaml)
+  end
+end
+
 def upgrade_step(step)
   noop = app_value(:noop) ? ' (noop)' : ''
 
@@ -81,11 +100,14 @@ if app_value(:upgrade)
 
   upgrade_step :stop_services
   upgrade_step :start_databases
-  upgrade_step :update_http_conf if Kafo::Helpers.module_enabled?(@kafo, 'katello')
+  upgrade_step :update_http_conf
 
   if katello || capsule
     upgrade_step :migrate_pulp
+    upgrade_step :fix_pulp_httpd_conf
     upgrade_step :start_httpd
+    upgrade_step :start_qpidd
+    upgrade_step :start_pulp
   end
 
   if capsule
@@ -95,8 +117,8 @@ if app_value(:upgrade)
   if katello
     upgrade_step :migrate_candlepin
     upgrade_step :start_tomcat
+    upgrade_step :fix_katello_settings_file
     upgrade_step :migrate_foreman
-    upgrade_step :migrate_gutterball
     upgrade_step :remove_nodes_distributors
   end
 
