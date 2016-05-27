@@ -43,6 +43,7 @@ end
 def remove_gutterball
   return true unless Kafo::Helpers.execute('rpm -q gutterball')
   Kafo::Helpers.execute("rpm -e gutterball tfm-rubygem-foreman_gutterball gutterball-certs tfm-rubygem-hammer_cli_gutterball")
+  Kafo::Helpers.execute("rmdir /var/lib/tomcat/webapps/gutterball")
 end
 
 def upgrade_step(step, options = {})
