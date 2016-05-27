@@ -29,7 +29,7 @@ end
 def elasticsearch_message
   return true unless Kafo::Helpers.execute('rpm -q elasticsearch')
 
-  rpms = ['ruby193-rubygem-tire', 'tfm-rubygem-tire', 'elasticsearch', 'sigar', 'snappy-java', 'lucene4-contrib', 'lucene4']
+  rpms = ['ruby193-rubygem-tire', 'tfm-rubygem-tire', 'elasticsearch', 'sigar-java', 'sigar', 'snappy-java', 'lucene4-contrib', 'lucene4']
   message = "Elasticsearch has been removed as a dependency.  The database files can be "\
             "removed manually with #rm -rf /var/lib/elasticsearch.  "
   message += "Some packages are no longer needed and can be removed:  #rpm -e #{rpms.join(' ')}"
