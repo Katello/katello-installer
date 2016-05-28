@@ -47,11 +47,15 @@
 [database]
 name: <%= scope['pulp::db_name'] %>
 seeds: <%= scope['pulp::db_seeds'] %>
+<%# Auth is currently only working on mongo >= 2.6 -%>
+<% mongo_version = scope.lookupvar('::mongodb_version') -%>
+<% if mongo_version && scope.function_versioncmp([mongo_version, '2.6.0']) >= 0 -%>
 <% unless [nil, :undefined, :undef, ''].include?(scope.lookupvar('pulp::db_username')) -%>
 username: <%= scope['pulp::db_username'] %>
 <% end -%>
 <% unless [nil, :undefined, :undef, ''].include?(scope.lookupvar('pulp::db_password')) -%>
 password: <%= scope['pulp::db_password'] %>
+<% end -%>
 <% end -%>
 <% unless [nil, :undefined, :undef, ''].include?(scope.lookupvar('pulp::db_replica_set')) -%>
 replica_set: <%= scope['pulp::db_replica_set'] %>

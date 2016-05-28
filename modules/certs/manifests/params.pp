@@ -76,12 +76,6 @@ class certs::params {
   $candlepin_amqp_keystore          = "${candlepin_amqp_store_dir}/candlepin.jks"
   $candlepin_qpid_exchange          = 'event'
 
-  $gutterball_certs_dir              = '/etc/gutterball/certs'
-  $gutterball_amqp_store_dir         = "${gutterball_certs_dir}/amqp/"
-  $gutterball_amqp_truststore        = "${gutterball_amqp_store_dir}/gutterball.truststore"
-  $gutterball_amqp_keystore          = "${gutterball_amqp_store_dir}/gutterball.jks"
-  $gutterball_keystore_password_file = "${pki_dir}/keystore_password-file-gutterball"
-
   $certs_tar              = undef
   # Settings for uploading packages to Katello
   $katello_user           = undef

@@ -6,7 +6,7 @@
   :cdn_ssl_version: <%= @cdn_ssl_version %>
   <%- end -%>
 
-  :rest_client_timeout: 120
+  :rest_client_timeout: 3600
 
   :post_sync_url: https://<%= @fqdn %><%= @deployment_url %>/api/v2/repositories/sync_complete?token=<%= @post_sync_token %>
 

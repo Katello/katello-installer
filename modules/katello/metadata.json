@@ -1,6 +1,6 @@
 {
   "name": "katello-katello",
-  "version": "3.1.0",
+  "version": "4.0.0",
   "author": "Katello",
   "summary": "Handles deploying and managing a Katello + Foreman server",
   "license": "GPL-3.0+",
@@ -43,10 +43,9 @@
     {"name":"puppetlabs-postgresql","version_requirement":">= 3.0.0 < 5.0.0"},
     {"name":"puppetlabs-mongodb","version_requirement":">= 0.11.0 < 1.0.0"},
     {"name":"theforeman-foreman","version_requirement":">= 5.0.0 < 6.0.0"},
-    {"name":"katello-certs","version_requirement":">= 0.5.0 < 1.0.0"},
+    {"name":"katello-certs","version_requirement":">= 0.6.0 < 1.0.0"},
     {"name":"katello-qpid","version_requirement":">= 1.0.0 < 2.0.0"},
     {"name":"katello-candlepin","version_requirement":">= 1.0.0 < 2.0.0"},
-    {"name":"katello-gutterball","version_requirement":">= 0.1.0 < 1.0.0"},
     {"name":"katello-pulp","version_requirement":">= 3.1.0 < 4.0.0"},
     {"name":"katello-common","version_requirement":">= 0.0.1 < 1.0.0"}
   ]

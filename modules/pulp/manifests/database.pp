@@ -7,8 +7,29 @@ class pulp::database {
       $mongodb_pidfilepath = '/var/run/mongodb/mongodb.pid'
     }
 
+    # puppetlabs-mongodb is totally broken with managing users on < 2.6
+    if (versioncmp($::mongodb_version, '2.6.0') >= 0) {
+      $auth_real = $::pulp::db_username != undef and $::pulp::db_password != undef
+    } else {
+      $auth_real = false
+    }
+
     class { '::mongodb::server':
       pidfilepath => $mongodb_pidfilepath,
+      auth        => $auth_real,
+      noauth      => !$auth_real,
+    }
+
+    if $auth_real {
+      mongodb_user { $::pulp::db_username:
+        ensure        => present,
+        username      => $::pulp::db_username,
+        password_hash => mongodb_password($::pulp::db_username, $::pulp::db_password),
+        database      => $::pulp::db_name,
+        roles         => ['dbAdmin', 'readWrite'],
+        tries         => 10,
+        require       => Service['mongodb'],
+      }
     }
 
     Service['mongodb'] -> Service['pulp_celerybeat']

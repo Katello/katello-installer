@@ -142,7 +142,7 @@ class katello (
     enable_ostree          => $enable_ostree,
     num_workers            => $num_pulp_workers,
     enable_parent_node     => false,
-    repo_auth              => false,
+    repo_auth              => true,
     db_username            => $pulp_db_username,
     db_password            => $pulp_db_password,
   } ~>

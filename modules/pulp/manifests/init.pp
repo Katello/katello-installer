@@ -67,10 +67,10 @@
 #                               certificates, which are used to validate certificates passed from the other end
 #                               of the connection.
 #
-# $db_unsafe_autoretry:         If true, retry commands to the database if there is a connection error.
+# $db_unsafe_autoretry::        If true, retry commands to the database if there is a connection error.
 #                               Warning: if set to true, this setting can result in duplicate records.
 #
-# $db_write_concern:            Write concern of 'majority' or 'all'. When 'all' is specified, 'w' is set to
+# $db_write_concern::           Write concern of 'majority' or 'all'. When 'all' is specified, 'w' is set to
 #                               number of seeds specified. For version of MongoDB < 2.6, replica_set must also
 #                               be specified. Please note that 'all' will cause Pulp to halt if any of the
 #                               replica set members is not available. 'majority' is used by defau
@@ -78,9 +78,9 @@
 # $server_name::                hostname the admin client and consumers should use when accessing
 #                               the server; if not specified, this is defaulted to the server's hostname
 #
-# $key_url::
+# $key_url::                    URL to use for GPG keys
 #
-# $ks_url::
+# $ks_url::                     URL to use for kickstart trees
 #
 # $debugging_mode::             boolean; toggles Pulp's debugging capabilities
 #
@@ -127,7 +127,7 @@
 #
 # $ssl_verify_client::          Enforce use of SSL authentication for yum repos access
 #
-# $serial_number_path::
+# $serial_number_path::         Path to the serial number file
 #
 # $consumer_history_lifetime::  number of days to store consumer events; events older
 #                               than this will be purged; set to -1 to disable
@@ -175,7 +175,7 @@
 # $lazy_download_interval::     The interval in minutes between checks for content cached
 #                               by the Squid proxy.
 #
-# $lazy_download_concurrency:   The number of downloads to perform concurrently when
+# $lazy_download_concurrency::  The number of downloads to perform concurrently when
 #                               downloading content from the Squid cache.
 #
 # $proxy_url::                  URL of the proxy server
@@ -238,11 +238,12 @@
 #
 # $node_certificate::           The absolute path to the node SSL certificate
 #
-# $node_verify_ssl::
+# $node_verify_ssl::            Verify node SSL
+#                               type:boolean
 #
-# $node_server_ca_cert::
+# $node_server_ca_cert::        Server cert for pulp node
 #
-# $node_oauth_effective_user::
+# $node_oauth_effective_user::  Effective user for node OAuth
 #
 # $node_oauth_key::             The oauth key used to authenticate to the parent node
 #

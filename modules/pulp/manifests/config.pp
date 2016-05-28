@@ -106,7 +106,7 @@ class pulp::config {
     }
     class { '::squid3':
       use_deprecated_opts           => $deprecated_opts,
-      http_port                     => [ '3128 accel' ],
+      http_port                     => [ '3128 accel defaultsite=127.0.0.1:8751' ],
       acl                           => [ 'Safe_ports port 3128' ],
       http_access                   => [ 'allow localhost', 'deny to_localhost', 'deny all' ],
       cache                         => [ 'allow all' ],
@@ -115,8 +115,10 @@ class pulp::config {
       cache_dir                     => [ 'aufs /var/spool/squid 10000 16 256' ],
       template                      => 'short',
       config_hash                   => {
-        cache_peer        => '127.0.0.1 parent 8751 0 no-digest no-query originserver name=PulpStreamer',
-        cache_peer_access => 'PulpStreamer allow all',
+        cache_peer          => '127.0.0.1 parent 8751 0 no-digest no-query originserver name=PulpStreamer',
+        cache_peer_access   => 'PulpStreamer allow all',
+        range_offset_limit  => 'none',
+        minimum_object_size => '0 kB',
       },
     }
   }

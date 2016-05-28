@@ -5,6 +5,8 @@
 #
 # === Parameters:
 #
+# $ca_path::                       Path to use for the CA
+#
 # $version::                       pulp admin package version, it's passed to ensure parameter of package resource
 #                                  can be set to specific version number, 'latest', 'present' etc.
 #
@@ -28,7 +30,7 @@
 #                                  a trusted authority
 #                                  type:boolean
 #
-# $rsa_server_pub                  The pulp server public key used for authentication.
+# $rsa_server_pub::                The pulp server public key used for authentication.
 #
 # $rsa_key::                       The RSA private key used for authentication.
 #

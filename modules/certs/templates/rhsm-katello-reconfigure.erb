@@ -23,8 +23,8 @@ chmod 644 $KATELLO_CERT_DIR/$KATELLO_SERVER_CA_CERT
 echo "$KATELLO_DEFAULT_CA_DATA" > $KATELLO_CERT_DIR/$KATELLO_DEFAULT_CA_CERT
 chmod 644 $KATELLO_CERT_DIR/$KATELLO_DEFAULT_CA_CERT
 
-# if not atomic machine, regular rhel then handle traditional way
-if [ -e "/run/ostree-booted" ]
+# if atomic machine handle it the atomic way, else handle the regular rhel way
+if [ -n "${IS_ATOMIC+1}" ] || [ -e "/run/ostree-booted" ]
 then
   #atomic setup
   BASEURL=https://$KATELLO_SERVER/pulp/ostree/web/

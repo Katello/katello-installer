@@ -10,7 +10,8 @@ describe 'pulp::config' do
       :operatingsystemrelease     => '6.4',
       :operatingsystemmajrelease  => '6.4',
       :osfamily                   => 'RedHat',
-      :processorcount             => 3
+      :processorcount             => 3,
+      :mongodb_version            => '2.4.9',
     }
   end
 
@@ -55,6 +56,44 @@ describe 'pulp::config' do
     it 'should configure server.conf' do
       should contain_file('/etc/pulp/server.conf').
         with_content(/^topic_exchange: 'amq.topic'$/)
+    end
+  end
+
+  context 'with database auth parameters on unsupported mongo' do
+    let :pre_condition do
+      "class {'pulp':
+        db_username => 'rspec',
+        db_password => 'rsp3c4l1f3',
+       }"
+    end
+
+    let :facts do
+      default_facts
+    end
+
+    it "should not configure auth" do
+      should contain_file('/etc/pulp/server.conf').
+        without_content(/^username: rspec$/).
+        without_content(/^password: rsp3c4l1f3$/)
+    end
+  end
+
+  context 'with database auth parameters on supported mongo' do
+    let :pre_condition do
+      "class {'pulp':
+        db_username => 'rspec',
+        db_password => 'rsp3c4l1f3',
+       }"
+    end
+
+    let :facts do
+      default_facts.merge(:mongodb_version => '2.6.1')
+    end
+
+    it "should configure auth" do
+      should contain_file('/etc/pulp/server.conf').
+        with_content(/^username: rspec$/).
+        with_content(/^password: rsp3c4l1f3$/)
     end
   end
 

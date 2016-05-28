@@ -34,7 +34,7 @@ describe 'katello::config' do
       content = catalogue.resource('file', '/etc/foreman/plugins/katello.yaml').send(:parameters)[:content]
       content.split("\n").reject { |c| c =~ /(^#|^$)/ }.should == [
         ':katello:',
-        '  :rest_client_timeout: 120',
+        '  :rest_client_timeout: 3600',
         '  :post_sync_url: https://host.example.org/katello/api/v2/repositories/sync_complete?token=test_token',
         '  :candlepin:',
         '    :url: https://host.example.org:8443/candlepin',
@@ -72,7 +72,7 @@ describe 'katello::config' do
       content = catalogue.resource('file', '/etc/foreman/plugins/katello.yaml').send(:parameters)[:content]
       content.split("\n").reject { |c| c =~ /(^#|^$)/ }.should == [
         ':katello:',
-        '  :rest_client_timeout: 120',
+        '  :rest_client_timeout: 3600',
         '  :post_sync_url: https://host.example.org/katello/api/v2/repositories/sync_complete?token=test_token',
         '  :candlepin:',
         '    :url: https://host.example.org:8443/candlepin',

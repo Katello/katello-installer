@@ -24,13 +24,6 @@ class katello::params {
   $rhsm_url = '/rhsm'
   $deployment_url = '/katello'
 
-  if file_exists('/usr/sbin/tomcat') and !file_exists('/usr/sbin/tomcat6') {
-    $tomcat = 'tomcat'
-  }
-  else {
-    $tomcat = 'tomcat6'
-  }
-
   # HTTP Proxy settings (currently used by pulp)
   $proxy_url = undef
   $proxy_port = undef

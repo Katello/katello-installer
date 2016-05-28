@@ -36,6 +36,7 @@ If your most recent release breaks compatibility or requires particular steps fo
 
 * EL6,7 (RHEL6,7 / CentOS 6,7)
 * Requires Pulp 2.7.0 or higher.
+* Database authentication parameters are ignored when running MongoDB older than 2.6
 
 ##Pulp consumer
 
