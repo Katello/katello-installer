@@ -2,7 +2,7 @@ forge 'https://forgeapi.puppetlabs.com'
 
 mod 'katello-candlepin',        '1.0.1'
 mod 'katello-capsule',          '2.1.0'
-mod 'katello-certs',            '0.6.0'
+mod 'katello-certs',            :git => 'https://github.com/Katello/puppet-certs', :ref => '8ed3854fffc2a4824d726352ff1bf2397c569c5c'
 mod 'katello-common',           '0.1.3'
 mod 'katello-crane',            '1.0.0'
 mod 'katello-katello',          '4.0.0'
