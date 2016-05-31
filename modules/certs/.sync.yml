@@ -1,0 +1,5 @@
+---
+Rakefile:
+  param_docs_pattern:
+    - manifests/capsule.pp
+    - manifests/init.pp
