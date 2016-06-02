@@ -42,8 +42,12 @@ end
 
 def remove_gutterball
   return true unless Kafo::Helpers.execute('rpm -q gutterball')
-  Kafo::Helpers.execute("rpm -e gutterball tfm-rubygem-foreman_gutterball gutterball-certs tfm-rubygem-hammer_cli_gutterball")
-  Kafo::Helpers.execute("rmdir /var/lib/tomcat/webapps/gutterball")
+  Kafo::Helpers.execute("yum erase -y gutterball tfm-rubygem-foreman_gutterball gutterball-certs tfm-rubygem-hammer_cli_gutterball")
+  
+  ['tomcat', 'tomcat6'].each do |t|
+    gutterball_dir = "/var/lib/#{t}/webapps/gutterball"
+    Kafo::Helpers.execute("rmdir #{gutterball_dir}") if File.directory?(gutterball_dir)
+  end
 end
 
 def upgrade_step(step, options = {})
