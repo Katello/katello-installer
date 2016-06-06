@@ -1,7 +1,7 @@
 require 'fileutils'
 
 SSL_BUILD_DIR = '/root/ssl-build/'
-CHECK_SCRIPT  = File.expand_path('../../../bin/katello-certs-check', __FILE__)
+CHECK_SCRIPT = `which katello-certs-check`.strip
 
 def error(message)
   logger.error message
