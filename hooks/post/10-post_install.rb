@@ -19,7 +19,7 @@ installer_name = kafo.config.app[:installer_name] || kafo.invocation_path
 
 if [0,2].include?(@kafo.exit_code)
   if !app_value(:upgrade)
-    fqdn = Facter.value(:fqdn)
+    fqdn = @kafo.param('capsule_certs','parent_fqdn').value || Facter.value(:fqdn)
 
     say "  <%= color('Success!', :good) %>"
 
