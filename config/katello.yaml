@@ -1,6 +1,7 @@
 ---
   :name: Katello
   :description: Install Foreman with Katello
+  :product_name: Katello
   :log_dir: /var/log/foreman-installer
   :log_name: katello.log
   :log_level: DEBUG

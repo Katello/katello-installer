@@ -47,7 +47,7 @@ end
 def remove_gutterball
   return true unless Kafo::Helpers.execute('rpm -q gutterball')
   Kafo::Helpers.execute("yum erase -y gutterball tfm-rubygem-foreman_gutterball gutterball-certs tfm-rubygem-hammer_cli_gutterball")
-  
+
   ['tomcat', 'tomcat6'].each do |t|
     gutterball_dir = "/var/lib/#{t}/webapps/gutterball"
     Kafo::Helpers.execute("rmdir #{gutterball_dir}") if File.directory?(gutterball_dir)
@@ -87,6 +87,6 @@ if app_value(:upgrade)
   end
 
   if [0,2].include? @kafo.exit_code
-    Kafo::Helpers.log_and_say :info, 'Katello upgrade completed!'
+    Kafo::Helpers.log_and_say :info, "#{Kafo::Helpers.product_name} upgrade completed!"
   end
 end

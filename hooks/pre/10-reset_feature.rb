@@ -1,5 +1,4 @@
 # See bottom of the script for the command that kicks off the script
-
 def reset
   if foreman_installed?
 
@@ -9,7 +8,7 @@ def reset
     reset_pulp
 
   else
-    Kafo::KafoConfigure.logger.warn 'Katello not installed yet, can not drop database!'
+    Kafo::KafoConfigure.logger.warn "#{Kafo::Helpers.product_name} not installed yet, can not drop database!"
   end
 end
 
@@ -58,4 +57,3 @@ def reset_pulp
 end
 
 reset if app_value(:reset) && !app_value(:noop)
-

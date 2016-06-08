@@ -31,6 +31,7 @@ CONFIG_CONTENT = <<EOF
 :answer_file: #{answers_file.path}
 :installer_dir: #{INSTALLER_DIR}
 :installer_name: 'foreman-installer'
+:product_name: 'Katello'
 :module_dirs: ["/usr/share/foreman-installer/modules", "#{INSTALLER_DIR}/modules"]
 :hook_dirs: ["#{INSTALLER_DIR}/hooks"]
 :default_values_dir: /tmp
