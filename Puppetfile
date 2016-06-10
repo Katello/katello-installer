@@ -1,11 +1,11 @@
 forge 'https://forgeapi.puppetlabs.com'
 
 mod 'katello-candlepin',        '1.0.1'
-mod 'katello-capsule',          '2.1.0'
+mod 'katello-capsule',          '3.0.0'
 mod 'katello-certs',            :git => 'https://github.com/Katello/puppet-certs', :ref => '8ed3854fffc2a4824d726352ff1bf2397c569c5c'
 mod 'katello-common',           '0.1.3'
 mod 'katello-crane',            '1.0.0'
-mod 'katello-katello',          :git => 'https://github.com/katello/puppet-katello', :ref => 'c86f16a21b2fe8f74aa284ac73ee6117e932ba08'
+mod 'katello-katello',          '5.0.1'
 mod 'katello-pulp',             '3.3.0'
 mod 'katello-qpid',             '1.2.2'
 mod 'katello-service_wait',     '0.1.2'

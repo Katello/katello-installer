@@ -1,58 +1,12 @@
 {
   "name": "katello-katello",
-  "version": "3.1.0",
+  "version": "5.0.1",
   "author": "Katello",
   "summary": "Handles deploying and managing a Katello + Foreman server",
   "license": "GPL-3.0+",
   "source": "https://github.com/Katello/puppet-katello.git",
   "project_page": "https://github.com/Katello/puppet-katello",
   "issues_url": "http://projects.theforeman.org/projects/katello/issues",
-  "dependencies": [
-    {
-      "name": "puppetlabs-stdlib",
-      "version_requirement": ">= 4.6.0 < 5.0.0"
-    },
-    {
-      "name": "puppet/extlib",
-      "version_requirement": ">= 0.10.4 < 1.0.0"
-    },
-    {
-      "name": "puppetlabs-apache",
-      "version_requirement": ">= 1.0.0 < 2.0.0"
-    },
-    {
-      "name": "puppetlabs-postgresql",
-      "version_requirement": ">= 3.0.0 < 5.0.0"
-    },
-    {
-      "name": "puppetlabs-mongodb",
-      "version_requirement": ">= 0.11.0 < 1.0.0"
-    },
-    {
-      "name": "theforeman-foreman",
-      "version_requirement": ">= 5.0.0 < 6.0.0"
-    },
-    {
-      "name": "katello-certs",
-      "version_requirement": ">= 0.5.0 < 1.0.0"
-    },
-    {
-      "name": "katello-qpid",
-      "version_requirement": ">= 1.0.0 < 2.0.0"
-    },
-    {
-      "name": "katello-candlepin",
-      "version_requirement": ">= 1.0.0 < 2.0.0"
-    },
-    {
-      "name": "katello-pulp",
-      "version_requirement": ">= 3.1.0 < 4.0.0"
-    },
-    {
-      "name": "katello-common",
-      "version_requirement": ">= 0.0.1 < 1.0.0"
-    }
-  ],
   "requirements": [
     {
       "name": "puppet",
@@ -81,5 +35,18 @@
         "7"
       ]
     }
+  ],
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 4.6.0 < 5.0.0"},
+    {"name":"puppet/extlib","version_requirement":">= 0.10.4 < 1.0.0"},
+    {"name":"puppetlabs-apache","version_requirement":">= 1.0.0 < 2.0.0"},
+    {"name":"puppetlabs-postgresql","version_requirement":">= 3.0.0 < 5.0.0"},
+    {"name":"puppetlabs-mongodb","version_requirement":">= 0.11.0 < 1.0.0"},
+    {"name":"theforeman-foreman","version_requirement":">= 5.0.0 < 6.0.0"},
+    {"name":"katello-certs","version_requirement":">= 0.5.0 < 1.0.0"},
+    {"name":"katello-qpid","version_requirement":">= 1.0.0 < 2.0.0"},
+    {"name":"katello-candlepin","version_requirement":">= 1.0.0 < 2.0.0"},
+    {"name":"katello-pulp","version_requirement":">= 3.1.0 < 4.0.0"},
+    {"name":"katello-common","version_requirement":">= 0.0.1 < 1.0.0"}
   ]
 }

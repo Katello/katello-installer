@@ -19,9 +19,6 @@ class capsule::params {
   $pulp_oauth_key            = 'katello'
   $pulp_oauth_secret         = undef
 
-  $pulp_db_username          = 'pulp'
-  $pulp_db_password          = cache_data('foreman_cache_data', 'pulp_db_password', random_password(32))
-
   $qpid_router               = true
   $qpid_router_hub_addr      = '0.0.0.0'
   $qpid_router_agent_addr    = '0.0.0.0'
