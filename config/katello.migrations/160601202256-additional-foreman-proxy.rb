@@ -1,4 +1,5 @@
 def move(name, default=nil, new_name=nil)
+  return unless answers['capsule'].key?(name)
   answers['foreman_proxy'][(new_name || name)] = answers['capsule'].delete(name) { |k| default }
 end
 
