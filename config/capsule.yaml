@@ -9,6 +9,7 @@
   :installer_dir: "."
   :default_values_dir: "/tmp"
   :module_dirs: ["/usr/share/foreman/modules", "./modules"]
+  :hiera_config: /usr/share/foreman-installer/config/foreman-hiera.conf
   :hook_dirs: ["./hooks"]
   :colors: true
   :order:
