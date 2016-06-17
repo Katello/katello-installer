@@ -1,5 +1,12 @@
 #!/bin/bash
 
+for var in $@; do
+   if [[ $var == "--help" || $var == "-h" ]]
+       then echo -e "This script is used to remove all capsule related packages and services. \nThis should only be used if you are sure you are wanting to completely remove Capsule from this machine and lose all of your settings and synced content."
+       exit 1
+   fi
+done
+
 echo ""
 echo "WARNING: This script will erase many packages and config files."
 echo "Important packages such as the following will be removed:"
