@@ -66,6 +66,7 @@ namespace :pkg do
 end
 
 task :setup_local => [:clean, "#{BUILDDIR}/modules"] do
+  rm_rf "modules"
   cp_r "#{BUILDDIR}/modules", "modules"
 end
 
