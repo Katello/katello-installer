@@ -1,0 +1,18 @@
+{
+  "CHANGELOG": "5cb3c578a594a90e9960f29af401432a",
+  "Gemfile": "282fd6d06695a42bf4d864d9b3c40110",
+  "LICENSE": "652041dc5ffe79a9452e7ef577468f7c",
+  "Modulefile": "79835e1bbb96ce54df9dbd5bfbcfe8d8",
+  "README.markdown": "7ec180261dfa6fbc86e01b362fc985c2",
+  "lib/puppet/provider/alternative_entry/dpkg.rb": "ab8b67016d0d5e8e1a0c07a965f600d1",
+  "lib/puppet/provider/alternative_entry/rpm.rb": "ff84ed19881962dd4ee5e720927fb8d2",
+  "lib/puppet/provider/alternatives/dpkg.rb": "cf03e4dcbb2b405d74e02e0e63a20cad",
+  "lib/puppet/provider/alternatives/rpm.rb": "dfe075ce77375293c9b8b484c786ec47",
+  "lib/puppet/type/alternative_entry.rb": "7bc81402e2b2fe51a8d25824b635acbf",
+  "lib/puppet/type/alternatives.rb": "9b3cb65c9cc0dd7c82c074e832f846cf",
+  "metadata.json": "721ca1fff89b69eb1e5d027850ec8907",
+  "spec/fixtures/unit/provider/alternatives/dpkg/get-selections": "4b9d2c97e297526629d5236140a8b2dd",
+  "spec/spec_helper.rb": "4dcbe64eea9d25dca06b56d557fe7fec",
+  "spec/unit/provider/alternatives/dpkg_spec.rb": "e29ccdbc72674de98a1c9e93c8feddfc",
+  "spec/unit/type/alternatives_spec.rb": "100cd1eb684d11cc8ba3cce5c27967ee"
+}

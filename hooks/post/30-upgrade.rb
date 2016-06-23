@@ -36,6 +36,10 @@ def elasticsearch_message
   Kafo::Helpers.log_and_say :info, message
 end
 
+def add_export_distributor
+  Kafo::Helpers.execute('foreman-rake katello:upgrades:3.0:add_export_distributor')
+end
+
 def remove_docker_v1_content
   Kafo::Helpers.execute('foreman-rake katello:upgrades:3.0:delete_docker_v1_content')
 end
@@ -44,10 +48,14 @@ def update_puppet_repository_distributors
   Kafo::Helpers.execute('foreman-rake katello:upgrades:3.0:update_puppet_repository_distributors')
 end
 
+def update_subscription_facet_backend_data
+  Kafo::Helpers.execute('foreman-rake katello:upgrades:3.0:update_subscription_facet_backend_data')
+end
+
 def remove_gutterball
   return true unless Kafo::Helpers.execute('rpm -q gutterball')
   Kafo::Helpers.execute("yum erase -y gutterball tfm-rubygem-foreman_gutterball gutterball-certs tfm-rubygem-hammer_cli_gutterball")
-  
+
   ['tomcat', 'tomcat6'].each do |t|
     gutterball_dir = "/var/lib/#{t}/webapps/gutterball"
     Kafo::Helpers.execute("rmdir #{gutterball_dir}") if File.directory?(gutterball_dir)
@@ -81,8 +89,10 @@ if app_value(:upgrade)
     upgrade_step :import_puppet_modules, :long_running => true
     upgrade_step :import_subscriptions, :long_running => true
     upgrade_step :elasticsearch_message
+    upgrade_step :add_export_distributor, :long_running => true
     upgrade_step :remove_docker_v1_content, :long_running => true
     upgrade_step :update_puppet_repository_distributors, :long_running => true
+    upgrade_step :update_subscription_facet_backend_data, :long_running => true
     upgrade_step :remove_gutterball
   end
 

@@ -1,0 +1,20 @@
+{
+  "CONTRIBUTING.md": "b09c628c63cd0562c3f8bbd74a3143f8",
+  "Gemfile": "43b899413f4dd7aad690514b484d7db9",
+  "LICENSE.txt": "b234ee4d69f5fce4486a80fdaf4a4263",
+  "README.md": "d430ef1e57617cd06de46d619cd3ec0a",
+  "Rakefile": "5d38eec4207040ace7e08a0282792a61",
+  "bin/service-wait": "1110c92f212cd594fc47f968ebf75481",
+  "lib/puppet/provider/service/service_wait.rb": "54a67d44b0ff0b74e4d6794353ce95eb",
+  "lib/puppet/provider/service/service_wait_el6.rb": "9d263db5a82bf08cd0e59a43d02ea9f3",
+  "metadata.json": "51dcbd0294206850b83a1b47435819d2",
+  "plugins/candlepin.sh": "d1b9a7009f6d697ba54cd17179336014",
+  "plugins/elasticsearch.sh": "a45cf0d83fb0cb872cd0714b0883bbc4",
+  "plugins/foreman.sh": "0c97eb188a866bbc3fc4b7d653144cec",
+  "plugins/katello.sh": "59e11e81bdae0d69494d6f7452c8ad28",
+  "plugins/mongo.sh": "77ad943fc87a780d686ee03886a1f743",
+  "plugins/postgresql.sh": "ee1f02422093eb1d35d0dffc20b2ed44",
+  "plugins/qpidd.sh": "73127547a21a30165d4adcc9c638c9e6",
+  "spec/spec.opts": "6af1d8720d85a510f132e3250aa61075",
+  "spec/spec_helper.rb": "c97349efb008b3ef1e77afc51cc9bff5"
+}

@@ -1,0 +1,7 @@
+# allow older yum clients to connect, see bz 647828
+SSLInsecureRenegotiation On
+
+KeepAlive On
+MaxKeepAliveRequests <%= scope['::pulp::max_keep_alive'] %>
+
+SSLUsername SSL_CLIENT_S_DN_CN

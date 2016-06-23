@@ -1,0 +1,23 @@
+20151019 v1.0.1
+  Fix relationship with jks <adamwenner>
+20150108 v1.0.0
+  Rewrote module to use system methods for trusted certificates
+  Add separate java define for java keystores
+  Add acceptance tests
+  Remove dependency on puppetlabs/concat
+20141219 v0.3.0
+  Allow specifying java_keystore file
+  Doc fixes
+20140815 v0.2.0
+  Update certificate install method
+20130913 v0.1.2
+  Java class required for keytool
+20130912 v0.1.1
+  Fix path
+20130912 v0.1.0
+  Add ability to add CA to java keyfile
+  Spec updates
+v0.0.2:
+  Fix documentation
+v0.0.1:
+  Initial release

@@ -9,6 +9,7 @@
   :installer_dir: "."
   :default_values_dir: "/tmp"
   :module_dirs: ["./_build/modules", "../katello-installer/modules"]
+  :hiera_config: /usr/share/foreman-installer/config/foreman-hiera.conf
   :hook_dirs: ["../katello-installer/hooks"]
   :default_values_dir: "./config"
   :colors: true
