@@ -1,4 +1,0 @@
----
-:enabled: <%= @pulp %>
-:pulp_url: https://localhost/pulp
-

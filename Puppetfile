@@ -1,14 +1,14 @@
 forge 'https://forgeapi.puppetlabs.com'
 
-mod 'katello/candlepin',        '1.0.1'
-mod 'katello/capsule',          '3.0.0' 
-mod 'katello/certs',            '0.6.0'
-mod 'katello/common',           '0.1.3'
-mod 'katello/crane',            '1.0.0'
-mod 'katello/katello',          '5.0.1'
-mod 'katello/pulp',             '3.3.1'
-mod 'katello/qpid',             '1.2.2' 
-mod 'katello/service_wait',     '0.1.2'
+mod 'katello/candlepin',        :git => 'https://github.com/Katello/puppet-candlepin'
+mod 'katello/capsule',          :git => 'https://github.com/Katello/puppet-capsule'
+mod 'katello/certs',            :git => 'https://github.com/Katello/puppet-certs'
+mod 'katello/common',           :git => 'https://github.com/Katello/puppet-common'
+mod 'katello/crane',            :git => 'https://github.com/Katello/puppet-crane'
+mod 'katello/katello',          :git => 'https://github.com/Katello/puppet-katello'
+mod 'katello/pulp',             :git => 'https://github.com/Katello/puppet-pulp'
+mod 'katello/qpid',             :git => 'https://github.com/Katello/puppet-qpid'
+mod 'katello/service_wait',     :git => 'https://github.com/Katello/puppet-service_wait'
 
 # Katello devel specific modules
 mod 'katello/katello_devel',    :git => 'https://github.com/Katello/puppet-katello_devel'

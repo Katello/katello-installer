@@ -1,5 +1,6 @@
 _build
 pkg
+modules
 
 Puppetfile.lock
 Gemfile.lock
