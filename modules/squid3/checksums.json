@@ -1,0 +1,15 @@
+{
+  "CHANGELOG.md": "1a53f07848ec83626e2f39ac4c5c9c30",
+  "Gemfile": "dd81ada015560d38c3b4fb862b4acf71",
+  "LICENSE": "0bb6e240844265516efdc035fb203f4b",
+  "README.md": "d4a18e2f99409c9f928e379846390b15",
+  "Rakefile": "c5153bf93503a8928af9d2681deab48d",
+  "manifests/init.pp": "a1841f472924a9ed9ef4056d445682e8",
+  "manifests/params.pp": "a168708f89bc2506fac3072b1637bea7",
+  "metadata.json": "54d04c8d74711df39901032366323c6d",
+  "spec/classes/squid3_spec.rb": "9d7c8d1af7f30a02ae5215fe31c88c0d",
+  "spec/spec_helper.rb": "b3d8459ac7465de7971c729a3142d9eb",
+  "templates/squid.conf.documented": "077f10da57dfe168b5a4bea512799907",
+  "templates/squid.conf.long.erb": "b17a4aacd76c92b77203d931fac00951",
+  "templates/squid.conf.short.erb": "d31aa223a6c6e6f5d0229746a28e5fdf"
+}
