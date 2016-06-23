@@ -1,0 +1,16 @@
+#
+# Apache configuration file for Pulp's OSTree support
+#
+
+# -- HTTPS Repositories ---------
+
+Alias /pulp/ostree /var/www/pub/ostree/
+
+<Directory /var/www/pub/ostree>
+    WSGIAccessScript /usr/share/pulp/wsgi/repo_auth.wsgi
+    SSLRequireSSL
+    SSLVerifyClient <%= scope['pulp::ssl_verify_client'] %>
+    SSLVerifyDepth 2
+    SSLOptions +StdEnvVars +ExportCertData +FakeBasicAuth
+    Options FollowSymLinks Indexes
+</Directory>
