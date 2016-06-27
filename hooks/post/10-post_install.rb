@@ -29,7 +29,7 @@ if [0,2].include?(@kafo.exit_code)
 
     # Fortello UI?
     if Kafo::Helpers.module_enabled?(@kafo, 'katello')
-      say "  * <%= color('Katello', :info) %> is running at <%= color('#{@kafo.param('foreman','foreman_url').value}', :info) %>"
+      say "  * <%= color('#{Kafo::Helpers.product_name}', :info) %> is running at <%= color('#{@kafo.param('foreman','foreman_url').value}', :info) %>"
       say "      Initial credentials are <%= color('#{@kafo.param('foreman', 'admin_username').value}', :info) %> / <%= color('#{@kafo.param('foreman', 'admin_password').value}', :info) %>" if @kafo.param('foreman','authentication').value == true && new_install?
     end
 
@@ -53,7 +53,7 @@ MSG
 
   To finish the installation, follow these steps:
 
-  If you do not have the smartproxy registered to the Katello instance, then please do the following:
+  If you do not have the smartproxy registered to the #{Kafo::Helpers.product_name} instance, then please do the following:
 
   1. yum -y localinstall http://#{fqdn}/pub/katello-ca-consumer-latest.noarch.rpm
   2. subscription-manager register --org "<%= color('#{org}', :info) %>"

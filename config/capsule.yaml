@@ -1,6 +1,7 @@
 ---
   :name: Capsule
   :description: Install a stand-alone Capsule.
+  :product_name: Katello
   :log_dir: /var/log/foreman-installer
   :log_name: capsule.log
   :log_level: DEBUG

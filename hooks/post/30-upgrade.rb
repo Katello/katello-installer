@@ -97,6 +97,6 @@ if app_value(:upgrade)
   end
 
   if [0,2].include? @kafo.exit_code
-    Kafo::Helpers.log_and_say :info, 'Katello upgrade completed!'
+    Kafo::Helpers.log_and_say :info, "#{Kafo::Helpers.product_name} upgrade completed!"
   end
 end

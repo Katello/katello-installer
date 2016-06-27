@@ -34,5 +34,9 @@ class Kafo::Helpers
 
       !results.include? false
     end
+
+    def product_name
+      ::Kafo::KafoConfigure.config.app[:product_name] || 'Katello'
+    end
   end
 end
