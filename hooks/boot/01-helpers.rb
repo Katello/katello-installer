@@ -16,7 +16,9 @@ class Kafo::Helpers
                 level
               end
 
-      say "<%= color('#{message}', :#{style}) %>"
+      # \ and ' characters could cause trouble in ERB, make sure to escape them
+      escaped_message = message.gsub('\\', '\\\\\\').gsub("'", %q{\\\'})
+      say "<%= color('#{escaped_message}', :#{style}) %>"
       Kafo::KafoConfigure.logger.send(level, message)
     end
 
