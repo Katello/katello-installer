@@ -79,24 +79,28 @@ def fail_and_exit(message)
 end
 
 if app_value(:upgrade)
-  upgrade_step :restart_services
+  if [0, 2].include?(@kafo.exit_code)
+    upgrade_step :restart_services
 
-  if Kafo::Helpers.module_enabled?(@kafo, 'katello')
-    upgrade_step :db_seed
-    upgrade_step :import_package_groups, :long_running => true
-    upgrade_step :import_rpms, :long_running => true
-    upgrade_step :import_distributions, :long_running => true
-    upgrade_step :import_puppet_modules, :long_running => true
-    upgrade_step :import_subscriptions, :long_running => true
-    upgrade_step :elasticsearch_message
-    upgrade_step :add_export_distributor, :long_running => true
-    upgrade_step :remove_docker_v1_content, :long_running => true
-    upgrade_step :update_puppet_repository_distributors, :long_running => true
-    upgrade_step :update_subscription_facet_backend_data, :long_running => true
-    upgrade_step :remove_gutterball
-  end
+    if Kafo::Helpers.module_enabled?(@kafo, 'katello')
+      upgrade_step :db_seed
+      upgrade_step :import_package_groups, :long_running => true
+      upgrade_step :import_rpms, :long_running => true
+      upgrade_step :import_distributions, :long_running => true
+      upgrade_step :import_puppet_modules, :long_running => true
+      upgrade_step :import_subscriptions, :long_running => true
+      upgrade_step :elasticsearch_message
+      upgrade_step :add_export_distributor, :long_running => true
+      upgrade_step :remove_docker_v1_content, :long_running => true
+      upgrade_step :update_puppet_repository_distributors, :long_running => true
+      upgrade_step :update_subscription_facet_backend_data, :long_running => true
+      upgrade_step :remove_gutterball
+    end
 
-  if [0,2].include? @kafo.exit_code
-    Kafo::Helpers.log_and_say :info, 'Katello upgrade completed!'
+    if [0,2].include? @kafo.exit_code
+      Kafo::Helpers.log_and_say :info, 'Upgrade completed!'
+    end
+  else
+    Kafo::Helpers.log_and_say :error, 'Upgrade failed during the installation phase. Fix the error and re-run the upgrade.'
   end
 end
