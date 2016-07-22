@@ -7,8 +7,18 @@ class Kafo::Helpers
     end
 
     def log_and_say(level, message)
-      style = level == :error ? 'bad' : level
-      say "<%= color('#{message}', :#{style}) %>"
+      style = case level
+              when :error
+                'bad'
+              when :debug
+                'yellow'
+              else
+                level
+              end
+
+      # \ and ' characters could cause trouble in ERB, make sure to escape them
+      escaped_message = message.gsub('\\', '\\\\\\').gsub("'", %q{\\\'})
+      say "<%= color('#{escaped_message}', :#{style}) %>"
       Kafo::KafoConfigure.logger.send(level, message)
     end
 
@@ -24,10 +34,10 @@ class Kafo::Helpers
         output = `#{command} 2>&1`
 
         if $?.success?
-          ::Kafo::KafoConfigure.logger.debug output.to_s
+          log_and_say(:debug, output.to_s)
           results << true
         else
-         ::Kafo::KafoConfigure.logger.error output.to_s
+          log_and_say(:error, output.to_s)
           results << false
         end
       end
