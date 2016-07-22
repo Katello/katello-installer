@@ -12,16 +12,16 @@ HELP
 while getopts "c:k:r:b:" opt; do
     case $opt in
         c)
-            CERT_FILE="$OPTARG"
+            CERT_FILE="$(readlink -f $OPTARG)"
             ;;
         k)
-            KEY_FILE="$OPTARG"
+            KEY_FILE="$(readlink -f $OPTARG)"
             ;;
         r)
-            REQ_FILE="$OPTARG"
+            REQ_FILE="$(readlink -f $OPTARG)"
             ;;
         b)
-            CA_BUNDLE_FILE="$OPTARG"
+            CA_BUNDLE_FILE="$(readlink -f $OPTARG)"
             ;;
         h)
             usage
