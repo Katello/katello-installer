@@ -22,7 +22,7 @@ if [0,2].include?(@kafo.exit_code)
     fqdn = if @kafo.param('capsule_certs','parent_fqdn')
              @kafo.param('capsule_certs', 'parent_fqdn').value
            else
-             Facter.value(:fqdn)
+             `hostname -f`
            end
 
     say "  <%= color('Success!', :good) %>"
