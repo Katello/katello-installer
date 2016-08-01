@@ -9,6 +9,9 @@
   :installer_dir: "."
   :default_values_dir: "/tmp"
   :module_dirs: ["./_build/modules", "../katello-installer/modules"]
+  :parser_cache_path:
+    - /usr/share/foreman-installer/parser_cache/foreman.yaml
+    - /usr/share/katello-installer-base/parser_cache/katello.yaml
   :hiera_config: /usr/share/foreman-installer/config/foreman-hiera.conf
   :hook_dirs: ["../katello-installer/hooks"]
 
