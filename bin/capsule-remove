@@ -1,49 +1,11 @@
 #!/bin/bash
 
-for var in $@; do
-   if [[ $var == "--help" || $var == "-h" ]]
-       then echo -e "This script is used to remove all capsule related packages and services. \nThis should only be used if you are sure you are wanting to completely remove Capsule from this machine and lose all of your settings and synced content."
-       exit 1
-   fi
-done
+LOG="/var/log/capsule-clean.log"
 
-echo ""
-echo "WARNING: This script will erase many packages and config files."
-echo "Important packages such as the following will be removed:"
-echo ""
-echo "  * httpd (apache)"
-echo "  * mongodb"
-echo "  * tomcat"
-echo "  * puppet"
-echo "  * ruby"
-echo "  * rubygems"
-echo "  * All Katello and Foreman Packages"
-echo ""
-echo "Once these packages and configuration files are removed there is no going back."
-echo "If you use this system for anything other than Katello and Foreman you probably"
-echo "do not want to execute this script."
-echo ""
-read -p "Read the source for a list of what is removed.  Are you sure(Y/N)? " -n 1 -r
-echo    # (optional) move to a new line
-if [[ ! $REPLY =~ ^[Yy]$ ]]
-then
-    echo "** cancelled **"
-    exit 1
-fi
-
-echo ""
-echo "ARE YOU SURE?: This script permanently deletes data and configuration."
-read -p "Read the source for a list of what is removed.  Type [remove] to continue? " -r
-echo    # (optional) move to a new line
-if [[ ! $REPLY = remove ]]
-then
-    echo "** cancelled **"
-    exit 1
-fi
+function remove() {
 
 CONFIG_FILES=(
     /etc/pulp/
-    /usr/share/caspule-installer/
     /usr/share/foreman
     /usr/share/foreman-installer
     /usr/share/foreman-installer-katello
@@ -56,7 +18,6 @@ CONFIG_FILES=(
     /etc/foreman-proxy
     /var/lib/foreman-proxy
     /etc/capsule-installer
-    /etc/foreman-installer
     /etc/foreman-proxy/
     /etc/puppet/environments
     /etc/pki/katello-certs-tools
@@ -74,7 +35,6 @@ CONFIG_FILES=(
     /etc/qpid
     /var/www/html/pub/katello-server-ca.crt
 )
-
 LOG_FILES=(
     /var/log/capsule-installer/
     /var/log/pulp/
@@ -84,17 +44,14 @@ LOG_FILES=(
     /var/log/foreman-installer
     /var/log/squid
 )
-
 # Setting a variable to make sure we actually grab the FQDN of the capsule incase there are other packages that have a short hostname in them.
-
+ 
 FQDN=$( hostname -f)
-
+ 
 RPMS=(
     `rpm -qa | grep puppetlabs-release`
     `rpm -qa | grep foreman-release`
     `rpm -qa | grep foreman-client`
-    `rpm -qa | grep ^foreman-installer`
-    `rpm -qa | grep ^katello-installer`
     `rpm -qa | grep foreman-proxy`
     `rpm -qa | grep katello`
     `rpm -qa | grep ^pulp`
@@ -130,28 +87,88 @@ RPMS=(
     puppet
     squid
 )
-
 CERT_FILES=(
     /etc/pki/pulp/
     /etc/pki/katello
     /root/ssl-build
     /var/www/html/pub/katello-ca*.rpm
 )
-
+ 
 # stopping all katello/foreman related services
+ 
+  echo "Stopping Katello Capsule Services"		| tee -a $LOG
+  katello-service stop					| tee -a $LOG
+ 
+  echo "Removing RPMs"					| tee -a $LOG
+  yum erase -y ${RPMS[*]}				| tee -a $LOG
+ 
+  echo "Cleaning up configuration files"		| tee -a $LOG
+  # Conf files				
+  rm -rf ${CONFIG_FILES[*]}				| tee -a $LOG
+ 
+  echo "Cleaning up log files"				| tee -a $LOG
+  # logs
+  rm -rf ${LOG_FILES[*]}				| tee -a $LOG
+ 
+  echo "Cleaning up Certs"				| tee -a $LOG
+  # pulp cert stuff
+  rm -rf ${CERT_FILES[*]}				| tee -a $LOG
+}
 
-katello-service stop
+menu()
+{
+  clear 
+  echo ""
+  echo "WARNING: This script will erase many packages and config files."
+  echo "Important packages such as the following will be removed:"
+  echo ""
+  echo "  * httpd (apache)"
+  echo "  * mongodb"
+  echo "  * tomcat"
+  echo "  * puppet"
+  echo "  * ruby"
+  echo "  * rubygems"
+  echo "  * All Katello and Foreman Packages"
+  echo ""
+  echo "Once these packages and configuration files are removed there is no going back."
+  echo "If you use this system for anything other than Katello and Foreman you probably"
+  echo "do not want to execute this script."
+  echo ""
+  read -p "Read the source for a list of what is removed.  Are you sure(Y/N)? " -n 1 -r
+  echo    # (optional) move to a new line
+  if [[ ! $REPLY =~ ^[Yy]$ ]]
+  then
+      echo "** cancelled **"
+      exit 1
+  fi
+ 
+  echo ""
+  echo "ARE YOU SURE?: This script permanently deletes data and configuration."
+  read -p "Read the source for a list of what is removed.  Type [remove] to continue? " -r
+  echo    # (optional) move to a new line
+  if [[ ! $REPLY == remove ]]
+  then
+      echo "** cancelled **"
+      exit 1
+  else
+      echo "Confirmed! Let's remove all files"
+      remove
+  fi
+}
 
-echo "Removing RPMs"
-yum erase -y ${RPMS[*]}
+# In case of --help or -h
+for var in $@; do
+   if [[ $var == "--help" || $var == "-h" ]]
+       then 
+           echo -e "This script is used to remove all capsule related packages and services. \nThis should only be used if you are sure you are wanting to completely remove Capsule from this machine and lose all of your settings and synced content. \nOptional flags:\n--unattended this option will start the removal process without any warnings or confirmations."
+           exit 1
+   fi
+   if [[ $var == "--unattended" ]]  
+       then
+           remove
+           exit
+   fi
+done
 
-echo "Cleaning up configuration files"
-rm -rf ${CONFIG_FILES[*]}
-
-echo "Cleaning up log files"
-# logs
-rm -rf ${LOG_FILES[*]}
-
-echo "Cleaning up Certs"
-# pulp cert stuff
-rm -rf ${CERT_FILES[*]}
+# Principal
+menu
