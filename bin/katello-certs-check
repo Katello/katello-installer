@@ -93,28 +93,28 @@ Validation succeeded.
 To install the Katello main server with the custom certificates, run:
 
     foreman-installer --scenario katello\\
-                      --certs-server-cert "$CERT_FILE"\\
-                      --certs-server-cert-req "$REQ_FILE"\\
-                      --certs-server-key "$KEY_FILE"\\
-                      --certs-server-ca-cert "$CA_BUNDLE_FILE"
+                      --certs-server-cert "$(readlink -f $CERT_FILE)"\\
+                      --certs-server-cert-req "$(readlink -f $REQ_FILE)"\\
+                      --certs-server-key "$(readlink -f $KEY_FILE)"\\
+                      --certs-server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"
 
 To update the certificates on a currently running Katello installation, run:
 
     foreman-installer --scenario katello\\
-                      --certs-server-cert "$CERT_FILE"\\
-                      --certs-server-cert-req "$REQ_FILE"\\
-                      --certs-server-key "$KEY_FILE"\\
-                      --certs-server-ca-cert "$CA_BUNDLE_FILE"\\
+                      --certs-server-cert "$(readlink -f $CERT_FILE)"\\
+                      --certs-server-cert-req "$(readlink -f $REQ_FILE)"\\
+                      --certs-server-key "$(readlink -f $KEY_FILE)"\\
+                      --certs-server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
                       --certs-update-server --certs-update-server-ca
 
 To use them inside a \$CAPSULE, run this command INSTEAD:
 
     capsule-certs-generate --capsule-fqdn "$CAPSULE"\\
                            --certs-tar  "~/$CAPSULE-certs.tar"\\
-                           --server-cert "$CERT_FILE"\\
-                           --server-cert-req "$REQ_FILE"\\
-                           --server-key "$KEY_FILE"\\
-                           --server-ca-cert "$CA_BUNDLE_FILE"\\
+                           --server-cert "$(readlink -f $CERT_FILE)"\\
+                           --server-cert-req "$(readlink -f $REQ_FILE)"\\
+                           --server-key "$(readlink -f $KEY_FILE)"\\
+                           --server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
                            --certs-update-server
 EOF
 else
