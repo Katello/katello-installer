@@ -13,4 +13,3 @@ if proxy_param && proxy_param.value && proxy_param.value.length > 0
     error "--katello-proxy-url must be a full URI and only supports http or https (e.g. http://proxy.example.com)"
   end
 end
-

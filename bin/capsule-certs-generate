@@ -52,4 +52,4 @@ Kafo::KafoConfigure.run
 config_file.unlink
 answers_file.unlink
 
-Kafo::KafoConfigure.exit_code == 2  ? exit(0) : exit(Kafo::KafoConfigure.exit_code)
+Kafo::KafoConfigure.exit_code == 2 ? exit(0) : exit(Kafo::KafoConfigure.exit_code)

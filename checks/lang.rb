@@ -7,4 +7,4 @@ def error_exit(message, code)
   exit code
 end
 
-error_exit(INVALID_LANG, 1)  if ENV["LANG"] == "C"
+error_exit(INVALID_LANG, 1) if ENV["LANG"] == "C"

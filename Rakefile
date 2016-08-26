@@ -53,7 +53,7 @@ task :prune_foreman_modules => [] do
       temp_foreman_modules_dir = File.join(temp_dir, 'foreman-installer', '_build', 'modules')
     end
     Dir.glob(File.join((temp_foreman_modules_dir || FOREMAN_MODULES_DIR), '*')).each do |mod|
-      FileUtils.rm_rf(File.join("#{BUILDDIR}",'modules', File.basename(mod)))
+      FileUtils.rm_rf(File.join("#{BUILDDIR}", 'modules', File.basename(mod)))
     end
   ensure
     FileUtils.remove_entry_secure temp_dir if temp_dir
@@ -84,6 +84,13 @@ task :setup_local => [:clean, "#{BUILDDIR}/modules"] do
   cp_r "#{BUILDDIR}/modules", "modules"
 end
 
+begin
+  require 'rubocop/rake_task'
+  RuboCop::RakeTask.new
+rescue
+  puts 'Rubocop not loaded'
+end
+
 CLEAN.include(BUILDDIR, PKGDIR)
 
-task :default => ['pkg:generate_source']
+task :default => [:rubocop, 'pkg:generate_source']

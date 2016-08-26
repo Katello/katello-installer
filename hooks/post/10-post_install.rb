@@ -17,9 +17,9 @@ end
 
 installer_name = kafo.config.app[:installer_name] || kafo.invocation_path
 
-if [0,2].include?(@kafo.exit_code)
+if [0, 2].include?(@kafo.exit_code)
   if !app_value(:upgrade)
-    fqdn = if @kafo.param('capsule_certs','parent_fqdn')
+    fqdn = if @kafo.param('capsule_certs', 'parent_fqdn')
              @kafo.param('capsule_certs', 'parent_fqdn').value
            else
              `hostname -f`
@@ -29,8 +29,8 @@ if [0,2].include?(@kafo.exit_code)
 
     # Fortello UI?
     if Kafo::Helpers.module_enabled?(@kafo, 'katello')
-      say "  * <%= color('Katello', :info) %> is running at <%= color('#{@kafo.param('foreman','foreman_url').value}', :info) %>"
-      say "      Initial credentials are <%= color('#{@kafo.param('foreman', 'admin_username').value}', :info) %> / <%= color('#{@kafo.param('foreman', 'admin_password').value}', :info) %>" if @kafo.param('foreman','authentication').value == true && new_install?
+      say "  * <%= color('Katello', :info) %> is running at <%= color('#{@kafo.param('foreman', 'foreman_url').value}', :info) %>"
+      say "      Initial credentials are <%= color('#{@kafo.param('foreman', 'admin_username').value}', :info) %> / <%= color('#{@kafo.param('foreman', 'admin_password').value}', :info) %>" if @kafo.param('foreman', 'authentication').value == true && new_install?
     end
 
     if Kafo::Helpers.module_enabled?(@kafo, 'katello')

@@ -97,7 +97,7 @@ if app_value(:upgrade)
       upgrade_step :remove_gutterball
     end
 
-    if [0,2].include? @kafo.exit_code
+    if [0, 2].include? @kafo.exit_code
       Kafo::Helpers.log_and_say :info, 'Upgrade completed!'
     end
   else

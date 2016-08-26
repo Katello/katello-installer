@@ -52,16 +52,16 @@ end
 
 # migrate from capsule if exist
 if answers['capsule'].is_a? Hash
-    move('puppetca', true)
-    move('tftp', false)
-    move('tftp_syslinux_root')
-    move('tftp_syslinux_files')
-    move('tftp_root', '/var/lib/tftpboot')
-    move('tftp_dirs', ['/var/lib/tftpboot/pxelinux.cfg', '/var/lib/tftpboot/boot'])
-    move('tftp_servername')
+  move('puppetca', true)
+  move('tftp', false)
+  move('tftp_syslinux_root')
+  move('tftp_syslinux_files')
+  move('tftp_root', '/var/lib/tftpboot')
+  move('tftp_dirs', ['/var/lib/tftpboot/pxelinux.cfg', '/var/lib/tftpboot/boot'])
+  move('tftp_servername')
 
-    move('foreman_proxy_port', '9090', 'ssl_port')
-    move('foreman_proxy_http', true, 'http')
-    move('foreman_proxy_http_port', '8000', 'http_port')
-    move('foreman_oauth_effective_user', 'admin', 'oauth_effective_user')
+  move('foreman_proxy_port', '9090', 'ssl_port')
+  move('foreman_proxy_http', true, 'http')
+  move('foreman_proxy_http_port', '8000', 'http_port')
+  move('foreman_oauth_effective_user', 'admin', 'oauth_effective_user')
 end

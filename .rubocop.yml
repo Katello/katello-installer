@@ -1,0 +1,16 @@
+inherit_from: .rubocop_todo.yml
+
+HashSyntax:
+  Enabled: false # don't force 1.9 hash syntax
+
+Style/StringLiterals:
+  Enabled: false # dont't enforce
+
+Style/WordArray:
+  Enabled: false
+
+Style/GuardClause:
+  Enabled: false # don't enforce this
+
+Style/SpaceInsideHashLiteralBraces:
+  Enabled: false
