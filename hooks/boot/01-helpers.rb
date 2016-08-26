@@ -1,7 +1,7 @@
 class Kafo::Helpers
   class << self
     def puppet_dir
-      @puppet_dir ||= File.directory?('/opt/puppetlabs/puppet') ? '/opt/puppetlabs/puppet' : '/var/lib/puppet'
+      @puppet_dir ||= File.directory?('/opt/puppetlabs/puppet') ? '/opt/puppetlabs/puppet/cache' : '/var/lib/puppet'
     end
 
     def module_enabled?(kafo, name)
@@ -27,7 +27,7 @@ class Kafo::Helpers
     end
 
     def read_cache_data(param)
-      YAML.load_file("#{puppet_dir}/cache/foreman_cache_data/#{param}")
+      YAML.load_file("#{puppet_dir}/foreman_cache_data/#{param}")
     end
 
     def execute(commands)
