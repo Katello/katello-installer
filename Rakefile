@@ -1,5 +1,7 @@
 require 'rake/clean'
 require 'tempfile'
+require 'kafo'
+require 'yaml'
 
 BUILDDIR = File.expand_path(ENV['BUILDDIR'] || '_build')
 PKGDIR = ENV['PKGDIR'] || File.expand_path('pkg')
@@ -17,10 +19,21 @@ end
 file "#{BUILDDIR}/modules" do |t|
   if Dir["modules/*"].empty?
     sh "librarian-puppet install --verbose --path #{BUILDDIR}/modules"
-    Rake::Task["prune_foreman_modules"].execute
   else
     mkdir BUILDDIR
     cp_r "modules", "#{BUILDDIR}/modules"
+  end
+end
+
+file "#{BUILDDIR}/parser_cache/katello.yaml" => [BUILDDIR] do |filename|
+  mkdir "#{BUILDDIR}/parser_cache"
+  sh "kafo-export-params -c config/katello.yaml -f parsercache --no-parser-cache -o #{filename}"
+
+  # strip out forman bits from the parser cache
+  cache = YAML.load_file(filename.to_s)
+  cache[:files] = cache[:files].delete_if { |k, _| k =~ /\Aforeman/ }
+  File.open(filename.to_s, "w") do |file|
+    file.write(cache.to_yaml)
   end
 end
 
@@ -49,19 +62,20 @@ end
 
 namespace :pkg do
   desc 'Generate package source tar.bz2'
-  task :generate_source => [:clean, PKGDIR, "#{BUILDDIR}/modules"] do
+  task :generate_source => [:clean, PKGDIR, "#{BUILDDIR}/modules", "#{BUILDDIR}/parser_cache/katello.yaml", :prune_foreman_modules] do
 
     version = File.read('VERSION').chomp
     raise "can't read VERSION" if version.length == 0
 
     Dir.chdir(BUILDDIR) do
-      puts "tar -cf #{BUILDDIR}/modules.tar --transform=s,^,katello-installer-#{version}/, modules/"
-      `tar -cf #{BUILDDIR}/modules.tar --transform=s,^,katello-installer-#{version}/, modules/`
+      sh "tar --create --file=#{BUILDDIR}/modules.tar --transform=s,^,katello-installer-#{version}/, modules/"
+      sh "tar --create --file=#{BUILDDIR}/parser_cache.tar --transform=s,^,katello-installer-#{version}/, parser_cache/"
     end
 
-    `git archive --prefix=katello-installer-#{version}/ HEAD > #{PKGDIR}/katello-installer-#{version}.tar`
-    `tar --concatenate --file=#{PKGDIR}/katello-installer-#{version}.tar #{BUILDDIR}/modules.tar`
-    `gzip -9 #{PKGDIR}/katello-installer-#{version}.tar`
+    sh "git archive --prefix=katello-installer-#{version}/ HEAD > #{PKGDIR}/katello-installer-#{version}.tar"
+    sh "tar --concatenate --file=#{PKGDIR}/katello-installer-#{version}.tar #{BUILDDIR}/modules.tar"
+    sh "tar --concatenate --file=#{PKGDIR}/katello-installer-#{version}.tar #{BUILDDIR}/parser_cache.tar"
+    sh "gzip -9 #{PKGDIR}/katello-installer-#{version}.tar"
   end
 end
 
