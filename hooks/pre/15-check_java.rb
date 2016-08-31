@@ -25,4 +25,3 @@ if Kafo::Helpers.module_enabled?(@kafo, 'katello')
     error_exit(OPENJDK, 2) unless java_version_string.include? "OpenJDK"
   end
 end
-

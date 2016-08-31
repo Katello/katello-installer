@@ -58,4 +58,3 @@ def reset_pulp
 end
 
 reset if app_value(:reset) && !app_value(:noop)
-
