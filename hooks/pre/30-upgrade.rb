@@ -94,6 +94,9 @@ def fail_and_exit(message)
 end
 
 if app_value(:upgrade)
+  fail_and_exit 'Concurrent use of --upgrade and --upgrade-puppet is not supported. '\
+                'Please run --upgrade first, then --upgrade-puppet.' if app_value(:upgrade_puppet)
+
   Kafo::Helpers.log_and_say :info, 'Upgrading...'
   katello = Kafo::Helpers.module_enabled?(@kafo, 'katello')
   capsule = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
