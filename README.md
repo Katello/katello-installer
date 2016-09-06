@@ -160,7 +160,7 @@ foreman-installer --scenario katello\
                   --certs-server-ca-cert ~/path/to/cacert.crt
 ```
 
-Where the `--certs-server-ca-ca-cert` is the CA used for issuing the
+Where the `--certs-server-ca-cert` is the CA used for issuing the
 server certs (this CA gets distributed to the consumers and capsules).
 
 For the capsule, these options are passed as part of the
