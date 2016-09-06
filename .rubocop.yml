@@ -1,5 +1,8 @@
 inherit_from: .rubocop_todo.yml
 
+AllCops:
+  TargetRubyVersion: 2.0
+
 HashSyntax:
   Enabled: false # don't force 1.9 hash syntax
 
