@@ -7,6 +7,7 @@ BUILDDIR = File.expand_path(ENV['BUILDDIR'] || '_build')
 PKGDIR = ENV['PKGDIR'] || File.expand_path('pkg')
 FOREMAN_MODULES_DIR = File.expand_path(ENV['FOREMAN_MODULES_DIR'] || '/usr/share/foreman-installer/modules')
 FOREMAN_BRANCH = ENV['FOREMAN_BRANCH'] || 'develop'
+PARSER_CACHE_DIR = ENV['PARSER_CACHE_DIR'] || "#{BUILDDIR}/parser_cache"
 
 file BUILDDIR do
   mkdir BUILDDIR
@@ -14,6 +15,10 @@ end
 
 file PKGDIR do
   mkdir PKGDIR
+end
+
+file PARSER_CACHE_DIR => [BUILDDIR] do
+  mkdir PARSER_CACHE_DIR
 end
 
 file "#{BUILDDIR}/modules" do |t|
@@ -25,16 +30,33 @@ file "#{BUILDDIR}/modules" do |t|
   end
 end
 
-file "#{BUILDDIR}/parser_cache/katello.yaml" => [BUILDDIR] do |filename|
-  mkdir "#{BUILDDIR}/parser_cache"
-  sh "kafo-export-params -c config/katello.yaml -f parsercache --no-parser-cache -o #{filename}"
+task :generate_parser_caches => [PARSER_CACHE_DIR] do
+  caches = [
+    "#{PARSER_CACHE_DIR}/katello.yaml",
+    "#{PARSER_CACHE_DIR}/katello-devel.yaml",
+    "#{PARSER_CACHE_DIR}/capsule-certs-generate.yaml"
+  ]
 
-  # strip out forman bits from the parser cache
-  cache = YAML.load_file(filename.to_s)
-  cache[:files] = cache[:files].delete_if { |k, _| k =~ /\Aforeman/ }
-  File.open(filename.to_s, "w") do |file|
-    file.write(cache.to_yaml)
+  configs = [
+    'config/katello.yaml',
+    'config/katello-devel.yaml'
+  ]
+
+  # capsule-certs-generate is a special (read: "problem") child
+  load File.expand_path(File.join(File.dirname(__FILE__), 'bin', 'capsule-certs-generate'))
+  gen = CapsuleCertsGenerate.new
+  configs << gen.config_file.path
+
+  caches.each_with_index do |filename, i|
+    sh "kafo-export-params -c #{configs[i]} -f parsercache --no-parser-cache -o #{filename}"
+
+    cache = YAML.load_file(filename.to_s)
+    cache[:files] = cache[:files].delete_if { |k, _| k =~ /\Aforeman/ }
+    File.open(filename.to_s, "w") do |file|
+      file.write(cache.to_yaml)
+    end
   end
+  gen.cleanup
 end
 
 desc 'Remove foreman modules from $BUILDDIR/modules'
@@ -62,7 +84,7 @@ end
 
 namespace :pkg do
   desc 'Generate package source tar.bz2'
-  task :generate_source => [:clean, PKGDIR, "#{BUILDDIR}/modules", "#{BUILDDIR}/parser_cache/katello.yaml", :prune_foreman_modules] do
+  task :generate_source => [:clean, PKGDIR, "#{BUILDDIR}/modules", :generate_parser_caches, :prune_foreman_modules] do
 
     version = File.read('VERSION').chomp
     raise "can't read VERSION" if version.length == 0

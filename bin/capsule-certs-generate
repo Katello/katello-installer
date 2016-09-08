@@ -3,53 +3,78 @@ require 'rubygems'
 require 'kafo'
 require 'tempfile'
 
-def self.temp_file(name, content)
-  f = Tempfile.open([name, '.yaml'])
-  f.write content
-  f.close
-  f
+class CapsuleCertsGenerate
+  INSTALLER_DIR = '.'
+
+  attr_reader :answers_file, :config_file
+
+  def initialize
+    @answers_file = generate_answers_file
+    @config_file = generate_config_file
+  end
+
+  def cleanup
+    answers_file.unlink
+    config_file.unlink
+  end
+
+  private
+
+  def generate_answers_file
+    temp_file('capsule-certs-answer',
+              <<-EOF
+                certs:
+                  generate: true
+                  deploy: false
+                  group: foreman
+                  org: Default_Organization
+                capsule_certs: true
+              EOF
+             )
+  end
+
+  # rubocop: disable Metrics/MethodLength
+  def generate_config_file
+    temp_file('capsule-certs-config',
+              <<-EOF
+                :log_level: :debug
+                :log_dir: /var/log
+                :log_name: capsule-certs-generate.log
+                :no_prefix: true
+                :answer_file: #{answers_file.path}
+                :installer_dir: #{INSTALLER_DIR}
+                :installer_name: 'foreman-installer'
+                :module_dirs: ["./_build/modules", "#{INSTALLER_DIR}/modules", "/usr/share/foreman-installer/modules"]
+                :hook_dirs: ["#{INSTALLER_DIR}/hooks"]
+                :parser_cache_path: '/usr/share/katello-installer-base/parser_cache/capsule-certs-generate.yaml'
+                :default_values_dir: /tmp
+                :dont_save_answers: true
+                :mapping:
+                  :capsule_certs:
+                    :manifest_name: capsule
+                    :dir_name: certs
+                :order:
+                  - certs
+                  - capsule_certs
+              EOF
+             )
+  end
+
+  def temp_file(name, content)
+    file = Tempfile.open([name, '.yaml'])
+    file.write(content)
+    file.close
+    file
+  end
 end
 
-INSTALLER_DIR = '.'
-
-ANSWERS_CONTENT = <<EOF
-certs:
-  generate: true
-  deploy: false
-  group: foreman
-  org: Default_Organization
-capsule_certs: true
-EOF
-
-answers_file = temp_file('capsule-certs-answers', ANSWERS_CONTENT)
-
-CONFIG_CONTENT = <<EOF
-:log_level: :debug
-:log_dir: /var/log
-:log_name: capsule-certs-generate.log
-:no_prefix: true
-:answer_file: #{answers_file.path}
-:installer_dir: #{INSTALLER_DIR}
-:installer_name: 'foreman-installer'
-:module_dirs: ["/usr/share/foreman-installer/modules", "#{INSTALLER_DIR}/modules"]
-:hook_dirs: ["#{INSTALLER_DIR}/hooks"]
-:default_values_dir: /tmp
-:dont_save_answers: true
-:mapping:
-  :capsule_certs:
-    :manifest_name: capsule
-    :dir_name: certs
-:order:
-  - certs
-  - capsule_certs
-EOF
-
-config_file = temp_file('capsule-certs', CONFIG_CONTENT)
-CONFIG_FILE = config_file.path
-
-Kafo::KafoConfigure.run
-
-config_file.unlink
-answers_file.unlink
-
-Kafo::KafoConfigure.exit_code == 2 ? exit(0) : exit(Kafo::KafoConfigure.exit_code)
+if __FILE__ == $0
+  begin
+    gen = CapsuleCertsGenerate.new
+    CONFIG_FILE = gen.config_file.path
+    Kafo::KafoConfigure.run
+  ensure
+    gen.cleanup
+  end
+  Kafo::KafoConfigure.exit_code == 2 ? exit(0) : exit(Kafo::KafoConfigure.exit_code)
+end
