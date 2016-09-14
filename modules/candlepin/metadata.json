@@ -1,0 +1,45 @@
+{
+  "name": "katello-candlepin",
+  "version": "1.1.0",
+  "author": "Katello",
+  "summary": "Configure and install Candlepin entitlement server.",
+  "license": "GPL-3.0+",
+  "source": "https://github.com/Katello/puppet-candlepin.git",
+  "project_page": "https://github.com/Katello/puppet-candlepin",
+  "issues_url": "http://projects.theforeman.org/projects/katello/issues",
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 3.2.0 < 5.0.0"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    }
+  ],
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 4.2.0 < 5.0.0"},
+    {"name":"puppet/extlib","version_requirement":">= 0.10.4 < 1.0.0"},
+    {"name":"puppetlabs-postgresql","version_requirement":">= 3.0.0 < 5.0.0"},
+    {"name":"puppetlabs-concat","version_requirement":">= 1.0.0 < 3.0.0"}
+  ]
+}

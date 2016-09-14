@@ -1,0 +1,22 @@
+{
+    <% unless [nil, :undefined, :undef, ''].include?(scope['pulp::proxy_url']) -%>
+    "proxy_host": "<%= scope['pulp::proxy_url'] %>",
+    <% else %>
+    "proxy_host": null,
+    <% end %>
+    <% unless [nil, :undefined, :undef, ''].include?(scope['pulp::proxy_port']) -%>
+    "proxy_port": <%= scope['pulp::proxy_port'] %>,
+    <% else %>
+    "proxy_port": null,
+    <% end %>
+    <% unless [nil, :undefined, :undef, ''].include?(scope['pulp::proxy_username']) -%>
+    "proxy_username": "<%= scope['pulp::proxy_username'] %>",
+    <% else %>
+    "proxy_username": null,
+    <% end %>
+    <% unless [nil, :undefined, :undef, ''].include?(scope['pulp::proxy_password']) -%>
+    "proxy_password": "<%= scope['pulp::proxy_password'] %>"
+    <% else %>
+    "proxy_password": null
+    <% end %>
+}

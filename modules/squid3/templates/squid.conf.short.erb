@@ -1,0 +1,106 @@
+## THIS FILE IS MANAGED BY PUPPET.
+## DO NOT EDIT.
+
+# predefined ACLs
+<% if @use_deprecated_opts -%>
+acl manager proto cache_object
+acl localhost src 127.0.0.1/32 ::1
+acl to_localhost dst 127.0.0.0/8 0.0.0.0/32 ::1
+<% end -%>
+acl localnet src 10.0.0.0/8	# RFC1918 possible internal network
+acl localnet src 172.16.0.0/12	# RFC1918 possible internal network
+acl localnet src 192.168.0.0/16	# RFC1918 possible internal network
+acl localnet src fc00::/7       # RFC 4193 local private network range
+acl localnet src fe80::/10      # RFC 4291 link-local (directly plugged) machines
+<% @ssl_ports.each do |line| -%>
+acl SSL_ports port <%= line %>
+<% end -%>
+<% @safe_ports.each do |line| -%>
+acl Safe_ports port <%= line %>
+<% end -%>
+acl CONNECT method CONNECT
+
+# predefined http_accesses
+http_access allow manager localhost
+http_access deny manager
+http_access deny !Safe_ports
+http_access deny CONNECT !SSL_ports
+
+# user-defined ACLs
+<% @acl.each do |line| -%>
+acl <%= line %>
+<% end -%>
+
+# user-defined http_accesses
+<% @http_access.each do |line| -%>
+http_access <%= line %>
+<% end -%>
+http_access allow localnet
+http_access allow localhost
+http_access deny all
+
+# user-defined icp_access
+<% @icp_access.each do |line| -%>
+icp_access <%= line %>
+<% end -%>
+
+<% if @http_port -%>
+# user-defined http_port
+<% @http_port.each do |line| -%>
+http_port <%= line %>
+<% end -%>
+<% end -%>
+
+<% if @https_port -%>
+# user-defined https_port
+<% @https_port.each do |line| -%>
+https_port <%= line %>
+<% end -%>
+<% end -%>
+
+# user-defined tcp_outgoing_addresses
+<% @tcp_outgoing_address.each do |line| -%>
+tcp_outgoing_address <%= line %>
+<% end -%>
+
+# user-defined cache-dirs
+<% @cache_dir.each do |line| -%>
+cache_dir <%= line %>
+<% end -%>
+
+
+# general settings
+hierarchy_stoplist             cgi-bin ?
+coredump_dir                   <%= @coredump_dir %>
+maximum_object_size_in_memory  <%= @maximum_object_size_in_memory  %>
+maximum_object_size            <%= @maximum_object_size            %>
+ignore_expect_100              <%= @ignore_expect_100              %>
+cache_mgr                      <%= @cache_mgr                      %>
+client_persistent_connections  <%= @client_persistent_connections  %>
+server_persistent_connections  <%= @server_persistent_connections  %>
+forwarded_for                  <%= @forwarded_for                  %>
+via                            <%= @via %>
+<% @access_log.each do |line|  -%>
+access_log                     <%= line                            %>
+<% end -%>
+
+cache_mem                      <%= @cache_mem                      %>
+cache_store_log                <%= @cache_store_log                %>
+cache_log                      <%= @cache_log                      %>
+<% @cache.each do |line| -%>
+cache                          <%= line                            %>
+<% end -%>
+
+<% @refresh_patterns.each do |line| -%>
+refresh_pattern                <%= line                            %>
+<% end -%>
+refresh_pattern                ^ftp:              1440    20%    10080
+refresh_pattern                ^gopher:           1440     0%     1440
+refresh_pattern                -i (/cgi-bin/|\?)     0     0%        0
+refresh_pattern                .                     0    20%     4320
+
+
+# user-defined configuration settings from config_hash
+<% @config_hash.sort_by {|k,v| k}.each do |k,v| -%>
+<%= "%*s"%[-30,k] %> <%= v %>
+<% end -%>
