@@ -1,0 +1,42 @@
+{
+  "name": "katello-common",
+  "version": "0.2.0",
+  "author": "katello",
+  "summary": "Provides custom parser functions for use in other Katello modules.",
+  "license": "GPL-3.0+",
+  "source": "https://github.com/Katello/puppet-common",
+  "project_page": "https://github.com/Katello/puppet-common",
+  "issues_url": "https://github.com/Katello/puppet-common/issues",
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 3.2.0 < 5.0.0"
+    }
+  ],
+  "dependencies": [
+    {"name":"puppetlabs-stdlib","version_requirement":">= 4.2.0 < 5.0.0"}
+  ]
+}

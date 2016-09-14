@@ -1,0 +1,22 @@
+{
+  "CHANGELOG": "964a5be8b886486130b0b46bd9f50f74",
+  "CONTRIBUTING.md": "b09c628c63cd0562c3f8bbd74a3143f8",
+  "CONTRIBUTORS": "42d504f5029e79d84e7a8407280ebd86",
+  "Gemfile": "76b51fe8847c33b30ea99b09d383fe06",
+  "LICENSE": "9eef91148a9b14ec7f9df333daebc746",
+  "README.md": "19ed00bb71baa72a61b7c6a643655eed",
+  "Rakefile": "431206eae55896e8a0e65b068d1df153",
+  "manifests/apache.pp": "cc34ba25f33eb17356b578e024d0555c",
+  "manifests/config.pp": "3be262e999901b9113b336597b366816",
+  "manifests/init.pp": "cd6c6f54b1043622a455fb40e88dcd34",
+  "manifests/install.pp": "6c47dbf7afea7f1a2c080600d6c271f3",
+  "manifests/params.pp": "5459c54e71424f624dea995a5b6a6344",
+  "metadata.json": "d7c80bdc52ebfe01dccd3b73f88a8074",
+  "spec/classes/coverage_spec.rb": "5b6dfa0dd426aca0ccfae23c0a629f0b",
+  "spec/classes/crane_config_spec.rb": "37afa585c39b8dff87bdc992203faa5d",
+  "spec/classes/crane_spec.rb": "afe09d55a3ca5ac1d3bd964c7b5a6612",
+  "spec/spec.opts": "6af1d8720d85a510f132e3250aa61075",
+  "spec/spec_helper.rb": "ffb1f8c877e236c4c5c04f6325066778",
+  "spec/spec_helper_acceptance.rb": "bd7476a91bd26c61a3e694618c26230c",
+  "templates/crane.conf.erb": "79dd927bc396aa6430afa232731b83e5"
+}
