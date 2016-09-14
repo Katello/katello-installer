@@ -22,12 +22,7 @@ file PARSER_CACHE_DIR => [BUILDDIR] do
 end
 
 file "#{BUILDDIR}/modules" do |t|
-  if Dir["modules/*"].empty?
-    sh "librarian-puppet install --verbose --path #{BUILDDIR}/modules"
-  else
-    mkdir BUILDDIR
-    cp_r "modules", "#{BUILDDIR}/modules"
-  end
+  sh "librarian-puppet install --verbose --path #{BUILDDIR}/modules"
 end
 
 task :generate_parser_caches => [PARSER_CACHE_DIR] do
