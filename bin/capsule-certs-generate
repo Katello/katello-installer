@@ -44,7 +44,11 @@ class CapsuleCertsGenerate
                 :answer_file: #{answers_file.path}
                 :installer_dir: #{INSTALLER_DIR}
                 :installer_name: 'foreman-installer'
-                :module_dirs: ["./_build/modules", "#{INSTALLER_DIR}/modules", "/usr/share/foreman-installer/modules"]
+                :module_dirs:
+                  - "./_build/modules"
+                  - "#{INSTALLER_DIR}/modules"
+                  - "/usr/share/foreman-installer/modules"
+                  - "/usr/share/katello-installer-base/modules"
                 :hook_dirs: ["#{INSTALLER_DIR}/hooks"]
                 :parser_cache_path: '/usr/share/katello-installer-base/parser_cache/capsule-certs-generate.yaml'
                 :default_values_dir: /tmp
