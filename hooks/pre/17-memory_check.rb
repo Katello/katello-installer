@@ -3,7 +3,7 @@ total_ram = `grep MemTotal /proc/meminfo | awk '{print $2}'`.to_i
 min_ram = 8_388_608
 
 # call mem_check if flag is called
-if app_value(:disable_system_checks)
+if app_value(:disable_system_checks) || Kafo::Helpers.module_enabled?(@kafo, 'capsule_certs')
   logger.warn 'Skipping system checks.'
 elsif min_ram > total_ram
   $stderr.puts 'This system has less than 8 GB of total memory. Please have at least 8 GB of total ram free before running the installer.'
