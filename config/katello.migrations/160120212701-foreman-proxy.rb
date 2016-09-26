@@ -35,7 +35,6 @@ answers['foreman_proxy'] = {
   'http' => true,
   'ssl_port' => '9090',
   'templates' => false,
-  'tftp' => false,
   'ssl_ca' => '/etc/foreman-proxy/ssl_ca.pem',
   'ssl_cert' => '/etc/foreman-proxy/ssl_cert.pem',
   'ssl_key' => '/etc/foreman-proxy/ssl_key.pem',
@@ -57,7 +56,7 @@ end
 # migrate from capsule if exist
 if answers['capsule'].is_a? Hash
   move('puppetca', true)
-  move('tftp', false)
+  move('tftp', true)
   move('tftp_syslinux_root')
   move('tftp_syslinux_files')
   move('tftp_root', '/var/lib/tftpboot')
