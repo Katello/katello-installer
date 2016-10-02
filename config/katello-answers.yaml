@@ -12,6 +12,7 @@ foreman:
   custom_repo: true
   configure_epel_repo: false
   configure_scl_repo: false
+  max_keepalive_requests: 10000
   ssl: true
   server_ssl_cert: /etc/pki/katello/certs/katello-apache.crt
   server_ssl_key: /etc/pki/katello/private/katello-apache.key
