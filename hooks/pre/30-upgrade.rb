@@ -32,6 +32,15 @@ def start_tomcat
   Kafo::Helpers.execute('katello-service start --only tomcat,tomcat6')
 end
 
+def remove_gutterball
+  gbpresent = `runuser - postgres -c "psql -l | grep gutterball | wc -l"`.chomp.to_i
+  if gbpresent > 0
+    Kafo::Helpers.execute('runuser - postgres -c "dropdb gutterball"')
+  else
+    logger.info 'Gutterball is already removed, skipping'
+  end
+end
+
 def migrate_pulp
   # Fix pid if neccessary
   if Kafo::Helpers.execute("grep -qe '7.[[:digit:]]' /etc/redhat-release")
@@ -78,6 +87,15 @@ def fix_katello_settings_file
   end
 end
 
+def remove_event_queue
+  queue_present = `qpid-stat -q --ssl-certificate=/etc/pki/katello/qpid_client_striped.crt -b amqps://localhost:5671 | grep :event | wc -l`.chomp.to_i
+  if queue_present > 0
+    Kafo::Helpers.execute('qpid-config --ssl-certificate=/etc/pki/katello/qpid_client_striped.crt -b amqps://localhost:5671 del queue $(hostname -f):event --force')
+  else
+    logger.info 'Event queue is already removed, skipping'
+  end
+end
+
 def upgrade_step(step)
   noop = app_value(:noop) ? ' (noop)' : ''
 
@@ -119,6 +137,8 @@ if app_value(:upgrade)
 
   if katello
     upgrade_step :migrate_candlepin
+    upgrade_step :remove_event_queue
+    upgrade_step :remove_gutterball
     upgrade_step :start_tomcat
     upgrade_step :fix_katello_settings_file
     upgrade_step :migrate_foreman
