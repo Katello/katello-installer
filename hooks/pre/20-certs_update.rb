@@ -1,6 +1,6 @@
 require 'fileutils'
 
-SSL_BUILD_DIR = '/root/ssl-build/'
+SSL_BUILD_DIR = param('certs', 'ssl_build_dir').value
 CHECK_SCRIPT = `which katello-certs-check`.strip
 
 def error(message)
