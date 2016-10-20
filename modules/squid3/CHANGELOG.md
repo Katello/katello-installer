@@ -1,11 +1,3 @@
-#### 2016-09-28 - 1.0.1
-* Fix cache_dir in short template, must be below maximum_object_size.
-* Add a few parameters, make sure log ones from params can be overridden.
-* Add config_array for order-sensitive config lines (#25, @GeoffWilliams).
-* Fix params for Ubuntu 16.04 rename from squid3 to squid (#47, @ianssoftcom).
-* Add option to remove localnet defaults (#40, @rwf14f).
-* Fix validate path to work on all operating systems (#39, @sethlyons).
-
 #### 2015-11-16 - 1.0.0
 * Add FreeBSD support (#11, @misullivan).
 * Add version parameter to set squid package version (#12, @actionjack).

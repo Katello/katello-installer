@@ -31,7 +31,7 @@ describe 'pulp::apache' do
         :docroot                 => '/usr/share/pulp/wsgi',
         :ssl                     => true,
         :ssl_verify_client       => 'optional',
-        :ssl_protocol            => ' all -SSLv2',
+        :ssl_protocol            => 'all -SSLv2 -SSLv3',
         :ssl_options             => '+StdEnvVars +ExportCertData',
         :ssl_verify_depth        => '3',
         :wsgi_process_group      => 'pulp',
@@ -46,6 +46,14 @@ describe 'pulp::apache' do
   context 'with parameters' do
     let :facts do
       default_facts
+    end
+
+    describe 'with ssl_protocol some_string' do
+      let :pre_condition do
+        "class {'pulp': ssl_protocol => 'some_string'}"
+      end
+
+      it { should contain_apache__vhost('pulp-https').with_ssl_protocol('some_string')}
     end
 
     describe 'with enable_http false' do

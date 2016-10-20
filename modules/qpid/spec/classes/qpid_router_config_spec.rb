@@ -226,7 +226,7 @@ describe 'qpid::router::config' do
           content.split("\n").reject { |c| c =~ /(^#|^$)/ }.should == [
             'log {',
             '    module: DEFAULT',
-            '    enabled: debug+',
+            '    enable: debug+',
             '    timestamp: false',
             '    output: /var/log/qpid.log',
             '}'

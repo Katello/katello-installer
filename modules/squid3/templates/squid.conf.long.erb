@@ -648,13 +648,11 @@ acl to_localhost dst 127.0.0.0/8 0.0.0.0/32 ::1
 # Example rule allowing access from your local networks.
 # Adapt to list your (internal) IP networks from where browsing
 # should be allowed
-<% if @use_default_localnet -%>
 acl localnet src 10.0.0.0/8	# RFC1918 possible internal network
 acl localnet src 172.16.0.0/12	# RFC1918 possible internal network
 acl localnet src 192.168.0.0/16	# RFC1918 possible internal network
 acl localnet src fc00::/7       # RFC 4193 local private network range
 acl localnet src fe80::/10      # RFC 4291 link-local (directly plugged) machines
-<% end -%>
 
 <% @ssl_ports.each do |line| -%>
 acl SSL_ports port <%= line %>
@@ -788,9 +786,7 @@ http_access <%= line %>
 # Example rule allowing access from your local networks.
 # Adapt localnet in the ACL section to list your (internal) IP networks
 # from where browsing should be allowed
-<% if @use_default_localnet -%>
 http_access allow localnet
-<% end -%>
 http_access allow localhost
 
 # And finally deny all other access to this proxy
@@ -2571,9 +2567,6 @@ cache_store_log <%= @cache_store_log %>
 #	logging.  This protects your user's privacy.
 #Default:
 # strip_query_terms on
-<% if @strip_query_terms -%>
-strip_query_terms <%= @strip_query_terms %>
-<% end -%>
 
 #  TAG: buffered_logs	on|off
 #	cache.log log file is written with stdio functions, and as such
@@ -3365,11 +3358,6 @@ via <%= @via %>
 #	performed).
 #Default:
 # none
-<% if @reply_header_access -%>
-<% @reply_header_access.each do |header_access| -%>
-reply_header_access <%= header_access %>
-<% end -%>
-<% end -%>
 
 #  TAG: header_replace
 #	Usage:   header_replace header_name message
@@ -3497,11 +3485,7 @@ ignore_expect_100 <%= @ignore_expect_100 %>
 #	Timeout for idle persistent connections to servers and other
 #	proxies.
 #Default:
-<% if @pconn_timeout -%>
-pconn_timeout <%= @pconn_timeout %>
-<% else -%>
 # pconn_timeout 1 minute
-<% end -%>
 
 #  TAG: ident_timeout
 #	Maximum time to wait for IDENT lookups to complete.

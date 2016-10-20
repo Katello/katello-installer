@@ -15,6 +15,7 @@ class pulp::params {
   $db_ca_path = '/etc/pki/tls/certs/ca-bundle.crt'
   $db_unsafe_autoretry = false
   $db_write_concern = undef
+  $migrate_db_timeout = 300
 
   $server_name = downcase($::fqdn)
   $key_url = '/pulp/gpg'
@@ -53,8 +54,10 @@ class pulp::params {
   $https_cert = $ca_cert
   $https_key = $ca_key
   $https_chain = undef
+  $ssl_username = 'SSL_CLIENT_S_DN_CN'
   $enable_http = false
   $ssl_verify_client = 'require'
+  $ssl_protocol = 'all -SSLv2 -SSLv3'
 
   $enable_rpm = true
   $enable_docker = false

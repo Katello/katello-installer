@@ -25,6 +25,7 @@ class pulp::database {
     user      => 'apache',
     creates   => '/var/lib/pulp/init.flag',
     require   => File['/etc/pulp/server.conf'],
+    timeout   => $pulp::migrate_db_timeout,
   }
 
   Class['pulp::install'] ~> Exec['migrate_pulp_db'] ~> Class['pulp::service']

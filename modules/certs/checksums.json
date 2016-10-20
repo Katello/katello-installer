@@ -2,7 +2,7 @@
   "CHANGELOG": "96fb2ecf128adc95cf3a7ed2352fe2fe",
   "CONTRIBUTING.md": "b09c628c63cd0562c3f8bbd74a3143f8",
   "CONTRIBUTORS": "6dc9bbcc7080e14fd3b3483651c16486",
-  "Gemfile": "76b51fe8847c33b30ea99b09d383fe06",
+  "Gemfile": "5be9bca0960eee9728c6e101a689b0df",
   "LICENSE": "9eef91148a9b14ec7f9df333daebc746",
   "README.md": "c6687963c778635fe0ce2b99b74ba3d0",
   "Rakefile": "0d2ece37457146abf81a4559bec31fde",
@@ -43,12 +43,12 @@
   "manifests/ssltools/openssl/pkcs12.pp": "46573cc71dfa224d2513615930fb3791",
   "manifests/tar_create.pp": "ca4f9deeeeefbe0b149e04edd634e939",
   "manifests/tar_extract.pp": "b4e51a1410f45c96c0c8eadd471d0c92",
-  "metadata.json": "90fa1e2934e50f43e935c443afeabe36",
-  "spec/classes/certs_katello_spec.rb": "df78464509e9e1f9897a81dcf2e666b6",
-  "spec/classes/certs_spec.rb": "9cb50656107e6b7571599a65d774cdb0",
+  "metadata.json": "a8745bdd7ff4c559b1008e4324443053",
+  "spec/classes/certs_katello_spec.rb": "b0d45aaf687c9edef532160f5b2a22b6",
+  "spec/classes/certs_spec.rb": "c00f113c91f2b1b54029cec273f61c21",
   "spec/classes/coverage_spec.rb": "5b6dfa0dd426aca0ccfae23c0a629f0b",
   "spec/spec.opts": "6af1d8720d85a510f132e3250aa61075",
-  "spec/spec_helper.rb": "ffb1f8c877e236c4c5c04f6325066778",
+  "spec/spec_helper.rb": "b799879202f147cfed1eeced83b1a83f",
   "spec/spec_helper_acceptance.rb": "eff75621f3cb32e08d78fc394fb5ccf9",
-  "templates/rhsm-katello-reconfigure.erb": "cf45d539c76913358322f7d20accba72"
+  "templates/rhsm-katello-reconfigure.erb": "74b98eea2d31d727f9bf13a653593f3c"
 }

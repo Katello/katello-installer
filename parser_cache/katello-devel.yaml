@@ -418,7 +418,7 @@
         default_ca_name: 
         server_ca_name: 
       :object_type: hostclass
-    :mtime: 1473690931
+    :mtime: 1475676127
   katello_devel:
     :data:
       :values:
@@ -611,4 +611,4 @@
         upstream_remote_name: 
         extra_plugins: 
       :object_type: hostclass
-    :mtime: 1473874555
+    :mtime: 1476989744

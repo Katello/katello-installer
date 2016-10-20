@@ -7,13 +7,11 @@ acl manager proto cache_object
 acl localhost src 127.0.0.1/32 ::1
 acl to_localhost dst 127.0.0.0/8 0.0.0.0/32 ::1
 <% end -%>
-<% if @use_default_localnet -%>
 acl localnet src 10.0.0.0/8	# RFC1918 possible internal network
 acl localnet src 172.16.0.0/12	# RFC1918 possible internal network
 acl localnet src 192.168.0.0/16	# RFC1918 possible internal network
 acl localnet src fc00::/7       # RFC 4193 local private network range
 acl localnet src fe80::/10      # RFC 4291 link-local (directly plugged) machines
-<% end -%>
 <% @ssl_ports.each do |line| -%>
 acl SSL_ports port <%= line %>
 <% end -%>
@@ -37,9 +35,7 @@ acl <%= line %>
 <% @http_access.each do |line| -%>
 http_access <%= line %>
 <% end -%>
-<% if @use_default_localnet -%>
 http_access allow localnet
-<% end -%>
 http_access allow localhost
 http_access deny all
 
@@ -67,28 +63,23 @@ https_port <%= line %>
 tcp_outgoing_address <%= line %>
 <% end -%>
 
+# user-defined cache-dirs
+<% @cache_dir.each do |line| -%>
+cache_dir <%= line %>
+<% end -%>
+
 
 # general settings
 hierarchy_stoplist             cgi-bin ?
 coredump_dir                   <%= @coredump_dir %>
 maximum_object_size_in_memory  <%= @maximum_object_size_in_memory  %>
 maximum_object_size            <%= @maximum_object_size            %>
-<% if @use_deprecated_opts -%>
 ignore_expect_100              <%= @ignore_expect_100              %>
-<% end -%>
-<% if @pconn_timeout -%>
-pconn_timeout                  <%= @pconn_timeout %>
-<% end -%>
 cache_mgr                      <%= @cache_mgr                      %>
 client_persistent_connections  <%= @client_persistent_connections  %>
 server_persistent_connections  <%= @server_persistent_connections  %>
 forwarded_for                  <%= @forwarded_for                  %>
 via                            <%= @via %>
-<% if @reply_header_access -%>
-<% @reply_header_access.each do |header_access| -%>
-reply_header_access            <%= header_access %>
-<% end -%>
-<% end -%>
 <% @access_log.each do |line|  -%>
 access_log                     <%= line                            %>
 <% end -%>
@@ -98,9 +89,6 @@ cache_store_log                <%= @cache_store_log                %>
 cache_log                      <%= @cache_log                      %>
 <% @cache.each do |line| -%>
 cache                          <%= line                            %>
-<% end -%>
-<% if @strip_query_terms -%>
-strip_query_terms              <%= @strip_query_terms              %>
 <% end -%>
 
 <% @refresh_patterns.each do |line| -%>
@@ -112,19 +100,7 @@ refresh_pattern                -i (/cgi-bin/|\?)     0     0%        0
 refresh_pattern                .                     0    20%     4320
 
 
-# user-defined cache-dirs
-<% @cache_dir.each do |line| -%>
-cache_dir <%= line %>
-<% end -%>
-
 # user-defined configuration settings from config_hash
-<% if @config_hash -%>
 <% @config_hash.sort_by {|k,v| k}.each do |k,v| -%>
 <%= "%*s"%[-30,k] %> <%= v %>
-<% end -%>
-<% end -%>
-<% if @config_array -%>
-<% @config_array.each do |v| -%>
-<%= v %>
-<% end -%>
 <% end -%>

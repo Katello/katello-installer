@@ -95,6 +95,11 @@ fi
   service goferd status >/dev/null && \
   service goferd restart >/dev/null 2&>1
 
+
+if [ -d /etc/rhsm/facts/ ]; then
+  echo "{\"network.hostname-override\":\"`hostname -f`\"}" > /etc/rhsm/facts/katello.facts
+fi
+
 exit 0
 
 # vim:sw=2:ts=2:et:

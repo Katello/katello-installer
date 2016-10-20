@@ -32,7 +32,7 @@ class pulp::apache {
       ssl_chain                  => $pulp::https_chain,
       ssl_ca                     => $pulp::ca_cert,
       ssl_verify_client          => 'optional',
-      ssl_protocol               => ' all -SSLv2',
+      ssl_protocol               => $pulp::ssl_protocol,
       ssl_options                => '+StdEnvVars +ExportCertData',
       ssl_verify_depth           => '3',
       wsgi_process_group         => 'pulp',

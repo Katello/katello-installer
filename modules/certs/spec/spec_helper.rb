@@ -6,6 +6,11 @@ require 'puppetlabs_spec_helper/module_spec_helper'
 require 'rspec-puppet-facts'
 include RspecPuppetFacts
 
+add_custom_fact :concat_basedir, '/tmp'
+add_custom_fact :mongodb_version, '2.4.14'
+add_custom_fact :root_home, '/root'
+add_custom_fact :puppetversion, Puppet.version
+
 # Workaround for no method in rspec-puppet to pass undef through :params
 class Undef
   def inspect; 'undef'; end
