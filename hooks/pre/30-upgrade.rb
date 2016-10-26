@@ -1,3 +1,8 @@
+require 'fileutils'
+
+STEP_DIRECTORY = '/etc/foreman-installer/applied_hooks/pre/'
+SSL_BUILD_DIR = param('certs', 'ssl_build_dir').value
+
 def stop_services
   Kafo::Helpers.execute('katello-service stop --exclude mongod,postgresql')
 end
@@ -96,14 +101,32 @@ def remove_event_queue
   end
 end
 
-def upgrade_step(step)
+def upgrade_step(step, options = {})
   noop = app_value(:noop) ? ' (noop)' : ''
+  long_running = options[:long_running] ? ' (this may take a while) ' : ''
+  run_always = options.fetch(:run_always, false)
 
-  Kafo::Helpers.log_and_say :info, "Upgrade Step: #{step}#{noop}..."
-  unless app_value(:noop)
-    status = send(step)
-    fail_and_exit "Upgrade step #{step} failed. Check logs for more information." unless status
+  if run_always || app_value(:force_upgrade_steps) || !step_ran?(step)
+    Kafo::Helpers.log_and_say :info, "Upgrade Step: #{step}#{long_running}#{noop}..."
+    unless app_value(:noop)
+      status = send(step)
+      fail_and_exit "Upgrade step #{step} failed. Check logs for more information." unless status
+      touch_step(step)
+    end
   end
+end
+
+def touch_step(step)
+  FileUtils.mkpath(STEP_DIRECTORY) unless Dir.exists?(STEP_DIRECTORY)
+  FileUtils.touch(step_path(step))
+end
+
+def step_ran?(step)
+  File.exists?(step_path(step))
+end
+
+def step_path(step)
+  File.join(STEP_DIRECTORY, step.to_s)
 end
 
 def fail_and_exit(message)
@@ -119,16 +142,16 @@ if app_value(:upgrade)
   katello = Kafo::Helpers.module_enabled?(@kafo, 'katello')
   capsule = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
 
-  upgrade_step :stop_services
-  upgrade_step :start_databases
-  upgrade_step :update_http_conf
+  upgrade_step :stop_services, :run_always => true
+  upgrade_step :start_databases, :run_always => true
+  upgrade_step :update_http_conf, :run_always => true
 
   if katello || capsule
-    upgrade_step :migrate_pulp
-    upgrade_step :fix_pulp_httpd_conf
-    upgrade_step :start_httpd
-    upgrade_step :start_qpidd
-    upgrade_step :start_pulp
+    upgrade_step :migrate_pulp, :run_always => true
+    upgrade_step :fix_pulp_httpd_conf, :run_always => true
+    upgrade_step :start_httpd, :run_always => true
+    upgrade_step :start_qpidd, :run_always => true
+    upgrade_step :start_pulp, :run_always => true
   end
 
   if capsule
@@ -136,12 +159,12 @@ if app_value(:upgrade)
   end
 
   if katello
-    upgrade_step :migrate_candlepin
+    upgrade_step :migrate_candlepin, :run_always => true
     upgrade_step :remove_event_queue
     upgrade_step :remove_gutterball
-    upgrade_step :start_tomcat
+    upgrade_step :start_tomcat, :run_always => true
     upgrade_step :fix_katello_settings_file
-    upgrade_step :migrate_foreman
+    upgrade_step :migrate_foreman, :run_always => true
     upgrade_step :remove_nodes_distributors
   end
 
