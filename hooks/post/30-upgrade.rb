@@ -35,8 +35,8 @@ def elasticsearch_message
 
   rpms = ['ruby193-rubygem-tire', 'tfm-rubygem-tire', 'elasticsearch', 'sigar-java', 'sigar', 'snappy-java', 'lucene4-contrib', 'lucene4']
   message = "Elasticsearch has been removed as a dependency.  The database files can be "\
-            "removed manually with #rm -rf /var/lib/elasticsearch.  "
-  message += "Some packages are no longer needed and can be removed:  #rpm -e #{rpms.join(' ')}"
+            "removed manually with # rm -rf /var/lib/elasticsearch.  "
+  message += "Some packages are no longer needed and can be removed:  # yum erase #{rpms.join(' ')}"
   Kafo::Helpers.log_and_say :info, message
 end
 
