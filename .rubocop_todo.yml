@@ -34,10 +34,6 @@ Lint/UselessAssignment:
 Metrics/BlockNesting:
   Max: 4
 
-# Offense count: 1
-Metrics/CyclomaticComplexity:
-  Max: 8
-
 # Offense count: 170
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes.
 # URISchemes: http, https
@@ -48,10 +44,6 @@ Metrics/LineLength:
 # Configuration parameters: CountComments.
 Metrics/MethodLength:
   Max: 13
-
-# Offense count: 1
-Metrics/PerceivedComplexity:
-  Max: 8
 
 # Offense count: 1
 # Cop supports --auto-correct.
