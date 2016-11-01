@@ -180,7 +180,6 @@ if app_value(:upgrade)
     upgrade_step :mark_qpid_cert_for_update
     upgrade_step :migrate_candlepin, :run_always => true
     upgrade_step :remove_event_queue
-    upgrade_step :remove_gutterball
     upgrade_step :start_tomcat, :run_always => true
     upgrade_step :fix_katello_settings_file
     upgrade_step :migrate_foreman, :run_always => true
