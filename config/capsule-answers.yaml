@@ -4,6 +4,7 @@ certs:
   deploy: true
 capsule:
   puppet: true
+  qpid_router_broker_addr: localhost
 foreman_proxy:
   custom_repo: true
   http: true

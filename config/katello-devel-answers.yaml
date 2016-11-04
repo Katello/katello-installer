@@ -11,6 +11,7 @@ katello_devel:
 capsule:
   puppet: true
   pulp_master: true
+  qpid_router_broker_addr: localhost
 foreman_proxy:
   custom_repo: true
   http: true

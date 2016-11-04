@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 group :test do
   gem 'rubocop'
+  gem 'rspec'
 end
 
 gem 'kafo', '>= 1.0.1'
