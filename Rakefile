@@ -2,12 +2,16 @@ require 'rake/clean'
 require 'tempfile'
 require 'kafo'
 require 'yaml'
+require 'open-uri'
 
 BUILDDIR = File.expand_path(ENV['BUILDDIR'] || '_build')
 PKGDIR = ENV['PKGDIR'] || File.expand_path('pkg')
 FOREMAN_MODULES_DIR = File.expand_path(ENV['FOREMAN_MODULES_DIR'] || '/usr/share/foreman-installer/modules')
 FOREMAN_BRANCH = ENV['FOREMAN_BRANCH'] || 'develop'
 PARSER_CACHE_DIR = ENV['PARSER_CACHE_DIR'] || "#{BUILDDIR}/parser_cache"
+
+CONFIG_DIR = './config'
+SCENARIOS = ['katello', 'capsule', 'katello-devel']
 
 file BUILDDIR do
   mkdir BUILDDIR
@@ -22,6 +26,9 @@ file PARSER_CACHE_DIR => [BUILDDIR] do
 end
 
 file "#{BUILDDIR}/modules" do |t|
+  # Append Foreman's Puppetfile to ours, so we use the right version of the puppet modules for the cache
+  File.open('Puppetfile', 'a') { |f| f.write(open("https://raw.githubusercontent.com/theforeman/foreman-installer/#{FOREMAN_BRANCH}/Puppetfile").read) }
+
   if Dir["modules/*"].empty?
     sh "librarian-puppet install --verbose --path #{BUILDDIR}/modules"
   else
@@ -62,7 +69,6 @@ end
 desc 'Remove foreman modules from $BUILDDIR/modules'
 task :prune_foreman_modules => [] do
   begin
-    # raise "No foreman modules found in #{FOREMAN_MODULES_DIR}"
     if Dir["#{FOREMAN_MODULES_DIR}/*"].empty?
       temp_dir = Dir.mktmpdir
       Dir.chdir(temp_dir) do
@@ -111,6 +117,25 @@ begin
   RuboCop::RakeTask.new
 rescue
   puts 'Rubocop not loaded'
+end
+
+namespace :config do
+  task :migrate do
+    Kafo::KafoConfigure.logger = Logger.new(STDOUT)
+
+    SCENARIOS.each do |scenario|
+      migrations = File.expand_path(File.join(CONFIG_DIR, "#{scenario}.migrations"))
+      migrator = Kafo::Migrations.new(migrations)
+
+      scenario_path = File.expand_path(File.join(CONFIG_DIR, "#{scenario}.yaml"))
+      answers_path = File.expand_path(File.join(CONFIG_DIR, "#{scenario}-answers.yaml"))
+
+      migrated_scenario, migrated_answers = migrator.run(YAML.load_file(scenario_path), YAML.load_file(answers_path))
+
+      File.open(scenario_path, 'w') { |f| f.write(migrated_scenario.to_yaml) }
+      File.open(answers_path, 'w') { |f| f.write(migrated_answers.to_yaml) }
+    end
+  end
 end
 
 CLEAN.include(BUILDDIR, PKGDIR)
