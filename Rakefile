@@ -4,6 +4,12 @@ require 'kafo'
 require 'yaml'
 require 'open-uri'
 
+begin
+  require 'rspec/core/rake_task'
+  RSpec::Core::RakeTask.new(:spec)
+rescue LoadError
+end
+
 BUILDDIR = File.expand_path(ENV['BUILDDIR'] || '_build')
 PKGDIR = ENV['PKGDIR'] || File.expand_path('pkg')
 FOREMAN_MODULES_DIR = File.expand_path(ENV['FOREMAN_MODULES_DIR'] || '/usr/share/foreman-installer/modules')
@@ -140,4 +146,4 @@ end
 
 CLEAN.include(BUILDDIR, PKGDIR)
 
-task :default => [:rubocop, 'pkg:generate_source']
+task :default => [:rubocop, :spec, 'pkg:generate_source']
