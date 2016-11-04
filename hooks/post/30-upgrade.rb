@@ -62,7 +62,7 @@ def remove_gutterball
 
   ['tomcat', 'tomcat6'].each do |t|
     gutterball_dir = "/var/lib/#{t}/webapps/gutterball"
-    Kafo::Helpers.execute("rmdir #{gutterball_dir}") if File.directory?(gutterball_dir)
+    Kafo::Helpers.execute("rm -rfv #{gutterball_dir}") if File.directory?(gutterball_dir)
   end
 end
 
