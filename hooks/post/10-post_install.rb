@@ -35,9 +35,9 @@ if [0, 2].include?(@kafo.exit_code)
 
     if Kafo::Helpers.module_enabled?(@kafo, 'katello')
       say <<MSG
-  * To install additional capsule on separate machine continue by running:
+  * To install an additional capsule on a separate machine run the following command:
 
-      capsule-certs-generate --capsule-fqdn "<%= color('$CAPSULE', :info) %>" --certs-tar "<%= color('~/$CAPSULE-certs.tar', :info) %>"
+      capsule-certs-generate --capsule-fqdn "<%= color('$CAPSULE', :info) %>" --certs-tar "<%= color('/root/$CAPSULE-certs.tar', :info) %>"
 
 MSG
     end
@@ -61,7 +61,7 @@ MSG
   Once this is completed run the steps below to start the smartproxy installation:
 
   1. Ensure that the foreman-installer-katello package is installed on the system.
-  2. Copy <%= color("#{certs_tar}", :info) %> to the system <%= color("#{capsule_fqdn}", :info) %>
+  2. Copy the following file <%= color("#{certs_tar}", :info) %> to the system <%= color("#{capsule_fqdn}", :info) %> at the following location <%= color("#{File.join('/root', File.basename(certs_tar))}", :info) %>
   3. Run the following commands on the capsule (possibly with the customized
      parameters, see <%= color("#{installer_name} --scenario capsule --help", :info) %> and
      documentation for more info on setting up additional services):
