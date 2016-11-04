@@ -30,4 +30,5 @@ Metrics/CyclomaticComplexity:
 Metrics/PerceivedComplexity:
   Enabled: false
 
-
+Performance/Casecmp:
+  Enabled: false
