@@ -40,7 +40,7 @@ end
 
 def reset_value(param)
   unless app_value(:noop)
-    param.value = param.default unless param.nil?
+    param.value = nil unless param.nil?
   end
 end
 
@@ -60,6 +60,8 @@ if app_value(:upgrade_puppet)
   reset_value(param('foreman_proxy', 'puppet_ssl_key'))
   reset_value(param('foreman_proxy', 'puppetdir'))
   reset_value(param('foreman_proxy', 'ssldir'))
+  reset_value(param('foreman_proxy', 'puppetca_cmd'))
+  reset_value(param('foreman_proxy', 'puppetrun_cmd'))
 
   upgrade_step :upgrade_puppet_package
   upgrade_step :stop_services
