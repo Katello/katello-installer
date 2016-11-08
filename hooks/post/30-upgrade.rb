@@ -66,6 +66,15 @@ def remove_gutterball
   end
 end
 
+def remove_event_queue
+  queue_present = `qpid-stat -q --ssl-certificate=/etc/pki/katello/qpid_client_striped.crt -b amqps://localhost:5671 | grep :event | wc -l`.chomp.to_i
+  if queue_present > 0
+    Kafo::Helpers.execute('qpid-config --ssl-certificate=/etc/pki/katello/qpid_client_striped.crt -b amqps://localhost:5671 del queue $(hostname -f):event --force')
+  else
+    logger.info 'Event queue is already removed, skipping'
+  end
+end
+
 def upgrade_step(step, options = {})
   noop = app_value(:noop) ? ' (noop)' : ''
   long_running = options[:long_running] ? ' (this may take a while) ' : ''
@@ -116,6 +125,7 @@ if app_value(:upgrade)
       upgrade_step :update_puppet_repository_distributors, :long_running => true
       upgrade_step :update_subscription_facet_backend_data, :long_running => true
       upgrade_step :remove_gutterball
+      upgrade_step :remove_event_queue
     end
 
     if [0, 2].include? @kafo.exit_code
