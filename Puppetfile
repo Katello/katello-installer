@@ -11,4 +11,4 @@ mod 'katello/qpid',             '>= 1.3.0 < 1.4.0'
 mod 'katello/service_wait',     '>= 0.2.0 < 0.3.0'
 
 # Katello devel specific modules
-mod 'katello/katello_devel',    :git => 'https://github.com/Katello/puppet-katello_devel'
+mod 'katello/katello_devel',    :git => 'https://github.com/Katello/puppet-katello_devel', :ref => '0.1-stable'
