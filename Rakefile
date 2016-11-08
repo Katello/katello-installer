@@ -28,12 +28,14 @@ end
 task :generate_parser_caches => [PARSER_CACHE_DIR] do
   caches = [
     "#{PARSER_CACHE_DIR}/katello.yaml",
+    "#{PARSER_CACHE_DIR}/capsule.yaml",
     "#{PARSER_CACHE_DIR}/katello-devel.yaml",
     "#{PARSER_CACHE_DIR}/capsule-certs-generate.yaml"
   ]
 
   configs = [
     'config/katello.yaml',
+    'config/capsule.yaml',
     'config/katello-devel.yaml'
   ]
 
