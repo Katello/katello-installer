@@ -2,6 +2,7 @@
 certs:
   generate: true
   deploy: true
+  group: foreman
 katello:
   package_names:
   - katello
