@@ -122,7 +122,7 @@ if app_value(:upgrade)
   end
 
   if katello
-    upgrade_step :migrate_candlepin, :run_always => true
+    upgrade_step :migrate_candlepin
     upgrade_step :remove_gutterball
     upgrade_step :start_tomcat
     upgrade_step :fix_katello_settings_file
