@@ -69,7 +69,7 @@ end
 def remove_event_queue
   queue_present = `qpid-stat -q --ssl-certificate=/etc/pki/katello/qpid_client_striped.crt -b amqps://localhost:5671 | grep :event | wc -l`.chomp.to_i
   if queue_present > 0
-    Kafo::Helpers.execute('qpid-config --ssl-certificate=/etc/pki/katello/qpid_client_striped.crt -b amqps://localhost:5671 del queue $(hostname -f):event --force')
+    Kafo::Helpers.execute('qpid-config --ssl-certificate=/etc/pki/katello/qpid_client_striped.crt -b amqps://localhost:5671 del queue $(hostname -f):event --force > /dev/null 2>&1')
   else
     logger.info 'Event queue is already removed, skipping'
   end
