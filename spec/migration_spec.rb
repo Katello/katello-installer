@@ -6,7 +6,7 @@ CONFIG_DIR = File.expand_path(File.join(__FILE__, "../../config"))
 Kafo::KafoConfigure.logger = Logger.new("test.log")
 
 describe 'migrations' do
-  %w(katello katello-devel capsule).each do |scenario_name|
+  %w(katello katello-devel foreman-proxy-content).each do |scenario_name|
     context "on #{scenario_name}" do
 
       let(:scenario) do

@@ -46,9 +46,9 @@ end
 
 if app_value(:upgrade_puppet)
   katello = Kafo::Helpers.module_enabled?(@kafo, 'katello')
-  capsule = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
+  foreman_proxy_content = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
 
-  fail_and_exit 'Puppet 3 to 4 upgrade is not currently supported for the chosen scenario.' unless katello || capsule
+  fail_and_exit 'Puppet 3 to 4 upgrade is not currently supported for the chosen scenario.' unless katello || foreman_proxy_content
 
   Kafo::Helpers.log_and_say :info, 'Upgrading puppet...'
   fail_and_exit 'Unable to find Puppet 4 packages, is the repository enabled?' unless puppet4_available?

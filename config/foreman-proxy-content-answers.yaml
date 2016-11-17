@@ -2,7 +2,7 @@
 certs:
   generate: false
   deploy: true
-capsule:
+foreman_proxy_content:
   puppet: true
   qpid_router_broker_addr: localhost
 foreman_proxy:

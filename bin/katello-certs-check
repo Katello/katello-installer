@@ -107,15 +107,15 @@ To update the certificates on a currently running Katello installation, run:
                       --certs-server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
                       --certs-update-server --certs-update-server-ca
 
-To use them inside a \$CAPSULE, run this command INSTEAD:
+To use them inside a \$FOREMAN_PROXY, run this command INSTEAD:
 
-    capsule-certs-generate --capsule-fqdn "$CAPSULE"\\
-                           --certs-tar  "~/$CAPSULE-certs.tar"\\
-                           --server-cert "$(readlink -f $CERT_FILE)"\\
-                           --server-cert-req "$(readlink -f $REQ_FILE)"\\
-                           --server-key "$(readlink -f $KEY_FILE)"\\
-                           --server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
-                           --certs-update-server
+    foreman-proxy-certs-generate --foreman-proxy-fqdn "$FOREMAN_PROXY"\\
+                                 --certs-tar  "~/$FOREMAN_PROXY-certs.tar"\\
+                                 --server-cert "$(readlink -f $CERT_FILE)"\\
+                                 --server-cert-req "$(readlink -f $REQ_FILE)"\\
+                                 --server-key "$(readlink -f $KEY_FILE)"\\
+                                 --server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
+                                 --certs-update-server
 EOF
 else
     exit $EXIT_CODE

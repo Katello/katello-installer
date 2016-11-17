@@ -1,11 +1,11 @@
 ---
-:name: Capsule
-:description: Install a stand-alone Capsule.
+:name: Foreman Proxy
+:description: Install a stand-alone Foreman Proxy.
 :log_dir: /var/log/foreman-installer
-:log_name: capsule.log
+:log_name: foreman-proxy-content.log
 :log_level: DEBUG
 :no_prefix: false
-:answer_file: ./config/capsule-answers.yaml
+:answer_file: ./config/foreman-proxy-content-answers.yaml
 :installer_dir: .
 :default_values_dir: /tmp
 :module_dirs:
@@ -22,6 +22,6 @@
 - certs
 - foreman_proxy
 - foreman_proxy::plugin::pulp
-- capsule
+- foreman_proxy_content
 # Unused, but remains present for older config migrations
 :mapping: {}
