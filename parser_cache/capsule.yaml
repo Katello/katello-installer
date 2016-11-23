@@ -174,27 +174,27 @@
         - 'Class: capsule'
         - 'Advanced parameters:'
       :conditions:
-        parent_fqdn: 
-        enable_ostree: 
-        certs_tar: 
-        puppet: 
-        puppet_ca_proxy: 
-        puppet_server_implementation: 
-        pulp_master: 
-        pulp_admin_password: 
-        pulp_oauth_effective_user: 
-        pulp_oauth_key: 
-        pulp_oauth_secret: 
-        reverse_proxy: 
-        reverse_proxy_port: 
-        rhsm_url: 
-        qpid_router: 
-        qpid_router_hub_addr: 
-        qpid_router_hub_port: 
-        qpid_router_agent_addr: 
-        qpid_router_agent_port: 
-        qpid_router_broker_addr: 
-        qpid_router_broker_port: 
+        parent_fqdn:
+        enable_ostree:
+        certs_tar:
+        puppet:
+        puppet_ca_proxy:
+        puppet_server_implementation:
+        pulp_master:
+        pulp_admin_password:
+        pulp_oauth_effective_user:
+        pulp_oauth_key:
+        pulp_oauth_secret:
+        reverse_proxy:
+        reverse_proxy_port:
+        rhsm_url:
+        qpid_router:
+        qpid_router_hub_addr:
+        qpid_router_hub_port:
+        qpid_router_agent_addr:
+        qpid_router_agent_port:
+        qpid_router_broker_addr:
+        qpid_router_broker_port:
       :object_type: hostclass
     :mtime: 1473690437
   certs:
@@ -393,222 +393,29 @@
         - 'Class: certs'
         - 'Parameters:'
       :conditions:
-        log_dir: 
-        node_fqdn: 
-        generate: 
-        regenerate: 
-        regenerate_ca: 
-        deploy: 
-        ca_common_name: 
-        country: 
-        state: 
-        city: 
-        org: 
-        org_unit: 
-        expiration: 
-        ca_expiration: 
-        server_ca_cert: 
-        server_cert: 
-        server_key: 
-        server_cert_req: 
-        pki_dir: 
-        ssl_build_dir: 
-        user: 
-        group: 
-        default_ca_name: 
-        server_ca_name: 
+        log_dir:
+        node_fqdn:
+        generate:
+        regenerate:
+        regenerate_ca:
+        deploy:
+        ca_common_name:
+        country:
+        state:
+        city:
+        org:
+        org_unit:
+        expiration:
+        ca_expiration:
+        server_ca_cert:
+        server_cert:
+        server_key:
+        server_cert_req:
+        pki_dir:
+        ssl_build_dir:
+        user:
+        group:
+        default_ca_name:
+        server_ca_name:
       :object_type: hostclass
     :mtime: 1475676127
-  katello_devel:
-    :data:
-      :values:
-        user: katello_devel::params::user
-        oauth_key: katello_devel::params::oauth_key
-        oauth_secret: katello_devel::params::oauth_secret
-        deployment_dir: katello_devel::params::deployment_dir
-        post_sync_token: katello_devel::params::post_sync_token
-        db_type: katello_devel::params::db_type
-        mongodb_path: katello_devel::params::mongodb_path
-        use_rvm: katello_devel::params::use_rvm
-        rvm_ruby: katello_devel::params::rvm_ruby
-        use_passenger: katello_devel::params::use_passenger
-        initial_organization: katello_devel::params::initial_organization
-        initial_location: katello_devel::params::initial_location
-        admin_password: katello_devel::params::admin_password
-        enable_ostree: katello::params::enable_ostree
-        candlepin_event_queue: katello_devel::params::candlepin_event_queue
-        github_username: katello_devel::params::github_username
-        use_ssh_fork: katello_devel::params::use_ssh_fork
-        fork_remote_name: katello_devel::params::fork_remote_name
-        upstream_remote_name: katello_devel::params::upstream_remote_name
-        extra_plugins: katello_devel::params::extra_plugins
-      :validations:
-      - !ruby/object:KafoParsers::Validation
-        name: validate_bool
-        arguments:
-        - $enable_ostree
-      - !ruby/object:KafoParsers::Validation
-        name: validate_string
-        arguments:
-        - $upstream_remote_name
-      - !ruby/object:KafoParsers::Validation
-        name: validate_array
-        arguments:
-        - $extra_plugins
-      - !ruby/object:KafoParsers::Validation
-        name: validate_string
-        arguments:
-        - $github_username
-      :parameters:
-      - user
-      - oauth_key
-      - oauth_secret
-      - deployment_dir
-      - post_sync_token
-      - db_type
-      - mongodb_path
-      - use_rvm
-      - rvm_ruby
-      - use_passenger
-      - initial_organization
-      - initial_location
-      - admin_password
-      - enable_ostree
-      - candlepin_event_queue
-      - github_username
-      - use_ssh_fork
-      - fork_remote_name
-      - upstream_remote_name
-      - extra_plugins
-      :docs:
-        user:
-        - The Katello system user name
-        deployment_dir:
-        - Location to deploy Katello to in development
-        oauth_key:
-        - The oauth key for talking to the candlepin API;
-        - default 'katello'
-        oauth_secret:
-        - The oauth secret for talking to the candlepin API;
-        post_sync_token:
-        - The shared secret for pulp notifying katello about
-        - completed syncs
-        use_passenger:
-        - Whether to use Passenger in development;
-        - default false
-        db_type:
-        - The database type; 'postgres' or 'sqlite'
-        mongodb_path:
-        - Path where mongodb should be stored
-        use_rvm:
-        - If set to true, will install and configure RVM
-        rvm_ruby:
-        - The default Ruby version to use with RVM
-        initial_organization:
-        - Initial organization to be created
-        initial_location:
-        - Initial location to be created
-        admin_password:
-        - Admin user password for Web application
-        enable_ostree:
-        - Boolean to enable ostree plugin. This requires existence of an ostree install.
-        candlepin_event_queue:
-        - The queue to use for candlepin
-        github_username:
-        - Github username to add remotes for
-        use_ssh_fork:
-        - If true, will use SSH to configure Github fork, otherwise HTTPS.
-        fork_remote_name:
-        - Name of the remote that represents your fork
-        upstream_remote_name:
-        - Name of the remove that represents the upstream repository
-        extra_plugins:
-        - Array of Github namespace/repo plugins to setup and configure from git
-      :types:
-        enable_ostree: boolean
-        use_ssh_fork: boolean
-        extra_plugins: array
-      :groups:
-        user:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        deployment_dir:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        oauth_key:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        oauth_secret:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        post_sync_token:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        use_passenger:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        db_type:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        mongodb_path:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        use_rvm:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        rvm_ruby:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        initial_organization:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        initial_location:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        admin_password:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        enable_ostree:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        candlepin_event_queue:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        github_username:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        use_ssh_fork:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        fork_remote_name:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        upstream_remote_name:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-        extra_plugins:
-        - 'Class: katello_devel'
-        - 'Parameters:'
-      :conditions:
-        user: 
-        deployment_dir: 
-        oauth_key: 
-        oauth_secret: 
-        post_sync_token: 
-        use_passenger: 
-        db_type: 
-        mongodb_path: 
-        use_rvm: 
-        rvm_ruby: 
-        initial_organization: 
-        initial_location: 
-        admin_password: 
-        enable_ostree: 
-        candlepin_event_queue: 
-        github_username: 
-        use_ssh_fork: 
-        fork_remote_name: 
-        upstream_remote_name: 
-        extra_plugins: 
-      :object_type: hostclass
-    :mtime: 1479844321
