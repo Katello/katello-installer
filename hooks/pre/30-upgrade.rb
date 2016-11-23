@@ -87,16 +87,23 @@ def fix_katello_settings_file
   end
 end
 
-def remove_event_queue
-  queue_present = `qpid-stat -q --ssl-certificate=/etc/pki/katello/qpid_client_striped.crt -b amqps://localhost:5671 | grep :event | wc -l`.chomp.to_i
-  if queue_present > 0
-    Kafo::Helpers.execute('qpid-config --ssl-certificate=/etc/pki/katello/qpid_client_striped.crt -b amqps://localhost:5671 del queue $(hostname -f):event --force')
+def mark_qpid_cert_for_update
+  hostname = param('certs', 'node_fqdn').value
+
+  all_cert_names = Dir.glob(File.join(SSL_BUILD_DIR, hostname, '*.noarch.rpm')).map do |rpm|
+    File.basename(rpm).sub(/-1\.0-\d+\.noarch\.rpm/, '')
+  end.uniq
+
+  if (qpid_cert = all_cert_names.find { |cert| cert =~ /-qpid-broker$/ })
+    path = File.join(*[SSL_BUILD_DIR, hostname, qpid_cert].compact)
+    Kafo::Helpers.log_and_say :info, "Marking certificate #{path} for update"
+    FileUtils.touch("#{path}.update")
   else
-    logger.info 'Event queue is already removed, skipping'
+    Kafo::Helpers.log_and_say :debug, "No existing broker cert found; skipping update"
   end
 end
 
-def upgrade_step(step)
+def upgrade_step(step, options = {})
   noop = app_value(:noop) ? ' (noop)' : ''
 
   Kafo::Helpers.log_and_say :info, "Upgrade Step: #{step}#{noop}..."
@@ -138,8 +145,8 @@ if app_value(:upgrade)
   end
 
   if katello
-    upgrade_step :migrate_candlepin
-    upgrade_step :remove_event_queue
+    upgrade_step :mark_qpid_cert_for_update
+    upgrade_step :migrate_candlepin, :run_always => true
     upgrade_step :remove_gutterball
     upgrade_step :start_tomcat
     upgrade_step :fix_katello_settings_file
