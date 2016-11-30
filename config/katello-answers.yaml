@@ -21,7 +21,7 @@ foreman:
   server_ssl_key: /etc/pki/katello/private/katello-apache.key
   server_ssl_ca: /etc/pki/katello/certs/katello-default-ca.crt
   server_ssl_chain: /etc/pki/katello/certs/katello-server-ca.crt
-  server_ssl_crl: false
+  server_ssl_crl: ""
   client_ssl_cert: /etc/foreman/client_cert.pem
   client_ssl_key: /etc/foreman/client_key.pem
   client_ssl_ca: /etc/foreman/proxy_ca.pem
