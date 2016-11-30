@@ -5,9 +5,12 @@ class mongodb::server::config {
   $group           = $mongodb::server::group
   $config          = $mongodb::server::config
   $config_content  = $mongodb::server::config_content
+  $config_template = $mongodb::server::config_template
 
   $dbpath          = $mongodb::server::dbpath
+  $dbpath_fix      = $mongodb::server::dbpath_fix
   $pidfilepath     = $mongodb::server::pidfilepath
+  $pidfilemode     = $mongodb::server::pidfilemode
   $logpath         = $mongodb::server::logpath
   $logappend       = $mongodb::server::logappend
   $fork            = $mongodb::server::fork
@@ -101,6 +104,8 @@ class mongodb::server::config {
     #Pick which config content to use
     if $config_content {
       $cfg_content = $config_content
+    } elsif $config_template {
+      $cfg_content = template($config_template)
     } elsif $version and (versioncmp($version, '2.6.0') >= 0) {
       # Template uses:
       # - $auth
@@ -123,6 +128,7 @@ class mongodb::server::config {
       # - $objcheck
       # - $oplog_size
       # - $pidfilepath
+      # - $pidfilemode
       # - $port
       # - $profile
       # - $quota
@@ -173,6 +179,7 @@ class mongodb::server::config {
       # - $only
       # - $oplog_size
       # - $pidfilepath
+      # - $pidfilemode
       # - $port
       # - $profile
       # - $quiet
@@ -208,13 +215,22 @@ class mongodb::server::config {
       mode    => '0755',
       owner   => $user,
       group   => $group,
-      require => File[$config]
+      require => File[$config],
+    }
+
+    if $dbpath_fix {
+      exec { 'fix dbpath permissions':
+        command   => "chown -R ${user}:${group} ${dbpath}",
+        path      => ['/usr/bin', '/bin'],
+        onlyif    => "find ${dbpath} -not -user ${user} -o -not -group ${group} -print -quit | grep -q '.*'",
+        subscribe => File[$dbpath]
+      }
     }
 
     if $pidfilepath {
       file { $pidfilepath:
         ensure => file,
-        mode   => '0644',
+        mode   => $pidfilemode,
         owner  => $user,
         group  => $group,
       }
@@ -226,7 +242,7 @@ class mongodb::server::config {
       backup => false,
     }
     file { $config:
-      ensure => absent
+      ensure => absent,
     }
   }
 
@@ -236,11 +252,11 @@ class mongodb::server::config {
       content => template('mongodb/mongorc.js.erb'),
       owner   => 'root',
       group   => 'root',
-      mode    => '0600'
+      mode    => '0600',
     }
   } else {
     file { $rcfile:
-      ensure => absent
+      ensure => absent,
     }
   }
 }
