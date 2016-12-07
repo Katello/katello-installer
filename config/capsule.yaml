@@ -9,8 +9,8 @@
 :installer_dir: .
 :default_values_dir: /tmp
 :module_dirs:
-- /usr/share/foreman/modules
-- ./modules
+- ./_build/modules
+- ../katello-installer/modules
 :parser_cache_path:
 - /usr/share/foreman-installer/parser_cache/foreman.yaml
 - /usr/share/katello-installer-base/parser_cache/katello.yaml
