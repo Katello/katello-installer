@@ -74,12 +74,6 @@ def remove_nodes_distributors
   Kafo::Helpers.execute("mongo pulp_database --eval  'db.repo_distributors.remove({'distributor_type_id': \"nodes_http_distributor\"});'")
 end
 
-def fix_pulp_httpd_conf
-  return true unless File.exist?('/etc/httpd/conf.d/pulp.conf.rpmnew')
-
-  Kafo::Helpers.execute('cp /etc/httpd/conf.d/pulp.conf.rpmnew /etc/httpd/conf.d/pulp.conf')
-end
-
 def fix_katello_settings_file
   settings_file = '/etc/foreman/plugins/katello.yaml'
   settings = JSON.parse(JSON.dump(YAML.load_file(settings_file)), :symbolize_names => true)
@@ -157,7 +151,6 @@ if app_value(:upgrade)
 
   if katello || capsule
     upgrade_step :migrate_pulp, :run_always => true
-    upgrade_step :fix_pulp_httpd_conf, :run_always => true
     upgrade_step :start_httpd, :run_always => true
     upgrade_step :start_qpidd, :run_always => true
     upgrade_step :start_pulp, :run_always => true
