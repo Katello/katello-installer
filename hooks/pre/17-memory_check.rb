@@ -1,6 +1,6 @@
 # call grep and awk to store total ram and define min ram
 total_ram = `grep MemTotal /proc/meminfo | awk '{print $2}'`.to_i
-min_ram = 8_388_608
+min_ram = 7_900_000
 
 # call mem_check if flag is called
 if app_value(:disable_system_checks) || Kafo::Helpers.module_enabled?(@kafo, 'capsule_certs')
