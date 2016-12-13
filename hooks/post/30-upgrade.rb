@@ -56,6 +56,10 @@ def update_subscription_facet_backend_data
   Kafo::Helpers.execute('foreman-rake katello:upgrades:3.0:update_subscription_facet_backend_data')
 end
 
+def set_virt_who_on_pools
+  Kafo::Helpers.execute('foreman-rake katello:upgrades:3.3:import_subscriptions')
+end
+
 def remove_gutterball
   return true unless Kafo::Helpers.execute('rpm -q gutterball')
   Kafo::Helpers.execute("yum erase -y gutterball tfm-rubygem-foreman_gutterball gutterball-certs tfm-rubygem-hammer_cli_gutterball")
@@ -126,6 +130,7 @@ if app_value(:upgrade)
       upgrade_step :update_subscription_facet_backend_data, :long_running => true
       upgrade_step :remove_gutterball
       upgrade_step :remove_event_queue
+      upgrade_step :set_virt_who_on_subscriptions, :long_running => true
     end
 
     if [0, 2].include? @kafo.exit_code
