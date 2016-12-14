@@ -27,7 +27,7 @@ foreman-installer --scenario                     "katello"\
                   --foreman-proxy-dhcp           "true"\
                   --foreman-proxy-dhcp-interface "virbr1"\
                   --foreman-proxy-tftp           "true"\
-                  --capsule-puppet               "true"\
+                  --foreman-proxy-content-puppet "true"\
                   --foreman-proxy-puppetca       "true"
 
 # Install only DNS with smart proxy
@@ -38,35 +38,35 @@ foreman-installer --scenario                     "katello"\
                   --foreman-proxy-dns-forwarders "8.8.4.4"\
                   --foreman-proxy-dns-interface  "virbr1"\
                   --foreman-proxy-dns-zone       "example.com"\
-                  --capsule-puppet               "false"\
+                  --foreman-proxy-content-puppet "false"\
                   --foreman-proxy-puppetca       "false"
 
-# Generate certificates for installing capsule on another system
-capsule-certs-generate --capsule-fqdn "mycapsule.example.com"\
-                       --certs-tar    "~/mycapsule.example.com-certs.tar"
+# Generate certificates for installing Foreman proxy on another system
+foreman-proxy-certs-generate --foreman-proxy-fqdn "myforeman-proxy-content.example.com"\
+                                     --certs-tar    "~/myforeman-proxy-content.example.com-certs.tar"
 
-# Copy the ~/mycapsule.example.com-certs.tar to the capsule system
+# Copy the ~/myforeman-proxy.example.com-certs.tar to the foreman-proxy system
 # register the system to Katello and run:
-foreman-installer --scenario                            "capsule"\
-                  --capsule-parent-fqdn                 "master.example.com"\
-                  --foreman-proxy-register-in-foreman   "true"\
-                  --foreman-proxy-foreman-base-url      "https://master.example.com"\
-                  --foreman-proxy-trusted-hosts         "master.example.com"\
-                  --foreman-proxy-trusted-hosts         "mycapsule.example.com"\
-                  --foreman-proxy-oauth-consumer-key    "foreman_oauth_key"\
-                  --foreman-proxy-oauth-consumer-secret "foreman_oauth_secret"\
-                  --capsule-pulp-oauth-secret           "pulp_oauth_secret"\
-                  --capsule-certs-tar                   "/root/mycapsule.exampe.com-certs.tar"\
-                  --capsule-puppet                      "true"\
-                  --foreman-proxy-puppetca              "true"\
-                  --foreman-proxy-dns                   "true"\
-                  --foreman-proxy-dns-forwarders        "8.8.8.8"\
-                  --foreman-proxy-dns-forwarders        "8.8.4.4"\
-                  --foreman-proxy-dns-interface         "virbr1"\
-                  --foreman-proxy-dns-zone              "example.com"\
-                  --foreman-proxy-dhcp                  "true"\
-                  --foreman-proxy-dhcp-interface        "virbr1"\
-                  --foreman-proxy-tftp                  "true"\
+foreman-installer --scenario                                "foreman-proxy-content"\
+                  --foreman-proxy-content-parent-fqdn       "master.example.com"\
+                  --foreman-proxy-register-in-foreman       "true"\
+                  --foreman-proxy-foreman-base-url          "https://master.example.com"\
+                  --foreman-proxy-trusted-hosts             "master.example.com"\
+                  --foreman-proxy-trusted-hosts             "myforeman-proxy.example.com"\
+                  --foreman-proxy-oauth-consumer-key        "foreman_oauth_key"\
+                  --foreman-proxy-oauth-consumer-secret     "foreman_oauth_secret"\
+                  --foreman-proxy-content-pulp-oauth-secret "pulp_oauth_secret"\
+                  --foreman-proxy-content-certs-tar         "/root/myforeman-proxy-content.example.com-certs.tar"\
+                  --foreman-proxy-content-puppet            "true"\
+                  --foreman-proxy-puppetca                  "true"\
+                  --foreman-proxy-dns                       "true"\
+                  --foreman-proxy-dns-forwarders            "8.8.8.8"\
+                  --foreman-proxy-dns-forwarders            "8.8.4.4"\
+                  --foreman-proxy-dns-interface             "virbr1"\
+                  --foreman-proxy-dns-zone                  "example.com"\
+                  --foreman-proxy-dhcp                      "true"\
+                  --foreman-proxy-dhcp-interface            "virbr1"\
+                  --foreman-proxy-tftp                      "true"\
 ```
 
 ## Data Reset
@@ -161,18 +161,18 @@ foreman-installer --scenario katello\
 ```
 
 Where the `--certs-server-ca-cert` is the CA used for issuing the
-server certs (this CA gets distributed to the consumers and capsules).
+server certs (this CA gets distributed to the consumers and Foreman proxies).
 
-For the capsule, these options are passed as part of the
-`capsule-certs-generate` script:
+For the Foreman proxy, these options are passed as part of the
+`foreman-proxy-certs-generate` script:
 
 ```
-capsule-certs-generate --capsule-fqdn "$CAPSULE"\
-                       --certs-tar "~/$CAPSULE-certs.tar"\
-                       --server-cert ~/path/to/server.crt\
-                       --server-cert-req ~/path/to/server.crt.req\
-                       --server-key ~/path/to/server.key\
-                       --server-ca-cert ~/cacert.crt
+foreman-proxy-certs-generate --foreman-proxy-fqdn "$FOREMAN_PROXY"\
+                             --certs-tar "~/$FOREMAN_PROXY-certs.tar"\
+                             --server-cert ~/path/to/server.crt\
+                             --server-cert-req ~/path/to/server.crt.req\
+                             --server-key ~/path/to/server.key\
+                             --server-ca-cert ~/cacert.crt
 ```
 
 The rest of the procedure is identical to the default CA setup.
@@ -205,20 +205,20 @@ rpm -Uvh http://katello.example.com/pub/katello-ca-consumer-latest.noarch.rpm
 ```
 
 When using the custom server CA, the CA needs to be used for
-the server certificates on the capsules as well. The certificates for
-the capsule are deployed to the capsule through the use of the
-`capsule-certs-generate` script (followed by copying the certs tar to
-the capsule and running the 'foreman-installer --scenario capsule'
+the server certificates on the Foreman proxies as well. The certificates for
+the Foreman proxy are deployed to the Foreman proxy through the use of the
+`foreman-proxy-certs-generate` script (followed by copying the certs tar to
+the Foreman proxy and running the 'foreman-installer --scenario foreman-proxy-content'
 to refresh the certificates).:
 
 ```
-capsule-certs-generate --capsule-fqdn "$CAPSULE"\
-                       --certs-tar "~/$CAPSULE-certs.tar"\
-                       --server-cert ~/path/to/server.crt\
-                       --server-cert-req ~/path/to/server.crt.req\
-                       --server-key ~/path/to/server.key\
-                       --server-ca-cert ~/cacert.crt\
-                       --certs-update-server
+foreman-proxy-certs-generate --foreman-proxy-fqdn "$FOREMAN_PROXY_CONTENT"\
+                             --certs-tar "~/$FOREMAN_PROXY_CONTENT-certs.tar"\
+                             --server-cert ~/path/to/server.crt\
+                             --server-cert-req ~/path/to/server.crt.req\
+                             --server-key ~/path/to/server.key\
+                             --server-ca-cert ~/cacert.crt\
+                             --certs-update-server
 ```
 
 #### Updating Certificates
@@ -238,13 +238,13 @@ To regenerate all the certificates used in the Katello server, there
 is a `--certs-update-all`. This will generate and deploy the
 certificates as well as restart corresponding services.
 
-**On a capsule**
+**On a Foreman proxy**
 
-For updating the certificates on a capsule pass the same
+For updating the certificates on a Foreman proxy pass the same
 options (either `--certs-update-server` or `--certs-update-all`) to
-the `capsule-certs-generate` script. The new certs tar gets generated
-that needs to be transferred to the capsule and then
-`foreman-installer --scenario capsule` needs to be re-run to apply
+the `foreman-proxy-certs-generate` script. The new certs tar gets generated
+that needs to be transferred to the Foreman proxy and then
+`foreman-installer --scenario foreman-content-proxy` needs to be re-run to apply
 the updates and restart corresponding services.
 
 ## Filing and Fixing Issues

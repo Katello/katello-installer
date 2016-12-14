@@ -24,6 +24,6 @@
 - katello
 - foreman_proxy
 - foreman_proxy::plugin::pulp
-- capsule
+- foreman_proxy_content
 # Unused, but remains present for older config migrations
 :mapping: {}

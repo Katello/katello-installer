@@ -143,20 +143,20 @@ if app_value(:upgrade)
 
   Kafo::Helpers.log_and_say :info, 'Upgrading...'
   katello = Kafo::Helpers.module_enabled?(@kafo, 'katello')
-  capsule = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
+  foreman_proxy_content = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
 
   upgrade_step :stop_services, :run_always => true
   upgrade_step :start_databases, :run_always => true
   upgrade_step :update_http_conf, :run_always => true
 
-  if katello || capsule
+  if katello || foreman_proxy_content
     upgrade_step :migrate_pulp, :run_always => true
     upgrade_step :start_httpd, :run_always => true
     upgrade_step :start_qpidd, :run_always => true
     upgrade_step :start_pulp, :run_always => true
   end
 
-  if capsule
+  if foreman_proxy_content
     upgrade_step :remove_nodes_importers
   end
 

@@ -17,7 +17,7 @@ FOREMAN_BRANCH = ENV['FOREMAN_BRANCH'] || 'develop'
 PARSER_CACHE_DIR = ENV['PARSER_CACHE_DIR'] || "#{BUILDDIR}/parser_cache"
 
 CONFIG_DIR = './config'
-SCENARIOS = ['katello', 'capsule', 'katello-devel']
+SCENARIOS = ['katello', 'foreman-proxy-content', 'katello-devel']
 
 file BUILDDIR do
   mkdir BUILDDIR
@@ -47,7 +47,7 @@ task :generate_parser_caches => [PARSER_CACHE_DIR] do
   caches = [
     "#{PARSER_CACHE_DIR}/katello.yaml",
     "#{PARSER_CACHE_DIR}/katello-devel.yaml",
-    "#{PARSER_CACHE_DIR}/capsule-certs-generate.yaml"
+    "#{PARSER_CACHE_DIR}/foreman-proxy-certs-generate.yaml"
   ]
 
   configs = [
@@ -55,9 +55,9 @@ task :generate_parser_caches => [PARSER_CACHE_DIR] do
     'config/katello-devel.yaml'
   ]
 
-  # capsule-certs-generate is a special (read: "problem") child
-  load File.expand_path(File.join(File.dirname(__FILE__), 'bin', 'capsule-certs-generate'))
-  gen = CapsuleCertsGenerate.new
+  # foreman-proxy-certs-generate is a special (read: "problem") child
+  load File.expand_path(File.join(File.dirname(__FILE__), 'bin', 'foreman-proxy-certs-generate'))
+  gen = ForemanProxyCertsGenerate.new
   configs << gen.config_file.path
 
   caches.each_with_index do |filename, i|

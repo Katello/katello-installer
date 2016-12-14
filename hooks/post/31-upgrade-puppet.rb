@@ -21,9 +21,9 @@ end
 if app_value(:upgrade_puppet)
 
   katello = Kafo::Helpers.module_enabled?(@kafo, 'katello')
-  capsule = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
+  foreman_proxy = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
 
-  if katello || capsule
+  if katello || foreman_proxy
     upgrade_step :restart_services
   end
 

@@ -28,8 +28,8 @@ if app_value('certs_update_server_ca') && !Kafo::Helpers.module_enabled?(@kafo, 
   error "--certs-update-server-ca needs to be used with katello"
 end
 
-if param('capsule_certs', 'capsule_fqdn')
-  hostname = param('capsule_certs', 'capsule_fqdn').value
+if param('foreman_proxy_certs', 'foreman_proxy_fqdn')
+  hostname = param('foreman_proxy_certs', 'foreman_proxy_fqdn').value
 else
   hostname = param('certs', 'node_fqdn').value
 end

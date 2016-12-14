@@ -23,7 +23,7 @@
 - katello_devel
 - foreman_proxy
 - foreman_proxy::plugin::pulp
-- capsule
+- foreman_proxy_content
 :password: l7VtnWiPeKe412o2CVBM6yVbTkKGh6L_CKx4_zBkmUE
 # Unused, but remains present for older config migrations
 :mapping: {}

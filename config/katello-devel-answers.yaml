@@ -8,7 +8,7 @@ katello_devel:
   user: vagrant
   db_type: postgres
   rvm: true
-capsule:
+foreman_proxy_content:
   puppet: true
   pulp_master: true
   qpid_router_broker_addr: localhost
