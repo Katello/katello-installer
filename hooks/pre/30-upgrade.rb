@@ -1,3 +1,8 @@
+require 'fileutils'
+
+STEP_DIRECTORY = '/etc/foreman-installer/applied_hooks/pre/'
+SSL_BUILD_DIR = param('certs', 'ssl_build_dir').value
+
 def stop_services
   Kafo::Helpers.execute('katello-service stop --exclude mongod,postgresql')
 end
@@ -32,6 +37,15 @@ def start_tomcat
   Kafo::Helpers.execute('katello-service start --only tomcat,tomcat6')
 end
 
+def remove_gutterball
+  gbpresent = `runuser - postgres -c "psql -l | grep gutterball | wc -l"`.chomp.to_i
+  if gbpresent > 0
+    Kafo::Helpers.execute('runuser - postgres -c "dropdb gutterball"')
+  else
+    logger.info 'Gutterball is already removed, skipping'
+  end
+end
+
 def migrate_pulp
   # Fix pid if neccessary
   if Kafo::Helpers.execute("grep -qe '7.[[:digit:]]' /etc/redhat-release")
@@ -60,12 +74,6 @@ def remove_nodes_distributors
   Kafo::Helpers.execute("mongo pulp_database --eval  'db.repo_distributors.remove({'distributor_type_id': \"nodes_http_distributor\"});'")
 end
 
-def fix_pulp_httpd_conf
-  return true unless File.exist?('/etc/httpd/conf.d/pulp.conf.rpmnew')
-
-  Kafo::Helpers.execute('cp /etc/httpd/conf.d/pulp.conf.rpmnew /etc/httpd/conf.d/pulp.conf')
-end
-
 def fix_katello_settings_file
   settings_file = '/etc/foreman/plugins/katello.yaml'
   settings = JSON.parse(JSON.dump(YAML.load_file(settings_file)), :symbolize_names => true)
@@ -78,14 +86,48 @@ def fix_katello_settings_file
   end
 end
 
-def upgrade_step(step)
-  noop = app_value(:noop) ? ' (noop)' : ''
+def mark_qpid_cert_for_update
+  hostname = param('certs', 'node_fqdn').value
 
-  Kafo::Helpers.log_and_say :info, "Upgrade Step: #{step}#{noop}..."
-  unless app_value(:noop)
-    status = send(step)
-    fail_and_exit "Upgrade step #{step} failed. Check logs for more information." unless status
+  all_cert_names = Dir.glob(File.join(SSL_BUILD_DIR, hostname, '*.noarch.rpm')).map do |rpm|
+    File.basename(rpm).sub(/-1\.0-\d+\.noarch\.rpm/, '')
+  end.uniq
+
+  if (qpid_cert = all_cert_names.find { |cert| cert =~ /-qpid-broker$/ })
+    path = File.join(*[SSL_BUILD_DIR, hostname, qpid_cert].compact)
+    Kafo::Helpers.log_and_say :info, "Marking certificate #{path} for update"
+    FileUtils.touch("#{path}.update")
+  else
+    Kafo::Helpers.log_and_say :debug, "No existing broker cert found; skipping update"
   end
+end
+
+def upgrade_step(step, options = {})
+  noop = app_value(:noop) ? ' (noop)' : ''
+  long_running = options[:long_running] ? ' (this may take a while) ' : ''
+  run_always = options.fetch(:run_always, false)
+
+  if run_always || app_value(:force_upgrade_steps) || !step_ran?(step)
+    Kafo::Helpers.log_and_say :info, "Upgrade Step: #{step}#{long_running}#{noop}..."
+    unless app_value(:noop)
+      status = send(step)
+      fail_and_exit "Upgrade step #{step} failed. Check logs for more information." unless status
+      touch_step(step)
+    end
+  end
+end
+
+def touch_step(step)
+  FileUtils.mkpath(STEP_DIRECTORY) unless Dir.exists?(STEP_DIRECTORY)
+  FileUtils.touch(step_path(step))
+end
+
+def step_ran?(step)
+  File.exists?(step_path(step))
+end
+
+def step_path(step)
+  File.join(STEP_DIRECTORY, step.to_s)
 end
 
 def fail_and_exit(message)
@@ -94,34 +136,37 @@ def fail_and_exit(message)
 end
 
 if app_value(:upgrade)
-  fail_and_exit 'Concurrent use of --upgrade and --upgrade-puppet is not supported. '\
-                'Please run --upgrade first, then --upgrade-puppet.' if app_value(:upgrade_puppet)
+  if app_value(:upgrade_puppet)
+    fail_and_exit 'Concurrent use of --upgrade and --upgrade-puppet is not supported. '\
+                  'Please run --upgrade first, then --upgrade-puppet.'
+  end
 
   Kafo::Helpers.log_and_say :info, 'Upgrading...'
   katello = Kafo::Helpers.module_enabled?(@kafo, 'katello')
-  capsule = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
+  foreman_proxy_content = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
 
-  upgrade_step :stop_services
-  upgrade_step :start_databases
-  upgrade_step :update_http_conf
+  upgrade_step :stop_services, :run_always => true
+  upgrade_step :start_databases, :run_always => true
+  upgrade_step :update_http_conf, :run_always => true
 
-  if katello || capsule
-    upgrade_step :migrate_pulp
-    upgrade_step :fix_pulp_httpd_conf
-    upgrade_step :start_httpd
-    upgrade_step :start_qpidd
-    upgrade_step :start_pulp
+  if katello || foreman_proxy_content
+    upgrade_step :migrate_pulp, :run_always => true
+    upgrade_step :start_httpd, :run_always => true
+    upgrade_step :start_qpidd, :run_always => true
+    upgrade_step :start_pulp, :run_always => true
   end
 
-  if capsule
+  if foreman_proxy_content
     upgrade_step :remove_nodes_importers
   end
 
   if katello
-    upgrade_step :migrate_candlepin
-    upgrade_step :start_tomcat
+    upgrade_step :mark_qpid_cert_for_update
+    upgrade_step :migrate_candlepin, :run_always => true
+    upgrade_step :remove_gutterball
+    upgrade_step :start_tomcat, :run_always => true
     upgrade_step :fix_katello_settings_file
-    upgrade_step :migrate_foreman
+    upgrade_step :migrate_foreman, :run_always => true
     upgrade_step :remove_nodes_distributors
   end
 

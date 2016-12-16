@@ -4,7 +4,7 @@ def error(message)
   kafo.class.exit 101
 end
 
-if param('capsule', 'pulp') && param('capsule', 'pulp').value
+if param('foreman_proxy_content', 'pulp') && param('foreman_proxy_content', 'pulp').value
   if system("rpm -q katello &>/dev/null")
     error "the pulp node can't be installed on a machine with Katello master"
   end

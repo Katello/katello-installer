@@ -3,7 +3,7 @@ require 'rubygems'
 require 'kafo'
 require 'tempfile'
 
-class CapsuleCertsGenerate
+class ForemanProxyCertsGenerate
   INSTALLER_DIR = '.'
 
   attr_reader :answers_file, :config_file
@@ -21,41 +21,45 @@ class CapsuleCertsGenerate
   private
 
   def generate_answers_file
-    temp_file('capsule-certs-answer',
+    temp_file('foreman-proxy-certs-answer',
               <<-EOF
                 certs:
                   generate: true
                   deploy: false
                   group: foreman
                   org: Default_Organization
-                capsule_certs: true
+                foreman_proxy_certs: true
               EOF
              )
   end
 
   # rubocop: disable Metrics/MethodLength
   def generate_config_file
-    temp_file('capsule-certs-config',
+    temp_file('foreman-proxy-certs-config',
               <<-EOF
                 :log_level: :debug
                 :log_dir: /var/log
-                :log_name: capsule-certs-generate.log
+                :log_name: foreman-proxy-certs-generate.log
                 :no_prefix: true
                 :answer_file: #{answers_file.path}
                 :installer_dir: #{INSTALLER_DIR}
                 :installer_name: 'foreman-installer'
-                :module_dirs: ["./_build/modules", "#{INSTALLER_DIR}/modules", "/usr/share/foreman-installer/modules"]
+                :module_dirs:
+                  - "./_build/modules"
+                  - "#{INSTALLER_DIR}/modules"
+                  - "/usr/share/foreman-installer/modules"
+                  - "/usr/share/katello-installer-base/modules"
                 :hook_dirs: ["#{INSTALLER_DIR}/hooks"]
-                :parser_cache_path: '/usr/share/katello-installer-base/parser_cache/capsule-certs-generate.yaml'
+                :parser_cache_path: '/usr/share/katello-installer-base/parser_cache/foreman-proxy-certs-generate.yaml'
                 :default_values_dir: /tmp
                 :dont_save_answers: true
                 :mapping:
-                  :capsule_certs:
-                    :manifest_name: capsule
+                  :foreman_proxy_certs:
+                    :manifest_name: foreman_proxy_content
                     :dir_name: certs
                 :order:
                   - certs
-                  - capsule_certs
+                  - foreman_proxy_certs
               EOF
              )
   end
@@ -70,7 +74,7 @@ end
 
 if __FILE__ == $0
   begin
-    gen = CapsuleCertsGenerate.new
+    gen = ForemanProxyCertsGenerate.new
     CONFIG_FILE = gen.config_file.path
     Kafo::KafoConfigure.run
   ensure

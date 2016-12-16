@@ -2,12 +2,22 @@ require 'rake/clean'
 require 'tempfile'
 require 'kafo'
 require 'yaml'
+require 'open-uri'
+
+begin
+  require 'rspec/core/rake_task'
+  RSpec::Core::RakeTask.new(:spec)
+rescue LoadError
+end
 
 BUILDDIR = File.expand_path(ENV['BUILDDIR'] || '_build')
 PKGDIR = ENV['PKGDIR'] || File.expand_path('pkg')
 FOREMAN_MODULES_DIR = File.expand_path(ENV['FOREMAN_MODULES_DIR'] || '/usr/share/foreman-installer/modules')
 FOREMAN_BRANCH = ENV['FOREMAN_BRANCH'] || 'develop'
 PARSER_CACHE_DIR = ENV['PARSER_CACHE_DIR'] || "#{BUILDDIR}/parser_cache"
+
+CONFIG_DIR = './config'
+SCENARIOS = ['katello', 'foreman-proxy-content', 'katello-devel']
 
 file BUILDDIR do
   mkdir BUILDDIR
@@ -22,14 +32,22 @@ file PARSER_CACHE_DIR => [BUILDDIR] do
 end
 
 file "#{BUILDDIR}/modules" do |t|
-  sh "librarian-puppet install --verbose --path #{BUILDDIR}/modules"
+  # Append Foreman's Puppetfile to ours, so we use the right version of the puppet modules for the cache
+  File.open('Puppetfile', 'a') { |f| f.write(open("https://raw.githubusercontent.com/theforeman/foreman-installer/#{FOREMAN_BRANCH}/Puppetfile").read) }
+
+  if Dir["modules/*"].empty?
+    sh "librarian-puppet install --verbose --path #{BUILDDIR}/modules"
+  else
+    mkdir BUILDDIR
+    cp_r "modules", "#{BUILDDIR}/modules"
+  end
 end
 
 task :generate_parser_caches => [PARSER_CACHE_DIR] do
   caches = [
     "#{PARSER_CACHE_DIR}/katello.yaml",
     "#{PARSER_CACHE_DIR}/katello-devel.yaml",
-    "#{PARSER_CACHE_DIR}/capsule-certs-generate.yaml"
+    "#{PARSER_CACHE_DIR}/foreman-proxy-certs-generate.yaml"
   ]
 
   configs = [
@@ -37,16 +55,16 @@ task :generate_parser_caches => [PARSER_CACHE_DIR] do
     'config/katello-devel.yaml'
   ]
 
-  # capsule-certs-generate is a special (read: "problem") child
-  load File.expand_path(File.join(File.dirname(__FILE__), 'bin', 'capsule-certs-generate'))
-  gen = CapsuleCertsGenerate.new
+  # foreman-proxy-certs-generate is a special (read: "problem") child
+  load File.expand_path(File.join(File.dirname(__FILE__), 'bin', 'foreman-proxy-certs-generate'))
+  gen = ForemanProxyCertsGenerate.new
   configs << gen.config_file.path
 
   caches.each_with_index do |filename, i|
     sh "kafo-export-params -c #{configs[i]} -f parsercache --no-parser-cache -o #{filename}"
 
     cache = YAML.load_file(filename.to_s)
-    cache[:files] = cache[:files].delete_if { |k, _| k =~ /\Aforeman/ }
+    cache[:files] = cache[:files].delete_if { |k, _| k =~ /\Aforeman/ && k !~ /\Aforeman_proxy_content/ }
     File.open(filename.to_s, "w") do |file|
       file.write(cache.to_yaml)
     end
@@ -57,7 +75,6 @@ end
 desc 'Remove foreman modules from $BUILDDIR/modules'
 task :prune_foreman_modules => [] do
   begin
-    # raise "No foreman modules found in #{FOREMAN_MODULES_DIR}"
     if Dir["#{FOREMAN_MODULES_DIR}/*"].empty?
       temp_dir = Dir.mktmpdir
       Dir.chdir(temp_dir) do
@@ -108,6 +125,25 @@ rescue
   puts 'Rubocop not loaded'
 end
 
+namespace :config do
+  task :migrate do
+    Kafo::KafoConfigure.logger = Logger.new(STDOUT)
+
+    SCENARIOS.each do |scenario|
+      migrations = File.expand_path(File.join(CONFIG_DIR, "#{scenario}.migrations"))
+      migrator = Kafo::Migrations.new(migrations)
+
+      scenario_path = File.expand_path(File.join(CONFIG_DIR, "#{scenario}.yaml"))
+      answers_path = File.expand_path(File.join(CONFIG_DIR, "#{scenario}-answers.yaml"))
+
+      migrated_scenario, migrated_answers = migrator.run(YAML.load_file(scenario_path), YAML.load_file(answers_path))
+
+      File.open(scenario_path, 'w') { |f| f.write(migrated_scenario.to_yaml) }
+      File.open(answers_path, 'w') { |f| f.write(migrated_answers.to_yaml) }
+    end
+  end
+end
+
 CLEAN.include(BUILDDIR, PKGDIR)
 
-task :default => [:rubocop, 'pkg:generate_source']
+task :default => [:rubocop, :spec, 'pkg:generate_source']

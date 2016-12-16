@@ -1,6 +1,6 @@
 LEGACY_CONF_DIR = '/etc/capsule-installer'
 LEGACY_CONFIG_NAME = 'capsule-installer.yaml'
-SCENARIO_NAME = 'capsule.yaml'
+SCENARIO_NAME = 'foreman-proxy-content.yaml'
 legacy_config_file = File.join(LEGACY_CONF_DIR, LEGACY_CONFIG_NAME)
 
 if File.exists?(legacy_config_file)

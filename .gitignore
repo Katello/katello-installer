@@ -14,6 +14,7 @@ update_submodules_scratch
 .tmp
 .rpm
 .*.sw?
+test.log
 
 # rvm
 .rvmrc

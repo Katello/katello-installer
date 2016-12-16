@@ -40,15 +40,15 @@ end
 
 def reset_value(param)
   unless app_value(:noop)
-    param.value = param.default unless param.nil?
+    param.value = nil unless param.nil?
   end
 end
 
 if app_value(:upgrade_puppet)
   katello = Kafo::Helpers.module_enabled?(@kafo, 'katello')
-  capsule = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
+  foreman_proxy_content = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
 
-  fail_and_exit 'Puppet 3 to 4 upgrade is not currently supported for the chosen scenario.' unless katello || capsule
+  fail_and_exit 'Puppet 3 to 4 upgrade is not currently supported for the chosen scenario.' unless katello || foreman_proxy_content
 
   Kafo::Helpers.log_and_say :info, 'Upgrading puppet...'
   fail_and_exit 'Unable to find Puppet 4 packages, is the repository enabled?' unless puppet4_available?
@@ -60,6 +60,8 @@ if app_value(:upgrade_puppet)
   reset_value(param('foreman_proxy', 'puppet_ssl_key'))
   reset_value(param('foreman_proxy', 'puppetdir'))
   reset_value(param('foreman_proxy', 'ssldir'))
+  reset_value(param('foreman_proxy', 'puppetca_cmd'))
+  reset_value(param('foreman_proxy', 'puppetrun_cmd'))
 
   upgrade_step :upgrade_puppet_package
   upgrade_step :stop_services
