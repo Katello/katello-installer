@@ -1,12 +1,3 @@
-def proxy_available?
-  Kafo::Helpers.module_enabled?(@kafo, 'foreman_proxy_content') &&
-   (@kafo.param('foreman_proxy_content', 'puppet').value ||
-    @kafo.param('foreman_proxy_content', 'puppetca').value ||
-    @kafo.param('foreman_proxy_content', 'dhcp').value ||
-    @kafo.param('foreman_proxy_content', 'dns').value ||
-    @kafo.param('foreman_proxy_content', 'tftp').value)
-end
-
 def success_file
   File.join(File.dirname(Kafo::KafoConfigure.config_file), '.installed')
 end
@@ -75,7 +66,8 @@ MSG
                     --foreman-proxy-oauth-consumer-key            "<%= "#{foreman_oauth_key}" %>"\\
                     --foreman-proxy-oauth-consumer-secret         "<%= "#{foreman_oauth_secret}" %>"\\
                     --foreman-proxy-content-pulp-oauth-secret     "<%= "#{katello_oauth_secret}" %>"\\
-                    --foreman-proxy-content-certs-tar             "<%= color('#{certs_tar}', :info) %>"
+                    --foreman-proxy-content-certs-tar             "<%= color('#{certs_tar}', :info) %>"\\
+                    --puppet-server-foreman-url                   "https://<%= "#{fqdn}" %>"
 MSG
       end
     end
