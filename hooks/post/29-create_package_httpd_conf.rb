@@ -12,11 +12,11 @@
 # in place anymore.
 #
 %w(ssl.conf pulp.conf).each do |file|
-  if File.file?(File.join("/etc/httpd/conf.d/", file))
+  if !File.file?(File.join("/etc/httpd/conf.d/", file))
     File.open(File.join('/etc/httpd/conf.d', file), 'w') do |f|
       f.write("# This file is managed by the foreman-installer, do not alter.")
     end
   else
-    logger.info 'ssl.conf is already present, skipping'
+    logger.info "#{file} is already present, skipping"
   end
 end
