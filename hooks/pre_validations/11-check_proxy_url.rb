@@ -12,4 +12,7 @@ if proxy_param && proxy_param.value && proxy_param.value.length > 0
   unless %w(http https).include?(uri.scheme)
     error "--katello-proxy-url must be a full URI and only supports http or https (e.g. http://proxy.example.com)"
   end
+  if port.nil?
+    error 'When specifying a proxy the --katello-proxy-port flag must be used with the --katello-proxy-url flag.'
+  end
 end
