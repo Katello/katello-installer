@@ -3,9 +3,9 @@ answers['foreman_proxy_content'].delete('puppet')
 answers['puppet'] ||= {
   'server' => true,
   'server_environments_owner' => 'apache',
-  'server_foreman_ssl_cert' => '/etc/pki/katello/puppet_client.crt',
-  'server_foreman_ssl_key' => '/etc/pki/katello/puppet_client.key',
-  'server_foreman_ssl_ca' => '/etc/pki/katello/puppet_client_ca.crt'
+  'server_foreman_ssl_cert' => '/etc/pki/katello/certs/puppet_client.crt',
+  'server_foreman_ssl_key' => '/etc/pki/katello/private/puppet_client.key',
+  'server_foreman_ssl_ca' => '/etc/pki/katello/certs/puppet_client_ca.crt'
 }
 
 scenario[:order] = [
