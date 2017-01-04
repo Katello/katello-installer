@@ -13,7 +13,7 @@ end
 BUILDDIR = File.expand_path(ENV['BUILDDIR'] || '_build')
 PKGDIR = ENV['PKGDIR'] || File.expand_path('pkg')
 FOREMAN_MODULES_DIR = File.expand_path(ENV['FOREMAN_MODULES_DIR'] || '/usr/share/foreman-installer/modules')
-FOREMAN_BRANCH = ENV['FOREMAN_BRANCH'] || 'develop'
+FOREMAN_BRANCH = '1.14-stable'
 PARSER_CACHE_DIR = ENV['PARSER_CACHE_DIR'] || "#{BUILDDIR}/parser_cache"
 
 CONFIG_DIR = './config'
