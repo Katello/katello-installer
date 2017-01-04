@@ -24,3 +24,4 @@ foreman_proxy::plugin::dhcp::infoblox: false
 foreman_proxy::plugin::dns::infoblox: false
 foreman_proxy::plugin::openscap: false
 foreman_proxy::plugin::remote_execution::ssh: false
+foreman_proxy::plugin::discovery: false 
