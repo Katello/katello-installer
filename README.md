@@ -279,4 +279,15 @@ gem install librarian librarian-puppet puppet
 librarian-puppet update
 ```
 
-`tito` is used for doing the releases.
+## Releasing a new version
+
+To release a new version:
+  * pin module versions in Puppetfile
+  * ensure puppet4 is installed on your system via yum/rpm
+  * if you've got rvm installed: `rvm use system`
+  * run:
+```
+   bundle install
+   rake pkg:generate_source
+```
+  * copy the generated source in ./pkg/ to fedorapeople.org:/project/katello/releases/source/tarball/
