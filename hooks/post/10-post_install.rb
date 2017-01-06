@@ -37,7 +37,7 @@ if [0, 2].include?(@kafo.exit_code)
       say <<MSG
   * To install an additional Foreman proxy on separate machine continue by running:
 
-      foreman-proxy-certs-generate --foreman-proxy-fqdn "<%= color('$FOREMAN-PROXY', :info) %>" --certs-tar "<%= color('~/$FOREMAN-PROXY-certs.tar', :info) %>"
+      foreman-proxy-certs-generate --foreman-proxy-fqdn "<%= color('$FOREMAN_PROXY', :info) %>" --certs-tar "<%= color('~/$FOREMAN_PROXY-certs.tar', :info) %>"
 
 MSG
     end
