@@ -1,7 +1,8 @@
-answers['foreman_proxy_content'].delete('puppet')
+server = answers['foreman_proxy_content'].delete('puppet')
 
 answers['puppet'] ||= {
-  'server' => true,
+  'server' => server.nil? ? true : server,
+  'server_ca_proxy' => answers['foreman_proxy_content'].delete('puppet_ca_proxy'),
   'server_environments_owner' => 'apache',
   'server_foreman_ssl_cert' => '/etc/pki/katello/puppet/puppet_client.crt',
   'server_foreman_ssl_key' => '/etc/pki/katello/puppet/puppet_client.key',

@@ -9,7 +9,6 @@ katello_devel:
   db_type: postgres
   rvm: true
 foreman_proxy_content:
-  puppet: true
   pulp_master: true
   qpid_router_broker_addr: localhost
 foreman_proxy:
@@ -24,6 +23,12 @@ foreman_proxy:
   foreman_ssl_ca: /etc/foreman-proxy/foreman_ssl_ca.pem
   foreman_ssl_cert: /etc/foreman-proxy/foreman_ssl_cert.pem
   foreman_ssl_key: /etc/foreman-proxy/foreman_ssl_key.pem
+puppet:
+  server: true
+  server_environments_owner: apache
+  server_foreman_ssl_ca: /etc/pki/katello/puppet/puppet_client_ca.crt
+  server_foreman_ssl_cert: /etc/pki/katello/puppet/puppet_client.crt
+  server_foreman_ssl_key: /etc/pki/katello/puppet/puppet_client.key
 foreman_proxy::plugin::pulp:
   enabled: true
   pulpnode_enabled: false
