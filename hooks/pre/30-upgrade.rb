@@ -141,7 +141,10 @@ if app_value(:upgrade)
                   'Please run --upgrade first, then --upgrade-puppet.'
   end
 
-  Kafo::Helpers.log_and_say :info, 'Upgrading...'
+  Kafo::Helpers.log_and_say :info, 'Upgrading, to monitor the progress on all related services, please do:'
+  Kafo::Helpers.log_and_say :info, '  foreman-tail | tee upgrade-$(date +%Y-%m-%d-%H%M).log'
+  sleep 3
+
   katello = Kafo::Helpers.module_enabled?(@kafo, 'katello')
   foreman_proxy_content = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
 
