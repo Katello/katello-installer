@@ -32,3 +32,6 @@ Metrics/PerceivedComplexity:
 
 Performance/Casecmp:
   Enabled: false
+
+Style/RescueModifier:
+  Enabled: false
