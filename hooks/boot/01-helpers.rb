@@ -33,20 +33,26 @@ class Kafo::Helpers
     def execute(commands)
       commands = commands.is_a?(Array) ? commands : [commands]
       results = []
-
       commands.each do |command|
-        output = `#{command} 2>&1`
-
-        if $?.success?
-          log_and_say(:debug, output.to_s)
-          results << true
-        else
-          log_and_say(:error, output.to_s)
-          results << false
-        end
+        results << execute_command(command)
       end
-
       !results.include? false
+    end
+
+    def execute_command(command)
+      process = IO.popen("#{command} 2>&1") do |io|
+        while line = io.gets
+          line.chomp!
+          log_and_say(:debug, line)
+        end
+        io.close
+        if $?.success?
+          log_and_say(:debug, "#{command} finished successfully!")
+        else
+          log_and_say(:error, "#{command} failed! Check the output for error!")
+        end
+        $?.success?
+      end
     end
   end
 end
