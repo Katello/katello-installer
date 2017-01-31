@@ -39,7 +39,7 @@ if app_value('certs_update_server')
   mark_for_update("#{hostname}-foreman-proxy", hostname)
 end
 
-if app_value('certs_update_all') || app_value('certs_update_default_ca')
+if app_value('certs_update_all') || app_value('certs_update_default_ca') || app_value('certs_reset')
   all_cert_names = Dir.glob(File.join(SSL_BUILD_DIR, hostname, '*.noarch.rpm')).map do |rpm|
     File.basename(rpm).sub(/-1\.0-\d+\.noarch\.rpm/, '')
   end.uniq
@@ -49,7 +49,7 @@ if app_value('certs_update_all') || app_value('certs_update_default_ca')
   end
 end
 
-if app_value('certs_update_server_ca')
+if app_value('certs_update_server_ca') || app_value('certs_reset')
   mark_for_update('katello-server-ca')
 end
 
@@ -61,4 +61,11 @@ if !app_value('certs_skip_check') &&
   unless $?.success?
     error "Command '#{check_cmd}' exited with #{$?.exitstatus}:\n #{output}"
   end
+end
+
+if app_value('certs_reset') && !app_value(:noop)
+  Kafo::Helpers.reset_value(param('certs', 'server_cert'))
+  Kafo::Helpers.reset_value(param('certs', 'server_key'))
+  Kafo::Helpers.reset_value(param('certs', 'server_cert_req'))
+  Kafo::Helpers.reset_value(param('certs', 'server_ca_cert'))
 end

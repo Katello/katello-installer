@@ -38,12 +38,6 @@ def fail_and_exit(message)
   kafo.class.exit 1
 end
 
-def reset_value(param)
-  unless app_value(:noop)
-    param.value = nil unless param.nil?
-  end
-end
-
 if app_value(:upgrade_puppet)
   katello = Kafo::Helpers.module_enabled?(@kafo, 'katello')
   foreman_proxy_content = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
@@ -53,15 +47,17 @@ if app_value(:upgrade_puppet)
   Kafo::Helpers.log_and_say :info, 'Upgrading puppet...'
   fail_and_exit 'Unable to find Puppet 4 packages, is the repository enabled?' unless puppet4_available?
 
-  reset_value(param('foreman', 'puppet_home'))
-  reset_value(param('foreman', 'puppet_ssldir'))
-  reset_value(param('foreman_proxy', 'puppet_ssl_ca'))
-  reset_value(param('foreman_proxy', 'puppet_ssl_cert'))
-  reset_value(param('foreman_proxy', 'puppet_ssl_key'))
-  reset_value(param('foreman_proxy', 'puppetdir'))
-  reset_value(param('foreman_proxy', 'ssldir'))
-  reset_value(param('foreman_proxy', 'puppetca_cmd'))
-  reset_value(param('foreman_proxy', 'puppetrun_cmd'))
+  if !app_value(:noop)
+    Katello::Helpers.reset_value(param('foreman', 'puppet_home'))
+    Katello::Helpers.reset_value(param('foreman', 'puppet_ssldir'))
+    Katello::Helpers.reset_value(param('foreman_proxy', 'puppet_ssl_ca'))
+    Katello::Helpers.reset_value(param('foreman_proxy', 'puppet_ssl_cert'))
+    Katello::Helpers.reset_value(param('foreman_proxy', 'puppet_ssl_key'))
+    Katello::Helpers.reset_value(param('foreman_proxy', 'puppetdir'))
+    Katello::Helpers.reset_value(param('foreman_proxy', 'ssldir'))
+    Katello::Helpers.reset_value(param('foreman_proxy', 'puppetca_cmd'))
+    Katello::Helpers.reset_value(param('foreman_proxy', 'puppetrun_cmd'))
+  end
 
   upgrade_step :upgrade_puppet_package
   upgrade_step :stop_services
