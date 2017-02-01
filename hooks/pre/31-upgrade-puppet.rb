@@ -15,10 +15,18 @@ def upgrade_puppet_package
   Kafo::Helpers.execute('yum install -y puppet-agent')
 end
 
+def start_httpd
+  Kafo::Helpers.execute('katello-service start --only httpd')
+end
+
+def remove_puppet_port_httpd
+  Kafo::Helpers.execute('sed -i "/^Listen 8140$/d" /etc/httpd/conf/ports.conf')
+end
+
 def copy_data
   success = []
   success << Kafo::Helpers.execute('cp -rfp /etc/puppet/environments/* /etc/puppetlabs/code/environments') if File.directory?('/etc/puppet/environments')
-  success << Kafo::Helpers.execute('mv /var/lib/puppet/ssl /etc/puppetlabs/puppet') if File.directory?('/var/lib/puppet/ssl')
+  success << Kafo::Helpers.execute('mv /var/lib/puppet/ssl /etc/puppetlabs/puppet && ln -s /etc/puppetlabs/puppet/ssl /var/lib/puppet/ssl') if File.directory?('/var/lib/puppet/ssl')
   success << Kafo::Helpers.execute('mv /var/lib/puppet/foreman_cache_data /opt/puppetlabs/puppet/cache/') if File.directory?('/var/lib/puppet/foreman_cache_data')
   !success.include?(false)
 end
@@ -66,6 +74,8 @@ if app_value(:upgrade_puppet)
   upgrade_step :upgrade_puppet_package
   upgrade_step :stop_services
   upgrade_step :copy_data
+  upgrade_step :remove_puppet_port_httpd
+  upgrade_step :start_httpd
 
   Kafo::Helpers.log_and_say :info, "Puppet 3 to 4 upgrade initialization complete, continuing with installation"
 end
