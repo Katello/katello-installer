@@ -130,7 +130,7 @@ if app_value(:upgrade)
       upgrade_step :update_subscription_facet_backend_data, :long_running => true
       upgrade_step :remove_gutterball
       upgrade_step :remove_event_queue
-      upgrade_step :set_virt_who_on_subscriptions, :long_running => true
+      upgrade_step :set_virt_who_on_pools, :long_running => true
     end
 
     if [0, 2].include? @kafo.exit_code
