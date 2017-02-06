@@ -31,13 +31,16 @@ def import_subscriptions
 end
 
 def elasticsearch_message
-  return true unless Kafo::Helpers.execute('rpm -q elasticsearch')
-
-  rpms = ['ruby193-rubygem-tire', 'tfm-rubygem-tire', 'elasticsearch', 'sigar-java', 'sigar', 'snappy-java', 'lucene4-contrib', 'lucene4']
-  message = "Elasticsearch has been removed as a dependency.  The database files can be "\
+  `rpm -q elasticsearch`
+  if $?.success?
+    rpms = ['ruby193-rubygem-tire', 'tfm-rubygem-tire', 'elasticsearch', 'sigar-java', 'sigar', 'snappy-java', 'lucene4-contrib', 'lucene4']
+    message = "Elasticsearch has been removed as a dependency.  The database files can be "\
             "removed manually with # rm -rf /var/lib/elasticsearch.  "
-  message += "Some packages are no longer needed and can be removed:  # yum erase #{rpms.join(' ')}"
-  Kafo::Helpers.log_and_say :info, message
+    message += "Some packages are no longer needed and can be removed:  # yum erase #{rpms.join(' ')}"
+    Kafo::Helpers.log_and_say :info, message
+  else
+    logger.info "Elasticsearch already removed, skipping"
+  end
 end
 
 def add_export_distributor
@@ -61,12 +64,15 @@ def set_virt_who_on_pools
 end
 
 def remove_gutterball
-  return true unless Kafo::Helpers.execute('rpm -q gutterball')
-  Kafo::Helpers.execute("yum erase -y gutterball tfm-rubygem-foreman_gutterball gutterball-certs tfm-rubygem-hammer_cli_gutterball")
-
-  ['tomcat', 'tomcat6'].each do |t|
-    gutterball_dir = "/var/lib/#{t}/webapps/gutterball"
-    Kafo::Helpers.execute("rm -rfv #{gutterball_dir}") if File.directory?(gutterball_dir)
+  `rpm -q gutterball`
+  if $?.success?
+    Kafo::Helpers.execute("yum erase -y gutterball tfm-rubygem-foreman_gutterball gutterball-certs tfm-rubygem-hammer_cli_gutterball")
+    ['tomcat', 'tomcat6'].each do |t|
+      gutterball_dir = "/var/lib/#{t}/webapps/gutterball"
+      Kafo::Helpers.execute("rm -rfv #{gutterball_dir}") if File.directory?(gutterball_dir)
+    end
+  else
+    logger.info "Gutterball already removed, skipping"
   end
 end
 
