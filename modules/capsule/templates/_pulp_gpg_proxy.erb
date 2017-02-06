@@ -1,5 +1,0 @@
-  ProxyPass /katello/api/repositories/ https://<%= @parent_fqdn %>/katello/api/repositories/
-  <Location /katello/api/repositories/>
-    ProxyPassReverse https://<%= @parent_fqdn %>/
-  </Location>
-  SSLProxyEngine On
