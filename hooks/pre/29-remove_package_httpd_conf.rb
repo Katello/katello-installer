@@ -6,7 +6,7 @@
 # * pulp places a pulp.conf that contains a duplicate WSGI 'pulp'
 #   daemon that 05-pulps-https.conf contains.
 #
-if !Kafo::Helpers.module_enabled?(@kafo, 'katello') && !app_value(:noop)
+if Kafo::Helpers.module_enabled?(@kafo, 'foreman_proxy_content') && !app_value(:noop)
   %w(pulp.conf).each do |file|
     File.delete(File.join("/etc/httpd/conf.d/", file)) if File.file?(File.join("/etc/httpd/conf.d/", file))
   end
