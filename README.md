@@ -191,7 +191,7 @@ regenerated):
 foreman-installer --scenario katello\
                   --certs-server-cert ~/path/to/server.crt\
                   --certs-server-cert-req ~/path/to/server.crt.req\
-                  --certs-server-key ~/path/to/server.crt.req\
+                  --certs-server-key ~/path/to/server.key\
                   --certs-server-ca-cert ~/path/to/cacert.crt\
                   --certs-update-server --certs-update-server-ca
 ```
