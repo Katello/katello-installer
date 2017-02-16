@@ -65,9 +65,7 @@ task :generate_parser_caches => [PARSER_CACHE_DIR] do
 
     cache = YAML.load_file(filename.to_s)
     cache[:files] = cache[:files].delete_if do |k, _|
-      k =~ /\Aforeman/ &&
-        k !~ /\Aforeman_proxy_content/ &&
-        k !~ /\Aforeman_proxy_certs/
+      !%w(certs foreman_proxy_certs foreman_proxy_content katello).include?(k)
     end
     File.open(filename.to_s, "w") do |file|
       file.write(cache.to_yaml)
