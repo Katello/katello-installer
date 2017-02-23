@@ -10,6 +10,30 @@ def db_seed
   Kafo::Helpers.execute('foreman-rake db:seed')
 end
 
+def correct_repositories
+  if app_value(:disable_resolve_mismatches)
+    Kafo::Helpers.execute('foreman-rake katello:correct_repositories')
+  else
+    Kafo::Helpers.execute('foreman-rake katello:correct_repositories COMMIT=true')
+  end
+end
+
+def correct_puppet_environments
+  if app_value(:disable_resolve_mismatches)
+    Kafo::Helpers.execute('foreman-rake katello:correct_puppet_environments')
+  else
+    Kafo::Helpers.execute('foreman-rake katello:correct_puppet_environments COMMIT=true')
+  end
+end
+
+def clean_backend_objects
+  if app_value(:disable_resolve_mismatches)
+    Kafo::Helpers.execute('foreman-rake katello:clean_backend_objects')
+  else
+    Kafo::Helpers.execute('foreman-rake katello:clean_backend_objects COMMIT=true')
+  end
+end
+
 def import_package_groups
   Kafo::Helpers.execute('foreman-rake katello:upgrades:2.4:import_package_groups')
 end
@@ -124,6 +148,11 @@ if app_value(:upgrade)
 
     if Kafo::Helpers.module_enabled?(@kafo, 'katello')
       upgrade_step :db_seed, :run_always => true
+
+      upgrade_step :correct_repositories, :long_running => true, :run_always => true
+      upgrade_step :correct_puppet_environments, :long_running => true, :run_always => true
+      upgrade_step :clean_backend_objects, :long_running => true, :run_always => true
+
       upgrade_step :import_package_groups, :long_running => true
       upgrade_step :import_rpms, :long_running => true
       upgrade_step :import_distributions, :long_running => true
