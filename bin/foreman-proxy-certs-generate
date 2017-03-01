@@ -20,20 +20,26 @@ class ForemanProxyCertsGenerate
 
   private
 
+  # rubocop: disable Metrics/MethodLength
   def generate_answers_file
+    if File.file?('./config/last_scenario.yaml')
+      scenario = YAML.load_file('./config/last_scenario.yaml').fetch(:answer_file)
+      organization = YAML.load_file("#{scenario}")['foreman']['initial_organization'] rescue "Default Organization"
+    else
+      organization = "Default Organization"
+    end
     temp_file('foreman-proxy-certs-answer',
               <<-EOF
                 certs:
                   generate: true
                   deploy: false
                   group: foreman
-                  org: Default_Organization
+                  org: #{organization.tr(' ', '_')}
                 foreman_proxy_certs: true
               EOF
              )
   end
 
-  # rubocop: disable Metrics/MethodLength
   def generate_config_file
     temp_file('foreman-proxy-certs-config',
               <<-EOF
