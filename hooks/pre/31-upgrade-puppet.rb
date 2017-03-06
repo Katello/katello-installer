@@ -57,6 +57,7 @@ if app_value(:upgrade_puppet)
     Katello::Helpers.reset_value(param('foreman_proxy', 'ssldir'))
     Katello::Helpers.reset_value(param('foreman_proxy', 'puppetca_cmd'))
     Katello::Helpers.reset_value(param('foreman_proxy', 'puppetrun_cmd'))
+    Katello::Helpers.reset_value(param('foreman_proxy_plugin_pulp', 'puppet_content_dir'))
   end
 
   upgrade_step :upgrade_puppet_package
