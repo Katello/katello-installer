@@ -48,5 +48,9 @@ class Kafo::Helpers
 
       !results.include? false
     end
+
+    def reset_value(param)
+      param.value = nil unless param.nil?
+    end
   end
 end

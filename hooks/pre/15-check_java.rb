@@ -1,10 +1,10 @@
-JAVA_VERSION = %q(An OpenJDK version of Java greater than 1.7 should be installed. For more
+JAVA_VERSION = %q(OpenJDK 1.7 or later is required. For more
 details on the version currently installed, run 'java -version')
 
 OPENJDK = %q(A version of java which is not OpenJDK is installed.
 
-Please install an OpenJDK version greater than 1.7 and make sure it
-was set as the default java using
+Please install OpenJDK 1.7 or later and make sure it is set as the default
+java using
 
   alternatives --config java
 

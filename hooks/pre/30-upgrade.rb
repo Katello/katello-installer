@@ -61,9 +61,9 @@ def migrate_pulp
 end
 
 def migrate_foreman
-  Kafo::Helpers.execute('foreman-rake -- config -k use_pulp_oauth -v true')
-  Kafo::Helpers.execute('foreman-rake db:migrate')
-  Kafo::Helpers.execute('foreman-rake -- config -k use_pulp_oauth -v false')
+  Kafo::Helpers.execute(['foreman-rake -- config -k use_pulp_oauth -v true >/dev/null',
+                         'foreman-rake db:migrate',
+                         'foreman-rake -- config -k use_pulp_oauth -v false >/dev/null'])
 end
 
 def remove_nodes_importers
