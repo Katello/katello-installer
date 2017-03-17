@@ -71,4 +71,11 @@ foreman_proxy::plugin::dhcp::infoblox: false
 foreman_proxy::plugin::dns::infoblox: false
 foreman_proxy::plugin::openscap: false
 foreman_proxy::plugin::remote_execution::ssh: false
-foreman_proxy::plugin::discovery: false 
+foreman_proxy::plugin::discovery: false
+foreman::compute::ec2: false
+foreman::compute::gce: false
+foreman::compute::libvirt: false
+foreman::compute::openstack: false
+foreman::compute::ovirt: false
+foreman::compute::rackspace: false
+foreman::compute::vmware: false
