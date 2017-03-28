@@ -4,7 +4,6 @@ mod 'katello/candlepin',             :git => 'https://github.com/Katello/puppet-
 mod 'katello/foreman_proxy_content', :git => 'https://github.com/Katello/puppet-foreman_proxy_content'
 mod 'katello/certs',                 :git => 'https://github.com/Katello/puppet-certs'
 mod 'katello/common',                :git => 'https://github.com/Katello/puppet-common'
-mod 'katello/crane',                 :git => 'https://github.com/Katello/puppet-crane'
 mod 'katello/katello',               :git => 'https://github.com/Katello/puppet-katello'
 mod 'katello/pulp',                  :git => 'https://github.com/Katello/puppet-pulp'
 mod 'katello/qpid',                  :git => 'https://github.com/Katello/puppet-qpid'
