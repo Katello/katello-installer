@@ -146,6 +146,7 @@ namespace :config do
   end
 end
 
-CLEAN.include(BUILDDIR, PKGDIR)
+CLEAN.include(BUILDDIR)
+CLEAN.include(PKGDIR)
 
 task :default => [:rubocop, :spec, 'pkg:generate_source']
