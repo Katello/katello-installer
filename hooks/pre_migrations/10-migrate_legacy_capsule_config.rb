@@ -13,7 +13,7 @@ if File.exists?(legacy_config_file)
     scenario = Kafo::Configuration.new(scenario_file)
 
     # copy over config and answers
-    scenario.migrate_configuration(legacy_config, :skip => [:log_dir, :log_name])
+    scenario.migrate_configuration(legacy_config, :skip => %i(log_dir log_name))
     scenario.store(legacy_config.answers)
 
     # link last used scenario
