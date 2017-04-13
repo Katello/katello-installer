@@ -33,8 +33,8 @@ def reset_candlepin
 
   tomcat = File.exists?('/var/lib/tomcat') ? 'tomcat' : 'tomcat6'
   commands = [
-    'rm -f /var/lib/katello/cpdb_done',
-    'rm -f /var/lib/katello/cpinit_done',
+    'rm -f /var/lib/candlepin/cpdb_done',
+    'rm -f /var/lib/candlepin/cpinit_done',
     "service #{tomcat} stop",
     'sudo su postgres -c "dropdb candlepin"'
   ]
