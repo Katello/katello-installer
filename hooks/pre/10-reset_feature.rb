@@ -19,8 +19,8 @@ def foreman_installed?
 end
 
 def stop_services
-  Kafo::KafoConfigure.logger.info 'Ensuring services httpd and foreman-tasks are stopped.'
-  Kafo::Helpers.execute('service httpd stop && service foreman-tasks stop')
+  Kafo::KafoConfigure.logger.info 'Stopping services'
+  Kafo::Helpers.execute('katello-service stop --exclude postgresql')
 end
 
 def reset_database
