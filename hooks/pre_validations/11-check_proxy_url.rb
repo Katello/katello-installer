@@ -13,3 +13,8 @@ if proxy_param && proxy_param.value && proxy_param.value.length > 0
     error "--katello-proxy-url must be a full URI and only supports http or https (e.g. http://proxy.example.com)"
   end
 end
+
+proxy_port = param('katello', 'proxy_port')
+if proxy_port && uri.nil?
+  error 'When adding a proxy, the proxy url and port must be specfied with the --katello-proxy-port and --katello-proxy-url flags.'
+end
