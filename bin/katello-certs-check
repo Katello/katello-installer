@@ -74,6 +74,16 @@ function check-expiration () {
     fi
 }
 
+function check-cert-ca-flag () {
+    printf "Checking if server cert has CA:TRUE flag"
+    openssl x509 -in $CERT_FILE -noout -text | grep -q CA:TRUE
+    if [ $? -ne 0 ]; then
+        success
+    else
+        error 7 "The server cert is marked as a CA and can not be used"
+    fi
+}    
+
 function show-details () {
     printf "Validating the certificate "
     CERT_SUBJECT=$(openssl x509 -noout -subject -in $CERT_FILE)
@@ -103,6 +113,7 @@ function check-ca-bundle () {
 }
 
 check-expiration
+check-cert-ca-flag
 show-details
 check-priv-key
 check-ca-bundle
