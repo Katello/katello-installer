@@ -64,8 +64,8 @@ task :generate_parser_caches => [PARSER_CACHE_DIR] do
     sh "kafo-export-params -c #{configs[i]} -f parsercache --no-parser-cache -o #{filename}"
 
     cache = YAML.load_file(filename.to_s)
-    cache[:files] = cache[:files].delete_if do |k, _|
-      !%w(certs foreman_proxy_certs foreman_proxy_content katello).include?(k)
+    cache[:files] = cache[:files].select do |k, _|
+      %w(certs foreman_proxy_certs foreman_proxy_content katello katello_devel).include?(k)
     end
     File.open(filename.to_s, "w") do |file|
       file.write(cache.to_yaml)
