@@ -102,6 +102,13 @@ def mark_qpid_cert_for_update
   end
 end
 
+def delete_event_queue
+  # piping output to /dev/null because on EL6 any qpid-stat/config commands gives a non fatal python traceback.
+  cert = '/etc/pki/katello/qpid_client_striped.crt'
+  Kafo::Helpers.execute("qpid-config --ssl-certificate #{cert} -b 'amqps://localhost:5671' del exchange event --force > /dev/null 2>&1")
+  Kafo::Helpers.execute("qpid-config --ssl-certificate #{cert} -b 'amqps://localhost:5671' del queue katello_event_queue --force > /dev/null 2>&1")
+end
+
 def upgrade_step(step, options = {})
   noop = app_value(:noop) ? ' (noop)' : ''
   long_running = options[:long_running] ? ' (this may take a while) ' : ''
@@ -167,6 +174,7 @@ if app_value(:upgrade)
     upgrade_step :mark_qpid_cert_for_update
     upgrade_step :migrate_candlepin, :run_always => true
     upgrade_step :remove_gutterball
+    upgrade_step :delete_event_queue
     upgrade_step :start_tomcat, :run_always => true
     upgrade_step :fix_katello_settings_file
     upgrade_step :migrate_foreman, :run_always => true
