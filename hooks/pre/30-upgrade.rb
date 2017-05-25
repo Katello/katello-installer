@@ -30,7 +30,19 @@ def update_http_conf
 end
 
 def migrate_candlepin
-  Kafo::Helpers.execute("/usr/share/candlepin/cpdb --update --password #{Kafo::Helpers.read_cache_data('candlepin_db_password')}")
+  db_host = param('katello', 'candlepin_db_host').value
+  db_port = param('katello', 'candlepin_db_port').value
+  db_name = param('katello', 'candlepin_db_name').value
+  db_user = param('katello', 'candlepin_db_user').value
+  db_password = param('katello', 'candlepin_db_password').value
+  db_ssl = param('katello', 'candlepin_db_ssl').value
+  db_ssl_verify = param('katello', 'candlepin_db_ssl_verify').value
+  db_uri = "//#{db_host}" + (db_port.nil? ? '' : ":#{db_port}") + "/#{db_name}"
+  if db_ssl
+    db_uri += "?ssl=true"
+    db_uri += "&sslfactory=org.postgresql.ssl.NonValidatingFactory" unless db_ssl_verify
+  end
+  Kafo::Helpers.execute("/usr/share/candlepin/cpdb --update --database '#{db_uri}' --user #{db_user} --password #{db_password}")
 end
 
 def start_tomcat
