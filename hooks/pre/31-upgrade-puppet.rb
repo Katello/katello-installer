@@ -47,6 +47,9 @@ def fail_and_exit(message)
 end
 
 if app_value(:upgrade_puppet)
+  PUPPET_UPGRADE_COMPLETE = '/etc/foreman-installer/.puppet_4_upgrade'.freeze
+
+  fail_and_exit 'Puppet already installed and upgraded. Skipping.' if File.exist?(PUPPET_UPGRADE_COMPLETE)
   katello = Kafo::Helpers.module_enabled?(@kafo, 'katello')
   foreman_proxy_content = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
 
@@ -74,5 +77,6 @@ if app_value(:upgrade_puppet)
   upgrade_step :remove_puppet_port_httpd
   upgrade_step :start_httpd
 
+  File.open(PUPPET_UPGRADE_COMPLETE, 'w') { |file| file.write("Puppet 3 to 4 upgrade completed on #{Time.now}") }
   Kafo::Helpers.log_and_say :info, "Puppet 3 to 4 upgrade initialization complete, continuing with installation"
 end
