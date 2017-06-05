@@ -78,7 +78,7 @@ class ForemanProxyCertsGenerate
   end
 end
 
-if __FILE__ == $0
+if $0 == __FILE__
   begin
     gen = ForemanProxyCertsGenerate.new
     CONFIG_FILE = gen.config_file.path
