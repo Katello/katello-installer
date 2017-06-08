@@ -131,8 +131,8 @@ To update the certificates on a currently running Katello installation, run:
 
 To use them inside a NEW \$FOREMAN_PROXY, run this command:
 
-    foreman-proxy-certs-generate --foreman-proxy-fqdn "$FOREMAN_PROXY"\\
-                                 --certs-tar  "~/$FOREMAN_PROXY-certs.tar"\\
+    foreman-proxy-certs-generate --foreman-proxy-fqdn "\$FOREMAN_PROXY"\\
+                                 --certs-tar  "~/\$FOREMAN_PROXY-certs.tar"\\
                                  --server-cert "$(readlink -f $CERT_FILE)"\\
                                  --server-cert-req "$(readlink -f $REQ_FILE)"\\
                                  --server-key "$(readlink -f $KEY_FILE)"\\
@@ -140,8 +140,8 @@ To use them inside a NEW \$FOREMAN_PROXY, run this command:
 
 To use them inside an EXISTING \$FOREMAN_PROXY, run this command INSTEAD:
 
-    foreman-proxy-certs-generate -foreman-proxy-fqdn "$FOREMAN_PROXY"\\
-                                 --certs-tar  "~/$FOREMAN_PROXY-certs.tar"\\
+    foreman-proxy-certs-generate --foreman-proxy-fqdn "\$FOREMAN_PROXY"\\
+                                 --certs-tar  "~/\$FOREMAN_PROXY-certs.tar"\\
                                  --server-cert "$(readlink -f $CERT_FILE)"\\
                                  --server-cert-req "$(readlink -f $REQ_FILE)"\\
                                  --server-key "$(readlink -f $KEY_FILE)"\\
