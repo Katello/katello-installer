@@ -1,4 +1,6 @@
 ---
+env:
+  - FOREMAN_BRANCH=1.15-stable
 rvm:
   - 2.1.0
 sudo: false
