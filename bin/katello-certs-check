@@ -112,6 +112,24 @@ function check-ca-bundle () {
     fi
 }
 
+function check-cert-encoding () {
+    printf "Checking server certificate's encoding: "
+    openssl x509 -inform per -in $CERT_FILE -noout -text &> /dev/null
+    if [ $? == "0" ]; then
+        success
+    else
+        openssl x509 -inform der -in $CERT_FILE -noout -text &> /dev/null
+        if [ $? == "0" ]; then
+            error 8 "The server certificate is in DER encoding, which is not
+            compatible. Convert the certificate to PEM encoding,
+            then test it again."
+        else
+            error 9 "The server certificate is in an invalid encoding."
+        fi
+    fi
+}
+
+check-cert-encoding
 check-expiration
 check-cert-ca-flag
 show-details
