@@ -114,7 +114,7 @@ function check-ca-bundle () {
 
 function check-cert-encoding () {
     printf "Checking server certificate's encoding: "
-    openssl x509 -inform per -in $CERT_FILE -noout -text &> /dev/null
+    openssl x509 -inform pem -in $CERT_FILE -noout -text &> /dev/null
     if [ $? == "0" ]; then
         success
     else
