@@ -117,7 +117,7 @@ def upgrade_qpid_paths
     Kafo::Helpers.execute("mkdir -p #{qpid_linearstore}/jrnl2")
     # Backup data directory before upgrade
     puts "Backing up #{qpid_dir} in case of migration failure"
-    Kafo::Helpers.execute("tar -czf /var/lib/qpid_queue_backup.tar.gz #{qpid_dir}")
+    Kafo::Helpers.execute("tar -czf /var/cache/qpid_queue_backup.tar.gz #{qpid_dir}")
     # Move dat directory to new location dat2
     Kafo::Helpers.execute("mv #{qpid_linearstore}/dat #{qpid_linearstore}/dat2")
     # Move qpid jrnl files
@@ -128,7 +128,7 @@ def upgrade_qpid_paths
         Kafo::Helpers.execute("mv #{qpid_linearstore}/jrnl/#{queue_name}/#{jrnlfile} #{qpid_linearstore}/p001/efp/2048k/in_use/#{jrnlfile}")
         Kafo::Helpers.execute("ln -s #{qpid_linearstore}/p001/efp/2048k/in_use/#{jrnlfile} #{qpid_linearstore}/jrnl2/#{queue_name}/#{jrnlfile}")
         unless $?.success?
-          logger.error "There was an error during the migration, exiting. A backup of the #{qpid_dir} is at /var/lib/qpid_queue_backup.tar.gz"
+          logger.error "There was an error during the migration, exiting. A backup of the #{qpid_dir} is at /var/cache/qpid_queue_backup.tar.gz"
           kafo.class.exit(1)
         end
       end
@@ -138,7 +138,7 @@ def upgrade_qpid_paths
     # restore SELinux context by current policy
     Kafo::Helpers.execute("restorecon -FvvR #{qpid_dir}")
     logger.info 'Qpid path upgrade complete'
-    logger.info 'The backup at /var/lib/qpid_queue_backup.tar.gz can be safely deleted.'
+    Kafo::Helpers.execute("rm -f /var/cache/qpid_queue_backup.tar.gz")
   end
 end
 
