@@ -41,6 +41,10 @@ file "#{BUILDDIR}/modules" do |t|
     mkdir BUILDDIR
     cp_r "modules", "#{BUILDDIR}/modules"
   end
+
+  # Ensure service-wait is executable since depending on the version of puppet
+  # it can get installed without being executable
+  FileUtils.chmod(0775, "#{BUILDDIR}/modules/service_wait/bin/service-wait")
 end
 
 task :generate_parser_caches => [PARSER_CACHE_DIR] do
