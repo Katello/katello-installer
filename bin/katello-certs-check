@@ -81,7 +81,7 @@ function show-details () {
 }
 
 function check-priv-key () {
-    printf "Check private key matches the certificate: "
+    printf "Checking to see if the private key matches the certificate: "
     CERT_MOD=$(openssl x509 -noout -modulus -in $CERT_FILE)
     KEY_MOD=$(openssl rsa -noout -modulus -in $KEY_FILE)
     if [ "$CERT_MOD" != "$KEY_MOD" ]; then
@@ -92,7 +92,7 @@ function check-priv-key () {
 }
 
 function check-ca-bundle () {
-    printf "Check ca bundle verifies the cert file: "
+    printf "Checking ca bundle against the cert file: "
     CHECK=$(openssl verify -CAfile $CA_BUNDLE_FILE -purpose sslserver -verbose $CERT_FILE 2>&1)
     if [ $? == "0" ]; then
         success
@@ -102,10 +102,23 @@ function check-ca-bundle () {
     fi
 }
 
+function check-non-ascii () {
+    printf "Checking for non ascii characters"
+    CHECK=$(grep --color='auto' -P -n "[\x80-\xFF]" $CA_BUNDLE_FILE $CERT_FILE)
+    if [ $? == "1" ]; then
+	 success
+    else
+        error 4 "There are non ascii characters present:"
+        echo
+        echo $CHECK
+    fi
+}
+
 check-expiration
 show-details
 check-priv-key
 check-ca-bundle
+check-non-ascii
 
 if [ $EXIT_CODE == "0" ]; then
     cat <<EOF
