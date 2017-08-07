@@ -112,7 +112,7 @@ function check-ca-bundle () {
     fi
 }
 
-function check-cert-encoding () {
+function check-server-cert-encoding () {
     printf "Checking server certificate's encoding: "
     openssl x509 -inform pem -in $CERT_FILE -noout -text &> /dev/null
     if [ $? == "0" ]; then
@@ -130,7 +130,7 @@ function check-cert-encoding () {
     fi
 }
 
-check-cert-encoding
+check-server-cert-encoding
 check-expiration
 check-cert-ca-flag
 show-details
