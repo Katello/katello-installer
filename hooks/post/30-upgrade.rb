@@ -87,6 +87,10 @@ def set_virt_who_on_pools
   Kafo::Helpers.execute('foreman-rake katello:upgrades:3.3:import_subscriptions')
 end
 
+def remove_unused_products
+  Kafo::Helpers.execute('foreman-rake katello:upgrades:3.4:remove_unused_products')
+end
+
 def remove_gutterball
   `rpm -q gutterball`
   if $?.success?
@@ -166,6 +170,7 @@ if app_value(:upgrade)
       upgrade_step :remove_gutterball
       upgrade_step :remove_event_queue
       upgrade_step :set_virt_who_on_pools, :long_running => true
+      upgrade_step :remove_unused_products, :long_running => true
     end
 
     if [0, 2].include? @kafo.exit_code
