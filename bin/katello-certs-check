@@ -120,11 +120,12 @@ function check-cert-encoding () {
     else
         openssl x509 -inform der -in $CERT_FILE -noout -text &> /dev/null
         if [ $? == "0" ]; then
-            error 8 "The server certificate is in DER encoding, which is not
-            compatible. Convert the certificate to PEM encoding,
-            then test it again."
+            printf "[FAIL]\n"
+            printf "The server certificate is in DER encoding, which is incompatible.\n"
+            printf "Convert the certificate to PEM encoding, then test it again.\n"
+            exit 8
         else
-            error 9 "The server certificate is in an invalid encoding."
+            error 9 "The encoding of the server certificate is either invalid or unable to be read."
         fi
     fi
 }
