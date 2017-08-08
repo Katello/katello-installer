@@ -151,6 +151,8 @@ def upgrade_qpid_paths
     Kafo::Helpers.execute("restorecon -FvvR #{qpid_dir}")
     logger.info 'Qpid path upgrade complete'
     Kafo::Helpers.execute("rm -f /var/cache/qpid_queue_backup.tar.gz")
+    logger.info 'Removing old jrnl directory'
+    Kafo::Helpers.execute("rm -rf #{qpid_linearstore}/jrnl")
   end
 end
 
