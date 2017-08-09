@@ -30,7 +30,19 @@ def update_http_conf
 end
 
 def migrate_candlepin
-  Kafo::Helpers.execute("/usr/share/candlepin/cpdb --update --password #{Kafo::Helpers.read_cache_data('candlepin_db_password')}")
+  db_host = param('katello', 'candlepin_db_host').value
+  db_port = param('katello', 'candlepin_db_port').value
+  db_name = param('katello', 'candlepin_db_name').value
+  db_user = param('katello', 'candlepin_db_user').value
+  db_password = param('katello', 'candlepin_db_password').value
+  db_ssl = param('katello', 'candlepin_db_ssl').value
+  db_ssl_verify = param('katello', 'candlepin_db_ssl_verify').value
+  db_uri = "//#{db_host}" + (db_port.nil? ? '' : ":#{db_port}") + "/#{db_name}"
+  if db_ssl
+    db_uri += "?ssl=true"
+    db_uri += "&sslfactory=org.postgresql.ssl.NonValidatingFactory" unless db_ssl_verify
+  end
+  Kafo::Helpers.execute("/usr/share/candlepin/cpdb --update --database '#{db_uri}' --user #{db_user} --password #{db_password}")
 end
 
 def start_tomcat
@@ -102,6 +114,46 @@ def mark_qpid_cert_for_update
   end
 end
 
+# rubocop:disable MethodLength
+# rubocop:disable Style/MultipleComparison
+def upgrade_qpid_paths
+  qpid_dir = '/var/lib/qpidd'
+  qpid_data_dir = "#{qpid_dir}/.qpidd"
+  qpid_linearstore = "#{qpid_data_dir}/qls"
+  if File.exist?("#{qpid_linearstore}/dat2") && File.exist?("#{qpid_linearstore}/p001/efp/2048k/in_use")
+    logger.info 'Qpid directory upgrade is already complete, skipping'
+  else
+    # Make new directory structure for migration
+    Kafo::Helpers.execute("mkdir -p #{qpid_linearstore}/p001/efp/2048k/in_use")
+    Kafo::Helpers.execute("mkdir -p #{qpid_linearstore}/p001/efp/2048k/returned")
+    Kafo::Helpers.execute("mkdir -p #{qpid_linearstore}/jrnl2")
+    # Backup data directory before upgrade
+    puts "Backing up #{qpid_dir} in case of migration failure"
+    Kafo::Helpers.execute("tar -czf /var/cache/qpid_queue_backup.tar.gz #{qpid_dir}")
+    # Move dat directory to new location dat2
+    Kafo::Helpers.execute("mv #{qpid_linearstore}/dat #{qpid_linearstore}/dat2")
+    # Move qpid jrnl files
+    Dir.foreach("#{qpid_linearstore}/jrnl") do |queue_name|
+      next if queue_name == '.' || queue_name == '..'
+      puts "Moving #{queue_name}"
+      Dir.foreach("#{qpid_linearstore}/jrnl/#{queue_name}") do |jrnlfile|
+        Kafo::Helpers.execute("mv #{qpid_linearstore}/jrnl/#{queue_name}/#{jrnlfile} #{qpid_linearstore}/p001/efp/2048k/in_use/#{jrnlfile}")
+        Kafo::Helpers.execute("ln -s #{qpid_linearstore}/p001/efp/2048k/in_use/#{jrnlfile} #{qpid_linearstore}/jrnl2/#{queue_name}/#{jrnlfile}")
+        unless $?.success?
+          logger.error "There was an error during the migration, exiting. A backup of the #{qpid_dir} is at /var/cache/qpid_queue_backup.tar.gz"
+          kafo.class.exit(1)
+        end
+      end
+    end
+    # Restore access
+    Kafo::Helpers.execute("chown -R qpidd:qpidd #{qpid_dir}")
+    # restore SELinux context by current policy
+    Kafo::Helpers.execute("restorecon -FvvR #{qpid_dir}")
+    logger.info 'Qpid path upgrade complete'
+    Kafo::Helpers.execute("rm -f /var/cache/qpid_queue_backup.tar.gz")
+  end
+end
+
 def upgrade_step(step, options = {})
   noop = app_value(:noop) ? ' (noop)' : ''
   long_running = options[:long_running] ? ' (this may take a while) ' : ''
@@ -153,6 +205,7 @@ if app_value(:upgrade)
   upgrade_step :update_http_conf, :run_always => true
 
   if katello || foreman_proxy_content
+    upgrade_step :upgrade_qpid_paths
     upgrade_step :migrate_pulp, :run_always => true
     upgrade_step :start_httpd, :run_always => true
     upgrade_step :start_qpidd, :run_always => true
