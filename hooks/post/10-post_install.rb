@@ -52,7 +52,8 @@ MSG
   Once this is completed run the steps below to start the smartproxy installation:
 
   1. Ensure that the foreman-installer-katello package is installed on the system.
-  2. Copy <%= color("#{certs_tar}", :info) %> to the system <%= color("#{foreman_proxy_fqdn}", :info) %>
+  2. Copy the following file <%= color("#{certs_tar}", :info) %> to the system <%= color("#{foreman_proxy_fqdn}", :info) %> at the following location <%= color("#{File.join('/root', File.basename(certs_tar))}", :info) %>
+  scp <%= color("#{certs_tar}", :info) %> root@<%= color("#{foreman_proxy_fqdn}", :info) %>:<%= color("#{File.join('/root', File.basename(certs_tar))}", :info) %>
   3. Run the following commands on the Foreman proxy (possibly with the customized
      parameters, see <%= color("#{installer_name} --scenario foreman-proxy-content --help", :info) %> and
      documentation for more info on setting up additional services):
