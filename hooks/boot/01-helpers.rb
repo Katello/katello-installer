@@ -56,7 +56,7 @@ class Kafo::Helpers
     end
 
     def reset_value(param)
-      param.value = nil unless param.nil?
+      param.unset_value
     end
   end
 end
