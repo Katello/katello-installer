@@ -1,3 +1,5 @@
+PUPPET_UPGRADE_COMPLETE = '/etc/foreman-installer/.puppet_4_upgrade'.freeze
+
 def restart_services
   Kafo::Helpers.execute('katello-service restart')
 end
@@ -18,7 +20,18 @@ def fail_and_exit(message)
   kafo.class.exit 1
 end
 
-if app_value(:upgrade_puppet)
+def puppet4_installed?
+  success = []
+  success << Kafo::Helpers.execute('rpm -q puppet-agent', false)
+  success << Kafo::Helpers.execute('rpm -q puppetserver', false)
+  !success.include?(false)
+end
+
+def puppet_upgrade_complete?
+  File.exist?(PUPPET_UPGRADE_COMPLETE)
+end
+
+if app_value(:upgrade_puppet) && !puppet_upgrade_complete?
 
   katello = Kafo::Helpers.module_enabled?(@kafo, 'katello')
   foreman_proxy = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
@@ -28,6 +41,14 @@ if app_value(:upgrade_puppet)
   end
 
   if [0, 2].include? @kafo.exit_code
-    Kafo::Helpers.log_and_say :info, 'Puppet upgrade completed!'
+    File.open(PUPPET_UPGRADE_COMPLETE, 'w') do |file|
+      file.write("Puppet 3 to 4 upgrade completed on #{Time.now}")
+    end
+  end
+end
+
+if !app_value(:upgrade_puppet) && !puppet_upgrade_complete? && puppet4_installed?
+  File.open(PUPPET_UPGRADE_COMPLETE, 'w') do |file|
+    file.write("No Puppet 3 to 4 upgrade performed. Puppet 4 installed on #{Time.now}.")
   end
 end
