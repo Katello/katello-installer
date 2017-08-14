@@ -107,24 +107,42 @@ end
 def upgrade_qpid_paths
   qpid_dir = '/var/lib/qpidd'
   qpid_data_dir = "#{qpid_dir}/.qpidd"
+
   qpid_linearstore = "#{qpid_data_dir}/qls"
-  if File.exist?("#{qpid_linearstore}/dat2") && File.exist?("#{qpid_linearstore}/p001/efp/2048k/in_use")
+  if Dir.glob("#{qpid_linearstore}/jrnl/**/*.jrnl").empty? && !File.exist?("#{qpid_linearstore}/dat")
     logger.info 'Qpid directory upgrade is already complete, skipping'
   else
+    backup_file = "/var/cache/qpid_queue_backup.tar.gz"
+
+    unless File.exist?(backup_file)
+      # Backup data directory before upgrade
+      puts "Backing up #{qpid_dir} in case of migration failure"
+      Kafo::Helpers.execute("tar -czf #{backup_file} #{qpid_dir}")
+    end
+
     # Make new directory structure for migration
     Kafo::Helpers.execute("mkdir -p #{qpid_linearstore}/p001/efp/2048k/in_use")
     Kafo::Helpers.execute("mkdir -p #{qpid_linearstore}/p001/efp/2048k/returned")
     Kafo::Helpers.execute("mkdir -p #{qpid_linearstore}/jrnl2")
-    # Backup data directory before upgrade
-    puts "Backing up #{qpid_dir} in case of migration failure"
-    Kafo::Helpers.execute("tar -czf /var/cache/qpid_queue_backup.tar.gz #{qpid_dir}")
-    # Move dat directory to new location dat2
-    Kafo::Helpers.execute("mv #{qpid_linearstore}/dat #{qpid_linearstore}/dat2")
+
+    if File.exist?("#{qpid_linearstore}/dat") && File.exist?("#{qpid_linearstore}/dat2")
+      Kafo::Helpers.execute("rm -rf #{qpid_linearstore}/dat2")
+    end
+
+    if File.exist?("#{qpid_linearstore}/dat") && !File.exist?("#{qpid_linearstore}/dat2}")
+      # Move dat directory to new location dat2
+      Kafo::Helpers.execute("mv #{qpid_linearstore}/dat #{qpid_linearstore}/dat2")
+    end
+
     # Move qpid jrnl files
     Dir.foreach("#{qpid_linearstore}/jrnl") do |queue_name|
       next if queue_name == '.' || queue_name == '..'
+
       puts "Moving #{queue_name}"
+      Kafo::Helpers.execute("mkdir -p #{qpid_linearstore}/jrnl2/#{queue_name}/")
       Dir.foreach("#{qpid_linearstore}/jrnl/#{queue_name}") do |jrnlfile|
+        next if jrnlfile == '.' || jrnlfile == '..'
+
         Kafo::Helpers.execute("mv #{qpid_linearstore}/jrnl/#{queue_name}/#{jrnlfile} #{qpid_linearstore}/p001/efp/2048k/in_use/#{jrnlfile}")
         Kafo::Helpers.execute("ln -s #{qpid_linearstore}/p001/efp/2048k/in_use/#{jrnlfile} #{qpid_linearstore}/jrnl2/#{queue_name}/#{jrnlfile}")
         unless $?.success?
@@ -133,12 +151,16 @@ def upgrade_qpid_paths
         end
       end
     end
+
     # Restore access
     Kafo::Helpers.execute("chown -R qpidd:qpidd #{qpid_dir}")
+
     # restore SELinux context by current policy
     Kafo::Helpers.execute("restorecon -FvvR #{qpid_dir}")
     logger.info 'Qpid path upgrade complete'
-    Kafo::Helpers.execute("rm -f /var/cache/qpid_queue_backup.tar.gz")
+    Kafo::Helpers.execute("rm -f #{backup_file}")
+    logger.info 'Removing old jrnl directory'
+    Kafo::Helpers.execute("rm -rf #{qpid_linearstore}/jrnl")
   end
 end
 
