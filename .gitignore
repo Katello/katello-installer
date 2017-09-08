@@ -13,6 +13,7 @@ update_submodules_scratch
 .tmp
 .rpm
 .*.sw?
+.yardoc
 test.log
 
 # rvm
