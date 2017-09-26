@@ -20,7 +20,7 @@ $ foreman-installer --scenario katello
 
 foreman-installer --scenario                     "katello"\
                   --foreman-proxy-dns            "true"\
-                  --foreman-proxy-dns-forwarders "8.8.8.8"
+                  --foreman-proxy-dns-forwarders "8.8.8.8"\
                   --foreman-proxy-dns-forwarders "8.8.4.4"\
                   --foreman-proxy-dns-interface  "virbr1"\
                   --foreman-proxy-dns-zone       "example.com"\
@@ -43,7 +43,7 @@ foreman-installer --scenario                     "katello"\
 
 # Generate certificates for installing Foreman proxy on another system
 foreman-proxy-certs-generate --foreman-proxy-fqdn "myforeman-proxy-content.example.com"\
-                                     --certs-tar    "~/myforeman-proxy-content.example.com-certs.tar"
+                                     --certs-tar    ~/myforeman-proxy-content.example.com-certs.tar
 
 # Copy the ~/myforeman-proxy.example.com-certs.tar to the foreman-proxy system
 # register the system to Katello and run:
@@ -66,7 +66,7 @@ foreman-installer --scenario                                "foreman-proxy-conte
                   --foreman-proxy-dns-zone                  "example.com"\
                   --foreman-proxy-dhcp                      "true"\
                   --foreman-proxy-dhcp-interface            "virbr1"\
-                  --foreman-proxy-tftp                      "true"\
+                  --foreman-proxy-tftp                      "true"
 ```
 
 ## Data Reset
@@ -168,7 +168,7 @@ For the Foreman proxy, these options are passed as part of the
 
 ```
 foreman-proxy-certs-generate --foreman-proxy-fqdn "$FOREMAN_PROXY"\
-                             --certs-tar "~/$FOREMAN_PROXY-certs.tar"\
+                             --certs-tar ~/$FOREMAN_PROXY-certs.tar\
                              --server-cert ~/path/to/server.crt\
                              --server-cert-req ~/path/to/server.crt.req\
                              --server-key ~/path/to/server.key\
@@ -213,7 +213,7 @@ to refresh the certificates).:
 
 ```
 foreman-proxy-certs-generate --foreman-proxy-fqdn "$FOREMAN_PROXY_CONTENT"\
-                             --certs-tar "~/$FOREMAN_PROXY_CONTENT-certs.tar"\
+                             --certs-tar ~/$FOREMAN_PROXY_CONTENT-certs.tar\
                              --server-cert ~/path/to/server.crt\
                              --server-cert-req ~/path/to/server.crt.req\
                              --server-key ~/path/to/server.key\
