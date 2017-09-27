@@ -7,6 +7,7 @@ def error_exit(message, code)
   exit code
 end
 
+# rubocop: disable Lint/RescueWithoutErrorClass
 begin
   # Error out if there is not 5 gigs of free space.
   # If mongo is installed, which is the big item, then add
