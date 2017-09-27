@@ -21,6 +21,8 @@ class ForemanProxyCertsGenerate
   private
 
   # rubocop: disable Metrics/MethodLength
+  # rubocop: disable Naming/HeredocDelimiterNaming
+  # rubocop: disable Lint/RescueWithoutErrorClass
   def generate_answers_file
     if File.file?('./config/last_scenario.yaml')
       scenario = YAML.load_file('./config/last_scenario.yaml').fetch(:answer_file)
