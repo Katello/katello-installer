@@ -52,10 +52,10 @@ FORGE
     puppet-extlib (1.1.0)
       puppetlabs-stdlib (>= 0)
     puppet-staging (2.2.0)
-    puppetlabs-apache (2.0.0)
+    puppetlabs-apache (2.1.0)
       puppetlabs-concat (< 5.0.0, >= 2.2.1)
       puppetlabs-stdlib (< 5.0.0, >= 4.13.1)
-    puppetlabs-apt (4.1.0)
+    puppetlabs-apt (4.2.0)
       puppetlabs-stdlib (< 5.0.0, >= 4.16.0)
     puppetlabs-concat (4.0.1)
       puppetlabs-stdlib (< 5.0.0, >= 4.13.1)
@@ -64,6 +64,9 @@ FORGE
     puppetlabs-mongodb (1.0.0)
       puppetlabs-apt (< 5.0.0, >= 2.1.0)
       puppetlabs-stdlib (< 5.0.0, >= 4.4.0)
+    puppetlabs-mysql (4.0.1)
+      puppet-staging (< 3.0.0, >= 1.0.1)
+      puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
     puppetlabs-postgresql (5.1.0)
       puppetlabs-apt (< 5.0.0, >= 2.0.0)
       puppetlabs-concat (< 5.0.0, >= 1.1.0)
@@ -102,7 +105,7 @@ FORGE
       theforeman-puppet (< 9.0.0, >= 4.2.0)
       theforeman-tftp (< 4.0.0, >= 1.3.0)
     theforeman-git (3.0.0)
-    theforeman-puppet (8.0.2)
+    theforeman-puppet (8.0.3)
       puppet-extlib (< 2.0.0, >= 0.11.3)
       puppetlabs-apache (< 3.0.0, >= 1.2.0)
       puppetlabs-concat (< 5.0.0, >= 1.0.0)
@@ -116,7 +119,7 @@ FORGE
 GIT
   remote: https://github.com/Katello/puppet-katello_devel
   ref: master
-  sha: 41ae3f80a025db9d8196c739dc484ea9222e8c4d
+  sha: e03b91cab330ca81554ad0d05772d2078710cd47
   specs:
     katello-katello_devel (1.0.0)
       katello-candlepin (< 5.0.0, >= 4.0.0)
@@ -130,15 +133,6 @@ GIT
       puppetlabs-stdlib (< 5.0.0, >= 4.0.0)
       puppetlabs-vcsrepo (< 3.0.0, >= 1.0.0)
 
-GIT
-  remote: https://github.com/theforeman/puppetlabs-mysql
-  ref: 3.11.x
-  sha: 7d1f8260eef2cde6c909d53314b770e9994eb5d2
-  specs:
-    puppetlabs-mysql (3.11.0)
-      puppet-staging (< 3.0.0, >= 1.0.1)
-      puppetlabs-stdlib (< 5.0.0, >= 3.2.0)
-
 DEPENDENCIES
   katello-candlepin (< 4.1.0, >= 4.0.0)
   katello-certs (< 3.1.0, >= 3.0.0)
@@ -149,14 +143,15 @@ DEPENDENCIES
   katello-pulp (< 5.1.0, >= 5.0.0)
   katello-qpid (< 3.2.0, >= 3.1.0)
   katello-service_wait (< 1.1.0, >= 1.0.3)
-  puppetlabs-mysql (>= 0)
-  puppetlabs-postgresql (< 5.2.0, >= 5.1.0)
-  puppetlabs-puppetdb (< 6.1.0, >= 6.0.1)
-  theforeman-dhcp (< 4.1.0, >= 4.0.1)
-  theforeman-dns (< 5.1.0, >= 5.0.0)
-  theforeman-foreman (< 8.2.0, >= 8.1.0)
-  theforeman-foreman_proxy (< 6.1.0, >= 6.0.2)
-  theforeman-git (< 3.1.0, >= 3.0.0)
-  theforeman-puppet (< 8.1.0, >= 8.0.2)
-  theforeman-tftp (< 3.1.0, >= 3.0.1)
+  puppetlabs-mysql (< 4.1.0, >= 4.0.0)
+  puppetlabs-postgresql (< 5.2.0, >= 4.8.0, >= 5.1.0)
+  puppetlabs-puppetdb (< 6.1.0, >= 0, >= 6.0.1)
+  puppetlabs-stdlib (< 4.20.0)
+  theforeman-dhcp (< 4.1.0, >= 0, >= 4.0.1)
+  theforeman-dns (< 5.1.0, >= 0, >= 5.0.0)
+  theforeman-foreman (< 8.2.0, >= 0, >= 8.1.0)
+  theforeman-foreman_proxy (< 6.1.0, >= 0, >= 6.0.2)
+  theforeman-git (< 3.1.0, >= 0, >= 3.0.0)
+  theforeman-puppet (< 8.1.0, >= 0, >= 8.0.2)
+  theforeman-tftp (< 3.1.0, >= 0, >= 3.0.1)
 
