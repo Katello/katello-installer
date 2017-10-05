@@ -22,8 +22,8 @@ end
 
 def puppet4_installed?
   success = []
-  success << Kafo::Helpers.execute('rpm -q puppet-agent', false)
-  success << Kafo::Helpers.execute('rpm -q puppetserver', false)
+  success << Kafo::Helpers.execute('rpm -q puppet-agent', false, false)
+  success << Kafo::Helpers.execute('rpm -q puppetserver', false, false)
   !success.include?(false)
 end
 
