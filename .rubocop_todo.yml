@@ -71,12 +71,12 @@ Style/Documentation:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: empty_lines, no_empty_lines
-Style/EmptyLinesAroundBlockBody:
+Layout/EmptyLinesAroundBlockBody:
   Enabled: false
 
 # Offense count: 60
 # Configuration parameters: ExpectMatchingDefinition, Regex, IgnoreExecutableScripts.
-Style/FileName:
+Naming/FileName:
   Enabled: false
 
 # Offense count: 3
@@ -94,7 +94,7 @@ Style/LineEndConcatenation:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles, IndentationWidth.
 # SupportedStyles: aligned, indented
-Style/MultilineOperationIndentation:
+Layout/MultilineOperationIndentation:
   Enabled: false
 
 # Offense count: 21
@@ -131,7 +131,7 @@ Style/PercentLiteralDelimiters:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 # SupportedStyles: space, no_space
-Style/SpaceAroundEqualsInParameterDefault:
+Layout/SpaceAroundEqualsInParameterDefault:
   Enabled: false
 
 # Offense count: 5
