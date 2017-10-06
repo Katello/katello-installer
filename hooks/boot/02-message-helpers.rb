@@ -19,7 +19,8 @@ MSG
 
     def proxy_success_message(kafo)
       success_message
-      say "  * <%= color('Foreman Proxy', :info) %> is running at <%= color('#{kafo.param('foreman_proxy', 'registered_proxy_url').value}:#{kafo.param('foreman_proxy', 'ssl_port')}', :info) %>"
+      foreman_proxy_url = kafo.param('foreman_proxy', 'registered_proxy_url').value || "https://#{kafo.param('foreman_proxy', 'registered_name').value}:#{kafo.param('foreman_proxy', 'ssl_port').value}"
+      say "  * <%= color('Foreman Proxy', :info) %> is running at <%= color('#{foreman_proxy_url}', :info) %>"
     end
 
     def new_install_message(kafo)
