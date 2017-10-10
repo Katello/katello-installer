@@ -147,6 +147,7 @@ def upgrade_qpid_paths
     # Move qpid jrnl files
     Dir.foreach("#{qpid_linearstore}/jrnl") do |queue_name|
       next if queue_name == '.' || queue_name == '..'
+      next unless File.directory?("#{qpid_linearstore}/jrnl/#{queue_name}")
 
       puts "Moving #{queue_name}"
       Kafo::Helpers.execute("mkdir -p #{qpid_linearstore}/jrnl2/#{queue_name}/")
