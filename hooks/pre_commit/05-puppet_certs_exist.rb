@@ -4,10 +4,6 @@ def error(message)
   kafo.class.exit 101
 end
 
-def param_value(mod, name)
-  param(mod, name).value if param(mod, name)
-end
-
 puppet_ca_enabled = param_value('foreman_proxy', 'puppetca')
 server_crl_path = param_value('foreman', 'server_ssl_crl')
 cert_dir = param_value('foreman_proxy', 'ssldir')
