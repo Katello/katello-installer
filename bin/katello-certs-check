@@ -151,7 +151,6 @@ check-cert-ca-flag
 show-details
 check-priv-key
 check-ca-bundle
-check-non-ascii
 
 if [ $EXIT_CODE == "0" ]; then
     cat <<EOF
