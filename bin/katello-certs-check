@@ -112,24 +112,11 @@ function check-ca-bundle () {
     fi
 }
 
-function check-non-ascii () {
-    printf "Checking for non ascii characters"
-    CHECK=$(grep --color='auto' -P -n "[\x80-\xFF]" $CA_BUNDLE_FILE $CERT_FILE)
-    if [ $? == "1" ]; then
-	 success
-    else
-        error 4 "There are non ascii characters present:"
-        echo
-        echo $CHECK
-    fi
-}
-
 check-expiration
 check-cert-ca-flag
 show-details
 check-priv-key
 check-ca-bundle
-check-non-ascii
 
 if [ $EXIT_CODE == "0" ]; then
     cat <<EOF
