@@ -10,16 +10,17 @@ def proxy?
   system("rpm -q foreman-proxy-content > /dev/null") && !system("rpm -q katello > /dev/null")
 end
 
-if [0, 2].include?(@kafo.exit_code) && !app_value(:upgrade)
+if [0, 2].include?(@kafo.exit_code)
+  if !app_value(:upgrade)
+    if Kafo::Helpers.module_enabled?(@kafo, 'katello')
+      Kafo::Helpers.server_success_message(@kafo)
+      Kafo::Helpers.new_install_message(@kafo) if @kafo.param('foreman', 'authentication').value == true && new_install?
+      Kafo::Helpers.certs_generate_command_message
+    end
 
-  if Kafo::Helpers.module_enabled?(@kafo, 'katello')
-    Kafo::Helpers.server_success_message(@kafo)
-    Kafo::Helpers.new_install_message(@kafo) if @kafo.param('foreman', 'authentication').value == true && new_install?
-    Kafo::Helpers.certs_generate_command_message
+    Kafo::Helpers.proxy_instructions_message(@kafo) if Kafo::Helpers.module_enabled?(@kafo, 'foreman_proxy_certs')
+    Kafo::Helpers.proxy_success_message(@kafo) if proxy?
   end
-
-  Kafo::Helpers.proxy_instructions_message(@kafo) if Kafo::Helpers.module_enabled?(@kafo, 'foreman_proxy_certs')
-  Kafo::Helpers.proxy_success_message(@kafo) if proxy?
 
   File.open(success_file, 'w') {} unless app_value(:noop) # Used to indicate that we had a successful install
   exit_code = 0
