@@ -1,8 +1,14 @@
-def puppet4_available?
-  success = []
-  success << Kafo::Helpers.execute('yum info puppet-agent')
-  success << Kafo::Helpers.execute('yum info puppetserver')
-  !success.include?(false)
+def puppet5_available?
+  return true if `rpm -q puppet-agent --queryformat=%{version}`.start_with?('5.')
+
+  yum_info = `yum info puppet-agent`
+
+  available = yum_info.split('Available Packages')[1]
+  return false if available.nil?
+
+  version = available.split(/Version/)[1].split("\n")[0]
+  version = version.delete(':').strip
+  version.start_with?('5.')
 end
 
 def stop_services
@@ -10,25 +16,9 @@ def stop_services
 end
 
 def upgrade_puppet_package
-  Kafo::Helpers.execute('yum remove -y puppet-server')
-  Kafo::Helpers.execute('yum install -y puppetserver')
-  Kafo::Helpers.execute('yum install -y puppet-agent')
-end
-
-def start_httpd
-  Kafo::Helpers.execute('katello-service start --only httpd')
-end
-
-def remove_puppet_port_httpd
-  Kafo::Helpers.execute('sed -i "/^Listen 8140$/d" /etc/httpd/conf/ports.conf')
-end
-
-def copy_data
-  success = []
-  success << Kafo::Helpers.execute('cp -rfp /etc/puppet/environments/* /etc/puppetlabs/code/environments') if File.directory?('/etc/puppet/environments') && !Dir['/etc/puppet/environments/*'].empty?
-  success << Kafo::Helpers.execute('cp -rfp /var/lib/puppet/ssl /etc/puppetlabs/puppet') if File.directory?('/var/lib/puppet/ssl')
-  success << Kafo::Helpers.execute('cp -rfp /var/lib/puppet/foreman_cache_data /opt/puppetlabs/puppet/cache/') if File.directory?('/var/lib/puppet/foreman_cache_data')
-  !success.include?(false)
+  Kafo::Helpers.execute('yum upgrade -y puppetserver')
+  Kafo::Helpers.execute('yum upgrade -y puppet-agent')
+  Kafo::Helpers.execute('yum reinstall -y puppet-agent-oauth')
 end
 
 def upgrade_step(step)
@@ -47,23 +37,20 @@ def fail_and_exit(message)
 end
 
 if app_value(:upgrade_puppet)
-  PUPPET_UPGRADE_COMPLETE = '/etc/foreman-installer/.puppet_4_upgrade'.freeze
+  PUPPET_UPGRADE_COMPLETE = '/etc/foreman-installer/.puppet_5_upgrade'.freeze
 
   fail_and_exit 'Puppet already installed and upgraded. Skipping.' if File.exist?(PUPPET_UPGRADE_COMPLETE)
 
   katello = Kafo::Helpers.module_enabled?(@kafo, 'katello')
   foreman_proxy_content = Kafo::Helpers.module_enabled?(@kafo, 'foreman_proxy_content')
 
-  fail_and_exit 'Puppet 3 to 4 upgrade is not currently supported for the chosen scenario.' unless katello || foreman_proxy_content
+  fail_and_exit 'Puppet 4 to 5 upgrade is not currently supported for the chosen scenario.' unless katello || foreman_proxy_content
 
   Kafo::Helpers.log_and_say :info, 'Upgrading puppet...'
-  fail_and_exit 'Unable to find Puppet 4 packages, is the repository enabled?' unless puppet4_available?
+  fail_and_exit 'Unable to find Puppet 5 packages, is the repository enabled?' unless puppet5_available?
 
-  upgrade_step :upgrade_puppet_package
   upgrade_step :stop_services
-  upgrade_step :copy_data
-  upgrade_step :remove_puppet_port_httpd
-  upgrade_step :start_httpd
+  upgrade_step :upgrade_puppet_package
 
-  Kafo::Helpers.log_and_say :info, "Puppet 3 to 4 upgrade initialization complete, continuing with installation"
+  Kafo::Helpers.log_and_say :info, "Puppet 4 to 5 upgrade initialization complete, continuing with installation"
 end

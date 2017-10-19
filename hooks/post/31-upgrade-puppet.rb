@@ -1,30 +1,16 @@
-PUPPET_UPGRADE_COMPLETE = '/etc/foreman-installer/.puppet_4_upgrade'.freeze
+PUPPET_UPGRADE_COMPLETE = '/etc/foreman-installer/.puppet_5_upgrade'.freeze
 
-def restart_services
-  Kafo::Helpers.execute('katello-service restart')
-end
+def puppet5_available?
+  return true if `rpm -q puppet-agent --queryformat=%{version}`.start_with?('5.')
 
-def upgrade_step(step, options = {})
-  noop = app_value(:noop) ? ' (noop)' : ''
-  long_running = options[:long_running] ? ' (this may take a while) ' : ''
+  yum_info = `yum info puppet-agent`
 
-  Kafo::Helpers.log_and_say :info, "Upgrade Step: #{step}#{long_running}#{noop}..."
-  unless app_value(:noop)
-    status = send(step)
-    fail_and_exit "Upgrade step #{step} failed. Check logs for more information." unless status
-  end
-end
+  available = yum_info.split('Available Packages')[1]
+  return false if available.nil?
 
-def fail_and_exit(message)
-  Kafo::Helpers.log_and_say :error, message
-  kafo.class.exit 1
-end
-
-def puppet4_installed?
-  success = []
-  success << Kafo::Helpers.execute('rpm -q puppet-agent', false, false)
-  success << Kafo::Helpers.execute('rpm -q puppetserver', false, false)
-  !success.include?(false)
+  version = available.split(/Version/)[1].split("\n")[0]
+  version = version.delete(':').strip
+  version.start_with?('5.')
 end
 
 def puppet_upgrade_complete?
@@ -32,23 +18,15 @@ def puppet_upgrade_complete?
 end
 
 if app_value(:upgrade_puppet) && !puppet_upgrade_complete?
-
-  katello = Kafo::Helpers.module_enabled?(@kafo, 'katello')
-  foreman_proxy = Kafo::Helpers.module_enabled?(@kafo, 'foreman_proxy_content')
-
-  if katello || foreman_proxy
-    upgrade_step :restart_services
-  end
-
   if [0, 2].include? @kafo.exit_code
     File.open(PUPPET_UPGRADE_COMPLETE, 'w') do |file|
-      file.write("Puppet 3 to 4 upgrade completed on #{Time.now}")
+      file.write("Puppet 4 to 5 upgrade completed on #{Time.now}")
     end
   end
 end
 
-if !app_value(:upgrade_puppet) && !puppet_upgrade_complete? && puppet4_installed?
+if !app_value(:upgrade_puppet) && !puppet_upgrade_complete? && puppet5_installed?
   File.open(PUPPET_UPGRADE_COMPLETE, 'w') do |file|
-    file.write("No Puppet 3 to 4 upgrade performed. Puppet 4 installed on #{Time.now}.")
+    file.write("No Puppet 4 to 5 upgrade performed. Puppet 5 installed on #{Time.now}.")
   end
 end
