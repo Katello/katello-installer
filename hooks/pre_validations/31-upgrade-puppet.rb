@@ -16,8 +16,11 @@ if app_value(:upgrade_puppet)
   Kafo::Helpers.log_and_say :info, 'Resetting puppet params...'
 
   if !app_value(:noop)
-    Kafo::Helpers.reset_value(param('foreman', 'puppet_home'))
-    Kafo::Helpers.reset_value(param('foreman', 'puppet_ssldir'))
+    if katello
+      Kafo::Helpers.reset_value(param('foreman', 'puppet_home'))
+      Kafo::Helpers.reset_value(param('foreman', 'puppet_ssldir'))
+    end
+
     Kafo::Helpers.reset_value(param('foreman_proxy', 'puppet_ssl_ca'))
     Kafo::Helpers.reset_value(param('foreman_proxy', 'puppet_ssl_cert'))
     Kafo::Helpers.reset_value(param('foreman_proxy', 'puppet_ssl_key'))
