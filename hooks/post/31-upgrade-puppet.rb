@@ -25,7 +25,7 @@ if app_value(:upgrade_puppet) && !puppet_upgrade_complete?
   end
 end
 
-if !app_value(:upgrade_puppet) && !puppet_upgrade_complete? && puppet5_installed?
+if !app_value(:upgrade_puppet) && !puppet_upgrade_complete? && puppet5_available?
   File.open(PUPPET_UPGRADE_COMPLETE, 'w') do |file|
     file.write("No Puppet 4 to 5 upgrade performed. Puppet 5 installed on #{Time.now}.")
   end
