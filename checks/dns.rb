@@ -1,30 +1,31 @@
 #!/usr/bin/env ruby
 # Check to verify forward / reverse dns matches hostname
+require 'ipaddr'
+require 'resolv'
+require 'socket'
 
-def error_exit(message, code)
+def error_exit(message, code=2)
   $stderr.puts message
   exit code
 end
 
-@hostname = `hostname -f`.chomp
-@ip = `getent ahosts #{@hostname} | awk '/STREAM/ { print $1 }'`.chomp
-@reverse = `getent hosts #{@ip} | awk '{ print $2 }'`.chomp
+hostname = `hostname -f`.chomp
+forwards = Resolv.getaddresses(hostname)
 
-FORWARD = "Unable to resolve forward DNS for #{@hostname}"
-
-POINTS = "Forward DNS points to #{@ip} which is not configured on this server"
-
-REVERSE = "Reverse DNS #{@reverse} does not match hostname #{@hostname}"
-
-if @ip.empty?
-  error_exit(FORWARD, 2)
+if forwards.empty?
+  error_exit("Unable to resolve forward DNS for #{hostname}")
 end
 
-`ip -o a | awk '/ #{@ip}\\// { print $4 }' | cut -d/ -f1`.chomp
-unless $?.success?
-  error_exit(POINTS, 2)
-end
+ips = Socket.ip_address_list.reject(&:ipv6_linklocal?).map { |addr| IPAddr.new(addr.ip_address) }
 
-unless @hostname == @reverse
-  error_exit(REVERSE, 2)
+forwards.each do |ip|
+  ip = IPAddr.new(ip)
+  unless ips.include?(ip)
+    error_exit("Forward DNS points to #{ip} which is not configured on this server")
+  end
+
+  reverse = Resolv.getname(ip.to_s)
+  unless hostname == reverse
+    error_exit("Reverse DNS #{reverse} does not match hostname #{hostname}")
+  end
 end
