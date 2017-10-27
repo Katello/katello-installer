@@ -67,6 +67,7 @@ foreman::plugin::setup: false
 foreman::plugin::tasks: true
 foreman::plugin::templates: false
 foreman_proxy::plugin::ansible: false
+foreman_proxy::plugin::chef: false
 foreman_proxy::plugin::dhcp::infoblox: false
 foreman_proxy::plugin::dns::infoblox: false
 foreman_proxy::plugin::openscap: false
