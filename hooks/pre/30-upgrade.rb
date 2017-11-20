@@ -11,18 +11,6 @@ def start_databases
   Kafo::Helpers.execute('katello-service start --only mongod,postgresql')
 end
 
-def start_httpd
-  Kafo::Helpers.execute('katello-service start --only httpd')
-end
-
-def start_qpidd
-  Kafo::Helpers.execute('katello-service start --only qpidd,qdrouterd')
-end
-
-def start_pulp
-  Kafo::Helpers.execute('katello-service start --only pulp_workers,pulp_resource_manager,pulp_celerybeat')
-end
-
 def update_http_conf
   Kafo::Helpers.execute("grep -F -q 'Include \"/etc/httpd/conf.modules.d/*.conf\"' /etc/httpd/conf/httpd.conf || \
                        echo -e '<IfVersion >= 2.4> \n    Include \"/etc/httpd/conf.modules.d/*.conf\"\n</IfVersion>' \
@@ -43,10 +31,6 @@ def migrate_candlepin
     db_uri += "&sslfactory=org.postgresql.ssl.NonValidatingFactory" unless db_ssl_verify
   end
   Kafo::Helpers.execute("/usr/share/candlepin/cpdb --update --database '#{db_uri}' --user #{db_user} --password #{db_password}")
-end
-
-def start_tomcat
-  Kafo::Helpers.execute('katello-service start --only tomcat,tomcat6')
 end
 
 def remove_gutterball
@@ -228,9 +212,6 @@ if app_value(:upgrade)
   if katello || foreman_proxy_content
     upgrade_step :upgrade_qpid_paths
     upgrade_step :migrate_pulp, :run_always => true
-    upgrade_step :start_httpd, :run_always => true
-    upgrade_step :start_qpidd, :run_always => true
-    upgrade_step :start_pulp, :run_always => true
   end
 
   if foreman_proxy_content
@@ -241,7 +222,6 @@ if app_value(:upgrade)
     upgrade_step :mark_qpid_cert_for_update
     upgrade_step :migrate_candlepin, :run_always => true
     upgrade_step :remove_gutterball
-    upgrade_step :start_tomcat, :run_always => true
     upgrade_step :fix_katello_settings_file
     upgrade_step :migrate_foreman, :run_always => true
     upgrade_step :remove_nodes_distributors
