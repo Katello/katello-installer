@@ -11,7 +11,7 @@ FORGE
       puppetlabs-concat (< 5.0.0, >= 1.0.0)
       puppetlabs-postgresql (< 6.0.0, >= 4.2.0)
       puppetlabs-stdlib (< 5.0.0, >= 4.2.0)
-    katello-certs (3.0.0)
+    katello-certs (3.0.1)
       jlambert121-trusted_ca (< 2.0.0, >= 1.0.1)
       katello-common (< 2.0.0, >= 1.0.0)
       puppet-extlib (< 2.0.0, >= 0.10.4)
