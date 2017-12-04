@@ -13,7 +13,7 @@ puppet:
 foreman_proxy:
   custom_repo: true
   http: true
-  ssl_port: '9090'
+  ssl_port: '9093'
   templates: true
   ssl_ca: /etc/foreman-proxy/ssl_ca.pem
   ssl_cert: /etc/foreman-proxy/ssl_cert.pem
