@@ -46,6 +46,10 @@ def import_distributions
   Kafo::Helpers.execute('foreman-rake katello:upgrades:2.4:import_distributions')
 end
 
+def import_product_content
+  Kafo::Helpers.execute('foreman-rake katello:upgrades:3.6:import_product_content')
+end
+
 def import_puppet_modules
   Kafo::Helpers.execute('foreman-rake katello:upgrades:2.4:import_puppet_modules')
 end
@@ -166,6 +170,7 @@ if app_value(:upgrade)
       upgrade_step :import_distributions, :long_running => true
       upgrade_step :import_puppet_modules, :long_running => true
       upgrade_step :import_subscriptions, :long_running => true
+      upgrade_step :import_product_content, :long_running => true
       upgrade_step :elasticsearch_message
       upgrade_step :add_export_distributor, :long_running => true
       upgrade_step :remove_docker_v1_content, :long_running => true
