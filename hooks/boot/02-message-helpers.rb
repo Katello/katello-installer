@@ -38,7 +38,6 @@ MSG
       foreman_proxy_fqdn    = kafo.param('foreman_proxy_certs', 'foreman_proxy_fqdn').value
       foreman_oauth_key     = Kafo::Helpers.read_cache_data("oauth_consumer_key")
       foreman_oauth_secret  = Kafo::Helpers.read_cache_data("oauth_consumer_secret")
-      katello_oauth_secret  = Kafo::Helpers.read_cache_data("katello_oauth_secret")
       org                   = kafo.param('certs', 'org').value
 
       success_message
@@ -68,7 +67,6 @@ MSG
                     --foreman-proxy-trusted-hosts                 "<%= "#{foreman_proxy_fqdn}" %>"\\
                     --foreman-proxy-oauth-consumer-key            "<%= "#{foreman_oauth_key}" %>"\\
                     --foreman-proxy-oauth-consumer-secret         "<%= "#{foreman_oauth_secret}" %>"\\
-                    --foreman-proxy-content-pulp-oauth-secret     "<%= "#{katello_oauth_secret}" %>"\\
                     --foreman-proxy-content-certs-tar             "<%= color('#{certs_tar}', :info) %>"\\
                     --puppet-server-foreman-url                   "https://<%= "#{fqdn}" %>"
 MSG
