@@ -124,7 +124,6 @@ function check-non-ascii () {
     fi
 }
 
-
 function check-server-cert-encoding () {
     printf "Checking server certificate's encoding: "
     openssl x509 -inform pem -in $CERT_FILE -noout -text &> /dev/null

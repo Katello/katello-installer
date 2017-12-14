@@ -127,7 +127,7 @@ end
 begin
   require 'rubocop/rake_task'
   RuboCop::RakeTask.new
-rescue
+rescue LoadError
   puts 'Rubocop not loaded'
 end
 

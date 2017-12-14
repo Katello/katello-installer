@@ -11,18 +11,6 @@ def start_databases
   Kafo::Helpers.execute('katello-service start --only mongod,postgresql')
 end
 
-def start_httpd
-  Kafo::Helpers.execute('katello-service start --only httpd')
-end
-
-def start_qpidd
-  Kafo::Helpers.execute('katello-service start --only qpidd,qdrouterd')
-end
-
-def start_pulp
-  Kafo::Helpers.execute('katello-service start --only pulp_workers,pulp_resource_manager,pulp_celerybeat')
-end
-
 def update_http_conf
   Kafo::Helpers.execute("grep -F -q 'Include \"/etc/httpd/conf.modules.d/*.conf\"' /etc/httpd/conf/httpd.conf || \
                        echo -e '<IfVersion >= 2.4> \n    Include \"/etc/httpd/conf.modules.d/*.conf\"\n</IfVersion>' \
@@ -43,10 +31,6 @@ def migrate_candlepin
     db_uri += "&sslfactory=org.postgresql.ssl.NonValidatingFactory" unless db_ssl_verify
   end
   Kafo::Helpers.execute("/usr/share/candlepin/cpdb --update --database '#{db_uri}' --user #{db_user} --password #{db_password}")
-end
-
-def start_tomcat
-  Kafo::Helpers.execute('katello-service start --only tomcat,tomcat6')
 end
 
 def remove_gutterball
@@ -73,9 +57,7 @@ def migrate_pulp
 end
 
 def migrate_foreman
-  Kafo::Helpers.execute(['foreman-rake -- config -k use_pulp_oauth -v true >/dev/null',
-                         'foreman-rake db:migrate',
-                         'foreman-rake -- config -k use_pulp_oauth -v false >/dev/null'])
+  Kafo::Helpers.execute('foreman-rake db:migrate')
 end
 
 def remove_nodes_importers
@@ -119,24 +101,43 @@ end
 def upgrade_qpid_paths
   qpid_dir = '/var/lib/qpidd'
   qpid_data_dir = "#{qpid_dir}/.qpidd"
+
   qpid_linearstore = "#{qpid_data_dir}/qls"
-  if File.exist?("#{qpid_linearstore}/dat2") && File.exist?("#{qpid_linearstore}/p001/efp/2048k/in_use")
+  if Dir.glob("#{qpid_linearstore}/jrnl/**/*.jrnl").empty? && !File.exist?("#{qpid_linearstore}/dat")
     logger.info 'Qpid directory upgrade is already complete, skipping'
   else
+    backup_file = "/var/cache/qpid_queue_backup.tar.gz"
+
+    unless File.exist?(backup_file)
+      # Backup data directory before upgrade
+      puts "Backing up #{qpid_dir} in case of migration failure"
+      Kafo::Helpers.execute("tar -czf #{backup_file} #{qpid_dir}")
+    end
+
     # Make new directory structure for migration
     Kafo::Helpers.execute("mkdir -p #{qpid_linearstore}/p001/efp/2048k/in_use")
     Kafo::Helpers.execute("mkdir -p #{qpid_linearstore}/p001/efp/2048k/returned")
     Kafo::Helpers.execute("mkdir -p #{qpid_linearstore}/jrnl2")
-    # Backup data directory before upgrade
-    puts "Backing up #{qpid_dir} in case of migration failure"
-    Kafo::Helpers.execute("tar -czf /var/cache/qpid_queue_backup.tar.gz #{qpid_dir}")
-    # Move dat directory to new location dat2
-    Kafo::Helpers.execute("mv #{qpid_linearstore}/dat #{qpid_linearstore}/dat2")
+
+    if File.exist?("#{qpid_linearstore}/dat") && File.exist?("#{qpid_linearstore}/dat2")
+      Kafo::Helpers.execute("rm -rf #{qpid_linearstore}/dat2")
+    end
+
+    if File.exist?("#{qpid_linearstore}/dat") && !File.exist?("#{qpid_linearstore}/dat2}")
+      # Move dat directory to new location dat2
+      Kafo::Helpers.execute("mv #{qpid_linearstore}/dat #{qpid_linearstore}/dat2")
+    end
+
     # Move qpid jrnl files
     Dir.foreach("#{qpid_linearstore}/jrnl") do |queue_name|
       next if queue_name == '.' || queue_name == '..'
+      next unless File.directory?("#{qpid_linearstore}/jrnl/#{queue_name}")
+
       puts "Moving #{queue_name}"
+      Kafo::Helpers.execute("mkdir -p #{qpid_linearstore}/jrnl2/#{queue_name}/")
       Dir.foreach("#{qpid_linearstore}/jrnl/#{queue_name}") do |jrnlfile|
+        next if jrnlfile == '.' || jrnlfile == '..'
+
         Kafo::Helpers.execute("mv #{qpid_linearstore}/jrnl/#{queue_name}/#{jrnlfile} #{qpid_linearstore}/p001/efp/2048k/in_use/#{jrnlfile}")
         Kafo::Helpers.execute("ln -s #{qpid_linearstore}/p001/efp/2048k/in_use/#{jrnlfile} #{qpid_linearstore}/jrnl2/#{queue_name}/#{jrnlfile}")
         unless $?.success?
@@ -145,12 +146,16 @@ def upgrade_qpid_paths
         end
       end
     end
+
     # Restore access
     Kafo::Helpers.execute("chown -R qpidd:qpidd #{qpid_dir}")
+
     # restore SELinux context by current policy
     Kafo::Helpers.execute("restorecon -FvvR #{qpid_dir}")
     logger.info 'Qpid path upgrade complete'
-    Kafo::Helpers.execute("rm -f /var/cache/qpid_queue_backup.tar.gz")
+    Kafo::Helpers.execute("rm -f #{backup_file}")
+    logger.info 'Removing old jrnl directory'
+    Kafo::Helpers.execute("rm -rf #{qpid_linearstore}/jrnl")
   end
 end
 
@@ -207,9 +212,6 @@ if app_value(:upgrade)
   if katello || foreman_proxy_content
     upgrade_step :upgrade_qpid_paths
     upgrade_step :migrate_pulp, :run_always => true
-    upgrade_step :start_httpd, :run_always => true
-    upgrade_step :start_qpidd, :run_always => true
-    upgrade_step :start_pulp, :run_always => true
   end
 
   if foreman_proxy_content
@@ -220,7 +222,6 @@ if app_value(:upgrade)
     upgrade_step :mark_qpid_cert_for_update
     upgrade_step :migrate_candlepin, :run_always => true
     upgrade_step :remove_gutterball
-    upgrade_step :start_tomcat, :run_always => true
     upgrade_step :fix_katello_settings_file
     upgrade_step :migrate_foreman, :run_always => true
     upgrade_step :remove_nodes_distributors

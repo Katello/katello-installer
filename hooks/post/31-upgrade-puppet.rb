@@ -1,33 +1,32 @@
-def restart_services
-  Kafo::Helpers.execute('katello-service restart')
+PUPPET_UPGRADE_COMPLETE = '/etc/foreman-installer/.puppet_5_upgrade'.freeze
+
+def puppet5_available?
+  return true if `rpm -q puppet-agent --queryformat=%{version}`.start_with?('5.')
+
+  yum_info = `yum info puppet-agent`
+
+  available = yum_info.split('Available Packages')[1]
+  return false if available.nil?
+
+  version = available.split(/Version/)[1].split("\n")[0]
+  version = version.delete(':').strip
+  version.start_with?('5.')
 end
 
-def upgrade_step(step, options = {})
-  noop = app_value(:noop) ? ' (noop)' : ''
-  long_running = options[:long_running] ? ' (this may take a while) ' : ''
-
-  Kafo::Helpers.log_and_say :info, "Upgrade Step: #{step}#{long_running}#{noop}..."
-  unless app_value(:noop)
-    status = send(step)
-    fail_and_exit "Upgrade step #{step} failed. Check logs for more information." unless status
-  end
+def puppet_upgrade_complete?
+  File.exist?(PUPPET_UPGRADE_COMPLETE)
 end
 
-def fail_and_exit(message)
-  Kafo::Helpers.log_and_say :error, message
-  kafo.class.exit 1
-end
-
-if app_value(:upgrade_puppet)
-
-  katello = Kafo::Helpers.module_enabled?(@kafo, 'katello')
-  foreman_proxy = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
-
-  if katello || foreman_proxy
-    upgrade_step :restart_services
-  end
-
+if app_value(:upgrade_puppet) && !puppet_upgrade_complete?
   if [0, 2].include? @kafo.exit_code
-    Kafo::Helpers.log_and_say :info, 'Puppet upgrade completed!'
+    File.open(PUPPET_UPGRADE_COMPLETE, 'w') do |file|
+      file.write("Puppet 4 to 5 upgrade completed on #{Time.now}")
+    end
+  end
+end
+
+if !app_value(:upgrade_puppet) && !puppet_upgrade_complete? && puppet5_available?
+  File.open(PUPPET_UPGRADE_COMPLETE, 'w') do |file|
+    file.write("No Puppet 4 to 5 upgrade performed. Puppet 5 installed on #{Time.now}.")
   end
 end
