@@ -112,6 +112,18 @@ function check-ca-bundle () {
     fi
 }
 
+function check-non-ascii () {
+    printf "Checking for non ascii characters"
+    CHECK=$(grep --color='auto' -P -n "[\x80-\xFF]" $CA_BUNDLE_FILE $CERT_FILE)
+    if [ $? == "1" ]; then
+	 success
+    else
+        error 4 "There are non ascii characters present:"
+        echo
+        echo $CHECK
+    fi
+}
+
 function check-server-cert-encoding () {
     printf "Checking server certificate's encoding: "
     openssl x509 -inform pem -in $CERT_FILE -noout -text &> /dev/null
