@@ -24,8 +24,12 @@ forwards.each do |ip|
     error_exit("Forward DNS points to #{ip} which is not configured on this server")
   end
 
-  reverse = Resolv.getname(ip.to_s)
-  unless hostname == reverse
-    error_exit("Reverse DNS #{reverse} does not match hostname #{hostname}")
+  begin
+    reverse = Resolv.getname(ip.to_s)
+    unless hostname == reverse
+      error_exit("Reverse DNS #{reverse} does not match hostname #{hostname}")
+    end
+  rescue Resolv::ResolvError
+    error_exit("Forward DNS #{ip} did not reverse resolve to any hostname.")
   end
 end
