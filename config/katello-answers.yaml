@@ -54,6 +54,8 @@ foreman_proxy:
 foreman_proxy::plugin::pulp:
   enabled: true
   pulpnode_enabled: false
+foreman::cli:
+  ssl_ca_file: /etc/pki/katello/certs/katello-server-ca.crt
 foreman::plugin::ansible: false
 foreman::plugin::bootdisk: false
 foreman::plugin::chef: false
@@ -80,4 +82,3 @@ foreman::compute::openstack: false
 foreman::compute::ovirt: false
 foreman::compute::rackspace: false
 foreman::compute::vmware: false
-foreman::cli: true
