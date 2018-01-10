@@ -95,6 +95,10 @@ def remove_unused_products
   Kafo::Helpers.execute('foreman-rake katello:upgrades:3.4:remove_unused_products')
 end
 
+def reindex_docker_tags
+  Kafo::Helpers.execute('foreman-rake katello:upgrades:3.4:reindex_docker_tags')
+end
+
 def create_host_subscription_associations
   Kafo::Helpers.execute('foreman-rake katello:import_subscriptions')
 end
@@ -181,6 +185,7 @@ if app_value(:upgrade)
       upgrade_step :set_virt_who_on_pools, :long_running => true
       upgrade_step :remove_unused_products, :long_running => true
       upgrade_step :create_host_subscription_associations, :long_running => true
+      upgrade_step :reindex_docker_tags, :long_running => true
     end
 
     if [0, 2].include? @kafo.exit_code
