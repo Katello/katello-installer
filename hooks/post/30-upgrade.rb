@@ -54,6 +54,10 @@ def import_puppet_modules
   Kafo::Helpers.execute('foreman-rake katello:upgrades:2.4:import_puppet_modules')
 end
 
+def remove_registration_tasks
+  Kafo::Helpers.execute('foreman-rake foreman_tasks:cleanup TASK_SEARCH="label = Actions::Katello::Host::Register" STATES=all')
+end
+
 def import_subscriptions
   Kafo::Helpers.execute('foreman-rake katello:import_subscriptions')
 end
@@ -191,6 +195,7 @@ if app_value(:upgrade)
       upgrade_step :create_host_subscription_associations, :long_running => true
       upgrade_step :reindex_docker_tags, :long_running => true
       upgrade_step :republish_file_repos, :long_running => true
+      upgrade_step :remove_registration_tasks
     end
 
     if [0, 2].include? @kafo.exit_code
