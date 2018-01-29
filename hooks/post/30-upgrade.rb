@@ -58,6 +58,10 @@ def import_subscriptions
   Kafo::Helpers.execute('foreman-rake katello:import_subscriptions')
 end
 
+def republish_file_repos
+  Kafo::Helpers.execute('foreman-rake katello:upgrades:3.6:republish_file_repos')
+end
+
 def elasticsearch_message
   `rpm -q elasticsearch`
   if $?.success?
@@ -186,6 +190,7 @@ if app_value(:upgrade)
       upgrade_step :remove_unused_products, :long_running => true
       upgrade_step :create_host_subscription_associations, :long_running => true
       upgrade_step :reindex_docker_tags, :long_running => true
+      upgrade_step :republish_file_repos, :long_running => true
     end
 
     if [0, 2].include? @kafo.exit_code
