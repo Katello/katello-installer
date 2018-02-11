@@ -112,6 +112,39 @@ function check-ca-bundle () {
     fi
 }
 
+function check-non-ascii () {
+    printf "Checking for non ascii characters"
+    CHECK=$(grep --color='auto' -P -n "[\x80-\xFF]" $CA_BUNDLE_FILE $CERT_FILE)
+    if [ $? == "1" ]; then
+	 success
+    else
+        error 4 "There are non ascii characters present:"
+        echo
+        echo $CHECK
+    fi
+}
+
+function check-server-cert-encoding () {
+    printf "Checking server certificate's encoding: "
+    openssl x509 -inform pem -in $CERT_FILE -noout -text &> /dev/null
+    if [ $? == "0" ]; then
+        success
+    else
+        openssl x509 -inform der -in $CERT_FILE -noout -text &> /dev/null
+        if [ $? == "0" ]; then
+            error 8 "The server certificate is in DER encoding, which is incompatible.\n\n"
+            printf "Run the following command to convert the certificate to PEM encoding,\n"
+            printf "then test it again.\n"
+            printf "# openssl x509 -in %s -outform pem -out %s.pem\n\n" $(basename $CERT_FILE) $(basename $CERT_FILE)
+            printf "When you run $(basename $0) again, use file\n"
+            printf "%s.pem for the server certificate.\n\n" $(basename $CERT_FILE)
+        else
+            error 9 "The encoding of the server certificate is unknown."
+        fi
+    fi
+}
+
+check-server-cert-encoding
 check-expiration
 check-cert-ca-flag
 show-details
