@@ -16,6 +16,9 @@ if [0, 2].include?(@kafo.exit_code)
       Kafo::Helpers.server_success_message(@kafo)
       Kafo::Helpers.new_install_message(@kafo) if @kafo.param('foreman', 'authentication').value == true && new_install?
       Kafo::Helpers.certs_generate_command_message
+    elsif Kafo::Helpers.module_enabled?(@kafo, 'katello_devel')
+      Kafo::Helpers.dev_server_success_message(@kafo)
+      Kafo::Helpers.new_install_message(@kafo) if @kafo.param('foreman', 'authentication').value == true && new_install?
     end
 
     Kafo::Helpers.proxy_instructions_message(@kafo) if Kafo::Helpers.module_enabled?(@kafo, 'foreman_proxy_certs')
