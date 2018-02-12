@@ -91,31 +91,6 @@ foreman-installer --scenario katello --clear-puppet-environments
 
 ## Development Usage
 
-### Devel Installer
-
-```
-$ yum install -y foreman-installer-katello-devel
-
-# install Katello with Foreman from git
-$ foreman-installer --scenario katello-devel
-```
-
-Install with custom user
-
-```
-foreman-installer --scenario katello-devel\
-                  --katello-devel-user testuser\
-                  --certs-group testuser\
-                  --katello-devel-deployment-dir /home/testuser
-```
-
-Install without RVM
-
-```
-foreman-installer --scenario katello-devel\
-                  --katello-devel-use-rvm false
-```
-
 ### From Git
 
 If you're working off the master branch, use Librarian to pull in all the modules to your local checkout:
