@@ -13,11 +13,11 @@ end
 BUILDDIR = File.expand_path(ENV['BUILDDIR'] || '_build')
 PKGDIR = ENV['PKGDIR'] || File.expand_path('pkg')
 FOREMAN_MODULES_DIR = File.expand_path(ENV['FOREMAN_MODULES_DIR'] || '/usr/share/foreman-installer/modules')
-FOREMAN_BRANCH = ENV['FOREMAN_BRANCH'] || 'develop'
+FOREMAN_BRANCH = ENV['FOREMAN_BRANCH'] || '1.16-stable'
 PARSER_CACHE_DIR = ENV['PARSER_CACHE_DIR'] || "#{BUILDDIR}/parser_cache"
 
 CONFIG_DIR = './config'
-SCENARIOS = ['katello', 'foreman-proxy-content', 'katello-devel']
+SCENARIOS = ['katello', 'foreman-proxy-content']
 
 file BUILDDIR do
   mkdir BUILDDIR
@@ -50,13 +50,11 @@ end
 task :generate_parser_caches => [PARSER_CACHE_DIR] do
   caches = [
     "#{PARSER_CACHE_DIR}/katello.yaml",
-    "#{PARSER_CACHE_DIR}/katello-devel.yaml",
     "#{PARSER_CACHE_DIR}/foreman-proxy-certs-generate.yaml"
   ]
 
   configs = [
-    'config/katello.yaml',
-    'config/katello-devel.yaml'
+    'config/katello.yaml'
   ]
 
   # foreman-proxy-certs-generate is a special (read: "problem") child
@@ -69,7 +67,7 @@ task :generate_parser_caches => [PARSER_CACHE_DIR] do
 
     cache = YAML.load_file(filename.to_s)
     cache[:files] = cache[:files].select do |k, _|
-      %w(certs foreman_proxy_certs foreman_proxy_content katello katello_devel).include?(k)
+      %w(certs foreman_proxy_certs foreman_proxy_content katello).include?(k)
     end
     File.open(filename.to_s, "w") do |file|
       file.write(cache.to_yaml)
