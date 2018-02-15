@@ -112,11 +112,22 @@ function check-ca-bundle () {
     fi
 }
 
+function check-cert-san () {
+    printf "Checking Subject Alt Name on certificate"
+    CHECK=$(openssl x509 -noout -text -in $CERT_FILE | grep DNS:)
+    if [ $? == "0" ]; then
+        success
+    else
+        error 4 "The $CERT_FILE does not contain a Subject Alt Name"
+    fi
+}
+
 check-expiration
 check-cert-ca-flag
 show-details
 check-priv-key
 check-ca-bundle
+check-cert-san
 
 if [ $EXIT_CODE == "0" ]; then
     cat <<EOF
