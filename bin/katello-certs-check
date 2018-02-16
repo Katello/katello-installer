@@ -36,7 +36,7 @@ done
 
 EXIT_CODE=0
 
-if [ -z "$CERT_FILE" -o -z "$KEY_FILE" -o -z "$CA_BUNDLE_FILE" ]; then
+if [ -z "$CERT_FILE" -o -z "$KEY_FILE" -o -z "$CA_BUNDLE_FILE" -o -z "$REQ_FILE" ]; then
     echo "One of the required parameters missing" >&2
     usage
     exit 1
@@ -82,7 +82,7 @@ function check-cert-ca-flag () {
     else
         error 7 "The server cert is marked as a CA and can not be used"
     fi
-}    
+}
 
 function show-details () {
     printf "Validating the certificate "
