@@ -42,6 +42,9 @@ if [ -z "$CERT_FILE" -o -z "$KEY_FILE" -o -z "$CA_BUNDLE_FILE" -o -z "$REQ_FILE"
     exit 1
 fi
 
+HOSTNAME=$(hostname -f)
+CERT_HOSTNAME=$(openssl x509 -noout -subject -in $CERT_FILE | sed -e 's/^subject.*CN=\([a-zA-Z0-9\.\-]*\).*$/\1/')
+
 function error () {
     echo "[FAIL]"
     CURRENT_EXIT_CODE=$1
@@ -129,7 +132,7 @@ check-priv-key
 check-ca-bundle
 check-cert-san
 
-if [ $EXIT_CODE == "0" ]; then
+if [ $EXIT_CODE == "0" -a $CERT_HOSTNAME != $HOSTNAME ]; then
     cat <<EOF
 
 Validation succeeded.
@@ -169,6 +172,30 @@ To use them inside an EXISTING \$FOREMAN_PROXY, run this command INSTEAD:
                                  --server-key "$(readlink -f $KEY_FILE)"\\
                                  --server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
                                  --certs-update-server
+EOF
+elif [ $EXIT_CODE == "0" ]; then
+  cat <<EOF
+
+  Validation succeeded.
+
+  To use them inside a NEW \$FOREMAN_PROXY, run this command:
+
+      foreman-proxy-certs-generate --foreman-proxy-fqdn "\$FOREMAN_PROXY"\\
+                                   --certs-tar  "~/\$FOREMAN_PROXY-certs.tar"\\
+                                   --server-cert "$(readlink -f $CERT_FILE)"\\
+                                   --server-cert-req "$(readlink -f $REQ_FILE)"\\
+                                   --server-key "$(readlink -f $KEY_FILE)"\\
+                                   --server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
+
+  To use them inside an EXISTING \$FOREMAN_PROXY, run this command INSTEAD:
+
+      foreman-proxy-certs-generate --foreman-proxy-fqdn "\$FOREMAN_PROXY"\\
+                                   --certs-tar  "~/\$FOREMAN_PROXY-certs.tar"\\
+                                   --server-cert "$(readlink -f $CERT_FILE)"\\
+                                   --server-cert-req "$(readlink -f $REQ_FILE)"\\
+                                   --server-key "$(readlink -f $KEY_FILE)"\\
+                                   --server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
+                                   --certs-update-server
 EOF
 else
     exit $EXIT_CODE
