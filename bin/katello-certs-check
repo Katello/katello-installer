@@ -125,12 +125,23 @@ function check-cert-san () {
     fi
 }
 
+function check-new-line () {
+  printf "Checking for new line at end of certificate"
+  CHECK=`tail -n 1 "$CERT_FILE"`
+  if [ "$CHECK" == "" ]; then
+        success
+  else
+        error 4 "The $CERT_FILE does not contain a new line at the end."
+  fi
+}
+
 check-expiration
 check-cert-ca-flag
 show-details
 check-priv-key
 check-ca-bundle
 check-cert-san
+check-new-line
 
 if [ $EXIT_CODE == "0" -a $CERT_HOSTNAME != $HOSTNAME ]; then
     cat <<EOF
