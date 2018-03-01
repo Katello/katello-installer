@@ -11,3 +11,7 @@ mod 'katello/service_wait',          :git => 'https://github.com/theforeman/pupp
 
 # Katello devel specific modules
 mod 'katello/katello_devel',         :git => 'https://github.com/theforeman/puppet-katello_devel'
+
+# A fork that marks metadata as compatible with puppet 5
+# https://github.com/thias/puppet-squid3/pull/59
+mod 'thias-squid3',                  :git => 'https://github.com/theforeman/puppet-squid3', :ref => 'allow-puppet-5'
