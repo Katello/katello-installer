@@ -23,3 +23,7 @@ mod 'theforeman/tftp',          '>= 4.0.0 < 4.1.0'
 mod 'theforeman/foreman',       '>= 9.0.0 < 9.1.0'
 mod 'theforeman/foreman_proxy', '>= 7.0.0 < 7.1.0'
 mod 'theforeman/puppet',        '>= 8.2.0 < 8.3.0'
+
+# A fork that marks metadata as compatible with puppet 5
+# https://github.com/thias/puppet-squid3/pull/59
+mod 'thias-squid3', :git => 'https://github.com/theforeman/puppet-squid3', :ref => 'allow-puppet-5'
