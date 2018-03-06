@@ -37,6 +37,10 @@ MSG
       say "      Initial credentials are <%= color('#{kafo.param('foreman', 'admin_username').value}', :info) %> / <%= color('#{kafo.param('foreman', 'admin_password').value}', :info) %>"
     end
 
+    def dev_new_install_message(kafo)
+      say "      Initial credentials are <%= color('admin', :info) %> / <%= color('#{kafo.param('katello_devel', 'admin_password').value}', :info) %>"
+    end
+
     def proxy_instructions_message(kafo)
       fqdn = if kafo.param('foreman_proxy_certs', 'parent_fqdn')
                kafo.param('foreman_proxy_certs', 'parent_fqdn').value
