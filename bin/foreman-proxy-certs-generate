@@ -45,7 +45,7 @@ class ForemanProxyCertsGenerate
     temp_file('foreman-proxy-certs-config',
               <<-EOF
                 :log_level: :debug
-                :log_dir: /var/log
+                :log_dir: /var/log/foreman-installer
                 :log_name: foreman-proxy-certs-generate.log
                 :no_prefix: true
                 :answer_file: #{answers_file.path}
