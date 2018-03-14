@@ -89,33 +89,6 @@ To clear all Puppet environments on disk:
 foreman-installer --scenario katello --clear-puppet-environments
 ```
 
-## Development Usage
-
-### Devel Installer
-
-```
-$ yum install -y foreman-installer-katello-devel
-
-# install Katello with Foreman from git
-$ foreman-installer --scenario katello-devel
-```
-
-Install with custom user
-
-```
-foreman-installer --scenario katello-devel\
-                  --katello-devel-user testuser\
-                  --certs-group testuser\
-                  --katello-devel-deployment-dir /home/testuser
-```
-
-Install without RVM
-
-```
-foreman-installer --scenario katello-devel\
-                  --katello-devel-use-rvm false
-```
-
 ### From Git
 
 If you're working off the master branch, use Librarian to pull in all the modules to your local checkout:
@@ -180,8 +153,8 @@ The rest of the procedure is identical to the default CA setup.
 **Setting custom certificates after 'foreman-installer --scenario katello'
 was already run.**
 
-The first run of `foreman-installer --scenario katello` uses the default 
-CA for both server and client certificates. To enforce the custom 
+The first run of `foreman-installer --scenario katello` uses the default
+CA for both server and client certificates. To enforce the custom
 certificates to be deployed, on needs to set `--certs-update-server` for
 updating the CA certificate and `--certs-update-server-ca` because the
 server CA changed as well (and new katello-ca-consumer rpm needs to be
