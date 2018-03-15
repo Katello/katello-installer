@@ -1,7 +1,7 @@
 class Kafo::Helpers
   class << self
     def puppet_dir
-      @puppet_dir ||= File.directory?('/opt/puppetlabs/puppet') ? '/opt/puppetlabs/puppet/cache' : '/var/lib/puppet'
+      @puppet_dir ||= File.directory?('/var/lib/puppet') ? '/var/lib/puppet' : '/opt/puppetlabs/puppet/cache'
     end
 
     def module_enabled?(kafo, name)
