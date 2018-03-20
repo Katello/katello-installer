@@ -81,7 +81,7 @@ MSG
                     --foreman-proxy-trusted-hosts                 "<%= "#{foreman_proxy_fqdn}" %>"\\
                     --foreman-proxy-oauth-consumer-key            "<%= "#{foreman_oauth_key}" %>"\\
                     --foreman-proxy-oauth-consumer-secret         "<%= "#{foreman_oauth_secret}" %>"\\
-                    --foreman-proxy-content-certs-tar             "<%= color('#{certs_tar}', :info) %>"\\
+                    --foreman-proxy-content-certs-tar             "<%= color("#{File.join('/root', File.basename(certs_tar))}", :info) %>"\\
                     --puppet-server-foreman-url                   "https://<%= "#{fqdn}" %>"
 MSG
     end
