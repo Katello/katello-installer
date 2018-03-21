@@ -46,6 +46,10 @@ def import_distributions
   Kafo::Helpers.execute('foreman-rake katello:upgrades:2.4:import_distributions')
 end
 
+def import_backend_consumer_attributes
+  Kafo::Helpers.execute('foreman-rake katello:upgrades:3.6:import_backend_consumer_attributes')
+end
+
 def import_product_content
   Kafo::Helpers.execute('foreman-rake katello:upgrades:3.6:import_product_content')
 end
@@ -195,6 +199,7 @@ if app_value(:upgrade)
       upgrade_step :create_host_subscription_associations, :long_running => true
       upgrade_step :reindex_docker_tags, :long_running => true
       upgrade_step :republish_file_repos, :long_running => true
+      upgrade_step :import_backend_consumer_attributes, :long_running => true
       upgrade_step :remove_registration_tasks
     end
 
