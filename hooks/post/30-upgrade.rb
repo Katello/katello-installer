@@ -1,6 +1,7 @@
 require 'fileutils'
 
 STEP_DIRECTORY = '/etc/foreman-installer/applied_hooks/post/'
+MONGO_REMOVAL_COMPLETE = '/etc/foreman-installer/.mongo_2_removed'.freeze
 
 def restart_services
   Kafo::Helpers.execute('katello-service restart')
@@ -137,6 +138,24 @@ def remove_event_queue
   end
 end
 
+def remove_legacy_mongo
+    logger.info 'Verifying if Mongo 3.x is running'
+    # Start mongo if not running
+    unless Kafo::Helpers.execute('pgrep mongod')
+      Kafo::Helpers.execute('service-wait rh-mongodb34-mongod start')
+    end
+    # Check to see if the RPMS exist and if so remove them and create the upgrade done file.
+    if `rpm -q mongodb --queryformat=%{version}`.start_with?('2.')
+      logger.warn 'removing Mongo 2.x packages'
+      Kafo::Helpers.execute("yum remove -y mongodb-2* mongodb-server-2* /dev/null 2>&1")
+      File.open(MONGO_REMOVAL_COMPLETE, 'w') do |file|
+        file.write("Mongo 2.x removal completed on #{Time.now}")
+      end
+    else
+      logger.info 'Mongo 2.x not detected, skipping'
+    end
+end
+
 def upgrade_step(step, options = {})
   noop = app_value(:noop) ? ' (noop)' : ''
   long_running = options[:long_running] ? ' (this may take a while) ' : ''
@@ -201,6 +220,7 @@ if app_value(:upgrade)
       upgrade_step :republish_file_repos, :long_running => true
       upgrade_step :import_backend_consumer_attributes, :long_running => true
       upgrade_step :remove_registration_tasks
+      upgrade_step :remove_legacy_mongo
     end
 
     if [0, 2].include? @kafo.exit_code
