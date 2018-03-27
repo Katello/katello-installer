@@ -1,14 +1,17 @@
 require 'fileutils'
+require 'yaml'
 
 STEP_DIRECTORY = '/etc/foreman-installer/applied_hooks/pre/'
 SSL_BUILD_DIR = param('certs', 'ssl_build_dir').value
+MONGO_ENGINE_MMAPV1 = '/etc/foreman-installer/.mongo_engine_mmapv1'.freeze
 
 def stop_services
-  Kafo::Helpers.execute('katello-service stop --exclude mongod,postgresql')
+  Kafo::Helpers.execute('systemctl stop mongod')
+  Kafo::Helpers.execute('katello-service stop --exclude rh-mongodb34-mongod,postgresql')
 end
 
 def start_databases
-  Kafo::Helpers.execute('katello-service start --only mongod,postgresql')
+  Kafo::Helpers.execute('katello-service start --only rh-mongodb34-mongod,postgresql')
 end
 
 def update_http_conf
@@ -43,14 +46,10 @@ def remove_gutterball
 end
 
 def migrate_pulp
-  # Fix pid if neccessary
-  if Kafo::Helpers.execute("grep -qe '7.[[:digit:]]' /etc/redhat-release")
-    Kafo::Helpers.execute("sed -i -e 's?/var/run/mongodb/mongodb.pid?/var/run/mongodb/mongod.pid?g' /etc/mongod.conf")
-  end
 
   # Start mongo if not running
   unless Kafo::Helpers.execute('pgrep mongod')
-    Kafo::Helpers.execute('service-wait mongod start')
+    Kafo::Helpers.execute('service-wait rh-mongodb34-mongod start')
   end
 
   Kafo::Helpers.execute('su - apache -s /bin/bash -c pulp-manage-db')
@@ -77,6 +76,30 @@ def fix_katello_settings_file
   settings = {:katello => settings[:common]}
   File.open(settings_file, 'w') do |file|
     file.write(settings.to_yaml)
+  end
+end
+
+def mongo_mmapv1_check
+  custom_hiera = '/etc/foreman-installer/custom-hiera.yaml'
+  mongodb_dir = '/var/lib/mongodb/'
+  # check and see if we have a pulp_database already, we have a wiredTiger file, and if the Hiera file has already been modifed.
+  if File.file?("#{mongodb_dir}/pulp_database.0") && File.file?("#{mongodb_dir}/WiredTiger.wt")
+    if File.foreach("#{custom_hiera}").grep(/mongodb::server::storage_engine:/).any?
+      logger.info 'No changed needed, Mongo storage engine will installed with wiredTiger'
+    else
+      # set storage engine to MMAPv1 in Hiera file and create engine file.
+      logger.info 'Detecting Pulp database and no wiredTiger files, keeping storage engine as MMAPv1'
+      logger.info 'To upgrade to wiredTiger at a later time run foreman-installer with the --upgrade-mongo-storage flag.'
+      # Write to custom_hiera to tell users to not touch the setting.
+      open(custom_hiera, 'a') { |f|
+        f << "# Added by foreman-installer during upgrade, do not remove or Mongo will not start!!!!\n"
+        f << "mongodb::server::storage_engine: 'mmapv1'\n"
+      }
+      # Create engine file so we know Mongo is in mmapv1 for engine upgrade hook.
+      File.open(MONGO_ENGINE_MMAPV1, 'w') do |file|
+        file.write("Mongo storage engine set to mmapv1 on #{Time.now}")
+      end
+    end
   end
 end
 
@@ -212,6 +235,7 @@ if app_value(:upgrade)
   if katello || foreman_proxy_content
     upgrade_step :upgrade_qpid_paths
     upgrade_step :migrate_pulp, :run_always => true
+    upgrade_step :mongo_mmapv1_check
   end
 
   if foreman_proxy_content
