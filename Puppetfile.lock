@@ -36,7 +36,7 @@ FORGE
       puppetlabs-apache (< 3.0.0, >= 1.0.0)
       puppetlabs-stdlib (< 5.0.0, >= 4.6.0)
       theforeman-foreman (< 9.0.0, >= 7.0.0)
-    katello-pulp (5.0.1)
+    katello-pulp (5.0.2)
       katello-qpid (< 5.0.0, >= 2.0.0)
       puppet-extlib (< 3.0.0, >= 0.10.4)
       puppetlabs-apache (< 3.0.0, >= 1.2.0)
