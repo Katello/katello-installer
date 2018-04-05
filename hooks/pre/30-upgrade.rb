@@ -31,7 +31,7 @@ def migrate_candlepin
     db_uri += "?ssl=true"
     db_uri += "&sslfactory=org.postgresql.ssl.NonValidatingFactory" unless db_ssl_verify
   end
-  Kafo::Helpers.execute("/usr/share/candlepin/cpdb --update --database '#{db_uri}' --user #{db_user} --password #{db_password}")
+  Kafo::Helpers.execute("/usr/share/candlepin/cpdb --update --database '#{db_uri}' --user '#{db_user}' --password '#{db_password}'")
 end
 
 def remove_gutterball
