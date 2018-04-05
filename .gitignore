@@ -12,6 +12,7 @@ bootstrap.sh
 update_submodules_scratch
 .librarian
 .tmp
+.bundle
 .rpm
 .*.sw?
 .yardoc
