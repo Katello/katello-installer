@@ -10,6 +10,14 @@ begin
 rescue LoadError
 end
 
+begin
+  require 'puppet_forge'
+  require 'semverse'
+  pin_task = true
+rescue LoadError
+  pin_task = false
+end
+
 BUILDDIR = File.expand_path(ENV['BUILDDIR'] || '_build')
 PKGDIR = ENV['PKGDIR'] || File.expand_path('pkg')
 FOREMAN_MODULES_DIR = File.expand_path(ENV['FOREMAN_MODULES_DIR'] || '/usr/share/foreman-installer/modules')
@@ -152,3 +160,38 @@ CLEAN.include(BUILDDIR)
 CLEAN.include(PKGDIR)
 
 task :default => [:rubocop, :spec, 'pkg:generate_source']
+
+if pin_task
+  # rubocop: disable Style/GlobalVars
+  desc 'Pin all the modules in Puppetfile to released versions instead of git branches'
+  task :pin_modules do
+    filename = 'Puppetfile'
+    $new_content = []
+
+    def forge(url)
+      $new_content << "forge '#{url}'"
+      $new_content << ''
+      PuppetForge.host = url
+    end
+
+    def mod(name, options=nil)
+      if options.nil?
+        $new_content << "mod '#{name}'"
+      elsif options.is_a?(String)
+        $new_content << "mod '#{name}', '#{options}'"
+      else
+        release = PuppetForge::Module.find(name.tr('/', '-')).current_release
+        version = Semverse::Version.new(release.version)
+        max = "#{version.major}.#{version.minor + 1}.0"
+        $new_content << "mod '#{name}', '>= #{version} < #{max}'"
+      end
+    end
+
+    load filename
+
+    File.open(filename, 'w') do |file|
+      file.write $new_content.join("\n") + "\n"
+    end
+  end
+  # rubocop: enable Style/GlobalVars
+end

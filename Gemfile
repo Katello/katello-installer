@@ -11,3 +11,9 @@ gem 'puppet', '>= 4.6.0', '< 6.0.0'
 gem 'puppet-strings'
 gem 'rake'
 gem 'rgen' # https://tickets.puppetlabs.com/browse/PDOC-168
+
+group :development do
+  # Needed to pin dependencies
+  gem 'puppet_forge'
+  gem 'semverse'
+end
