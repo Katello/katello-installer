@@ -49,7 +49,6 @@ def reset_pulp
     'rm -f /var/lib/pulp/init.flag',
     'service-wait httpd stop',
     'service-wait rh-mongodb34-mongod stop',
-    'systemctl stop mongod > /dev/null 2>&1', # piping to dev null incase the old mongo is not installed so we dont get a traceback.
     'rm -f /var/lib/mongodb/pulp_database*',
     'service-wait rh-mongodb34-mongod start',
     'rm -rf /var/lib/pulp/{distributions,published,repos}/*'

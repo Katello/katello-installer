@@ -1,17 +1,15 @@
 require 'fileutils'
-require 'yaml'
 
 STEP_DIRECTORY = '/etc/foreman-installer/applied_hooks/pre/'
 SSL_BUILD_DIR = param('certs', 'ssl_build_dir').value
 MONGO_ENGINE_MMAPV1 = '/etc/foreman-installer/.mongo_engine_mmapv1'.freeze
 
 def stop_services
-  Kafo::Helpers.execute('systemctl stop mongod')
-  Kafo::Helpers.execute('katello-service stop --exclude rh-mongodb34-mongod,postgresql')
+  Kafo::Helpers.execute('katello-service stop')
 end
 
-def start_databases
-  Kafo::Helpers.execute('katello-service start --only rh-mongodb34-mongod,postgresql')
+def start_postgresql
+  Kafo::Helpers.execute('katello-service start --only postgresql')
 end
 
 def update_http_conf
@@ -46,9 +44,10 @@ def remove_gutterball
 end
 
 def migrate_pulp
-
-  # Start mongo if not running
-  unless Kafo::Helpers.execute('pgrep mongod')
+  # Start mongo
+  if `rpm -q mongodb --queryformat=%{version}`.start_with?('2.') # If mongo 2.x is on the system run the migration with that.
+    Kafo::Helpers.execute('systemctl start mongod')
+  else
     Kafo::Helpers.execute('service-wait rh-mongodb34-mongod start')
   end
 
@@ -79,22 +78,27 @@ def fix_katello_settings_file
   end
 end
 
+# rubocop:disable MethodLength
 def mongo_mmapv1_check
   custom_hiera = '/etc/foreman-installer/custom-hiera.yaml'
   mongodb_dir = '/var/lib/mongodb/'
-  # check and see if we have a pulp_database already, we have a wiredTiger file, and if the Hiera file has already been modifed.
-  if File.file?("#{mongodb_dir}/pulp_database.0") && File.file?("#{mongodb_dir}/WiredTiger.wt")
-    if File.foreach("#{custom_hiera}").grep(/mongodb::server::storage_engine:/).any?
-      logger.info 'No changed needed, Mongo storage engine will installed with wiredTiger'
+  # check and see if we have a pulp_database already.
+  if File.file?("#{mongodb_dir}/pulp_database.0")
+    # check if we have modifed the custom_hiera file or if there is a wiredTiger file in the db directory.
+    if File.foreach("#{custom_hiera}").grep(/mongodb::server::storage_engine:/).any? || File.file?("#{mongodb_dir}/WiredTiger.wt")
+      logger.info 'No changed needed, Mongo storage engine will installed/kept with wiredTiger'
     else
+      # Stop Mongo 2.x
+      Kafo::Helpers.execute('systemctl stop mongod')
       # set storage engine to MMAPv1 in Hiera file and create engine file.
       logger.info 'Detecting Pulp database and no wiredTiger files, keeping storage engine as MMAPv1'
       logger.info 'To upgrade to wiredTiger at a later time run foreman-installer with the --upgrade-mongo-storage flag.'
       # Write to custom_hiera to tell users to not touch the setting.
-      open(custom_hiera, 'a') { |f|
-        f << "# Added by foreman-installer during upgrade, do not remove or Mongo will not start!!!!\n"
+      open(custom_hiera, 'a') do |f|
+        f << "# Added by foreman-installer during upgrade, run the installer with --upgrade-mongo-storage to upgrade to wiredTiger.\n"
         f << "mongodb::server::storage_engine: 'mmapv1'\n"
-      }
+      end
+
       # Create engine file so we know Mongo is in mmapv1 for engine upgrade hook.
       File.open(MONGO_ENGINE_MMAPV1, 'w') do |file|
         file.write("Mongo storage engine set to mmapv1 on #{Time.now}")
@@ -119,7 +123,6 @@ def mark_qpid_cert_for_update
   end
 end
 
-# rubocop:disable MethodLength
 # rubocop:disable Style/MultipleComparison
 def upgrade_qpid_paths
   qpid_dir = '/var/lib/qpidd'
@@ -229,17 +232,17 @@ if app_value(:upgrade)
   foreman_proxy_content = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
 
   upgrade_step :stop_services, :run_always => true
-  upgrade_step :start_databases, :run_always => true
+  upgrade_step :start_postgresql, :run_always => true
   upgrade_step :update_http_conf, :run_always => true
 
   if katello || foreman_proxy_content
     upgrade_step :upgrade_qpid_paths
     upgrade_step :migrate_pulp, :run_always => true
-    upgrade_step :mongo_mmapv1_check
   end
 
   if foreman_proxy_content
     upgrade_step :remove_nodes_importers
+    upgrade_step :mongo_mmapv1_check
   end
 
   if katello
@@ -249,6 +252,7 @@ if app_value(:upgrade)
     upgrade_step :fix_katello_settings_file
     upgrade_step :migrate_foreman, :run_always => true
     upgrade_step :remove_nodes_distributors
+    upgrade_step :mongo_mmapv1_check
   end
 
   Kafo::Helpers.log_and_say :info, 'Upgrade Step: Running installer...'
