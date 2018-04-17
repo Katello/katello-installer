@@ -189,6 +189,7 @@ if app_value(:upgrade)
       upgrade_step :import_backend_consumer_attributes, :long_running => true
       upgrade_step :remove_registration_tasks
       upgrade_step :remove_legacy_mongo
+      upgrade_step :ensure_ks_repos_are_bootable, :long_running => true
     end
 
     if [0, 2].include? @kafo.exit_code
