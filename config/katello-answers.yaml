@@ -82,3 +82,8 @@ foreman::compute::ovirt: false
 foreman::compute::rackspace: false
 foreman::compute::vmware: false
 foreman::cli: true
+foreman::cli::openscap: false
+foreman::cli::discovery: false
+foreman::cli::tasks: false
+foreman::cli::templates: false
+foreman::cli::remote_execution: false
