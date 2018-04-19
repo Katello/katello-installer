@@ -82,3 +82,4 @@ foreman::compute::ovirt: false
 foreman::compute::rackspace: false
 foreman::compute::vmware: false
 foreman::cli: true
+foreman::cli::openscap: false
