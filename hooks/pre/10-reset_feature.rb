@@ -76,23 +76,70 @@ def reset_candlepin
   empty_candlepin_database
 end
 
-def remote_host?(hostname)
-  !['localhost', '127.0.0.1', `hostname`.strip].include?(hostname)
+def empty_mongo
+  mongo_config = load_mongo_config
+  if remote_host?(mongo_config[:host])
+    empty_remote_mongo(mongo_config)
+  else
+    Kafo::Helpers.execute(
+      [
+        'service-wait rh-mongodb34-mongod stop',
+        'rm -f /var/lib/mongodb/pulp_database*',
+        'service-wait rh-mongodb34-mongod start'
+      ]
+    )
+  end
+end
+
+def load_mongo_config
+  config = {}
+  seeds = param_value('katello', 'pulp_db_seeds')
+  seed = seeds.split(',').first
+  host, port = seed.split(':') if seed
+  config[:host] = host || 'localhost'
+  config[:port] = port || '27017'
+  config[:database] = param_value('katello', 'pulp_db_name') || 'pulp_database'
+  config[:username] = param_value('katello', 'pulp_db_username')
+  config[:password] = param_value('katello', 'pulp_db_password')
+  config[:ssl] = param_value('katello', 'pulp_db_ssl') || false
+  config[:ca_path] = param_value('katello', 'pulp_db_ca_path')
+  config[:ssl_certfile] = param_value('katello', 'pulp_db_ssl_certfile')
+  config
+end
+
+def empty_remote_mongo(config)
+  if config[:ssl]
+    ssl = "--ssl"
+    if config[:ca_path]
+      ca_cert = "--sslCAFile #{config[:ca_path]}"
+      client_cert = "--sslPEMKeyFile #{config[:ssl_certfile]}" if config[:ssl_certfile]
+    end
+  end
+  username = "-u #{config[:username]}" if config[:username]
+  password = "-p #{config[:password]}" if config[:password]
+  host = "--host #{config[:host]} --port #{config[:port]}"
+  cmd = "mongo #{username} #{password} #{host} #{ssl} #{ca_cert} #{client_cert} --eval \"db.dropDatabase();\" #{config[:database]}"
+  Kafo::Helpers.execute(cmd)
 end
 
 def reset_pulp
   Kafo::KafoConfigure.logger.info 'Dropping Pulp database!'
 
-  commands = [
-    'rm -f /var/lib/pulp/init.flag',
-    'service-wait httpd stop',
-    'service-wait rh-mongodb34-mongod stop',
-    'rm -f /var/lib/mongodb/pulp_database*',
-    'service-wait rh-mongodb34-mongod start',
+  Kafo::Helpers.execute(
+    [
+      'rm -f /var/lib/pulp/init.flag',
+      'service-wait httpd stop',
+      'service-wait pulp_workers stop'
+    ]
+  )
+  empty_mongo
+  Kafo::Helpers.execute(
     'rm -rf /var/lib/pulp/{distributions,published,repos}/*'
-  ]
+  )
+end
 
-  Kafo::Helpers.execute(commands)
+def remote_host?(hostname)
+  !['localhost', '127.0.0.1', `hostname`.strip].include?(hostname)
 end
 
 def pg_command_base(config, command, args)
