@@ -85,7 +85,7 @@ if $0 == __FILE__
     CONFIG_FILE = gen.config_file.path
     Kafo::KafoConfigure.run
   ensure
-    gen.cleanup
+    gen.cleanup if gen
   end
   Kafo::KafoConfigure.exit_code == 2 ? exit(0) : exit(Kafo::KafoConfigure.exit_code)
 end
