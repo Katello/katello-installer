@@ -60,3 +60,14 @@ class Kafo::Helpers
     end
   end
 end
+
+# FIXME: remove when #23332 is released
+module HookContextExtension
+  def param_value(mod, name)
+    param(mod, name).value if param(mod, name)
+  end
+end
+
+unless Kafo::HookContext.method_defined?(:param_value)
+  Kafo::HookContext.send(:include, HookContextExtension)
+end

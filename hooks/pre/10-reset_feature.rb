@@ -23,9 +23,44 @@ def stop_services
   Kafo::Helpers.execute('katello-service stop --exclude postgresql')
 end
 
+def load_foreman_config
+  db_config = {}
+  db_config[:host] = param_value('foreman', 'db_host') || 'localhost'
+  db_config[:port] = param_value('foreman', 'db_port')
+  db_config[:database] = param_value('foreman', 'db_database') || 'foreman'
+  db_config[:username] = param_value('foreman', 'db_username')
+  db_config[:password] = param_value('foreman', 'db_password')
+  db_config
+end
+
 def reset_database
   Kafo::KafoConfigure.logger.info 'Dropping database!'
-  Kafo::Helpers.execute('foreman-rake db:drop 2>&1')
+
+  config = load_foreman_config
+  if remote_host?(config[:host])
+    empty_database!(config)
+  else
+    Kafo::Helpers.execute('DISABLE_DATABASE_ENVIRONMENT_CHECK=1 foreman-rake db:drop 2>&1')
+  end
+end
+
+def load_candlepin_config
+  db_config = {}
+  db_config[:host] = param_value('katello', 'candlepin_db_host') || 'localhost'
+  db_config[:port] = param_value('katello', 'candlepin_db_port')
+  db_config[:database] = param_value('katello', 'candlepin_db_name') || 'candlepin'
+  db_config[:username] = param_value('katello', 'candlepin_db_user')
+  db_config[:password] = param_value('katello', 'candlepin_db_password')
+  db_config
+end
+
+def empty_candlepin_database
+  config = load_candlepin_config
+  if remote_host?(config[:host])
+    empty_database!(config)
+  else
+    Kafo::Helpers.execute('sudo -u postgres dropdb candlepin')
+  end
 end
 
 def reset_candlepin
@@ -35,26 +70,96 @@ def reset_candlepin
   commands = [
     'rm -f /var/lib/candlepin/cpdb_done',
     'rm -f /var/lib/candlepin/cpinit_done',
-    "service #{tomcat} stop",
-    'sudo su postgres -c "dropdb candlepin"'
+    "service #{tomcat} stop"
   ]
-
   Kafo::Helpers.execute(commands)
+  empty_candlepin_database
+end
+
+def empty_mongo
+  mongo_config = load_mongo_config
+  if remote_host?(mongo_config[:host])
+    empty_remote_mongo(mongo_config)
+  else
+    Kafo::Helpers.execute(
+      [
+        'service-wait rh-mongodb34-mongod stop',
+        'rm -f /var/lib/mongodb/pulp_database*',
+        'service-wait rh-mongodb34-mongod start'
+      ]
+    )
+  end
+end
+
+def load_mongo_config
+  config = {}
+  seeds = param_value('katello', 'pulp_db_seeds')
+  seed = seeds.split(',').first
+  host, port = seed.split(':') if seed
+  config[:host] = host || 'localhost'
+  config[:port] = port || '27017'
+  config[:database] = param_value('katello', 'pulp_db_name') || 'pulp_database'
+  config[:username] = param_value('katello', 'pulp_db_username')
+  config[:password] = param_value('katello', 'pulp_db_password')
+  config[:ssl] = param_value('katello', 'pulp_db_ssl') || false
+  config[:ca_path] = param_value('katello', 'pulp_db_ca_path')
+  config[:ssl_certfile] = param_value('katello', 'pulp_db_ssl_certfile')
+  config
+end
+
+def empty_remote_mongo(config)
+  if config[:ssl]
+    ssl = "--ssl"
+    if config[:ca_path]
+      ca_cert = "--sslCAFile #{config[:ca_path]}"
+      client_cert = "--sslPEMKeyFile #{config[:ssl_certfile]}" if config[:ssl_certfile]
+    end
+  end
+  username = "-u #{config[:username]}" if config[:username]
+  password = "-p #{config[:password]}" if config[:password]
+  host = "--host #{config[:host]} --port #{config[:port]}"
+  cmd = "mongo #{username} #{password} #{host} #{ssl} #{ca_cert} #{client_cert} --eval \"db.dropDatabase();\" #{config[:database]}"
+  Kafo::Helpers.execute(cmd)
 end
 
 def reset_pulp
   Kafo::KafoConfigure.logger.info 'Dropping Pulp database!'
 
-  commands = [
-    'rm -f /var/lib/pulp/init.flag',
-    'service-wait httpd stop',
-    'service-wait rh-mongodb34-mongod stop',
-    'rm -f /var/lib/mongodb/pulp_database*',
-    'service-wait rh-mongodb34-mongod start',
+  Kafo::Helpers.execute(
+    [
+      'rm -f /var/lib/pulp/init.flag',
+      'service-wait httpd stop',
+      'service-wait pulp_workers stop'
+    ]
+  )
+  empty_mongo
+  Kafo::Helpers.execute(
     'rm -rf /var/lib/pulp/{distributions,published,repos}/*'
-  ]
+  )
+end
 
-  Kafo::Helpers.execute(commands)
+def remote_host?(hostname)
+  !['localhost', '127.0.0.1', `hostname`.strip].include?(hostname)
+end
+
+def pg_command_base(config, command, args)
+  port = "-p #{config[:port]}" if config[:port]
+  "PGPASSWORD='#{config[:password]}' #{command} -U #{config[:username]} -h #{config[:host]} #{port} #{args}"
+end
+
+def pg_sql_statement(config, statement)
+  pg_command_base(config, 'psql', "-d #{config[:database]} -t -c \"" + statement + '"')
+end
+
+# WARNING: deletes all the data from a database. No warnings. No confirmations.
+def empty_database!(config)
+  generate_delete_statements = pg_sql_statement(config, %q(
+        select string_agg('drop table if exists \"' || tablename || '\" cascade;', '')
+        from pg_tables
+        where schemaname = 'public';
+      ))
+  delete_statements = `#{generate_delete_statements}`
+  system(pg_sql_statement(config, delete_statements)) if delete_statements
 end
 
 if app_value(:reset) && !app_value(:noop)
