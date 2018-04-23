@@ -7,7 +7,6 @@ mod 'katello/common',                :git => 'https://github.com/theforeman/pupp
 mod 'katello/katello',               :git => 'https://github.com/theforeman/puppet-katello'
 mod 'katello/pulp',                  :git => 'https://github.com/theforeman/puppet-pulp'
 mod 'katello/qpid',                  :git => 'https://github.com/theforeman/puppet-qpid'
-mod 'katello/service_wait',          :git => 'https://github.com/theforeman/puppet-service_wait'
 
 # A fork that marks metadata as compatible with puppet 5
 # https://github.com/thias/puppet-squid3/pull/59
