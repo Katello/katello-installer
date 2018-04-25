@@ -15,7 +15,7 @@ def remove_legacy_mongo
   if `rpm -q mongodb --queryformat=%{version}`.start_with?('2.')
     logger.warn 'removing MongoDB 2.x packages, config and log files.'
     Kafo::Helpers.execute('yum remove -y mongodb-2* mongodb-server-2* > /dev/null 2>&1')
-    Kafo::Helpers.execute('rm -rf /etc/mongod.conf')
+    File.unlink('/etc/mongod.conf') if File.exist?('/etc/mongod.conf')
   else
     logger.info 'MongoDB 2.x not detected, skipping'
   end
