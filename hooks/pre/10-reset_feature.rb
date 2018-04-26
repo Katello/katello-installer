@@ -83,9 +83,9 @@ def empty_mongo
   else
     Kafo::Helpers.execute(
       [
-        'service-wait rh-mongodb34-mongod stop',
+        'systemctl stop rh-mongodb34-mongod',
         'rm -f /var/lib/mongodb/pulp_database*',
-        'service-wait rh-mongodb34-mongod start'
+        'systemctl start rh-mongodb34-mongod'
       ]
     )
   end
@@ -128,8 +128,7 @@ def reset_pulp
   Kafo::Helpers.execute(
     [
       'rm -f /var/lib/pulp/init.flag',
-      'service-wait httpd stop',
-      'service-wait pulp_workers stop'
+      'systemctl stop httpd pulp_workers'
     ]
   )
   empty_mongo
