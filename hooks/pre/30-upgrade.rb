@@ -48,7 +48,7 @@ def migrate_pulp
   if `rpm -q mongodb --queryformat=%{version}`.start_with?('2.') # If mongo 2.x is on the system run the migration with that.
     Kafo::Helpers.execute('systemctl start mongod')
   else
-    Kafo::Helpers.execute('service-wait rh-mongodb34-mongod start')
+    Kafo::Helpers.execute('systemctl start rh-mongodb34-mongod')
   end
 
   Kafo::Helpers.execute('su - apache -s /bin/bash -c pulp-manage-db')
