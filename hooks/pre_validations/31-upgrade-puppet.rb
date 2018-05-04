@@ -8,6 +8,6 @@ unless app_value(:noop)
   end
 
   if puppetserver_version_param = param('puppet', 'server_puppetserver_version')
-    Kafo::Helpers.reset_value(puppetserver_version_param)
+    puppetserver_version_param.unset_value
   end
 end
