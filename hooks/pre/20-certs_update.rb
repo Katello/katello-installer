@@ -64,8 +64,8 @@ if !app_value('certs_skip_check') &&
 end
 
 if app_value('certs_reset') && !app_value(:noop)
-  Kafo::Helpers.reset_value(param('certs', 'server_cert'))
-  Kafo::Helpers.reset_value(param('certs', 'server_key'))
-  Kafo::Helpers.reset_value(param('certs', 'server_cert_req'))
-  Kafo::Helpers.reset_value(param('certs', 'server_ca_cert'))
+  param('certs', 'server_cert').unset_value
+  param('certs', 'server_key').unset_value
+  param('certs', 'server_cert_req').unset_value
+  param('certs', 'server_ca_cert').unset_value
 end
