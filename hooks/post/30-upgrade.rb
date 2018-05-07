@@ -71,19 +71,6 @@ def republish_file_repos
   Kafo::Helpers.execute('foreman-rake katello:upgrades:3.6:republish_file_repos')
 end
 
-def elasticsearch_message
-  `rpm -q elasticsearch`
-  if $?.success?
-    rpms = ['ruby193-rubygem-tire', 'tfm-rubygem-tire', 'elasticsearch', 'sigar-java', 'sigar', 'snappy-java', 'lucene4-contrib', 'lucene4']
-    message = "Elasticsearch has been removed as a dependency.  The database files can be "\
-            "removed manually with # rm -rf /var/lib/elasticsearch.  "
-    message += "Some packages are no longer needed and can be removed:  # yum erase #{rpms.join(' ')}"
-    Kafo::Helpers.log_and_say :info, message
-  else
-    logger.info "Elasticsearch already removed, skipping"
-  end
-end
-
 def add_export_distributor
   Kafo::Helpers.execute('foreman-rake katello:upgrades:3.0:add_export_distributor')
 end
@@ -202,7 +189,6 @@ if app_value(:upgrade)
       upgrade_step :import_puppet_modules, :long_running => true
       upgrade_step :import_subscriptions, :long_running => true
       upgrade_step :import_product_content, :long_running => true
-      upgrade_step :elasticsearch_message
       upgrade_step :add_export_distributor, :long_running => true
       upgrade_step :remove_docker_v1_content, :long_running => true
       upgrade_step :update_puppet_repository_distributors, :long_running => true
