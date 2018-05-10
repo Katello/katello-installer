@@ -59,7 +59,7 @@ def empty_candlepin_database
   if remote_host?(config[:host])
     empty_database!(config)
   else
-    Kafo::Helpers.execute('sudo -u postgres dropdb candlepin')
+    Kafo::Helpers.execute("sudo -u postgres dropdb #{config[:database]}")
   end
 end
 
@@ -84,7 +84,7 @@ def empty_mongo
     Kafo::Helpers.execute(
       [
         'systemctl stop rh-mongodb34-mongod',
-        'rm -f /var/lib/mongodb/pulp_database*',
+        "rm -f /var/lib/mongodb/#{mongo_config[:database]}*",
         'systemctl start rh-mongodb34-mongod'
       ]
     )
