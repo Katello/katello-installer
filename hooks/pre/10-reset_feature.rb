@@ -118,7 +118,7 @@ def empty_remote_mongo(config)
   username = "-u #{config[:username]}" if config[:username]
   password = "-p #{config[:password]}" if config[:password]
   host = "--host #{config[:host]} --port #{config[:port]}"
-  cmd = "mongo #{username} #{password} #{host} #{ssl} #{ca_cert} #{client_cert} --eval \"db.dropDatabase();\" #{config[:database]}"
+  cmd = "scl enable rh-mongodb34 -- mongo #{username} #{password} #{host} #{ssl} #{ca_cert} #{client_cert} --eval \"db.dropDatabase();\" #{config[:database]}"
   Kafo::Helpers.execute(cmd)
 end
 
