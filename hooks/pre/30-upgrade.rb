@@ -190,11 +190,6 @@ def fail_and_exit(message)
 end
 
 if app_value(:upgrade)
-  if app_value(:upgrade_puppet)
-    fail_and_exit 'Concurrent use of --upgrade and --upgrade-puppet is not supported. '\
-                  'Please run --upgrade first, then --upgrade-puppet.'
-  end
-
   Kafo::Helpers.log_and_say :info, 'Upgrading, to monitor the progress on all related services, please do:'
   Kafo::Helpers.log_and_say :info, '  foreman-tail | tee upgrade-$(date +%Y-%m-%d-%H%M).log'
   sleep 3
