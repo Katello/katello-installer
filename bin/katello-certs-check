@@ -145,6 +145,16 @@ function check-cert-san () {
     fi
 }
 
+function check-cert-usage-key-encipherment () {
+    printf "Checking Key Usage extension on certificate for Key Encipherment"
+    CHECK=$(openssl x509 -noout -text -in $CERT_FILE | grep -A1 'X509v3 Key Usage:' | grep 'Key Encipherment')
+    if [ $? == "0" ]; then
+        success
+    else
+        error 4 "The $CERT_FILE does not allow for the 'Digital Signature' key usage"
+    fi
+}
+
 check-server-cert-encoding
 check-expiration
 check-cert-ca-flag
@@ -152,6 +162,7 @@ show-details
 check-priv-key
 check-ca-bundle
 check-cert-san
+check-cert-usage-key-encipherment
 
 if [ $EXIT_CODE == "0" -a $CERT_HOSTNAME != $HOSTNAME ]; then
     cat <<EOF
