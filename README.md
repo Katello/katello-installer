@@ -42,8 +42,9 @@ foreman-installer --scenario                     "katello"\
                   --foreman-proxy-puppetca       "false"
 
 # Generate certificates for installing Foreman proxy on another system
-foreman-proxy-certs-generate --foreman-proxy-fqdn "myforeman-proxy-content.example.com"\
-                                     --certs-tar    ~/myforeman-proxy-content.example.com-certs.tar
+katello-generate-cert-archive --server-fqdn "myforeman-proxy-content.example.com"\
+                              --certs-tar    "~/myforeman-proxy-content.example.com-certs.tar"
+                              --foreman-proxy true
 
 # Copy the ~/myforeman-proxy.example.com-certs.tar to the foreman-proxy system
 # register the system to Katello and run:
@@ -67,8 +68,12 @@ foreman-installer --scenario                                "foreman-proxy-conte
                   --foreman-proxy-dhcp                      "true"\
                   --foreman-proxy-dhcp-interface            "virbr1"\
                   --foreman-proxy-tftp                      "true"
-```
 
+# Generate certificates for installing Foreman Application on another system
+katello-generate-cert-archive --server-fqdn "myforeman1.example.com"\
+                              --certs-tar    "~/myforeman1.example.com-certs.tar"
+                              --foreman-application true
+```
 ## Data Reset
 
 If you run into an error during the initial installation or wish to reset your installation entirely, the installer provides a reset option. To reset the database and all subsystems:

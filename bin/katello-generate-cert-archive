@@ -1,10 +1,10 @@
-#!/usr/bin/env ruby
+#!/usr/bin/ruby
 require 'rubygems'
 require 'kafo'
 require 'tempfile'
 
-class ForemanProxyCertsGenerate
-  INSTALLER_DIR = '.'
+class KatelloGenerateCertsArchive
+  INSTALLER_DIR = "/usr/share/katello-installer-base"
 
   attr_reader :answers_file, :config_file
 
@@ -24,29 +24,29 @@ class ForemanProxyCertsGenerate
   # rubocop: disable Naming/HeredocDelimiterNaming
   # rubocop: disable Lint/RescueWithoutErrorClass
   def generate_answers_file
-    if File.file?('./config/last_scenario.yaml')
-      scenario = YAML.load_file('./config/last_scenario.yaml').fetch(:answer_file)
+    if File.file?('/etc/foreman-installer/scenarios.d/last_scenario.yaml')
+      scenario = YAML.load_file('/etc/foreman-installer/scenarios.d/last_scenario.yaml').fetch(:answer_file)
       organization = YAML.load_file("#{scenario}")['foreman']['initial_organization'] rescue nil
     end
     organization ||= "Default Organization"
-    temp_file('foreman-proxy-certs-answer',
+    temp_file('foreman-app-certs-answer',
               <<-EOF
                 certs:
                   generate: true
                   deploy: false
                   group: foreman
                   org: #{organization.tr(' ', '_')}
-                foreman_proxy_certs: true
+                cert_generate_archive: true
               EOF
              )
   end
 
   def generate_config_file
-    temp_file('foreman-proxy-certs-config',
+    temp_file('katello-generate-certs-config',
               <<-EOF
                 :log_level: :debug
                 :log_dir: /var/log/foreman-installer
-                :log_name: foreman-proxy-certs-generate.log
+                :log_name: katello-generate-certs-archive.log
                 :no_prefix: true
                 :answer_file: #{answers_file.path}
                 :installer_dir: #{INSTALLER_DIR}
@@ -57,16 +57,16 @@ class ForemanProxyCertsGenerate
                   - "/usr/share/foreman-installer/modules"
                   - "/usr/share/katello-installer-base/modules"
                 :hook_dirs: ["#{INSTALLER_DIR}/hooks"]
-                :parser_cache_path: '/usr/share/katello-installer-base/parser_cache/foreman-proxy-certs-generate.yaml'
+                :parser_cache_path: '/usr/share/katello-installer-base/parser_cache/cert_generate_archive.yaml'
                 :default_values_dir: /tmp
                 :dont_save_answers: true
                 :mapping:
-                  :foreman_proxy_certs:
-                    :manifest_name: foreman_proxy_content
+                  :cert_generate_archive:
+                    :manifest_name: generate_archive
                     :dir_name: certs
                 :order:
                   - certs
-                  - foreman_proxy_certs
+                  - cert_generate_archive
               EOF
              )
   end
@@ -81,8 +81,7 @@ end
 
 if $0 == __FILE__
   begin
-    puts "DEPRECATION WARNING: foreman-proxy-certs-generate has been deprecated, consider using katello-generate-cert-archive --foreman-proxy true\n"
-    gen = ForemanProxyCertsGenerate.new
+    gen = KatelloGenerateCertsArchive.new
     CONFIG_FILE = gen.config_file.path
     Kafo::KafoConfigure.run
   ensure

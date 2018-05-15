@@ -54,6 +54,7 @@ end
 task :generate_parser_caches => [PARSER_CACHE_DIR] do
   caches = [
     "#{PARSER_CACHE_DIR}/katello.yaml",
+    "#{PARSER_CACHE_DIR}/cert_generate_archive.yaml",
     "#{PARSER_CACHE_DIR}/foreman-proxy-certs-generate.yaml"
   ]
 
@@ -61,10 +62,14 @@ task :generate_parser_caches => [PARSER_CACHE_DIR] do
     'config/katello.yaml'
   ]
 
-  # foreman-proxy-certs-generate is a special (read: "problem") child
   load File.expand_path(File.join(File.dirname(__FILE__), 'bin', 'foreman-proxy-certs-generate'))
   gen = ForemanProxyCertsGenerate.new
   configs << gen.config_file.path
+
+  # katello-generate-cert-archive is a special (read: "problem") child
+  load File.expand_path(File.join(File.dirname(__FILE__), 'bin', 'katello-generate-cert-archive'))
+  certs_gen = KatelloGenerateCertsArchive.new
+  configs << certs_gen.config_file.path
 
   caches.each_with_index do |filename, i|
     sh "kafo-export-params -c #{configs[i]} -f parsercache --no-parser-cache -o #{filename}"
