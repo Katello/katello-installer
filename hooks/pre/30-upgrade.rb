@@ -58,14 +58,6 @@ def migrate_foreman
   Kafo::Helpers.execute('foreman-rake db:migrate')
 end
 
-def remove_nodes_importers
-  Kafo::Helpers.execute("mongo pulp_database --eval 'db.repo_importers.remove({'importer_type_id': \"nodes_http_importer\"});'")
-end
-
-def remove_nodes_distributors
-  Kafo::Helpers.execute("mongo pulp_database --eval  'db.repo_distributors.remove({'distributor_type_id': \"nodes_http_distributor\"});'")
-end
-
 def fix_katello_settings_file
   settings_file = '/etc/foreman/plugins/katello.yaml'
   settings = JSON.parse(JSON.dump(YAML.load_file(settings_file)), :symbolize_names => true)
@@ -236,7 +228,6 @@ if app_value(:upgrade)
   end
 
   if foreman_proxy_content
-    upgrade_step :remove_nodes_importers
     upgrade_step :mongo_mmapv1_check
   end
 
@@ -246,7 +237,6 @@ if app_value(:upgrade)
     upgrade_step :remove_gutterball
     upgrade_step :fix_katello_settings_file
     upgrade_step :migrate_foreman, :run_always => true
-    upgrade_step :remove_nodes_distributors
     upgrade_step :mongo_mmapv1_check
   end
 
