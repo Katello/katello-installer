@@ -34,15 +34,6 @@ def migrate_candlepin
   Kafo::Helpers.execute("/usr/share/candlepin/cpdb --update --database '#{db_uri}' --user '#{db_user}' --password '#{db_password}'")
 end
 
-def remove_gutterball
-  gbpresent = `runuser - postgres -c "psql -l | grep gutterball | wc -l"`.chomp.to_i
-  if gbpresent > 0
-    Kafo::Helpers.execute('runuser - postgres -c "dropdb gutterball"')
-  else
-    logger.info 'Gutterball is already removed, skipping'
-  end
-end
-
 def migrate_pulp
   # Start mongo
   if `rpm -q mongodb --queryformat=%{version}`.start_with?('2.') # If mongo 2.x is on the system run the migration with that.
@@ -56,18 +47,6 @@ end
 
 def migrate_foreman
   Kafo::Helpers.execute('foreman-rake db:migrate')
-end
-
-def fix_katello_settings_file
-  settings_file = '/etc/foreman/plugins/katello.yaml'
-  settings = JSON.parse(JSON.dump(YAML.load_file(settings_file)), :symbolize_names => true)
-
-  return true unless settings.key?(:common)
-
-  settings = {:katello => settings[:common]}
-  File.open(settings_file, 'w') do |file|
-    file.write(settings.to_yaml)
-  end
 end
 
 # rubocop:disable MethodLength
@@ -234,8 +213,6 @@ if app_value(:upgrade)
   if katello
     upgrade_step :mark_qpid_cert_for_update
     upgrade_step :migrate_candlepin, :run_always => true
-    upgrade_step :remove_gutterball
-    upgrade_step :fix_katello_settings_file
     upgrade_step :migrate_foreman, :run_always => true
     upgrade_step :mongo_mmapv1_check
   end

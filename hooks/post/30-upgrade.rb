@@ -103,19 +103,6 @@ def create_host_subscription_associations
   Kafo::Helpers.execute('foreman-rake katello:import_subscriptions')
 end
 
-def remove_gutterball
-  `rpm -q gutterball`
-  if $?.success?
-    Kafo::Helpers.execute("yum erase -y gutterball tfm-rubygem-foreman_gutterball gutterball-certs tfm-rubygem-hammer_cli_gutterball")
-    ['tomcat', 'tomcat6'].each do |t|
-      gutterball_dir = "/var/lib/#{t}/webapps/gutterball"
-      Kafo::Helpers.execute("rm -rfv #{gutterball_dir}") if File.directory?(gutterball_dir)
-    end
-  else
-    logger.info "Gutterball already removed, skipping"
-  end
-end
-
 def remove_event_queue
   queue_present = `qpid-stat -q --ssl-certificate=/etc/pki/katello/qpid_client_striped.crt -b amqps://localhost:5671 | grep :event`.split(" ").first
   if queue_present
@@ -193,7 +180,6 @@ if app_value(:upgrade)
       upgrade_step :remove_docker_v1_content, :long_running => true
       upgrade_step :update_puppet_repository_distributors, :long_running => true
       upgrade_step :update_subscription_facet_backend_data, :long_running => true
-      upgrade_step :remove_gutterball
       upgrade_step :remove_event_queue
       upgrade_step :set_virt_who_on_pools, :long_running => true
       upgrade_step :remove_unused_products, :long_running => true
