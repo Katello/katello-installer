@@ -12,12 +12,6 @@ def start_postgresql
   Kafo::Helpers.execute('katello-service start --only postgresql')
 end
 
-def update_http_conf
-  Kafo::Helpers.execute("grep -F -q 'Include \"/etc/httpd/conf.modules.d/*.conf\"' /etc/httpd/conf/httpd.conf || \
-                       echo -e '<IfVersion >= 2.4> \n    Include \"/etc/httpd/conf.modules.d/*.conf\"\n</IfVersion>' \
-                       >> /etc/httpd/conf/httpd.conf")
-end
-
 def migrate_candlepin
   db_host = param('katello', 'candlepin_db_host').value
   db_port = param('katello', 'candlepin_db_port').value
@@ -199,7 +193,6 @@ if app_value(:upgrade)
 
   upgrade_step :stop_services, :run_always => true
   upgrade_step :start_postgresql, :run_always => true
-  upgrade_step :update_http_conf, :run_always => true
 
   if katello || foreman_proxy_content
     upgrade_step :upgrade_qpid_paths
