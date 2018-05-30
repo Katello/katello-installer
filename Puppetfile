@@ -1,11 +1,11 @@
 forge 'https://forgeapi.puppetlabs.com'
 
-mod 'katello/candlepin',             :git => 'https://github.com/theforeman/puppet-candlepin'
-mod 'katello/foreman_proxy_content', :git => 'https://github.com/theforeman/puppet-foreman_proxy_content'
-mod 'katello/certs',                 :git => 'https://github.com/theforeman/puppet-certs'
-mod 'katello/katello',               :git => 'https://github.com/theforeman/puppet-katello'
-mod 'katello/pulp',                  :git => 'https://github.com/theforeman/puppet-pulp'
-mod 'katello/qpid',                  :git => 'https://github.com/theforeman/puppet-qpid'
+mod 'katello/candlepin',             '>= 5.1.0 < 5.2.0'
+mod 'katello/foreman_proxy_content', '>= 7.1.1 < 7.2.0'
+mod 'katello/certs',                 '>= 4.1.0 < 4.2.0'
+mod 'katello/katello',               '>= 8.0.1 < 8.1.0'
+mod 'katello/pulp',                  '>= 5.4.2 < 5.5.0'
+mod 'katello/qpid',                  '>= 4.2.0 < 4.3.0'
 
 # A fork that marks metadata as compatible with puppet 5
 # https://github.com/thias/puppet-squid3/pull/59
