@@ -5,20 +5,17 @@ function usage () {
 Verifies, that custom ssl cert files are usable
 as part of the Katello installation.
 
-usage: $0 -c CERT_FILE -k KEY_FILE -r REQ_FILE -b CA_BUNDLE_FILE
+usage: $0 -c CERT_FILE -k KEY_FILE -b CA_BUNDLE_FILE
 HELP
 }
 
-while getopts "c:k:r:b:" opt; do
+while getopts "c:k:b:" opt; do
     case $opt in
         c)
             CERT_FILE="$(readlink -f $OPTARG)"
             ;;
         k)
             KEY_FILE="$(readlink -f $OPTARG)"
-            ;;
-        r)
-            REQ_FILE="$(readlink -f $OPTARG)"
             ;;
         b)
             CA_BUNDLE_FILE="$(readlink -f $OPTARG)"
@@ -36,8 +33,8 @@ done
 
 EXIT_CODE=0
 
-if [ -z "$CERT_FILE" -o -z "$KEY_FILE" -o -z "$CA_BUNDLE_FILE" -o -z "$REQ_FILE" ]; then
-    echo "One of the required parameters missing" >&2
+if [ -z "$CERT_FILE" -o -z "$KEY_FILE" -o -z "$CA_BUNDLE_FILE" ]; then
+    echo "One of the required parameters is missing" >&2
     usage
     exit 1
 fi
@@ -173,7 +170,6 @@ To install the Katello main server with the custom certificates, run:
 
     foreman-installer --scenario katello\\
                       --certs-server-cert "$(readlink -f $CERT_FILE)"\\
-                      --certs-server-cert-req "$(readlink -f $REQ_FILE)"\\
                       --certs-server-key "$(readlink -f $KEY_FILE)"\\
                       --certs-server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"
 
@@ -181,7 +177,6 @@ To update the certificates on a currently running Katello installation, run:
 
     foreman-installer --scenario katello\\
                       --certs-server-cert "$(readlink -f $CERT_FILE)"\\
-                      --certs-server-cert-req "$(readlink -f $REQ_FILE)"\\
                       --certs-server-key "$(readlink -f $KEY_FILE)"\\
                       --certs-server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
                       --certs-update-server --certs-update-server-ca
@@ -191,7 +186,6 @@ To use them inside a NEW \$FOREMAN_PROXY, run this command:
     foreman-proxy-certs-generate --foreman-proxy-fqdn "\$FOREMAN_PROXY"\\
                                  --certs-tar  "~/\$FOREMAN_PROXY-certs.tar"\\
                                  --server-cert "$(readlink -f $CERT_FILE)"\\
-                                 --server-cert-req "$(readlink -f $REQ_FILE)"\\
                                  --server-key "$(readlink -f $KEY_FILE)"\\
                                  --server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
 
@@ -200,7 +194,6 @@ To use them inside an EXISTING \$FOREMAN_PROXY, run this command INSTEAD:
     foreman-proxy-certs-generate --foreman-proxy-fqdn "\$FOREMAN_PROXY"\\
                                  --certs-tar  "~/\$FOREMAN_PROXY-certs.tar"\\
                                  --server-cert "$(readlink -f $CERT_FILE)"\\
-                                 --server-cert-req "$(readlink -f $REQ_FILE)"\\
                                  --server-key "$(readlink -f $KEY_FILE)"\\
                                  --server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
                                  --certs-update-server
@@ -215,7 +208,6 @@ elif [ $EXIT_CODE == "0" ]; then
       foreman-proxy-certs-generate --foreman-proxy-fqdn "\$FOREMAN_PROXY"\\
                                    --certs-tar  "~/\$FOREMAN_PROXY-certs.tar"\\
                                    --server-cert "$(readlink -f $CERT_FILE)"\\
-                                   --server-cert-req "$(readlink -f $REQ_FILE)"\\
                                    --server-key "$(readlink -f $KEY_FILE)"\\
                                    --server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
 
@@ -224,7 +216,6 @@ elif [ $EXIT_CODE == "0" ]; then
       foreman-proxy-certs-generate --foreman-proxy-fqdn "\$FOREMAN_PROXY"\\
                                    --certs-tar  "~/\$FOREMAN_PROXY-certs.tar"\\
                                    --server-cert "$(readlink -f $CERT_FILE)"\\
-                                   --server-cert-req "$(readlink -f $REQ_FILE)"\\
                                    --server-key "$(readlink -f $KEY_FILE)"\\
                                    --server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
                                    --certs-update-server
