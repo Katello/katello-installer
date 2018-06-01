@@ -103,6 +103,10 @@ def create_host_subscription_associations
   Kafo::Helpers.execute('foreman-rake katello:import_subscriptions')
 end
 
+def ensure_ks_repos_are_bootable
+  Kafo::Helpers.execute('foreman-rake katello:upgrades:3.7:make_all_ks_repos_bootable')
+end
+
 def remove_event_queue
   queue_present = `qpid-stat -q --ssl-certificate=/etc/pki/katello/qpid_client_striped.crt -b amqps://localhost:5671 | grep :event`.split(" ").first
   if queue_present
