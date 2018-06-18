@@ -47,7 +47,7 @@ FORGE
       puppetlabs-stdlib (< 5.0.0, >= 4.13.0)
     puppet-extlib (2.0.1)
       puppetlabs-stdlib (< 5.0.0, >= 4.6.0)
-    puppet-mongodb (2.1.2)
+    puppet-mongodb (2.2.0)
       puppetlabs-apt (< 5.0.0, >= 2.1.0)
       puppetlabs-stdlib (< 5.0.0, >= 4.13.0)
     puppet-staging (3.2.0)
