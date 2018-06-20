@@ -117,16 +117,17 @@ def remove_event_queue
 end
 
 def remove_legacy_mongo
-  # Check to see if the RPMS exist and if so remove them and create the upgrade done file.
+  # Check to see if the RPMS exist and if so remove them and create the upgrade done file, and install rh-mongodb34-mongodb-syspaths.
   if `rpm -q mongodb --queryformat=%{version}`.start_with?('2.')
-    logger.warn 'removing Mongo 2.x packages, config and log files.'
-    Kafo::Helpers.execute("yum remove -y mongodb-2* mongodb-server-2* > /dev/null 2>&1")
-    Kafo::Helpers.execute("rm -rf /etc/mongod.conf /var/log/mongodb")
+    logger.warn 'removing MongoDB 2.x packages, config and log files.'
+    Kafo::Helpers.execute('yum remove -y mongodb-2* mongodb-server-2* > /dev/null 2>&1')
+    Kafo::Helpers.execute('rm -rf /etc/mongod.conf /var/log/mongodb')
+    Kafo::Helpers.execute('yum install -y -q rh-mongodb34-syspaths')
     File.open(MONGO_REMOVAL_COMPLETE, 'w') do |file|
-      file.write("Mongo 2.x removal completed on #{Time.now}")
+      file.write("MongoDB 2.x removal completed on #{Time.now}")
     end
   else
-    logger.info 'Mongo 2.x not detected, skipping'
+    logger.info 'MongoDB 2.x not detected, skipping'
   end
 end
 
