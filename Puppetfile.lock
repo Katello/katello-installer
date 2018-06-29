@@ -16,7 +16,7 @@ FORGE
       puppet-extlib (< 3.0.0, >= 0.10.4)
       puppetlabs-concat (< 5.0.0, >= 1.0.0)
       puppetlabs-stdlib (< 5.0.0, >= 4.13.0)
-    katello-foreman_proxy_content (7.1.1)
+    katello-foreman_proxy_content (7.1.2)
       katello-certs (< 5.0.0, >= 2.0.0)
       katello-pulp (< 6.0.0, >= 5.3.0)
       katello-qpid (< 5.0.0, >= 4.2.0)
