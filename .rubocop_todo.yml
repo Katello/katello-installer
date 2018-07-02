@@ -40,11 +40,6 @@ Metrics/BlockNesting:
 Metrics/LineLength:
   Max: 263
 
-# Offense count: 3
-# Configuration parameters: CountComments.
-Metrics/MethodLength:
-  Max: 13
-
 # Offense count: 1
 # Cop supports --auto-correct.
 Performance/StartWith:

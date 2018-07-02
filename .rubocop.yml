@@ -35,3 +35,6 @@ Performance/Casecmp:
 
 Style/RescueModifier:
   Enabled: false
+
+Metrics/MethodLength:
+  Max: 40
