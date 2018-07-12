@@ -37,4 +37,4 @@ Style/RescueModifier:
   Enabled: false
 
 Metrics/MethodLength:
-  Max: 40
+  Max: 45
