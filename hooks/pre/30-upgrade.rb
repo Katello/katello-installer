@@ -43,7 +43,6 @@ def migrate_foreman
   Kafo::Helpers.execute('foreman-rake db:migrate')
 end
 
-# rubocop:disable MethodLength
 def mongo_mmapv1_check
   custom_hiera = '/etc/foreman-installer/custom-hiera.yaml'
   mongodb_dir = '/var/lib/mongodb/'
