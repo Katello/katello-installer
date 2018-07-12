@@ -118,16 +118,19 @@ end
 
 def remove_legacy_mongo
   # Check to see if the RPMS exist and if so remove them and create the upgrade done file, and install rh-mongodb34-mongodb-syspaths.
+  return if File.exist?(MONGO_REMOVAL_COMPLETE)
+
   if `rpm -q mongodb --queryformat=%{version}`.start_with?('2.')
     logger.warn 'removing MongoDB 2.x packages, config and log files.'
     Kafo::Helpers.execute('yum remove -y mongodb-2* mongodb-server-2* > /dev/null 2>&1')
     Kafo::Helpers.execute('rm -rf /etc/mongod.conf /var/log/mongodb')
-    Kafo::Helpers.execute('yum install -y -q rh-mongodb34-syspaths')
-    File.open(MONGO_REMOVAL_COMPLETE, 'w') do |file|
-      file.write("MongoDB 2.x removal completed on #{Time.now}")
-    end
   else
     logger.info 'MongoDB 2.x not detected, skipping'
+  end
+
+  Kafo::Helpers.execute('yum install -y -q rh-mongodb34-syspaths')
+  File.open(MONGO_REMOVAL_COMPLETE, 'w') do |file|
+    file.write("MongoDB 2.x removal completed on #{Time.now}")
   end
 end
 
@@ -164,6 +167,8 @@ def fail_and_exit(message)
   kafo.class.exit 1
 end
 
+upgrade_step :remove_legacy_mongo
+
 if app_value(:upgrade)
   if [0, 2].include?(@kafo.exit_code)
     upgrade_step :restart_services, :run_always => true
@@ -193,7 +198,6 @@ if app_value(:upgrade)
       upgrade_step :republish_file_repos, :long_running => true
       upgrade_step :import_backend_consumer_attributes, :long_running => true
       upgrade_step :remove_registration_tasks
-      upgrade_step :remove_legacy_mongo
       upgrade_step :ensure_ks_repos_are_bootable, :long_running => true
     end
 
