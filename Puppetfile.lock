@@ -11,7 +11,7 @@ FORGE
       puppetlabs-concat (< 5.0.0, >= 1.0.0)
       puppetlabs-postgresql (< 6.0.0, >= 4.2.0)
       puppetlabs-stdlib (< 5.0.0, >= 4.2.0)
-    katello-certs (4.1.0)
+    katello-certs (4.2.0)
       jlambert121-trusted_ca (< 2.0.0, >= 1.0.1)
       puppet-extlib (< 3.0.0, >= 0.10.4)
       puppetlabs-concat (< 5.0.0, >= 1.0.0)
@@ -41,8 +41,8 @@ FORGE
       puppetlabs-concat (< 5.0.0, >= 1.0.0)
       puppetlabs-stdlib (< 5.0.0, >= 4.6.0)
       thias-squid3 (= 1.0.2)
-    katello-qpid (4.2.1)
-      camptocamp-systemd (< 2.0.0, >= 0.4.0)
+    katello-qpid (4.2.2)
+      camptocamp-systemd (< 3.0.0, >= 0.4.0)
       puppetlabs-concat (< 5.0.0, >= 1.0.0)
       puppetlabs-stdlib (< 5.0.0, >= 4.13.0)
     puppet-extlib (2.1.0)
@@ -130,7 +130,7 @@ GIT
 
 DEPENDENCIES
   katello-candlepin (< 5.2.0, >= 5.1.1)
-  katello-certs (< 4.2.0, >= 4.1.0)
+  katello-certs (< 4.3.0, >= 4.2.0)
   katello-foreman_proxy_content (< 7.2.0, >= 7.1.1)
   katello-katello (< 8.1.0, >= 8.0.1)
   katello-pulp (< 5.5.0, >= 5.4.2)
