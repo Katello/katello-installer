@@ -1,6 +1,6 @@
 forge 'https://forgeapi.puppetlabs.com'
 
-mod 'katello/candlepin',             '>= 5.1.0 < 5.2.0'
+mod 'katello/candlepin',             '>= 5.1.1 < 5.2.0'
 mod 'katello/foreman_proxy_content', '>= 7.1.1 < 7.2.0'
 mod 'katello/certs',                 '>= 4.1.0 < 4.2.0'
 mod 'katello/katello',               '>= 8.0.1 < 8.1.0'
