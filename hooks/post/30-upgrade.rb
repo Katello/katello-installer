@@ -91,6 +91,10 @@ def set_virt_who_on_pools
   Kafo::Helpers.execute('foreman-rake katello:import_subscriptions')
 end
 
+def set_upstream_pool_id
+  Kafo::Helpers.execute('foreman-rake katello:import_subscriptions')
+end
+
 def remove_unused_products
   Kafo::Helpers.execute('foreman-rake katello:upgrades:3.4:remove_unused_products')
 end
@@ -199,6 +203,7 @@ if app_value(:upgrade)
       upgrade_step :import_backend_consumer_attributes, :long_running => true
       upgrade_step :remove_registration_tasks
       upgrade_step :ensure_ks_repos_are_bootable, :long_running => true
+      upgrade_step :set_upstream_pool_id, :long_running => true
     end
 
     if [0, 2].include? @kafo.exit_code
