@@ -28,6 +28,7 @@ def copy_data
   success << Kafo::Helpers.execute('cp -rfp /etc/puppet/environments /etc/puppetlabs/code/environments') if File.directory?('/etc/puppet/environments')
   success << Kafo::Helpers.execute('cp -rfp /var/lib/puppet/ssl /etc/puppetlabs/puppet') if File.directory?('/var/lib/puppet/ssl')
   success << Kafo::Helpers.execute('cp -rfp /var/lib/puppet/foreman_cache_data /opt/puppetlabs/puppet/cache/') if File.directory?('/var/lib/puppet/foreman_cache_data')
+  success << Kafo::Helpers.execute('cp -rfp /etc/puppet/autosign.conf /etc/puppetlabs/puppet/autosign.conf') if File.file?('/etc/puppet/autosign.conf')
   !success.include?(false)
 end
 
