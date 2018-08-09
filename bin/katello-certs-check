@@ -161,7 +161,7 @@ check-ca-bundle
 check-cert-san
 check-cert-usage-key-encipherment
 
-if [ $EXIT_CODE == "0" -a $CERT_HOSTNAME != $HOSTNAME ]; then
+if [ $EXIT_CODE == "0" -a $CERT_HOSTNAME = $HOSTNAME ]; then
     cat <<EOF
 
 Validation succeeded.
@@ -180,23 +180,6 @@ To update the certificates on a currently running Katello installation, run:
                       --certs-server-key "$(readlink -f $KEY_FILE)"\\
                       --certs-server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
                       --certs-update-server --certs-update-server-ca
-
-To use them inside a NEW \$FOREMAN_PROXY, run this command:
-
-    foreman-proxy-certs-generate --foreman-proxy-fqdn "\$FOREMAN_PROXY"\\
-                                 --certs-tar  "~/\$FOREMAN_PROXY-certs.tar"\\
-                                 --server-cert "$(readlink -f $CERT_FILE)"\\
-                                 --server-key "$(readlink -f $KEY_FILE)"\\
-                                 --server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
-
-To use them inside an EXISTING \$FOREMAN_PROXY, run this command INSTEAD:
-
-    foreman-proxy-certs-generate --foreman-proxy-fqdn "\$FOREMAN_PROXY"\\
-                                 --certs-tar  "~/\$FOREMAN_PROXY-certs.tar"\\
-                                 --server-cert "$(readlink -f $CERT_FILE)"\\
-                                 --server-key "$(readlink -f $KEY_FILE)"\\
-                                 --server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
-                                 --certs-update-server
 EOF
 elif [ $EXIT_CODE == "0" ]; then
   cat <<EOF
