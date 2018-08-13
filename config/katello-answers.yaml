@@ -52,6 +52,7 @@ foreman_proxy:
   foreman_ssl_cert: /etc/foreman-proxy/foreman_ssl_cert.pem
   foreman_ssl_key: /etc/foreman-proxy/foreman_ssl_key.pem
   use_autosignfile: true
+  manage_puppet_group: false
 foreman_proxy::plugin::pulp:
   enabled: true
   pulpnode_enabled: false
