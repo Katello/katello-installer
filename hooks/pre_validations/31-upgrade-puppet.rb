@@ -10,4 +10,8 @@ unless app_value(:noop)
   if puppetserver_version_param = param('puppet', 'server_puppetserver_version')
     puppetserver_version_param.unset_value
   end
+
+  if puppetserver_metrics_param = param('puppet', 'server_puppetserver_metrics')
+    puppetserver_metrics_param.unset_value
+  end
 end
