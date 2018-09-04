@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 
+# Define colors uses for status output
+RED=`tput setaf 1`
+GREEN=`tput setaf 2`
+YELLOW=`tput setaf 3`
+RESET=`tput sgr0`
+
 function usage () {
   cat <<HELP >&2
-Verifies, that custom ssl cert files are usable
-as part of the Katello installation.
+Verifies, that custom SSL certificate files are usable
+as part of the Katello installation. When passing filenames use absolute paths.
 
 usage: $0 -c CERT_FILE -k KEY_FILE -b CA_BUNDLE_FILE
 HELP
@@ -34,7 +40,7 @@ done
 EXIT_CODE=0
 
 if [ -z "$CERT_FILE" -o -z "$KEY_FILE" -o -z "$CA_BUNDLE_FILE" ]; then
-    echo "One of the required parameters is missing" >&2
+    echo 'One of the required parameters is missing.' >&2
     usage
     exit 1
 fi
@@ -43,18 +49,22 @@ HOSTNAME=$(hostname -f)
 CERT_HOSTNAME=$(openssl x509 -noout -subject -in $CERT_FILE | sed -e 's/^subject.*CN=\([a-zA-Z0-9\.\-]*\).*$/\1/')
 
 function error () {
-    echo "[FAIL]"
+    echo -e "\n${RED}[FAIL]${RESET}\n"
     CURRENT_EXIT_CODE=$1
     EXIT_CODE=$((EXIT_CODE|CURRENT_EXIT_CODE))
     echo $2 >&2
 }
 
 function success () {
-    echo "[OK]"
+    echo -e "\n${GREEN}[OK]${RESET}\n"
+}
+
+function warning () {
+    echo -e "\n${YELLOW}[WARNING]${RESET}\n"
 }
 
 function check-server-cert-encoding () {
-    printf "Checking server certificate's encoding: "
+    printf 'Checking server certificate encoding: '
     openssl x509 -inform pem -in $CERT_FILE -noout -text &> /dev/null
     if [ $? == "0" ]; then
         success
@@ -82,32 +92,26 @@ function check-expiration () {
     CA_DATE=`date -d"${CA_EXP}" +%Y%m%d%H%M%S`
     printf "Checking expiration of certificate: "
     if [ $DATE_TODAY -gt $CERT_DATE ]; then
-        error 6 "The certificate \"$CERT_FILE\" already expired on: $CERT_EXP"
+        error 6 "The certificate \"$CERT_FILE\" has already expired on: $CERT_EXP"
     else
         success
     fi
     printf "Checking expiration of CA bundle: "
     if [ $DATE_TODAY -gt $CA_DATE ]; then
-        error 7 "The CA bundle \"$CA_BUNDLE_FILE\" already expired on: $CA_EXP"
+        error 7 "The CA bundle \"$CA_BUNDLE_FILE\" has already expired on: $CA_EXP"
     else
         success
     fi
 }
 
 function check-cert-ca-flag () {
-    printf "Checking if server cert has CA:TRUE flag"
+    printf "Checking if server certificate has CA:TRUE flag "
     openssl x509 -in $CERT_FILE -noout -text | grep -q CA:TRUE
     if [ $? -ne 0 ]; then
         success
     else
-        error 7 "The server cert is marked as a CA and can not be used"
+        error 7 "The server certificate is marked as a CA and can not be used."
     fi
-}
-
-function show-details () {
-    printf "Validating the certificate "
-    CERT_SUBJECT=$(openssl x509 -noout -subject -in $CERT_FILE)
-    echo $CERT_SUBJECT
 }
 
 function check-priv-key () {
@@ -122,7 +126,7 @@ function check-priv-key () {
 }
 
 function check-ca-bundle () {
-    printf "Checking ca bundle against the cert file: "
+    printf "Checking CA bundle against the certificate file: "
     CHECK=$(openssl verify -CAfile $CA_BUNDLE_FILE -purpose sslserver -verbose $CERT_FILE 2>&1)
     if [ $? == "0" ]; then
         success
@@ -133,38 +137,37 @@ function check-ca-bundle () {
 }
 
 function check-cert-san () {
-    printf "Checking Subject Alt Name on certificate"
+    printf "Checking Subject Alt Name on certificate "
     CHECK=$(openssl x509 -noout -text -in $CERT_FILE | grep DNS:)
     if [ $? == "0" ]; then
         success
     else
-        error 4 "The $CERT_FILE does not contain a Subject Alt Name"
+        warning
+        echo "The $CERT_FILE does not contain a Subject Alt Name."
     fi
 }
 
 function check-cert-usage-key-encipherment () {
-    printf "Checking Key Usage extension on certificate for Key Encipherment"
+    printf "Checking Key Usage extension on certificate for Key Encipherment "
     CHECK=$(openssl x509 -noout -text -in $CERT_FILE | grep -A1 'X509v3 Key Usage:' | grep 'Key Encipherment')
     if [ $? == "0" ]; then
         success
     else
-        error 4 "The $CERT_FILE does not allow for the 'Digital Signature' key usage"
+        error 4 "The $CERT_FILE does not allow for the 'Digital Signature' key usage."
     fi
 }
 
 check-server-cert-encoding
 check-expiration
 check-cert-ca-flag
-show-details
 check-priv-key
 check-ca-bundle
 check-cert-san
 check-cert-usage-key-encipherment
 
-if [ $EXIT_CODE == "0" -a $CERT_HOSTNAME = $HOSTNAME ]; then
+if [ $EXIT_CODE == "0" -a $CERT_HOSTNAME == $HOSTNAME ]; then
+    echo -e "${GREEN}Validation succeeded${RESET}\n"
     cat <<EOF
-
-Validation succeeded.
 
 To install the Katello main server with the custom certificates, run:
 
@@ -182,9 +185,8 @@ To update the certificates on a currently running Katello installation, run:
                       --certs-update-server --certs-update-server-ca
 EOF
 elif [ $EXIT_CODE == "0" ]; then
+  echo -e "${GREEN}Validation succeeded${RESET}\n"
   cat <<EOF
-
-  Validation succeeded.
 
   To use them inside a NEW \$FOREMAN_PROXY, run this command:
 
@@ -204,5 +206,5 @@ elif [ $EXIT_CODE == "0" ]; then
                                    --certs-update-server
 EOF
 else
-    exit $EXIT_CODE
+  exit $EXIT_CODE
 fi
