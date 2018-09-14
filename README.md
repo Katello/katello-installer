@@ -48,6 +48,7 @@ foreman-proxy-certs-generate --foreman-proxy-fqdn "myforeman-proxy-content.examp
 # Copy the ~/myforeman-proxy.example.com-certs.tar to the foreman-proxy system
 # register the system to Katello and run:
 foreman-installer --scenario                                "foreman-proxy-content"\
+                  --certs-tar-file                          "/root/myforeman-proxy-content.example.com-certs.tar"\
                   --foreman-proxy-content-parent-fqdn       "master.example.com"\
                   --foreman-proxy-register-in-foreman       "true"\
                   --foreman-proxy-foreman-base-url          "https://master.example.com"\
@@ -56,7 +57,6 @@ foreman-installer --scenario                                "foreman-proxy-conte
                   --foreman-proxy-oauth-consumer-key        "foreman_oauth_key"\
                   --foreman-proxy-oauth-consumer-secret     "foreman_oauth_secret"\
                   --foreman-proxy-content-pulp-oauth-secret "pulp_oauth_secret"\
-                  --foreman-proxy-content-certs-tar         "/root/myforeman-proxy-content.example.com-certs.tar"\
                   --foreman-proxy-content-puppet            "true"\
                   --foreman-proxy-puppetca                  "true"\
                   --foreman-proxy-dns                       "true"\
