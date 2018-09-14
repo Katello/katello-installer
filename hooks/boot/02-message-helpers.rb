@@ -74,6 +74,7 @@ MSG
      documentation for more info on setting up additional services):
 
   foreman-installer --scenario foreman-proxy-content\\
+                    --certs-tar-file                              "<%= color("#{File.join('/root', File.basename(certs_tar))}", :info) %>"\\
                     --foreman-proxy-content-parent-fqdn           "<%= "#{fqdn}" %>"\\
                     --foreman-proxy-register-in-foreman           "true"\\
                     --foreman-proxy-foreman-base-url              "https://<%= "#{fqdn}" %>"\\
@@ -81,7 +82,6 @@ MSG
                     --foreman-proxy-trusted-hosts                 "<%= "#{foreman_proxy_fqdn}" %>"\\
                     --foreman-proxy-oauth-consumer-key            "<%= "#{foreman_oauth_key}" %>"\\
                     --foreman-proxy-oauth-consumer-secret         "<%= "#{foreman_oauth_secret}" %>"\\
-                    --foreman-proxy-content-certs-tar             "<%= color("#{File.join('/root', File.basename(certs_tar))}", :info) %>"\\
                     --puppet-server-foreman-url                   "https://<%= "#{fqdn}" %>"
 MSG
     end
