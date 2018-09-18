@@ -171,8 +171,6 @@ def fail_and_exit(message)
   kafo.class.exit 1
 end
 
-upgrade_step :remove_legacy_mongo
-
 if app_value(:upgrade)
   if [0, 2].include?(@kafo.exit_code)
     upgrade_step :restart_services, :run_always => true
@@ -204,6 +202,7 @@ if app_value(:upgrade)
       upgrade_step :remove_registration_tasks
       upgrade_step :ensure_ks_repos_are_bootable, :long_running => true
       upgrade_step :set_upstream_pool_id, :long_running => true
+      upgrade_step :remove_legacy_mongo
     end
 
     if [0, 2].include? @kafo.exit_code
