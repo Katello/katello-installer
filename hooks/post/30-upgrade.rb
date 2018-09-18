@@ -59,11 +59,10 @@ def fail_and_exit(message)
   kafo.class.exit 1
 end
 
-upgrade_step :remove_legacy_mongo
-
 if app_value(:upgrade)
   if [0, 2].include?(@kafo.exit_code)
     upgrade_tasks if module_enabled?('foreman')
+    upgrade_step :remove_legacy_mongo if module_enabled?('katello') || module_enabled?('foreman_proxy_content')
     Kafo::Helpers.log_and_say :info, 'Upgrade completed!'
   else
     Kafo::Helpers.log_and_say :error, 'Upgrade failed during the installation phase. Fix the error and re-run the upgrade.'
