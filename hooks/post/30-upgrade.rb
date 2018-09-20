@@ -111,6 +111,10 @@ def ensure_ks_repos_are_bootable
   Kafo::Helpers.execute('foreman-rake katello:upgrades:3.7:make_all_ks_repos_bootable')
 end
 
+def clear_checksum_type
+  Kafo::Helpers.execute('foreman-rake katello:upgrades:3.8:clear_checksum_type')
+end
+
 def remove_event_queue
   queue_present = `qpid-stat -q --ssl-certificate=/etc/pki/katello/qpid_client_striped.crt -b amqps://localhost:5671 | grep :event`.split(" ").first
   if queue_present
@@ -204,6 +208,7 @@ if app_value(:upgrade)
       upgrade_step :remove_registration_tasks
       upgrade_step :ensure_ks_repos_are_bootable, :long_running => true
       upgrade_step :set_upstream_pool_id, :long_running => true
+      upgrade_step :clear_checksum_type
     end
 
     if [0, 2].include? @kafo.exit_code
