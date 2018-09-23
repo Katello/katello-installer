@@ -193,7 +193,10 @@ if app_value(:upgrade)
   foreman_proxy_content = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
 
   upgrade_step :stop_services, :run_always => true
-  upgrade_step :start_postgresql, :run_always => true
+
+  if katello
+    upgrade_step :start_postgresql, :run_always => true
+  end
 
   if katello || foreman_proxy_content
     upgrade_step :upgrade_qpid_paths
