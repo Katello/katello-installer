@@ -9,7 +9,7 @@ def upgrade_tasks
 end
 
 def remove_legacy_mongo
-  # Check to see if the RPMS exist and if so remove them and create the upgrade done file, and install rh-mongodb34-mongodb-syspaths.
+  # Check to see if the RPMS exist and if so remove them and create the upgrade done file.
   return if File.exist?(MONGO_REMOVAL_COMPLETE)
 
   if `rpm -q mongodb --queryformat=%{version}`.start_with?('2.')
@@ -19,8 +19,6 @@ def remove_legacy_mongo
   else
     logger.info 'MongoDB 2.x not detected, skipping'
   end
-
-  Kafo::Helpers.execute('yum install -y -q rh-mongodb34-syspaths')
   File.open(MONGO_REMOVAL_COMPLETE, 'w') do |file|
     file.write("MongoDB 2.x removal completed on #{Time.now}")
   end
