@@ -20,7 +20,6 @@ def remove_legacy_mongo
     logger.info 'MongoDB 2.x not detected, skipping'
   end
 
-  Kafo::Helpers.execute('yum install -y -q rh-mongodb34-syspaths')
   File.open(MONGO_REMOVAL_COMPLETE, 'w') do |file|
     file.write("MongoDB 2.x removal completed on #{Time.now}")
   end
