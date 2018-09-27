@@ -189,7 +189,7 @@ if app_value(:upgrade)
   Kafo::Helpers.log_and_say :info, '  foreman-tail | tee upgrade-$(date +%Y-%m-%d-%H%M).log'
   sleep 3
 
-  katello = Kafo::Helpers.module_enabled?(@kafo, 'katello')
+  katello = module_enabled?('katello')
   foreman_proxy_content = @kafo.param('foreman_proxy_plugin_pulp', 'pulpnode_enabled').value
 
   upgrade_step :stop_services, :run_always => true
