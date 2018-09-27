@@ -1,13 +1,5 @@
 # Decouple puppet-foreman_proxy form puppet-capsule
 
-def mod(manifest, params)
-  {
-    :manifest_name => manifest,
-    :params_name => params,
-    :dir_name => 'foreman_proxy'
-  }
-end
-
 scenario[:log_level] = scenario[:log_level].to_s.upcase
 
 scenario[:order] = [
@@ -18,16 +10,6 @@ scenario[:order] = [
   "foreman_proxy::plugin::pulp",
   "capsule"
 ]
-
-scenario[:mapping]['foreman_proxy::plugin::discovery'] = mod('plugin/discovery', 'plugin/discovery/params')
-scenario[:mapping]['foreman_proxy::plugin::abrt'] = mod('plugin/abrt', 'plugin/abrt/params')
-scenario[:mapping]['foreman_proxy::plugin::chef'] = mod('plugin/chef', 'plugin/chef/params')
-scenario[:mapping]['foreman_proxy::plugin::dns::powerdns'] = mod('plugin/dns/powerdns', 'plugin/dns/powerdns/params')
-scenario[:mapping]['foreman_proxy::plugin::dynflow'] = mod('plugin/dynflow', 'plugin/dynflow/params')
-scenario[:mapping]['foreman_proxy::plugin::openscap'] = mod('plugin/openscap', 'plugin/openscap/params')
-scenario[:mapping]['foreman_proxy::plugin::pulp'] = mod('plugin/pulp', 'plugin/pulp/params')
-scenario[:mapping]['foreman_proxy::plugin::remote_execution::ssh'] = mod('plugin/remote_execution/ssh', 'plugin/remote_execution/ssh/params')
-scenario[:mapping]['foreman_proxy::plugin::salt'] = mod('plugin/salt', 'plugin/salt/params')
 
 # foreman_proxy defaults
 answers['foreman_proxy'] = {
