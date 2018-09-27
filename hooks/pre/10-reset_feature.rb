@@ -65,12 +65,10 @@ end
 
 def reset_candlepin
   Kafo::KafoConfigure.logger.info 'Dropping Candlepin database!'
-
-  tomcat = File.exists?('/var/lib/tomcat') ? 'tomcat' : 'tomcat6'
   commands = [
     'rm -f /var/lib/candlepin/cpdb_done',
     'rm -f /var/lib/candlepin/cpinit_done',
-    "service #{tomcat} stop"
+    'systemctl stop tomcat'
   ]
   Kafo::Helpers.execute(commands)
   empty_candlepin_database
