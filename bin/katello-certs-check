@@ -171,17 +171,17 @@ if [ $EXIT_CODE == "0" -a $CERT_HOSTNAME == $HOSTNAME ]; then
 
 To install the Katello main server with the custom certificates, run:
 
-    foreman-installer --scenario katello\\
-                      --certs-server-cert "$(readlink -f $CERT_FILE)"\\
-                      --certs-server-key "$(readlink -f $KEY_FILE)"\\
+    foreman-installer --scenario katello \\
+                      --certs-server-cert "$(readlink -f $CERT_FILE)" \\
+                      --certs-server-key "$(readlink -f $KEY_FILE)" \\
                       --certs-server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"
 
 To update the certificates on a currently running Katello installation, run:
 
-    foreman-installer --scenario katello\\
-                      --certs-server-cert "$(readlink -f $CERT_FILE)"\\
-                      --certs-server-key "$(readlink -f $KEY_FILE)"\\
-                      --certs-server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
+    foreman-installer --scenario katello \\
+                      --certs-server-cert "$(readlink -f $CERT_FILE)" \\
+                      --certs-server-key "$(readlink -f $KEY_FILE)" \\
+                      --certs-server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)" \\
                       --certs-update-server --certs-update-server-ca
 EOF
 elif [ $EXIT_CODE == "0" ]; then
@@ -190,19 +190,19 @@ elif [ $EXIT_CODE == "0" ]; then
 
   To use them inside a NEW \$FOREMAN_PROXY, run this command:
 
-      foreman-proxy-certs-generate --foreman-proxy-fqdn "\$FOREMAN_PROXY"\\
-                                   --certs-tar  "~/\$FOREMAN_PROXY-certs.tar"\\
-                                   --server-cert "$(readlink -f $CERT_FILE)"\\
-                                   --server-key "$(readlink -f $KEY_FILE)"\\
-                                   --server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
+      foreman-proxy-certs-generate --foreman-proxy-fqdn "\$FOREMAN_PROXY" \\
+                                   --certs-tar  "~/\$FOREMAN_PROXY-certs.tar" \\
+                                   --server-cert "$(readlink -f $CERT_FILE)" \\
+                                   --server-key "$(readlink -f $KEY_FILE)" \\
+                                   --server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)" \\
 
   To use them inside an EXISTING \$FOREMAN_PROXY, run this command INSTEAD:
 
-      foreman-proxy-certs-generate --foreman-proxy-fqdn "\$FOREMAN_PROXY"\\
-                                   --certs-tar  "~/\$FOREMAN_PROXY-certs.tar"\\
-                                   --server-cert "$(readlink -f $CERT_FILE)"\\
-                                   --server-key "$(readlink -f $KEY_FILE)"\\
-                                   --server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)"\\
+      foreman-proxy-certs-generate --foreman-proxy-fqdn "\$FOREMAN_PROXY" \\
+                                   --certs-tar  "~/\$FOREMAN_PROXY-certs.tar" \\
+                                   --server-cert "$(readlink -f $CERT_FILE)" \\
+                                   --server-key "$(readlink -f $KEY_FILE)" \\
+                                   --server-ca-cert "$(readlink -f $CA_BUNDLE_FILE)" \\
                                    --certs-update-server
 EOF
 else
