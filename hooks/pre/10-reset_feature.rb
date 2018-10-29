@@ -81,9 +81,8 @@ def empty_mongo
   else
     Kafo::Helpers.execute(
       [
-        'systemctl stop rh-mongodb34-mongod',
-        "rm -f /var/lib/mongodb/#{mongo_config[:database]}*",
-        'systemctl start rh-mongodb34-mongod'
+        'systemctl start rh-mongodb34-mongod',
+        "mongo #{mongo_config[:database]} --eval 'db.dropDatabase();'"
       ]
     )
   end
@@ -116,7 +115,7 @@ def empty_remote_mongo(config)
   username = "-u #{config[:username]}" if config[:username]
   password = "-p #{config[:password]}" if config[:password]
   host = "--host #{config[:host]} --port #{config[:port]}"
-  cmd = "scl enable rh-mongodb34 -- mongo #{username} #{password} #{host} #{ssl} #{ca_cert} #{client_cert} --eval \"db.dropDatabase();\" #{config[:database]}"
+  cmd = "mongo #{config[:database]} #{username} #{password} #{host} #{ssl} #{ca_cert} #{client_cert} --eval 'db.dropDatabase();'"
   Kafo::Helpers.execute(cmd)
 end
 
