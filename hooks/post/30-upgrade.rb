@@ -1,28 +1,10 @@
 require 'fileutils'
 
 STEP_DIRECTORY = '/etc/foreman-installer/applied_hooks/post/'
-MONGO_REMOVAL_COMPLETE = '/etc/foreman-installer/.mongo_2_removed'.freeze
 
 def upgrade_tasks
   status = Kafo::Helpers.execute('foreman-rake upgrade:run')
   fail_and_exit "Application Upgrade Failed" unless status
-end
-
-def remove_legacy_mongo
-  # Check to see if the RPMS exist and if so remove them and create the upgrade done file, and install rh-mongodb34-mongodb-syspaths.
-  return if File.exist?(MONGO_REMOVAL_COMPLETE)
-
-  if `rpm -q mongodb --queryformat=%{version}`.start_with?('2.')
-    logger.warn 'removing MongoDB 2.x packages, config and log files.'
-    Kafo::Helpers.execute('yum remove -y mongodb-2* mongodb-server-2* > /dev/null 2>&1')
-    File.unlink('/etc/mongod.conf') if File.exist?('/etc/mongod.conf')
-  else
-    logger.info 'MongoDB 2.x not detected, skipping'
-  end
-
-  File.open(MONGO_REMOVAL_COMPLETE, 'w') do |file|
-    file.write("MongoDB 2.x removal completed on #{Time.now}")
-  end
 end
 
 def upgrade_step(step, options = {})
@@ -61,7 +43,6 @@ end
 if app_value(:upgrade)
   if [0, 2].include?(@kafo.exit_code)
     upgrade_tasks if module_enabled?('foreman')
-    upgrade_step :remove_legacy_mongo if module_enabled?('katello') || module_enabled?('foreman_proxy_content')
     Kafo::Helpers.log_and_say :info, 'Upgrade completed!'
   else
     Kafo::Helpers.log_and_say :error, 'Upgrade failed during the installation phase. Fix the error and re-run the upgrade.'

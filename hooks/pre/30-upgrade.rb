@@ -73,6 +73,18 @@ def mongo_mmapv1_check
   end
 end
 
+def remove_legacy_mongo
+  # Check to see if the RPMS exist and if so remove them and create the upgrade done file, and install rh-mongodb34-mongodb-syspaths.
+
+  if `rpm -q mongodb --queryformat=%{version}`.start_with?('2.')
+    logger.warn 'removing MongoDB 2.x packages, config and log files.'
+    Kafo::Helpers.execute('yum remove -y mongodb-2* mongodb-server-2* > /dev/null 2>&1')
+    File.unlink('/etc/mongod.conf') if File.exist?('/etc/mongod.conf')
+  else
+    logger.info 'MongoDB 2.x not detected, skipping'
+  end
+end
+
 def mark_qpid_cert_for_update
   hostname = param('certs', 'node_fqdn').value
 
@@ -205,6 +217,7 @@ if app_value(:upgrade)
 
   if foreman_proxy_content
     upgrade_step :mongo_mmapv1_check
+    upgrade_step :remove_legacy_mongo
   end
 
   if katello
@@ -212,6 +225,7 @@ if app_value(:upgrade)
     upgrade_step :migrate_candlepin, :run_always => true
     upgrade_step :migrate_foreman, :run_always => true
     upgrade_step :mongo_mmapv1_check
+    upgrade_step :remove_legacy_mongo
   end
 
   Kafo::Helpers.log_and_say :info, 'Upgrade Step: Running installer...'
