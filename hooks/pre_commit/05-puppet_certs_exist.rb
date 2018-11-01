@@ -9,7 +9,6 @@ server_crl_path = param_value('foreman', 'server_ssl_crl')
 cert_dir = param_value('foreman_proxy', 'ssldir')
 key_path = param_value('foreman_proxy', 'puppet_ssl_key')
 puppet_ca_cert = param_value('foreman_proxy', 'puppet_ssl_ca')
-puppet_enabled = param_value('foreman_proxy', 'puppet')
 
 client_message = "- is Puppet already installed without Puppet CA? You can remove the existing certificates with 'rm -rf #{cert_dir}' to get Puppet CA properly configured."
 
