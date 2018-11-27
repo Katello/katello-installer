@@ -7,7 +7,6 @@
 :no_prefix: false
 :answer_file: ./config/foreman-proxy-content-answers.yaml
 :installer_dir: .
-:default_values_dir: /tmp
 :module_dirs:
 - ./_build/modules
 - ../katello-installer/modules
