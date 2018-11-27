@@ -57,7 +57,6 @@ class ForemanProxyCertsGenerate
                   - "/usr/share/katello-installer-base/modules"
                 :hook_dirs: ["#{INSTALLER_DIR}/hooks"]
                 :parser_cache_path: '/usr/share/katello-installer-base/parser_cache/foreman-proxy-certs-generate.yaml'
-                :default_values_dir: /tmp
                 :dont_save_answers: true
                 :mapping:
                   :foreman_proxy_certs:

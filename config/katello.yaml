@@ -7,7 +7,6 @@
 :no_prefix: false
 :answer_file: ./config/katello-answers.yaml
 :installer_dir: .
-:default_values_dir: ./config
 :module_dirs:
 - ./_build/modules
 - ../katello-installer/modules
