@@ -1,12 +1,26 @@
-forge 'https://forgeapi.puppetlabs.com'
+forge 'https://forgeapi.puppetlabs.com/'
 
-mod 'katello/candlepin',             :git => 'https://github.com/theforeman/puppet-candlepin'
-mod 'katello/foreman_proxy_content', :git => 'https://github.com/theforeman/puppet-foreman_proxy_content'
-mod 'katello/certs',                 :git => 'https://github.com/theforeman/puppet-certs'
-mod 'katello/katello',               :git => 'https://github.com/theforeman/puppet-katello'
-mod 'katello/pulp',                  :git => 'https://github.com/theforeman/puppet-pulp'
-mod 'katello/qpid',                  :git => 'https://github.com/theforeman/puppet-qpid'
+mod 'katello/candlepin',             '>= 5.2.1 < 5.3.0'
+mod 'katello/foreman_proxy_content', '>= 7.3.0 < 7.4.0'
+mod 'katello/certs',                 '>= 4.4.0 < 4.5.0'
+mod 'katello/katello',               '>= 8.2.0 < 8.3.0'
+mod 'katello/pulp',                  '>= 5.7.0 < 5.8.0'
+mod 'katello/qpid',                  '>= 4.3.0 < 4.4.0'
 
 # A fork that marks metadata as compatible with puppet 5
-# https://github.com/thias/puppet-squid3/pull/59
 mod 'thias-squid3',                  :git => 'https://github.com/theforeman/puppet-squid3', :ref => 'allow-puppet-5'
+forge 'https://forgeapi.puppetlabs.com'
+
+# Dependencies
+mod 'puppetlabs/mysql',         '>= 4.0.0'
+mod 'puppetlabs/postgresql',    '>= 5.6.0'
+mod 'puppetlabs/puppetdb'
+mod 'theforeman/dhcp',          '>= 4.2.0 < 4.3.0'
+mod 'theforeman/dns',           '>= 5.3.1 < 5.4.0'
+mod 'theforeman/git',           '>= 4.1.1 < 4.2.0'
+mod 'theforeman/tftp',          '>= 4.3.0 < 4.4.0'
+
+# Top-level modules
+mod 'theforeman/foreman',       '>= 10.0.0 < 10.1.0'
+mod 'theforeman/foreman_proxy', '>= 9.0.0 < 9.1.0'
+mod 'theforeman/puppet',        '>= 10.0.0 < 10.1.0'
