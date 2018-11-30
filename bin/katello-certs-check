@@ -55,8 +55,6 @@ if [[ $TARGET != "foreman" && $TARGET != "foreman-proxy" ]]; then
     exit 1
 fi
 
-HOSTNAME=$(hostname -f)
-CERT_HOSTNAME=$(openssl x509 -noout -subject -in $CERT_FILE | sed -e 's/^subject.*CN=\([a-zA-Z0-9\.\-]*\).*$/\1/')
 
 function error () {
     echo -e "\n${RED}[FAIL]${RESET}\n"
