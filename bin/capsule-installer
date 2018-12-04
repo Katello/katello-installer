@@ -1,6 +1,0 @@
-#!/bin/bash
-
-echo "ERROR: capsule-installer is no longer used.  Please use 'foreman-installer --scenario foreman-proxy-content'."
-echo "       For more information on available options, include '--help'."
-
-exit 1

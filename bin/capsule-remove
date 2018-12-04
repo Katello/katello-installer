@@ -1,6 +1,0 @@
-#!/bin/bash
-
-echo "ERROR: capsule-remove is no longer used.  Please use 'katello-remove' instead."
-echo "       For more information on available options, include '--help'."
-
-exit 1
