@@ -1,6 +1,0 @@
-#!/bin/bash
-
-echo "ERROR: katello-installer is no longer used.  Please use 'foreman-installer --scenario katello'."
-echo "       For more information on available options, include '--help'."
-
-exit 1
