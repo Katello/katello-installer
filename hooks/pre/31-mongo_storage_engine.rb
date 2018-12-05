@@ -35,7 +35,7 @@ def migration
   Kafo::Helpers.execute("mv #{mongo_conf}.bak #{mongodb_backup}")
   Kafo::Helpers.execute('foreman-maintain service start --only rh-mongodb34-mongod')
   pulp_db = katello ? param('katello', 'pulp_db_name').value : 'pulp_database'
-  Kafo::Helpers.execute("mongorestore --host localhost --db=#{pulp_db} --quiet --dir=#{export_dir}")
+  Kafo::Helpers.execute("mongorestore --host localhost --db=#{pulp_db} --drop --quiet --dir=#{export_dir}/#{pulp_db}")
   unless $?.success?
     logger.error 'The restore could not be completed correctly, reverting actions.'
     logger.info 'Stopping MongoDB'
@@ -57,7 +57,7 @@ def migration
 
   # Update Hiera to wiredTiger for installer run
   logger.info 'Changing custom Hiera to use wiredTiger for installer Puppet run.'
-  Kafo::Helpers.execute("sed -i -e 's/run the installer with --upgrade-mongo-storage to upgrade to wiredTiger./Do not remove'/g #{hiera_file}")
+  Kafo::Helpers.execute("sed -i -e 's/Added by foreman-installer during upgrade, run the installer with --upgrade-mongo-storage to upgrade to WiredTiger./Do not remove'/g #{hiera_file}")
   Kafo::Helpers.execute("sed -i -e 's/mmapv1/wiredTiger/g' #{hiera_file}")
 end
 
