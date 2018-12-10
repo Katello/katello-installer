@@ -13,7 +13,7 @@ if Kafo::Helpers.module_enabled?(@kafo, 'foreman_proxy_content')
       $stderr.puts DISK_SIZE
       kafo.class.exit 1
     end
-  rescue
+  rescue StandardError
     $stderr.puts 'Failed to verify available disk space'
   end
 end
