@@ -163,6 +163,10 @@ def upgrade_qpid_paths
   end
 end
 
+def drop_apache_foreman_group
+  Kafo::Helpers.execute("gpasswd -d apache foreman")
+end
+
 def upgrade_step(step, options = {})
   noop = app_value(:noop) ? ' (noop)' : ''
   long_running = options[:long_running] ? ' (this may take a while) ' : ''
@@ -226,6 +230,7 @@ if app_value(:upgrade)
     upgrade_step :migrate_foreman, :run_always => true
     upgrade_step :mongo_mmapv1_check
     upgrade_step :remove_legacy_mongo
+    upgrade_step :drop_apache_foreman_group
   end
 
   Kafo::Helpers.log_and_say :info, 'Upgrade Step: Running installer...'
