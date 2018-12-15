@@ -9,7 +9,6 @@ mod 'katello/qpid',                  '>= 4.3.0 < 4.4.0'
 
 # A fork that marks metadata as compatible with puppet 5
 mod 'thias-squid3',                  :git => 'https://github.com/theforeman/puppet-squid3', :ref => 'allow-puppet-5'
-forge 'https://forgeapi.puppetlabs.com'
 
 # Dependencies
 mod 'puppetlabs/mysql',         '>= 4.0.0'
@@ -23,4 +22,4 @@ mod 'theforeman/tftp',          '>= 4.3.0 < 4.4.0'
 # Top-level modules
 mod 'theforeman/foreman',       '>= 10.0.0 < 10.1.0'
 mod 'theforeman/foreman_proxy', '>= 9.0.0 < 9.1.0'
-mod 'theforeman/puppet',        '>= 10.0.0 < 10.1.0'
+mod 'theforeman/puppet',        '>= 10.1.0 < 10.2.0'

@@ -105,7 +105,7 @@ FORGE
       theforeman-tftp (< 5.0.0, >= 1.3.0)
     theforeman-git (4.1.1)
       puppetlabs-stdlib (< 6.0.0, >= 4.13.0)
-    theforeman-puppet (10.0.0)
+    theforeman-puppet (10.1.0)
       puppet-extlib (< 4.0.0, >= 0.11.3)
       puppetlabs-apache (< 4.0.0, >= 1.2.0)
       puppetlabs-concat (< 6.0.0, >= 1.0.0)
@@ -137,7 +137,7 @@ DEPENDENCIES
   theforeman-foreman (< 10.1.0, >= 10.0.0)
   theforeman-foreman_proxy (< 9.1.0, >= 9.0.0)
   theforeman-git (< 4.2.0, >= 4.1.1)
-  theforeman-puppet (< 10.1.0, >= 10.0.0)
+  theforeman-puppet (< 10.2.0, >= 10.1.0)
   theforeman-tftp (< 4.4.0, >= 4.3.0)
   thias-squid3 (>= 0)
 
